@@ -1,0 +1,33 @@
+Yes (with Julian)
+
+
+Maybe
+
+- Task can be set to self-destruct (hidden) after a certain deadline
+- Regular expression search
+- Task can be set to remain hidden until certain date
+- Extract task info from email 
+- Group task based on location of task (for delivery/estate agent?)
+- Compute optimal task completion order (shortest distance) if location of tasks are different
+- Encrypt specific (only show first few letter) or all tasks (confidential/sensitive info)
+- Mute software (no alarm/reminder) --- maybe automute if keyboard inactive for x min/full screen app
+
+~GUI-specific
+- Option to sort by date, time and or priority
+- Display only tasks x days from deadline
+- Modify/add task with GUI
+
+~Internect required
+- Assign task to someone
+- Collaborate on tasks
+
+
+
+
+Unlikely
+
+- Stylus/touch support (for GUI)
+- Location-based alarm/reminder (requires GPS/internet)
+- Store statistics (avg time taken to complete task, avg number of task/day during different months, 
+  highest num of tasks in a day etc) for user's self analysis
+- Handwritten text recognition – if user uses tablet (if we can find a free and reliable software to integrate into our app)
