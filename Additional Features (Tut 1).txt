@@ -12,6 +12,20 @@ Maybe
 - Encrypt specific (only show first few letter) or all tasks (confidential/sensitive info)
 - Mute software (no alarm/reminder) --- maybe automute if keyboard inactive for x min/full screen app
 
+- Window auto resize to show al tasks x days to deadline
+- Voice recognition for setting / off alarms
+- Tasks can be set to auto perform an OS operation
+- Auto-completion using dictionary
+- Encryption of tasks
+- Attach files (img/video/documents) to tasks
+- Location-based reminder/alarm
+- Auto-correction
+- Search for empty slots for task
+- Be able to set recurring task
+- GUI
+- User can use a keyboard shortcut to call the program
+
+
 ~GUI-specific
 - Option to sort by date, time and or priority
 - Display only tasks x days from deadline
@@ -30,4 +44,4 @@ Unlikely
 - Location-based alarm/reminder (requires GPS/internet)
 - Store statistics (avg time taken to complete task, avg number of task/day during different months, 
   highest num of tasks in a day etc) for user's self analysis
-- Handwritten text recognition – if user uses tablet (if we can find a free and reliable software to integrate into our app)
+- Handwritten text recognition â€“ if user uses tablet (if we can find a free and reliable software to integrate into our app)
