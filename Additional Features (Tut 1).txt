@@ -7,6 +7,10 @@ Yes
 - Keep a record of words user used and frequency of usage, to be used as prioritized suggestion to autocomplete/auto-correct
 - Separate column for tasks with no date specified
 - Option to add priority to a task (trivial, important, urgent) -- tasks are shaded/just a colored icon beside to indicate priority
+- 2 types of undo: type 1. ctrl+z: remove last word typed (like most text editors) type 2. undo modifications to task
+- redo (2 types too, see above) (ctrl+y for type 1 -- consistent with most text editors)
+- shift+enter = make new line (for task description) instead of sending the command
+- todo: think about what other useful features text editors, chat messengers, smartphone text etc have
 
 -----Ruo Mu-----
 - Label priority for each task
