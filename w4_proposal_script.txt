@@ -4,24 +4,24 @@
 	This is Ruomu. Ruomu is <fill in competencies>. Ruomu is taking 30 MCs this semester after clearing 28 last semester, it can be seen that Ruomu is very competent in his area of study.
 	Moving on, this is Shaun. Shaun is <fill in competencies>. Doesn’t his face just have success written all over it?
 
-	Lastly, this is Riwu. Riwu is <fill in competencies>. Even in this few weeks that I have spent being Riwu’s teammate, I have already learnt volumes from him on subjects like using Github better. I have also met him in my two previous semesters and have known him to be a very competent programmer.
+	Lastly, this is Riwu. Riwu is <fill in competencies>. Even having been Riwu's teammate for only a few short weeks, I have already learnt volumes from him on subjects like using Github better. I have also met him in my two previous semesters and have known him to be a very competent programmer.
 	Okay, now, just a raise of hands, how many of us have a busy schedule? (A lot of people: Haha, I guess we can all agree that studying here is intensive.)(Not a lot of people: Nobody? Wow, you guys must be having a really easy semester then!) <Personal analogy> Now, I personally have a lot of things on my schedule that I have to keep track of: Just today alone, I have 3 assignments due, this presentation being one of them. Having so many assignments, I find it hard to keep track of all of them: often resulting in me forgetting the assignments I have due until the very last minute
 	<Optional analogy about additional feature> On top of that, being a student, I have certain deadlines, like tutorial homework, that are required of me every week. I find it hard to constantly recall which tutorials are due on which days, and I am constantly in fear that I end up forgetting to do a tutorial for a class that I have to attend.
-	Now, lady and gentlemen, this is where our product, WURI, comes in. I will now pass the time to Shaun, to take the stage away on the basic functionalities of WURI!
+	Now, lady and gentlemen, this is where our product, WURI, comes in. WURI, which stands for Will You Remember It, is intended to be a product that will solve scheduling issues such as mine. Lastly, our team has decided that a suitable slogan to go along with WURI's amazing name is "Forget forgetting". With that, I will now pass the time to Shaun, to take the stage away on the basic functionalities of WURI!
 
 -Ruomu
 	Hi, I am Ruomu, and I am going to present to you the extra features of our software.
-	We are going to implement the recurring task function for our users. Many of our tasks are recurring in nature. Adding the tasks repeatedly is tedious and it is more detrimental if one forget to add such tasks. Therefore, we introduce recurring tasks to solve such problem. The user will be able to schedule such recurring tasks in a highly customized ways. When they have tasks like doing exercise, they can choose to repeat it every 3 days, meetings can be weekly recurring and paying of bills and be monthly recurring.
+	We are going to implement the recurring task function for our users. Many of our tasks are recurring in nature. Adding tasks repeatedly is tedious and it is detrimental if one forgets to add such tasks. Therefore, we are introducing recurring tasks to solve such problems. The user will be able to schedule such recurring tasks in highly customized ways. When they have tasks like exercising, they can choose to repeat it every 3 days, meetings can be repeated weekly and paying of bills can be repeated monthly.
 
-	We are also going to give the user the convenience of calling out the task manager using hot-keys. As a CLI (command line interface) software, we strive to keep to the keyboard to increase productivity. When the user find something important to take note of, he can use hot-key to call out our product and start typing, enter, then user the short-key to close the window. All procedures can be done mouse-free!
+	We are also going to give the user the convenience of calling out the task manager using hot-keys. As a CLI (command line interface) software, we strive to keep to the keyboard to increase productivity. When the user finds something important to take note of, he can use hot-key to call out our product and start typing, enter, then use the short-key to close the window. All procedures can be done mouse-free!
 
-	We are busy in our life. We use short phrases to represent our idea whenever we can. Our smart solution will cater to your need and your habit. Take a look at this example, instead of typing in the whole sentence as “add CS2103T …”, our users can use an underscore to indicate the usage of the short phrases and type in 3t to represent CS2103T, m for meeting and etc. Moreover, users will be grant the ability to customize the aliasing system. They can create new aliasing which cater to their needs.
+	We are busy in our life. We use short phrases to represent our idea whenever we can. Our smart solution will cater to your needs and your habits. Take a look at this example, instead of typing in the whole sentence as “add CS2103T …”, our users can use an underscore to indicate the usage of the short phrases and type in 3t to represent CS2103T, m for meeting and etc. Moreover, users will be granted the ability to customize the aliasing system. They can create new aliasing which caters to their needs.
 
 
 -Riwu
 	I will now introduce some advanced features of our product.
 
-	Our task will have an autocomplete feature, displaying word suggestions as we type. These word suggestions will be ordered based on how frequent and recent we used them. spelling mistakes will also be auto corrected, thereby improving the usability of our program.
+	Our task will have an autocomplete feature, displaying word suggestions as we type. These word suggestions will be ordered based on how frequent and recent we've used them. Spelling mistakes will also be auto corrected, thereby improving the usability of our program.
 
 	Occasionally, our tasks may contain sensitive or confidential data. In order to protect these private data, users can choose to encrypt these tasks, displaying only a designated phrase, and requiring a password to unlock the entire task information.
 	(q&a: we will be employing AES, a symmetric cryptography algorithm)
@@ -31,5 +31,5 @@
 	This will ensure that we never forget about important tasks even if we do not keep track of our task list periodically.
 
 	Lastly, users will have the option to search using regular expressions. 
-	For instance, we can use "is\d" as search phrase, and only tasks containing is
-	IS followed by a digit, such as IS1103 will be matched. Tasks containing phrases such as "is a", "issac" will not be shown. The various syntax for regular expression will be incorporated in our user manual to facilitate users who wish to learn them to use as search option.
+	For instance, we can use "is\d" as search phrase, and only tasks containing
+	IS followed by a digit, such as IS1103 will be matched. Tasks containing phrases such as "is a", "issac" will not be shown. The various syntax for regular expression will be incorporated in our user manual to facilitate users who wish to learn them to use as search options.
