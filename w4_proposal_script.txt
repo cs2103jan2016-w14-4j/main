@@ -24,10 +24,10 @@
 	Our task will have an autocomplete feature, displaying word suggestions as we type. These word suggestions will be ordered based on how frequent and recent we've used them. Spelling mistakes will also be auto corrected, thereby improving the usability of our program.
 
 	Occasionally, our tasks may contain sensitive or confidential data. In order to protect these private data, users can choose to encrypt these tasks, displaying only a designated phrase, and requiring a password to unlock the entire task information.
-	(q&a: we will be employing AES, a symmetric cryptography algorithm)
+	(q&a: we will be employing AES, a symmetric cryptography algorithm -- javax.crypto package)
 
 	Our product will have an option to set alert for specific tasks. 
-	The alert can be in the form of an alarm, a notification near system tray icons, or an intrusive pop up in the center of the screen.
+	The alert can be in the form of an alarm, a notification near system tray icons, or an intrusive pop up in the centre of the screen.
 	This will ensure that we never forget about important tasks even if we do not keep track of our task list periodically.
 
 	Lastly, users will have the option to search using regular expressions. 
