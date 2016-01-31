@@ -9,6 +9,19 @@
 	<Optional analogy about additional feature> On top of that, being a student, I have certain deadlines, like tutorial homework, that are required of me every week. I find it hard to constantly recall which tutorials are due on which days, and I am constantly in fear that I end up forgetting to do a tutorial for a class that I have to attend.
 	Now, lady and gentlemen, this is where our product, WURI, comes in. WURI, which stands for Will You Remember It, is intended to be a product that will solve scheduling issues such as mine. Lastly, our team has decided that a suitable slogan to go along with WURI's amazing name is "Forget forgetting". With that, I will now pass the time to Shaun, to take the stage away on the basic functionalities of WURI!
 
+-Shaun
+
+	Hello everyone, to start off, I'd like to begin by asking, why WURI? There are so many to-do lists out there, but them feel very cluttered with useless features which we probably won't use. Hence we decide to come up with WURI, a simple and lightweight yet efficient to-do list manager with only the most necessary features and nothing more.
+	First off, we have done our research and realised that all TASKs can be broken down into 3 categories, Events, Deadlines and Floating Tasks. Of course, we have the core integral CRUD functions, Create, Retrieve, Update and delete.
+	
+	Next, what happens if we made a mistake? for example, I accidentely set a date with 2 girls at the same time, I can UNDO it. WURI is flexible in the sense that there is no need to memorize a certain syntax, but instead rely on keywords for different commands. For instance, these are different ways to 
+
+	Accessibility wise, lets say I have a desktop computer, a mobile phone, a tablet, a laptop. I can access the same to-do list anywhere as the data is stored in a XML sheet that can be uploaded on a local cloud folder, for example we can use dropbox. 
+	
+	Next up, lets say we are overwhelmed by so many tasks, we definitely need a search function, for example you can see me searching for LSM1302 related tasks, next, sorting by time is extremely crucial for time sensitive events.
+
+	This is all for the basic functionalities of WURI, and Ruomu here will guide you towards the more advanced features of WURI.
+
 -Ruomu
 	Hi, I am Ruomu, and I am going to present to you the extra features of our software.
 	We are going to implement the recurring task function for our users. Many of our tasks are recurring in nature. Adding tasks repeatedly is tedious and it is detrimental if one forgets to add such tasks. Therefore, we are introducing recurring tasks to solve such problems. The user will be able to schedule such recurring tasks in highly customized ways. When they have tasks like exercising, they can choose to repeat it every 3 days, meetings can be repeated weekly and paying of bills can be repeated monthly.
