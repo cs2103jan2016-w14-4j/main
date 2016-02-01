@@ -1,0 +1,71 @@
+-Julian
+	Good afternoon everyone, before we begin our presentation proper, I would like to introduce my fellow teammates and myself to all of you.
+	First of all, let me introduce myself. I am Julian, and this is my second semester in NUS. Having studied two years of Business and Psychology in USA previously, as well as being in a family which runs its own business, I feel that I am able to offer a lot to my team in terms of social expertise and in providing a fresh perspective to our group discussions. In terms of technical skills, I have done well in my prior CS courses: after S/U-ing 4/5 of my mods last sem, my CAP is 5.0. Jokes aside, I have done really quite well despite not having a prior background in programming before entering NUS. In spite of that, every day I am still learning volumes from my highly capable teammates whom I shall now introduce. 
+	This is Ruomu. 
+	
+	As a result of his enrolment in the double degree programme, he possess a strong foundation in Mathematics and a high proficiency in data structures and algorithms. Consequently, he is able to analyse code and engineer cost-effective and responsive solutions with outstanding efficiency. 
+	
+	Ruomu is also taking 30 MCs this semester after clearing 28 last semester, it is evident that he is very competent in his area of study.
+	Moving on, this is Shaun. Shaun has a background in IT since poly and has vast experience with C++/VB/JAVA . Doesn’t his face just have success written all over it?
+	
+	Lastly, this is Riwu. 
+	
+	Having been involved in the development of a diverse range of front-end application, he is well-versed with all stages of Software Development Life cycle, possessing a sound knowledge of object-oriented programming, and the ability to solicit requirements and codify them.
+		
+	Even having been Riwu's teammate for only a few short weeks, I have already learnt volumes from him on subjects like using Github better. I have also met him in my two previous semesters and have known him to be a very competent programmer.
+	Okay, now, just a raise of hands, how many of us have a busy schedule? (A lot of people: Haha, I guess we can all agree that studying here is intensive.)(Not a lot of people: Nobody? Wow, you guys must be having a really easy semester then!) <Personal analogy> Now, I personally have a lot of things on my schedule that I have to keep track of: Just today alone, I have 3 assignments due, this presentation being one of them. Having so many assignments, I find it hard to keep track of all of them: often resulting in me forgetting the assignments I have due until the very last minute
+	<Optional analogy about additional feature> On top of that, being a student, I have certain deadlines, like tutorial homework, that are required of me every week. I find it hard to constantly recall which tutorials are due on which days, and I am constantly in fear that I end up forgetting to do a tutorial for a class that I have to attend.
+	Now, lady and gentlemen, this is where our product, WURI, comes in. WURI, which stands for Will You Remember It, is intended to be a product that will solve scheduling issues such as mine. Lastly, our team has decided that a suitable slogan to go along with WURI's amazing name is "Forget forgetting". With that, I will now pass the time to Shaun, to take the stage away on the basic functionalities of WURI!
+
+-Shaun
+
+	Hello everyone, to start off, I'd like to begin by asking, why WURI? There are so many to-do lists out there, but them feel very cluttered with useless features which we probably won't use. Hence we decide to come up with WURI, a simple and lightweight yet efficient to-do list manager with only the most necessary features and nothing more.
+	First off, we have done our research and realised that all TASKs can be broken down into 3 categories, Events, Deadlines and Floating Tasks. Of course, we have the core integral CRUD functions, Create, Retrieve, Update and delete.
+	
+	Next, what happens if we made a mistake? for example, I accidentely set a date with 2 girls at the same time, I can UNDO it. WURI is flexible in the sense that there is no need to memorize a certain syntax, but instead rely on keywords for different commands. For instance, these are different ways to 
+
+	Accessibility wise, lets say I have a desktop computer, a mobile phone, a tablet, a laptop. I can access the same to-do list anywhere as the data is stored in a XML sheet that can be uploaded on a local cloud folder, for example we can use dropbox. 
+	
+	Next up, lets say we are overwhelmed by so many tasks, we definitely need a search function, for example you can see me searching for LSM1302 related tasks, next, sorting by time is extremely crucial for time sensitive events.
+
+	This is all for the basic functionalities of WURI, and Ruomu here will guide you towards the more advanced features of WURI.
+
+-Ruomu
+	Hi, I am Ruomu, and I am going to present to you the extra features of our software.
+	We are going to implement the recurring task function for our users. Many of our tasks are recurring in nature. Adding tasks repeatedly is tedious and it is detrimental if one forgets to add such tasks. Therefore, we are introducing recurring tasks to solve such problems. The user will be able to schedule such recurring tasks in highly customized ways. When they have tasks like exercising, they can choose to repeat it every 3 days, meetings can be repeated weekly and paying of bills can be repeated monthly.
+
+	We are also going to give the user the convenience of calling out the task manager using hot-keys. As a CLI (command line interface) software, we strive to keep to the keyboard to increase productivity. When the user finds something important to take note of, he can use hot-key to call out our product and start typing, enter, then use the short-key to close the window. All procedures can be done mouse-free!
+
+	We are busy in our life. We use short phrases to represent our idea whenever we can. Our smart solution will cater to your needs and your habits. Take a look at this example, instead of typing in the whole sentence as “add CS2103T …”, our users can use an underscore to indicate the usage of the short phrases and type in 3t to represent CS2103T, m for meeting and etc. Moreover, users will be granted the ability to customize the aliasing system. They can create new aliasing which caters to their needs.
+	
+	I will now pass the time to Riwu for additional advanced features of our product.
+
+-Riwu
+	Thank you Ruomu.
+	
+	After days of in-depth research on existing products on the market, our team has concluded that while most of these existing products' basic functionalities are well developed, they lacked several advanced but crucial functionalities, in which we hope to implement to give us a competitive edge over them.
+	
+	Firstly, our product will have an autocomplete feature, displaying word suggestions as we type. This will be of immense help to users, especially slow typers, as it drastically reduces the time spent typing out full words.
+	
+	Now, as a CS student, you might question its usefulness as your daily vocabulary consists of mainly technical jargons that may not exist in the dictionary.
+	Not to fret, for our intelligent product will save words you have used in the past and add them to the dictionary!
+	
+	These word suggestions will also be ordered based on how frequent and recent we've used them. 
+	Furthermore, there will be an option to auto-correct spelling mistakes, further improving the usability of our product.
+
+	Moving on to our second advanced feature, supposed that you have a date with a girl you have just met, you would want to key it into your scheduler to make sure you won't forget it, but you certainly don't want your nosy girlfriend to snoop around and find out, do you?
+	This is why our product has an encryption option, allowing you to encrypt specific tasks containing sensitive or confidential data. The encrypted task can be set to display a designated phrase, requiring a password to unlock the entire task information.
+	(q&a: we will be employing AES, a symmetric cryptography algorithm -- javax.crypto package)
+
+	Next,	our product will have an option to set alert for specific tasks. 
+	The alert can be in the form of an alarm, a notification near system tray icons, or an intrusive pop up in the centre of the screen.
+	This will ensure that we will never forget about important tasks even if we do not keep track of our task list periodically.
+
+	Lastly, users will have the option to search using regular expressions. 
+	For instance, we can use "is\d" as search phrase, and only tasks containing
+	IS followed by a digit, such as IS1103 will be matched. Tasks containing phrases such as "is a", "issac" etcetera will not be shown. Isn't that amazing?
+	The various syntax for regular expression will be incorporated in our user manual to facilitate users who wish to learn them to use as search options.
+
+	With these advanced features, we believe our product will be capable of competing with, and even overtaking existing products on the market.
+
+Thank you.
