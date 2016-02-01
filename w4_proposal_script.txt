@@ -52,7 +52,7 @@
 	These word suggestions will also be ordered based on how frequent and recent we've used them. 
 	Furthermore, there will be an option to auto correct spelling mistakes, further improving the usability of our program.
 
-	Moving on to our second advanced feature, supposed that you have a date with a girl you have just met, you would want to key it into your scheduler to make sure you won't forget it, but you certainly don't want nosy girlfriend to find out!
+	Moving on to our second advanced feature, supposed that you have a date with a girl you have just met, you would want to key it into your scheduler to make sure you won't forget it, but you certainly don't want your nosy girlfriend to find out!
 	This is why our product has an encryption option, allowing you to encrypt specific tasks containing sensitive or confidential data. The encrypted task can be set to display a designated phrase, requiring a password to unlock the entire task information.
 	(q&a: we will be employing AES, a symmetric cryptography algorithm -- javax.crypto package)
 
