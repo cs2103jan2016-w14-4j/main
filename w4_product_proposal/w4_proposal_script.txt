@@ -1,21 +1,39 @@
 -Julian
 	Good afternoon everyone, before we begin our presentation proper, I would like to introduce my fellow teammates and myself to all of you.
-	First of all, let me introduce myself. I am Julian, and this is my second semester in NUS. Having studied two years of Business and Psychology in USA previously, as well as being in a family which runs its own business, I feel that I am able to offer a lot to my team in terms of social expertise and in providing a fresh perspective to our group discussions. In terms of technical skills, I have done well in my prior CS courses: after S/U-ing 4/5 of my mods last sem, my CAP is 5.0. Jokes aside, I have done really quite well despite not having a prior background in programming before entering NUS. In spite of that, every day I am still learning volumes from my highly capable teammates whom I shall now introduce. 
+	First of all, let me introduce myself. I am Julian, and this is my second semester in NUS.
+	Having studied two years of Business and Psychology in USA previously, as well as being in a family which runs its own business,
+	I feel that I am able to offer a lot to my team in terms of social expertise and in providing a fresh perspective to our group discussions.
+	In terms of technical skills,after S/U-ing 4/5 of my mods last sem, my CAP is 5.0.
+	Jokes aside, I have done really quite well despite not having a prior background in programming before entering NUS.
+	In spite of that, every day I am still learning volumes from my highly capable teammates whom I shall now introduce.
+	
 	This is Ruomu. 
-	
-	As a result of his enrolment in the double degree programme, he possess a strong foundation in Mathematics and a high proficiency in data structures and algorithms. Consequently, he is able to analyse code and engineer cost-effective and responsive solutions with outstanding efficiency. 
-	
+	As a result of his enrolment in the double degree programme,
+	he possesses a strong foundation in Mathematics and a high proficiency in data structures and algorithms.
+	Consequently, he is able to analyse code and engineer cost-effective and responsive solutions with outstanding efficiency. 
 	Ruomu is also taking 30 MCs this semester after clearing 28 last semester, it is evident that he is very competent in his area of study.
-	Moving on, this is Shaun. Shaun has a background in IT since poly and has vast experience with C++/VB/JAVA . Doesn’t his face just have success written all over it?
+	
+	Moving on, this is Shaun.
+	Shaun has a background in IT since poly and has vast experience with C++/VB/JAVA.
+	Doesn't his face just have success written all over it?
 	
 	Lastly, this is Riwu. 
 	
-	Having been involved in the development of a diverse range of front-end application, he is well-versed with all stages of Software Development Life cycle, possessing a sound knowledge of object-oriented programming, and the ability to solicit requirements and codify them.
-		
-	Even having been Riwu's teammate for only a few short weeks, I have already learnt volumes from him on subjects like using Github better. I have also met him in my two previous semesters and have known him to be a very competent programmer.
-	Okay, now, just a raise of hands, how many of us have a busy schedule? (A lot of people: Haha, I guess we can all agree that studying here is intensive.)(Not a lot of people: Nobody? Wow, you guys must be having a really easy semester then!) <Personal analogy> Now, I personally have a lot of things on my schedule that I have to keep track of: Just today alone, I have 3 assignments due, this presentation being one of them. Having so many assignments, I find it hard to keep track of all of them: often resulting in me forgetting the assignments I have due until the very last minute
+	Having been involved in the development of a diverse range of front-end application,
+        he is well-versed with all stages of the Software Development Life cycle,
+	possessing a sound knowledge of object-oriented programming, and the ability to solicit requirements and codify them.
+	Even having been Riwu's teammate for only a few short weeks, I have already learnt volumes from him on subjects like using Github better.
+	I have also met him in my two previous semesters and have known him to be a very competent programmer.
+
+	Okay, now, just a raise of hands, how many of us have a busy schedule?
+	(A lot of people: Haha, I guess we can all agree that studying here is intensive.)
+	(Not a lot of people: Nobody? Wow, you guys must be having a really easy semester then!) 
+	<Personal analogy> Now, I personally have a lot of things on my schedule that I have to keep track of: 
+	Just today alone, I have 3 assignments due, this presentation being one of them.
+	Having so many assignments, I find it hard to keep track of all of them: often resulting in me forgetting the assignments
+	I have due until the very last minute
 	<Optional analogy about additional feature> On top of that, being a student, I have certain deadlines, like tutorial homework, that are required of me every week. I find it hard to constantly recall which tutorials are due on which days, and I am constantly in fear that I end up forgetting to do a tutorial for a class that I have to attend.
-	Now, lady and gentlemen, this is where our product, WURI, comes in. WURI, which stands for Will You Remember It, is intended to be a product that will solve scheduling issues such as mine. Lastly, our team has decided that a suitable slogan to go along with WURI's amazing name is "Forget forgetting". With that, I will now pass the time to Shaun, to take the stage away on the basic functionalities of WURI!
+	Now, lady and gentlemen, this is where our product, WURI, comes in. WURI, which stands for Will You Remember It, is intended to be a product that will solve scheduling issues such as mine. Lastly, our team has decided that a suitable slogan to go along with WURI's amazing name is to "Forget forgetting". With that, I will now pass the time to Shaun, to take the stage away on the basic functionalities of WURI!
 
 -Shaun
 
