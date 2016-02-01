@@ -1,6 +1,7 @@
 Yes
 
 -----Riwu-----
+- Time: if 7-11: default to AM, 12-6: default to PM -- range adjustable
 - Tasks can be set to activate alarm/reminder (notification at tray, or more intrusive type) x hour in advance (x can be 0)
 - Command to set all tasks before certain date as done
 - Option to automatically hide overdue tasks instead of putting them in the overdue category
