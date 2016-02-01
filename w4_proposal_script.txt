@@ -6,7 +6,7 @@
 	As a result of his enrolment in the double degree programme, he possess a strong foundation in Mathematics and a high proficiency in data structures and algorithms. Consequently, he is able to analyse code and engineer cost-effective and responsive solutions with outstanding efficiency. 
 	
 	Ruomu is also taking 30 MCs this semester after clearing 28 last semester, it is evident that he is very competent in his area of study.
-	Moving on, this is Shaun. Shaun has a background in IT since poly and has vast experience with C++/VB/JAVA . Doesnít his face just have success written all over it?
+	Moving on, this is Shaun. Shaun has a background in IT since poly and has vast experience with C++/VB/JAVA . Doesn‚Äôt his face just have success written all over it?
 	
 	Lastly, this is Riwu. 
 	
@@ -36,31 +36,36 @@
 
 	We are also going to give the user the convenience of calling out the task manager using hot-keys. As a CLI (command line interface) software, we strive to keep to the keyboard to increase productivity. When the user finds something important to take note of, he can use hot-key to call out our product and start typing, enter, then use the short-key to close the window. All procedures can be done mouse-free!
 
-	We are busy in our life. We use short phrases to represent our idea whenever we can. Our smart solution will cater to your needs and your habits. Take a look at this example, instead of typing in the whole sentence as ìadd CS2103T Öî, our users can use an underscore to indicate the usage of the short phrases and type in 3t to represent CS2103T, m for meeting and etc. Moreover, users will be granted the ability to customize the aliasing system. They can create new aliasing which caters to their needs.
+	We are busy in our life. We use short phrases to represent our idea whenever we can. Our smart solution will cater to your needs and your habits. Take a look at this example, instead of typing in the whole sentence as ‚Äúadd CS2103T ‚Ä¶‚Äù, our users can use an underscore to indicate the usage of the short phrases and type in 3t to represent CS2103T, m for meeting and etc. Moreover, users will be granted the ability to customize the aliasing system. They can create new aliasing which caters to their needs.
 	
 	I will now pass the time to Riwu for additional advanced features of our product.
+
 -Riwu
 	Thank you Ruomu.
 	
-	After days of in-depth research on existing products on the market, our team has concluded that while most of these existing products' basic functionalities are well developed, they lacked several advanced but crucial functions, in which we hope to implement to give us a competitive edge over them.
+	After days of in-depth research on existing products on the market, our team has concluded that while most of these existing products' basic functionalities are well developed, they lacked several advanced but crucial functionalities, in which we hope to implement to give us a competitive edge over them.
 	
 	Firstly, our product will have an autocomplete feature, displaying word suggestions as we type. This will be of immense help to users, especially slow typers, as it drastically reduces the time spent typing out full words.
 	
-	Now, as a CS student, you might question its usefulness as your daily vocabulary mainly consists of technical jargons that may not exist in the dictionary.
+	Now, as a CS student, you might question its usefulness as your daily vocabulary consists of mainly technical jargons that may not exist in the dictionary.
 	Not to fret, for our intelligent product will save words you have used in the past and add them to the dictionary!
 	
 	These word suggestions will also be ordered based on how frequent and recent we've used them. 
-	Furthermore, there will be an option to auto correct spelling mistakes, further improving the usability of our program.
+	Furthermore, there will be an option to auto-correct spelling mistakes, further improving the usability of our product.
 
-	Moving on to our second advanced feature, supposed that you have a date with a girl you have just met, you would want to key it into your scheduler to make sure you won't forget it, but you certainly don't want your nosy girlfriend to find out!
+	Moving on to our second advanced feature, supposed that you have a date with a girl you have just met, you would want to key it into your scheduler to make sure you won't forget it, but you certainly don't want your nosy girlfriend to snoop around and find out, do you?
 	This is why our product has an encryption option, allowing you to encrypt specific tasks containing sensitive or confidential data. The encrypted task can be set to display a designated phrase, requiring a password to unlock the entire task information.
 	(q&a: we will be employing AES, a symmetric cryptography algorithm -- javax.crypto package)
 
-	Our product will have an option to set alert for specific tasks. 
+Next,	our product will have an option to set alert for specific tasks. 
 	The alert can be in the form of an alarm, a notification near system tray icons, or an intrusive pop up in the centre of the screen.
-	This will ensure that we never forget about important tasks even if we do not keep track of our task list periodically.
+	This will ensure that we will never forget about important tasks even if we do not keep track of our task list periodically.
 
 	Lastly, users will have the option to search using regular expressions. 
 	For instance, we can use "is\d" as search phrase, and only tasks containing
-	IS followed by a digit, such as IS1103 will be matched. Tasks containing phrases such as "is a", "issac" will not be shown. Isn't that amazing?
+	IS followed by a digit, such as IS1103 will be matched. Tasks containing phrases such as "is a", "issac" etcetera will not be shown. Isn't that amazing?
 	The various syntax for regular expression will be incorporated in our user manual to facilitate users who wish to learn them to use as search options.
+
+With these advanced features, we believe our product will be capable of competing with, and even overtaking existing products on the market.
+
+Thank you.
