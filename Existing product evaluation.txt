@@ -1,0 +1,15 @@
+any.do
+
+Strengths
+-Clean and simple interface
+-Smooth sync b/w mobile and PC
+-Attach note/files to task
+-Allow adding recurring task
+
+Weaknesses
+-requires internet (no offline app)
+-No CLI 
+-Time and date set through calendar interface -- multiple mouse clicks required
+-Alert only limited to notification (no alarm)
+-No option to hide completed task automatically
+-Tabs are fixed (Doesnt collapse even when there's no task on that tab)
