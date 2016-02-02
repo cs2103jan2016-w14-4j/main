@@ -36,3 +36,29 @@ Weakness (Some features I do not need I will put a x at the end):
 - No attached file(x)
 - Need Lock function, which blocks mouse click
 - No description/title separation(x)
+
+Trello: (Julian)
+
+Strengths:
++ Calendar and list views
++ Can collaborate on lists with teammates
++ Has a mobile app that syncs
++ Has stickers for marking the tasks
++ User friendly for newbies
++ Filter cards
++ Option to email tasks to list (Email title = task ; Content = description)
++ Can print and export
++ Can map to microsoft outlook calendar
++ Cards are archived when removed from list (can be deleted from archive)
++ Allows attachment to lists
++ Due dates change color when due date is approaching
+
+Weaknesses:
+- Lists need to be side by side (Can't put a small list below another small list to save horizontal space)
+- Requires Internet connection to make changes
+- No options to automatically sort a list
+- Can't delete multiple at the same time
+- Can't set recurring tasks
+- Archive gets messy after awhile
+- Premium features need paying for
+- Can't set when due dates should light up when approaching. Default is starting from 24hrs before the event, which can be too late.
