@@ -62,3 +62,23 @@ Weaknesses:
 - Archive gets messy after awhile
 - Premium features need paying for
 - Can't set when due dates should light up when approaching. Default is starting from 24hrs before the event, which can be too late.
+
+Momentum: (Shaun)
+
++ Very simple
++ Has basic CRUD functions
++ Easy to use
++ Add on for commonly used web browser (google chrome)
++ Non-intrusive
++ Free
+
+- Need to use mouse
+-Need to manually rearrange/ No sorting 
+-No searching
+-Limited space 
+-Restricted to browser (google chrome)
+-No time/deadline function
+-Unable to sync across multiple devices
+-Unable minimize
+-Unable to duplicate tasks
+-Litte to no advanced options/features
