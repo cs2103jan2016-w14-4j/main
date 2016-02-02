@@ -13,3 +13,26 @@ Weaknesses
 -Alert only limited to notification (no alarm)
 -No option to hide completed task automatically
 -Tabs are fixed (Doesnt collapse even when there's no task on that tab)
+
+Microsoft Sticky Notes:
+
+Strengths:
+- Easy to use
+- Boot with windows
+- Low resource consumption
+- Very friendly UI
+- Ver Good System Integration
+- Not intrusive at all
+- Free
+- Group function with color
+
+Weakness (Some features I do not need I will put a x at the end):
+- No output support(x)
+- No deadline
+- No reminder(x)
+- No sync
+- No archive
+- No minimize
+- No attached file(x)
+- Need Lock function, which blocks mouse click
+- No description/title separation(x)
