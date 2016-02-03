@@ -1,4 +1,4 @@
-Yes
+﻿Yes
 
 -----Riwu-----
 - Time: if 7-11: default to AM, 12-6: default to PM -- range adjustable
@@ -45,6 +45,7 @@ Yes
 - Key in keywords to facilitate smooth and fast capturing of new tasks.
 
 -----Julian-----
+- If no date is specified, default to x days from date of entry, where x can be customized by user.
 - Reinstate deleted entries
 - Name events
 - Retrieve deleted entries
