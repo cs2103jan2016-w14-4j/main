@@ -60,7 +60,7 @@ public class Task {
 		this.set_name(name);
 		this.set_startDate(startDate);
 		this.set_endDate(endDate);
-		this.set_dateAdded(new Date());
+		this.set_dateAdded(dateAdded);
 		this.set_state(state);
 		this.set_type("event");
 	}

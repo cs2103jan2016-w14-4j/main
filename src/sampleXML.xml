@@ -1,45 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wuriTasks>
-	<floating>
-		<task>
-			<name>Find potato</name>
-			<added>20-4-2015 12:00:00</added>
-			<state>OPEN</state>
-		</task>
-		<task>
-			<name>Eat potato</name>
-			<added>20-4-2015 12:00:00</added>
-			<state>OPEN</state>
-		</task>
-	</floating>
-	<event>
-		<task>
-			<name>Date with Julien</name>
-			<start>20-4-2015 12:00:00</start>
-			<end>20-4-2015 12:00:00</end>
-			<added>20-4-2015 12:00:00</added>
-			<state>OPEN</state>
-		</task>
-		<task>
-			<name>Date with Riwu</name>
-			<start>20-4-2015 12:00:00</start>
-			<end>20-4-2015 12:00:00</end>
-			<added>20-4-2015 12:00:00</added>
-			<state>OPEN</state>
-		</task>
-	</event>
-	<deadline>
-		<task>
-			<name>CS2103 Assignment 1</name>
-			<end>20-4-2015 12:00:00</end>
-			<added>20-4-2015 12:00:00</added>
-			<state>OPEN</state>
-		</task>
-		<task>
-			<name>CS2103 Assignment 2</name>
-			<end>20-4-2015 12:00:00</end>
-			<added>20-4-2015 12:00:00</added>
-			<state>OPEN</state>
-		</task>
-	</deadline>
+   <floating>
+      <name>Find potato</name>
+      <added>20-2-2016 12:12:12</added>
+      <state>OPEN</state>
+   </floating>
+   <floating>
+      <name>Eat potato</name>
+      <added>20-2-2016 12:12:12</added>
+      <state>OPEN</state>
+   </floating>
+   <event>
+      <name>Date with Julien</name>
+      <start>20-2-2016 12:12:12</start>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
+      <state>OPEN</state>
+   </event>
+   <event>
+      <name>Date with Riwu</name>
+      <start>20-2-2016 12:12:12</start>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
+      <state>OPEN</state>
+   </event>
+   <deadline>
+      <name>CS2103 Assignment 1</name>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
+      <state>OPEN</state>
+   </deadline>
+   <deadline>
+      <name>CS2103 Assignment 2</name>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
+      <state>OPEN</state>
+   </deadline>
 </wuriTasks>

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Storage {
 	
-	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 	/* The loadTasks function has to be called separately for all 3 types of tasks
 	 to make it more modular (easier to add new task type) and make it easier to
 	 parse due to the different attributes each type contain.
@@ -35,33 +35,35 @@ public class Storage {
 		 doc.appendChild(rootElement);
 
 		 // floating task element **** Sort Tasks by type in future to increase efficiency
-		 Element floatingTasks = doc.createElement("floating");
+		 
 		for( Task taskItem : taskList)
 		{
 			if( taskItem.get_type() == ("floating"))
 			{
-				Element task = doc.createElement("task");
+				Element floatingTasks = doc.createElement("floating");
 				Element nameElement = doc.createElement("name");						
 				Element dateAddedElement = doc.createElement("added");
 				Element stateElement = doc.createElement("state");
 				nameElement.appendChild(doc.createTextNode(taskItem.get_name()));
-				dateAddedElement.appendChild(doc.createTextNode(taskItem.get_dateAdded().toString()));
+				dateAddedElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_dateAdded())));
 				stateElement.appendChild(doc.createTextNode(taskItem.get_state().toString()));
-				task.appendChild(nameElement);
-				task.appendChild(dateAddedElement);
-				task.appendChild(stateElement);				
-				floatingTasks.appendChild(task);
+				floatingTasks.appendChild(nameElement);
+				floatingTasks.appendChild(dateAddedElement);
+				floatingTasks.appendChild(stateElement);				
+				rootElement.appendChild(floatingTasks);
+				
 			}
+			
 		}
-		rootElement.appendChild(floatingTasks);
+
 		 
 		// event task element **** Sort Tasks by type in future to increase efficiency
-		Element eventTasks = doc.createElement("event");
+		
 		for( Task taskItem : taskList)
 		{
 			if( taskItem.get_type().equals("event"))
 			{
-				Element task = doc.createElement("task");
+				Element eventTasks = doc.createElement("event");
 				Element nameElement = doc.createElement("name");		
 				Element startElement = doc.createElement("start");
 				Element endElement = doc.createElement("end");
@@ -69,51 +71,54 @@ public class Storage {
 				Element stateElement = doc.createElement("state");
 				
 				nameElement.appendChild(doc.createTextNode(taskItem.get_name()));
-				startElement.appendChild(doc.createTextNode(taskItem.get_startDate().toString()));
-				endElement.appendChild(doc.createTextNode(taskItem.get_endDate().toString()));
-				dateAddedElement.appendChild(doc.createTextNode(taskItem.get_dateAdded().toString()));
+				startElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_startDate())));
+				endElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_endDate())));
+				dateAddedElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_dateAdded())));
 				stateElement.appendChild(doc.createTextNode(taskItem.get_state().toString()));
-				task.appendChild(nameElement);
-				task.appendChild(startElement);
-				task.appendChild(endElement);		
-				task.appendChild(dateAddedElement);
-				task.appendChild(stateElement);
-				eventTasks.appendChild(task);
+				eventTasks.appendChild(nameElement);
+				eventTasks.appendChild(startElement);
+				eventTasks.appendChild(endElement);		
+				eventTasks.appendChild(dateAddedElement);
+				eventTasks.appendChild(stateElement);
+				rootElement.appendChild(eventTasks);
 			}
 		}
-		rootElement.appendChild(eventTasks);
+			
+		
 		
 		
 		 // deadline task element **** Sort Tasks by type in future to increase efficiency
-		 Element deadlineTasks = doc.createElement("deadline");
 		for( Task taskItem : taskList)
 		{
 			if( taskItem.get_type().equals("deadline"))
 			{
-				Element task = doc.createElement("task");
+				Element deadlineTasks = doc.createElement("deadline");
 				Element nameElement = doc.createElement("name");		
 				Element endElement = doc.createElement("end");
 				Element dateAddedElement = doc.createElement("added");
 				Element stateElement = doc.createElement("state");
 				
 				nameElement.appendChild(doc.createTextNode(taskItem.get_name()));
-				endElement.appendChild(doc.createTextNode(taskItem.get_endDate().toString()));
-				dateAddedElement.appendChild(doc.createTextNode(taskItem.get_dateAdded().toString()));
+				endElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_endDate())));
+				dateAddedElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_dateAdded())));
 				stateElement.appendChild(doc.createTextNode(taskItem.get_state().toString()));
-				task.appendChild(nameElement);
-				task.appendChild(endElement);		
-				task.appendChild(dateAddedElement);
-				task.appendChild(stateElement);
-				deadlineTasks.appendChild(task);
+				deadlineTasks.appendChild(nameElement);
+				deadlineTasks.appendChild(endElement);		
+				deadlineTasks.appendChild(dateAddedElement);
+				deadlineTasks.appendChild(stateElement);
+				rootElement.appendChild(deadlineTasks);
 			}
+			
 		}
-		rootElement.appendChild(deadlineTasks);
+		
 		
 
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        transformer.setOutputProperty(
+                   "{http://xml.apache.org/xslt}indent-amount", "3");
 		DOMSource source = new DOMSource(doc);
 		StreamResult result = new StreamResult(new File("TEST.xml"));
 		transformer.transform(source, result);
@@ -130,6 +135,7 @@ public class Storage {
 		
 		// Extracts out the list of task nodes
 		NodeList nList = extractListFromDocument(file, type);
+		int length = nList.getLength();
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			{
 				Node taskNode = nList.item(temp);
@@ -171,17 +177,10 @@ public class Storage {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(file);
 		document.getDocumentElement().normalize();
-		System.out.println("Root element :" 
-	            + document.getDocumentElement().getNodeName());
+		
 		// Getting all the tasks in the XML structure for this task type
-		NodeList childList = null;
 		NodeList nList = document.getElementsByTagName(type);
-		Node taskNode = nList.item(0);
-		if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
-			Element taskElement = (Element) taskNode;
-			childList = taskElement.getChildNodes();
-		}
-		return childList;
+		return nList;
 	}
 
 

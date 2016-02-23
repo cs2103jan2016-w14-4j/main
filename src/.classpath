@@ -3,5 +3,8 @@
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="xmlunit-core-2.0.0-alpha-04.jar"/>
+	<classpathentry kind="lib" path="xmlunit-legacy-2.0.0-alpha-04.jar"/>
+	<classpathentry kind="lib" path="xmlunit-matchers-2.0.0-alpha-04.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

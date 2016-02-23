@@ -1,44 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?><wuriTasks>
-  <floating>
-    <task>
+<?xml version="1.0" encoding="UTF-8"?>
+<wuriTasks>
+   <floating>
       <name>Find potato</name>
-      <added>Mon Apr 20 00:00:00 SGT 2015</added>
+      <added>20-2-2016 12:12:12</added>
       <state>OPEN</state>
-    </task>
-    <task>
+   </floating>
+   <floating>
       <name>Eat potato</name>
-      <added>Mon Apr 20 00:00:00 SGT 2015</added>
+      <added>20-2-2016 12:12:12</added>
       <state>OPEN</state>
-    </task>
-  </floating>
-  <event>
-    <task>
+   </floating>
+   <event>
       <name>Date with Julien</name>
-      <start>Mon Apr 20 00:00:00 SGT 2015</start>
-      <end>Mon Apr 20 00:00:00 SGT 2015</end>
-      <added>Tue Feb 23 20:40:55 SGT 2016</added>
+      <start>20-2-2016 12:12:12</start>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
       <state>OPEN</state>
-    </task>
-    <task>
+   </event>
+   <event>
       <name>Date with Riwu</name>
-      <start>Mon Apr 20 00:00:00 SGT 2015</start>
-      <end>Mon Apr 20 00:00:00 SGT 2015</end>
-      <added>Tue Feb 23 20:40:55 SGT 2016</added>
+      <start>20-2-2016 12:12:12</start>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
       <state>OPEN</state>
-    </task>
-  </event>
-  <deadline>
-    <task>
+   </event>
+   <deadline>
       <name>CS2103 Assignment 1</name>
-      <end>Mon Apr 20 00:00:00 SGT 2015</end>
-      <added>Mon Apr 20 00:00:00 SGT 2015</added>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
       <state>OPEN</state>
-    </task>
-    <task>
+   </deadline>
+   <deadline>
       <name>CS2103 Assignment 2</name>
-      <end>Mon Apr 20 00:00:00 SGT 2015</end>
-      <added>Mon Apr 20 00:00:00 SGT 2015</added>
+      <end>20-2-2016 12:12:12</end>
+      <added>20-2-2016 12:12:12</added>
       <state>OPEN</state>
-    </task>
-  </deadline>
+   </deadline>
 </wuriTasks>
