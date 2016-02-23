@@ -1,8 +1,13 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <wuriTasks>
 	<floating>
 		<task>
 			<name>Find potato</name>
+			<added>20-4-2015 12:00:00</added>
+			<state>OPEN</state>
+		</task>
+		<task>
+			<name>Eat potato</name>
 			<added>20-4-2015 12:00:00</added>
 			<state>OPEN</state>
 		</task>
@@ -26,16 +31,15 @@
 	<deadline>
 		<task>
 			<name>CS2103 Assignment 1</name>
-			<start>20-4-2015 12:00:00</start>
+			<end>20-4-2015 12:00:00</end>
 			<added>20-4-2015 12:00:00</added>
 			<state>OPEN</state>
 		</task>
 		<task>
 			<name>CS2103 Assignment 2</name>
-			<start>20-4-2015 12:00:00</start>
+			<end>20-4-2015 12:00:00</end>
 			<added>20-4-2015 12:00:00</added>
 			<state>OPEN</state>
 		</task>
 	</deadline>
-
 </wuriTasks>

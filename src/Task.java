@@ -2,22 +2,21 @@ import java.util.Date;
 
 public class Task {
 	
-	public enum taskState {
-		OPEN, COMPLETED, DELETED
-	};
 
 	private int ID;
 	private String _name;
 	private Date _startDate;
 	private Date _endDate;
-	private taskState _state;
+	private String _state;
 	private Date _dateAdded;
+	private String _type;
 	
 	// Overload Constructor 1 - New Floating Task 
 	public Task(String name){
 		this.set_name(name);
 		this.set_dateAdded(new Date()); // Current date time
-		this.set_state(taskState.OPEN);
+		this.set_state("OPEN");
+		this.set_type("floating");
 	}
 	
 	// Overload Constructor 2 - New Deadline Task 
@@ -25,7 +24,8 @@ public class Task {
 		this.set_name(name);
 		this.set_endDate(endDate);
 		this.set_dateAdded(new Date()); // Current date time
-		this.set_state(taskState.OPEN);
+		this.set_state("OPEN");
+		this.set_type("deadline");
 	}
 	
 	// Overload Constructor 3 - New Event Task 
@@ -34,14 +34,16 @@ public class Task {
 		this.set_startDate(startDate);
 		this.set_endDate(endDate);
 		this.set_dateAdded(new Date()); // Current date time
-		this.set_state(taskState.OPEN);
+		this.set_state("OPEN");
+		this.set_type("event");
 	}
 	
 	// Overload Constructor 4 - Import Floating Task 
 	public Task(String name, Date dateAdded, String state){
 		this.set_name(name);
 		this.set_dateAdded(dateAdded);
-		this.set_state(_state);
+		this.set_state(state);
+		this.set_type("floating");
 	}
 	
 	// Overload Constructor 5 - Import Deadline Task 
@@ -49,7 +51,8 @@ public class Task {
 		this.set_name(name);
 		this.set_endDate(endDate);
 		this.set_dateAdded(dateAdded);
-		this.set_state(_state);
+		this.set_state(state);
+		this.set_type("deadline");
 	}
 	
 	// Overload Constructor 6 - Import Event Task 
@@ -58,66 +61,67 @@ public class Task {
 		this.set_startDate(startDate);
 		this.set_endDate(endDate);
 		this.set_dateAdded(new Date());
-		this.set_state(taskState.OPEN);
+		this.set_state(state);
+		this.set_type("event");
 	}
 	
-	private int getID() {
+	public int getID() {
 		return ID;
 	}
-	private void setID(int iD) {
+	public void setID(int iD) {
 		ID = iD;
 	}
-	private Date getStartDate() {
+	public Date getStartDate() {
 		return get_startDate();
 	}
-	private void setStartDate(Date startDate) {
+	public void setStartDate(Date startDate) {
 		this.set_startDate(startDate);
 	}
-	private Date getEndDate() {
+	public Date getEndDate() {
 		return get_endDate();
 	}
-	private void setEndDate(Date endDate) {
+	public void setEndDate(Date endDate) {
 		this.set_endDate(endDate);
 	}
 
-	private String get_name() {
+	public String get_name() {
 		return _name;
 	}
 
-	private void set_name(String _name) {
+	public void set_name(String _name) {
 		this._name = _name;
 	}
 
-	private taskState get_state() {
-		return _state;
-	}
-
-	private void set_state(taskState _state) {
-		this._state = _state;
-	}
-
-	private Date get_dateAdded() {
+	public Date get_dateAdded() {
 		return _dateAdded;
 	}
 
-	private void set_dateAdded(Date _dateAdded) {
+	public void set_dateAdded(Date _dateAdded) {
 		this._dateAdded = _dateAdded;
 	}
 
-	private Date get_endDate() {
+	public Date get_endDate() {
 		return _endDate;
 	}
 
-	private void set_endDate(Date _endDate) {
+	public void set_endDate(Date _endDate) {
 		this._endDate = _endDate;
 	}
 
-	private Date get_startDate() {
+	public Date get_startDate() {
 		return _startDate;
 	}
 
-	private void set_startDate(Date _startDate) {
+	public void set_startDate(Date _startDate) {
 		this._startDate = _startDate;
+	}
+	
+	public String get_state() {
+		return _state;
+	}
+
+	public void set_state(String _state) {
+		this._state = _state;
 	}
 
 	@Override
@@ -130,6 +134,7 @@ public class Task {
 		result = prime * result + ((_name == null) ? 0 : _name.hashCode());
 		result = prime * result + ((_startDate == null) ? 0 : _startDate.hashCode());
 		result = prime * result + ((_state == null) ? 0 : _state.hashCode());
+		result = prime * result + ((_type == null) ? 0 : _type.hashCode());
 		return result;
 	}
 
@@ -164,10 +169,25 @@ public class Task {
 				return false;
 		} else if (!_startDate.equals(other._startDate))
 			return false;
-		if (_state != other._state)
+		if (_state == null) {
+			if (other._state != null)
+				return false;
+		} else if (!_state.equals(other._state))
+			return false;
+		if (_type == null) {
+			if (other._type != null)
+				return false;
+		} else if (!_type.equals(other._type))
 			return false;
 		return true;
 	}
-	
-	
+
+	public String get_type() {
+		return _type;
+	}
+
+	public void set_type(String _type) {
+		this._type = _type;
+	}
+
 }
