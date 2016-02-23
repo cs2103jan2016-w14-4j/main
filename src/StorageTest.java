@@ -31,8 +31,8 @@ public class StorageTest {
 		Task testTask1 = new Task( "Find potato", formatter.parse("20-4-2015 12:00:00"),"OPEN");
 		expectedList.add(testTask1);
 		
-		assertEquals(expectedList, testList);
-		assertThat(expTask1, is(testTask1));
+		assertTrue(expTask1.equals(testTask1));
+		//assertThat(expTask1, is(testTask1));
 	}
 
 }

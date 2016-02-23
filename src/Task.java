@@ -120,6 +120,54 @@ public class Task {
 		this._startDate = _startDate;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ID;
+		result = prime * result + ((_dateAdded == null) ? 0 : _dateAdded.hashCode());
+		result = prime * result + ((_endDate == null) ? 0 : _endDate.hashCode());
+		result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+		result = prime * result + ((_startDate == null) ? 0 : _startDate.hashCode());
+		result = prime * result + ((_state == null) ? 0 : _state.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Task other = (Task) obj;
+		if (ID != other.ID)
+			return false;
+		if (_dateAdded == null) {
+			if (other._dateAdded != null)
+				return false;
+		} else if (!_dateAdded.equals(other._dateAdded))
+			return false;
+		if (_endDate == null) {
+			if (other._endDate != null)
+				return false;
+		} else if (!_endDate.equals(other._endDate))
+			return false;
+		if (_name == null) {
+			if (other._name != null)
+				return false;
+		} else if (!_name.equals(other._name))
+			return false;
+		if (_startDate == null) {
+			if (other._startDate != null)
+				return false;
+		} else if (!_startDate.equals(other._startDate))
+			return false;
+		if (_state != other._state)
+			return false;
+		return true;
+	}
 	
 	
 }
