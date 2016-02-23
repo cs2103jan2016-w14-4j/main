@@ -12,3 +12,12 @@
 .recommenders/index/http___download_eclipse_org_recommenders_models_mars_/segments_2
 .recommenders/index/http___download_eclipse_org_recommenders_models_mars_/_1.fdt
 .recommenders/index/http___download_eclipse_org_recommenders_models_mars_/segments.gen
+.recommenders/index/http___download_eclipse_org_recommenders_models_mars_/segments_1
+*.nrm
+.recommenders/index/http___download_eclipse_org_recommenders_models_mars_/_0.fdt
+*.tis
+*.fdx
+.recommenders/index/http___download_eclipse_org_recommenders_models_mars_/_0.prx
+*.frq
+*.tii
+.recommenders/index/http___download_eclipse_org_recommenders_models_mars_/_0.fnm
