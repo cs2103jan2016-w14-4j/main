@@ -2,7 +2,6 @@ import java.util.Date;
 
 public class Task {
 	
-
 	private int ID;
 	private String _name;
 	private Date _startDate;

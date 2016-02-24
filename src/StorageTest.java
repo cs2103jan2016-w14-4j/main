@@ -15,6 +15,7 @@ import org.junit.Test;
 
 public class StorageTest {
 	
+	// Date format used to save/load from XML
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 	
 	@Test
