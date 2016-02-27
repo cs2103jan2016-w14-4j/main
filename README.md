@@ -6,7 +6,7 @@ http://www.comp.nus.edu.sg/~cs2103/AY1516S2/ (please read the entire handbook by
 -From course material: Refer to Week 2 - Lecture 2 - Part 3
 
 ###Eclipse template for CS2103  
--Window > Preferences > Java > Code Style > Fields > Prefix set to '_'
+-Window > Preferences > Java > Code Style > Fields > Prefix set to '_'  
 -Window > Preferences > Java > Code Style > Formatter > Import... > Select "Eclipse Formatter profile.xml"
 
 To generate getters/setters:  
