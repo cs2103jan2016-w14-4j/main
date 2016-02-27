@@ -82,6 +82,14 @@ public class Task {
 	public void setEndDate(Date endDate) {
 		this.set_endDate(endDate);
 	}
+	
+	public void setStartTime(Date startTime) {
+		//todo
+	}
+	
+	public void setEndTime(Date endTime) {
+		//todo
+	}
 
 	public String get_name() {
 		return _name;
@@ -188,5 +196,10 @@ public class Task {
 	public void set_type(String _type) {
 		this._type = _type;
 	}
-
+	
+	/* returns a String formatted nicely to be displayed on UI */
+	public String getTaskStr() {
+		//todo
+		return null;
+	}
 }
