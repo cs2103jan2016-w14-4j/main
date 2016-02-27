@@ -1,147 +1,54 @@
-import java.util.Date;
 
 public class Task {
-	
-	private int ID;
-	private String _name;
-	private Date _startDate;
-	private Date _endDate;
-	private String _state;
-	private Date _dateAdded;
-	private String _type;
-	
-	// Overload Constructor 1 - New Floating Task 
-	public Task(String name){
-		this.set_name(name);
-		this.set_dateAdded(new Date()); // Current date time
-		this.set_state("OPEN");
-		this.set_type("floating");
+
+	private int _index;
+	private String _description;
+	private TaskDate _startDate;
+	private TaskDate _endDate;
+
+	public Task(String description) {
+		_description = description;
 	}
-	
-	// Overload Constructor 2 - New Deadline Task 
-	public Task(String name, Date endDate){
-		this.set_name(name);
-		this.set_endDate(endDate);
-		this.set_dateAdded(new Date()); // Current date time
-		this.set_state("OPEN");
-		this.set_type("deadline");
-	}
-	
-	// Overload Constructor 3 - New Event Task 
-	public Task(String name, Date startDate, Date endDate){
-		this.set_name(name);
-		this.set_startDate(startDate);
-		this.set_endDate(endDate);
-		this.set_dateAdded(new Date()); // Current date time
-		this.set_state("OPEN");
-		this.set_type("event");
-	}
-	
-	// Overload Constructor 4 - Import Floating Task 
-	public Task(String name, Date dateAdded, String state){
-		this.set_name(name);
-		this.set_dateAdded(dateAdded);
-		this.set_state(state);
-		this.set_type("floating");
-	}
-	
-	// Overload Constructor 5 - Import Deadline Task 
-	public Task(String name, Date endDate, Date dateAdded, String state){
-		this.set_name(name);
-		this.set_endDate(endDate);
-		this.set_dateAdded(dateAdded);
-		this.set_state(state);
-		this.set_type("deadline");
-	}
-	
-	// Overload Constructor 6 - Import Event Task 
-	public Task(String name, Date startDate, Date endDate, Date dateAdded, String state){
-		this.set_name(name);
-		this.set_startDate(startDate);
-		this.set_endDate(endDate);
-		this.set_dateAdded(dateAdded);
-		this.set_state(state);
-		this.set_type("event");
-	}
-	
-	public int getID() {
-		return ID;
-	}
-	public void setID(int iD) {
-		ID = iD;
-	}
-	public Date getStartDate() {
-		return get_startDate();
-	}
-	public void setStartDate(Date startDate) {
-		this.set_startDate(startDate);
-	}
-	public Date getEndDate() {
-		return get_endDate();
-	}
-	public void setEndDate(Date endDate) {
-		this.set_endDate(endDate);
-	}
-	
-	public void setStartTime(Date startTime) {
-		//todo
-	}
-	
-	public void setEndTime(Date endTime) {
-		//todo
+	public int getIndex() {
+		return _index;
 	}
 
-	public String get_name() {
-		return _name;
+	public void setIndex(int index) {
+		_index = index;
 	}
 
-	public void set_name(String _name) {
-		this._name = _name;
+	public String getDescription() {
+		return _description;
 	}
 
-	public Date get_dateAdded() {
-		return _dateAdded;
+	public void setDescription(String description) {
+		_description = description;
 	}
 
-	public void set_dateAdded(Date _dateAdded) {
-		this._dateAdded = _dateAdded;
-	}
-
-	public Date get_endDate() {
-		return _endDate;
-	}
-
-	public void set_endDate(Date _endDate) {
-		this._endDate = _endDate;
-	}
-
-	public Date get_startDate() {
+	public TaskDate getStartDate() {
 		return _startDate;
 	}
 
-	public void set_startDate(Date _startDate) {
-		this._startDate = _startDate;
-	}
-	
-	public String get_state() {
-		return _state;
+	public void setStartDate(TaskDate startDate) {
+		_startDate = startDate;
 	}
 
-	public void set_state(String _state) {
-		this._state = _state;
+	public TaskDate getEndDate() {
+		return _endDate;
+	}
+
+	public void setEndDate(TaskDate endDate) {
+		_endDate = endDate;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ID;
-		result = prime * result + ((_dateAdded == null) ? 0 : _dateAdded.hashCode());
+		result = prime * result + _index;
 		result = prime * result + ((_endDate == null) ? 0 : _endDate.hashCode());
-		result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+		result = prime * result + ((_description == null) ? 0 : _description.hashCode());
 		result = prime * result + ((_startDate == null) ? 0 : _startDate.hashCode());
-		result = prime * result + ((_state == null) ? 0 : _state.hashCode());
-		result = prime * result + ((_type == null) ? 0 : _type.hashCode());
 		return result;
 	}
 
@@ -154,52 +61,30 @@ public class Task {
 		if (getClass() != obj.getClass())
 			return false;
 		Task other = (Task) obj;
-		if (ID != other.ID)
-			return false;
-		if (_dateAdded == null) {
-			if (other._dateAdded != null)
-				return false;
-		} else if (!_dateAdded.equals(other._dateAdded))
+		if (_index != other._index)
 			return false;
 		if (_endDate == null) {
 			if (other._endDate != null)
 				return false;
 		} else if (!_endDate.equals(other._endDate))
 			return false;
-		if (_name == null) {
-			if (other._name != null)
+		if (_description == null) {
+			if (other._description != null)
 				return false;
-		} else if (!_name.equals(other._name))
+		} else if (!_description.equals(other._description))
 			return false;
 		if (_startDate == null) {
 			if (other._startDate != null)
 				return false;
 		} else if (!_startDate.equals(other._startDate))
 			return false;
-		if (_state == null) {
-			if (other._state != null)
-				return false;
-		} else if (!_state.equals(other._state))
-			return false;
-		if (_type == null) {
-			if (other._type != null)
-				return false;
-		} else if (!_type.equals(other._type))
-			return false;
 		return true;
 	}
 
-	public String get_type() {
-		return _type;
-	}
-
-	public void set_type(String _type) {
-		this._type = _type;
-	}
-	
 	/* returns a String formatted nicely to be displayed on UI */
-	public String getTaskStr() {
-		//todo
+	@Override
+	public String toString() {
+		// todo
 		return null;
 	}
 }

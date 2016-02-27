@@ -43,27 +43,17 @@ public class Parser {
 		return null;
 	}
 
-	public Date getStartDate() {
+	public TaskDate getStartDate() {
 		// todo
 		return null;
 	}
 
-	public Date getEndDate() {
+	public TaskDate getEndDate() {
 		// todo
 		return null;
 	}
 
-	public Date getStartTime() {
-		// todo
-		return null;
-	}
-
-	public Date getEndTime() {
-		// todo
-		return null;
-	}
-
-	public int getTaskNumber() {
+	public int getTaskIndex() {
 		// todo
 		return -1;
 	}

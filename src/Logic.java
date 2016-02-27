@@ -6,16 +6,18 @@ public class Logic {
 
 	private static final String FILE_NAME = "WURI.txt";
 
-	private static final String MESSAGE_PHRASE_DISPLAY = "%1$s. %2$s\n";
-
-	private static final String MESSAGE_TASK_ADDED = "added to %1$s: \"%2$s\"\n";
+	private static final String MESSAGE_TASK_ADDED = "added to %1$s: \"%2$s\"";
+	private static final String MESSAGE_TASK_EDITED = "Edited task %1$s";
 	private static final String MESSAGE_TASK_DELETED = "deleted from %1$s: \"%2$s\"\n";
 	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords\n";
 
 	private static final String MESSAGE_INVALID_INDEX = "Invalid index\n";
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s\n";
+	
+	
+	
 
-	private List<Task> taskList = new LinkedList<Task>();
+	private List<Task> _taskList = new LinkedList<Task>();
 
 	public CommandDetails executeCommand(String userInput) {
 		Parser parser = new Parser(userInput);
@@ -26,11 +28,11 @@ public class Logic {
 				break;
 
 			case EDIT :
-				// todo
+				editTask(parser, commandDetails);
 				break;
 
 			case MARK_AS_COMPLETE :
-				// todo
+			//	markTaskAsComplete(parser, commandDetails);
 				break;
 
 			case DELETE :
@@ -55,13 +57,28 @@ public class Logic {
 		Task newTask = new Task(parser.getTaskDescription());
 		newTask.setStartDate(parser.getStartDate());
 		newTask.setEndDate(parser.getEndDate());
-		newTask.setStartTime(parser.getStartTime());
-		newTask.setEndTime(parser.getEndDate());
 
-		taskList.add(newTask);
+		_taskList.add(newTask);
 
-		String taskStr = newTask.getTaskStr();
+		String taskStr = newTask.toString();
 		commandDetails.setTaskStr(taskStr);
 		commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, taskStr));
 	}
+	
+	private void editTask(Parser parser, CommandDetails commandDetails) {
+		int taskIndex = parser.getTaskIndex();
+		
+		Task task = _taskList.get(taskIndex);
+	
+		task.setStartDate(parser.getStartDate());
+		task.setEndDate(parser.getEndDate());
+			
+		task.setDescription(parser.getTaskDescription());
+		
+		commandDetails.setTaskIndex(taskIndex);
+		commandDetails.setTaskStr(task.toString());
+		commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex));
+	}
+	
+	
 }

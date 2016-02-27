@@ -9,12 +9,13 @@ public class CommandDetails {
 	private static final String COMMAND_QUIT = "q";
 
 	public enum CommandType {
-		EDIT, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD
+		EDIT, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD, ERROR
 	};
 
 	private String _taskStr;
 	private String _feedback;
 	private CommandType _commandType;
+	private int _taskIndex;
 
 	public String getTaskStr() {
 		return _taskStr;
@@ -30,6 +31,14 @@ public class CommandDetails {
 
 	public void setFeedback(String feedback) {
 		_feedback = feedback;
+	}
+	
+	public int getTaskIndex() {
+		return _taskIndex;
+	}
+	
+	public void setTaskIndex(int taskIndex) {
+		_taskIndex = taskIndex;
 	}
 
 	public CommandType getCommandType() {
