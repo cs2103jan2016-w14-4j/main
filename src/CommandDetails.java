@@ -67,8 +67,8 @@ public class CommandDetails {
 			case COMMAND_UNDO :
 				_commandType = CommandType.UNDO;
 				break;
-				
-			case COMMAND_STORE:
+
+			case COMMAND_STORE :
 				_commandType = CommandType.STORE;
 				break;
 

@@ -32,9 +32,9 @@ public class Recur {
 	public void setEndDate(Calendar endDate) {
 		_endDate = endDate;
 	}
-	
+
 	public boolean willRecur() {
-		//todo
+		// todo
 		return false;
 	}
 }

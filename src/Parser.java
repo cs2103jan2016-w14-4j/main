@@ -2,6 +2,7 @@ import java.util.Date;
 
 public class Parser {
 
+	private static final int ERROR_INDEX = -1;
 	private String _commandTypeStr;
 	private String _arguments;
 
@@ -54,17 +55,22 @@ public class Parser {
 	}
 
 	public int getTaskIndex() {
-		// todo
-		return -1;
+		if (_arguments != null) {
+			String taskIndex = _arguments.split(" ", 2)[0];
+			if (taskIndex.matches("\\d")) {
+				return Integer.parseInt(taskIndex);
+			}
+		}
+		return ERROR_INDEX;
 	}
-	
+
 	public String getKeywords() {
-		//todo
+		// todo
 		return null;
 	}
-	
+
 	public Recur getRecur() {
-		//todo
+		// todo
 		return null;
 	}
 }
