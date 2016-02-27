@@ -1,4 +1,3 @@
-import java.util.Date;
 
 public class Parser {
 
@@ -72,5 +71,10 @@ public class Parser {
 	public Recur getRecur() {
 		// todo
 		return null;
+	}
+
+	public boolean isDeletingRecur() {
+		// todo
+		return false;
 	}
 }

@@ -13,10 +13,8 @@ public class Logic {
 	private static final String MESSAGE_TASK_DELETED = "deleted task %1$s";
 	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords";
 
-	private static final String MESSAGE_INVALID_INDEX = "Invalid index";
+	private static final String MESSAGE_INVALID_INDEX = "Invalid index %1$s";
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s";
-
-	private List<Task> _taskList = new LinkedList<Task>();
 
 	public CommandDetails executeCommand(String userInput) {
 		Parser parser = new Parser(userInput);
@@ -62,50 +60,58 @@ public class Logic {
 		newTask.setEndDate(parser.getEndDate());
 		newTask.setRecur(parser.getRecur());
 
-		_taskList.add(newTask);
+		Task.add(newTask);
 
-		String taskStr = newTask.toString();
-		commandDetails.setTaskStr(taskStr);
-		commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, taskStr));
+		commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
 	}
 
 	private void editTask(Parser parser, CommandDetails commandDetails) {
 		int taskIndex = parser.getTaskIndex();
 
-		Task task = _taskList.get(taskIndex);
+		Task task = Task.get(taskIndex);
 
-		task.setStartDate(parser.getStartDate());
-		task.setEndDate(parser.getEndDate());
-		task.setRecur(parser.getRecur());
-		task.setDescription(parser.getTaskDescription());
-
-		commandDetails.setTaskIndex(taskIndex);
-		commandDetails.setTaskStr(task.toString());
-		commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex));
+		String description = parser.getTaskDescription();
+		task.setDescription(description);
+		
+		TaskDate startDate = parser.getStartDate();
+		task.setStartDate(startDate);
+		
+		TaskDate endDate = parser.getEndDate();
+		task.setEndDate(endDate);
+		
+		Recur recur = parser.getRecur();
+		task.setRecur(recur);
+		
+		if (description== null && startDate==null && endDate==null & recur==null) {
+			commandDetails.setCommandType(CommandDetails.CommandType.EDIT_SHOW_TASK);
+		} else {
+			commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex));
+		}
 	}
 
 	private void markTaskAsComplete(Parser parser, CommandDetails commandDetails) {
 		int taskIndex = parser.getTaskIndex();
-		Task task = _taskList.get(taskIndex);
-		task.setCompleted(true);
-
-		commandDetails.setTaskIndex(taskIndex);
-		commandDetails.setTaskStr(task.toString());
-		commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
+		Task task = Task.get(taskIndex);
+		if (task != null) {
+			task.setCompleted(true);
+			commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
+		} else {
+			commandDetails.setCommandType(CommandDetails.CommandType.ERROR);
+			commandDetails.setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
+		}
 	}
 
 	private void deleteTask(Parser parser, CommandDetails commandDetails) {
 		int taskIndex = parser.getTaskIndex();
-		Task task = _taskList.get(taskIndex);
+		Task task = Task.get(taskIndex);
 		Recur recur = task.getRecur();
 		
-		if (recur == null || !recur.willRecur()) {
-    		_taskList.remove(taskIndex);
-    		
-    		commandDetails.setTaskIndex(taskIndex);
+		if (recur == null || !recur.willRecur() || parser.isDeletingRecur()) {
+    		Task.remove(taskIndex);
     		commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
 		} else {
-			//todo
+			task.setEndDate(recur.getNextRecur());
+    		commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
 		}
 	}
 

@@ -37,4 +37,9 @@ public class Recur {
 		// todo
 		return false;
 	}
+
+	public TaskDate getNextRecur() {
+		// todo
+		return null;
+	}
 }

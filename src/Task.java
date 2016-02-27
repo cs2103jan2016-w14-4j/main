@@ -1,6 +1,10 @@
+import java.util.LinkedList;
+import java.util.List;
 
 public class Task {
 
+	private static List<Task> _taskList = new LinkedList<Task>();
+	
 	private int _index;
 	private String _description;
 	private TaskDate _startDate;
@@ -8,6 +12,18 @@ public class Task {
 	private boolean _isCompleted;
 	private Recur _recur;
 
+	public static void add(Task task) {
+		_taskList.add(task);
+	}
+	
+	public static void remove(int index) {
+		_taskList.remove(index);
+	}
+	
+	public static Task get(int index) {
+		return _taskList.get(index);
+	}
+	
 	public Task(String description) {
 		_description = description;
 	}
