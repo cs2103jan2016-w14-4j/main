@@ -57,4 +57,14 @@ public class Parser {
 		// todo
 		return -1;
 	}
+	
+	public String getKeywords() {
+		//todo
+		return null;
+	}
+	
+	public Recur getRecur() {
+		//todo
+		return null;
+	}
 }

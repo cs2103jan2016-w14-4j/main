@@ -5,10 +5,13 @@ public class Task {
 	private String _description;
 	private TaskDate _startDate;
 	private TaskDate _endDate;
+	private boolean _isCompleted;
+	private Recur _recur;
 
 	public Task(String description) {
 		_description = description;
 	}
+
 	public int getIndex() {
 		return _index;
 	}
@@ -22,7 +25,9 @@ public class Task {
 	}
 
 	public void setDescription(String description) {
-		_description = description;
+		if (_description != null) {
+			_description = description;
+		}
 	}
 
 	public TaskDate getStartDate() {
@@ -39,6 +44,22 @@ public class Task {
 
 	public void setEndDate(TaskDate endDate) {
 		_endDate = endDate;
+	}
+
+	public boolean isCompleted() {
+		return _isCompleted;
+	}
+
+	public void setCompleted(boolean isCompleted) {
+		_isCompleted = isCompleted;
+	}
+
+	public Recur getRecur() {
+		return _recur;
+	}
+
+	public void setRecur(Recur recur) {
+		_recur = recur;
 	}
 
 	@Override

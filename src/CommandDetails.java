@@ -6,10 +6,11 @@ public class CommandDetails {
 	private static final String COMMAND_DELETE = "d";
 	private static final String COMMAND_FIND = "f";
 	private static final String COMMAND_UNDO = "u";
+	private static final String COMMAND_STORE = "s";
 	private static final String COMMAND_QUIT = "q";
 
 	public enum CommandType {
-		EDIT, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD, ERROR
+		EDIT, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD, ERROR, STORE
 	};
 
 	private String _taskStr;
@@ -32,11 +33,11 @@ public class CommandDetails {
 	public void setFeedback(String feedback) {
 		_feedback = feedback;
 	}
-	
+
 	public int getTaskIndex() {
 		return _taskIndex;
 	}
-	
+
 	public void setTaskIndex(int taskIndex) {
 		_taskIndex = taskIndex;
 	}
@@ -65,6 +66,10 @@ public class CommandDetails {
 
 			case COMMAND_UNDO :
 				_commandType = CommandType.UNDO;
+				break;
+				
+			case COMMAND_STORE:
+				_commandType = CommandType.STORE;
 				break;
 
 			case COMMAND_QUIT :
