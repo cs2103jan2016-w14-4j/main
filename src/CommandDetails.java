@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandDetails {
 
@@ -15,6 +17,7 @@ public class CommandDetails {
 
 	private String _feedback;
 	private CommandType _commandType;
+	private List<Integer> _indexesFound;
 
 	public String getFeedback() {
 		return _feedback;
@@ -27,9 +30,17 @@ public class CommandDetails {
 	public CommandType getCommandType() {
 		return _commandType;
 	}
-	
+
 	public void setCommandType(CommandType commandType) {
 		_commandType = commandType;
+	}
+
+	public List<Integer> getIndexesFound() {
+		return _indexesFound;
+	}
+
+	public void setIndexesFound(List<Integer> indexesFound) {
+		_indexesFound = indexesFound;
 	}
 
 	public CommandDetails(String commandTypeStr) {

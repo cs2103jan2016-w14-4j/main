@@ -4,7 +4,7 @@ import java.util.List;
 public class Task {
 
 	private static List<Task> _taskList = new LinkedList<Task>();
-	
+
 	private int _index;
 	private String _description;
 	private TaskDate _startDate;
@@ -12,18 +12,22 @@ public class Task {
 	private boolean _isCompleted;
 	private Recur _recur;
 
-	public static void add(Task task) {
+	public static void addTask(Task task) {
 		_taskList.add(task);
 	}
-	
-	public static void remove(int index) {
+
+	public static void removeTask(int index) {
 		_taskList.remove(index);
 	}
-	
-	public static Task get(int index) {
+
+	public static Task getTask(int index) {
 		return _taskList.get(index);
 	}
-	
+
+	public static int getTaskCount() {
+		return _taskList.size();
+	}
+
 	public Task(String description) {
 		_description = description;
 	}

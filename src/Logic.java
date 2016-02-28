@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +12,8 @@ public class Logic {
 	private static final String MESSAGE_TASK_EDITED = "Edited task %1$s";
 	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as complete";
 	private static final String MESSAGE_TASK_DELETED = "deleted task %1$s";
-	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords";
+	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords %1$s";
+	private static final String MESSAGE_TASK_FOUND = "Found %1$s tasks";
 
 	private static final String MESSAGE_INVALID_INDEX = "Invalid index %1$s";
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s";
@@ -37,7 +39,7 @@ public class Logic {
 				break;
 
 			case FIND :
-				// todo
+				findTask(parser, commandDetails);
 				break;
 
 			case UNDO :
@@ -60,7 +62,7 @@ public class Logic {
 		newTask.setEndDate(parser.getEndDate());
 		newTask.setRecur(parser.getRecur());
 
-		Task.add(newTask);
+		Task.addTask(newTask);
 
 		commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
 	}
@@ -68,21 +70,21 @@ public class Logic {
 	private void editTask(Parser parser, CommandDetails commandDetails) {
 		int taskIndex = parser.getTaskIndex();
 
-		Task task = Task.get(taskIndex);
+		Task task = Task.getTask(taskIndex);
 
 		String description = parser.getTaskDescription();
 		task.setDescription(description);
-		
+
 		TaskDate startDate = parser.getStartDate();
 		task.setStartDate(startDate);
-		
+
 		TaskDate endDate = parser.getEndDate();
 		task.setEndDate(endDate);
-		
+
 		Recur recur = parser.getRecur();
 		task.setRecur(recur);
-		
-		if (description== null && startDate==null && endDate==null & recur==null) {
+
+		if (description == null && startDate == null && endDate == null & recur == null) {
 			commandDetails.setCommandType(CommandDetails.CommandType.EDIT_SHOW_TASK);
 		} else {
 			commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex));
@@ -91,7 +93,7 @@ public class Logic {
 
 	private void markTaskAsComplete(Parser parser, CommandDetails commandDetails) {
 		int taskIndex = parser.getTaskIndex();
-		Task task = Task.get(taskIndex);
+		Task task = Task.getTask(taskIndex);
 		if (task != null) {
 			task.setCompleted(true);
 			commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
@@ -103,16 +105,31 @@ public class Logic {
 
 	private void deleteTask(Parser parser, CommandDetails commandDetails) {
 		int taskIndex = parser.getTaskIndex();
-		Task task = Task.get(taskIndex);
+		Task task = Task.getTask(taskIndex);
 		Recur recur = task.getRecur();
-		
+
 		if (recur == null || !recur.willRecur() || parser.isDeletingRecur()) {
-    		Task.remove(taskIndex);
-    		commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
+			Task.removeTask(taskIndex);
+			commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
 		} else {
 			task.setEndDate(recur.getNextRecur());
-    		commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
+			commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
 		}
 	}
 
+	private void findTask(Parser parser, CommandDetails commandDetails) {
+		List<Integer> indexesFound = new ArrayList<Integer>();
+		String keywords = parser.getTaskDescription();
+		for (int i = 0; i < Task.getTaskCount(); i++) {
+			if (Task.getTask(i).getDescription().contains(keywords)) {
+				indexesFound.add(i);
+			}
+		}
+		commandDetails.setIndexesFound(indexesFound);
+		if (indexesFound.size() == 0) {
+			commandDetails.setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
+		} else {
+			commandDetails.setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
+		}
+	}
 }
