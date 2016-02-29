@@ -34,19 +34,19 @@ public class Storage {
 		
 		// Add the tasks by type
 		for (Task taskItem : taskList) {
-			if (taskItem.get_type() == ("floating")) {
+			if (taskItem.getType() == ("floating")) {
 				createFloatingTasksXML(doc, rootElement, taskItem);
 			}
 		}
 		
 		for (Task taskItem : taskList) {
-			if (taskItem.get_type().equals("event")) {
+			if (taskItem.getType().equals("event")) {
 				createEventTasksXML(doc, rootElement, taskItem);
 			}
 		}
 
 		for (Task taskItem : taskList) {
-			if (taskItem.get_type().equals("deadline")) {
+			if (taskItem.getType().equals("deadline")) {
 				createDeadlineTasksXML(doc, rootElement, taskItem);
 			}
 		}
@@ -86,10 +86,10 @@ public class Storage {
 		Element dateAddedElement = doc.createElement("added");
 		Element stateElement = doc.createElement("state");
 
-		nameElement.appendChild(doc.createTextNode(taskItem.get_name()));
+		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
 		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_endDate())));
 		dateAddedElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_dateAdded())));
-		stateElement.appendChild(doc.createTextNode(taskItem.get_state().toString()));
+		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"complete":"uncomplete"));
 		deadlineTasks.appendChild(nameElement);
 		deadlineTasks.appendChild(endElement);
 		deadlineTasks.appendChild(dateAddedElement);
@@ -106,11 +106,11 @@ public class Storage {
 		Element dateAddedElement = doc.createElement("added");
 		Element stateElement = doc.createElement("state");
 
-		nameElement.appendChild(doc.createTextNode(taskItem.get_name()));
+		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
 		startElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_startDate())));
 		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_endDate())));
 		dateAddedElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_dateAdded())));
-		stateElement.appendChild(doc.createTextNode(taskItem.get_state().toString()));
+		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"complete":"uncomplete"));
 		eventTasks.appendChild(nameElement);
 		eventTasks.appendChild(startElement);
 		eventTasks.appendChild(endElement);
@@ -125,9 +125,9 @@ public class Storage {
 		Element nameElement = doc.createElement("name");
 		Element dateAddedElement = doc.createElement("added");
 		Element stateElement = doc.createElement("state");
-		nameElement.appendChild(doc.createTextNode(taskItem.get_name()));
+		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
 		dateAddedElement.appendChild(doc.createTextNode(formatter.format(taskItem.get_dateAdded())));
-		stateElement.appendChild(doc.createTextNode(taskItem.get_state().toString()));
+		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"complete":"uncomplete"));
 		floatingTasks.appendChild(nameElement);
 		floatingTasks.appendChild(dateAddedElement);
 		floatingTasks.appendChild(stateElement);
@@ -200,14 +200,13 @@ public class Storage {
 
 	// extracts a deadline task from an element object
 	public static Task importDeadlineTask(Element taskElement) throws ParseException {
-		Task newTask;
-		String _name = extractStringFromNode(taskElement,"name");
+		Task newTask = new Task(extractStringFromNode(taskElement,"name"));
 		Date _end = extractDateFromNode(taskElement, "end");
 		Date _added = extractDateFromNode(taskElement, "added");
 		String _state = extractStringFromNode(taskElement,"state");
 		
 		// Calls overloaded constructor to create task
-		newTask = new Task(_name, _end, _added, _state);
+
 		return newTask;
 	}
 
