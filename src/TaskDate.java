@@ -2,42 +2,23 @@ import java.util.GregorianCalendar;
 
 public class TaskDate extends GregorianCalendar {
 
-	private boolean _isStartDateSet;
-	private boolean _isEndDateSet;
-
-	private boolean _isStartTimeSet;
-	private boolean _isEndTimeSet;
-
-	public boolean isStartDateSet() {
-		return _isStartDateSet;
+	private boolean _dateSet;
+	private boolean _timeSet;
+	
+	public boolean isDateSet() {
+		return _dateSet;
 	}
 
-	public void setStartDateSet(boolean isStartDateSet) {
-		_isStartDateSet = isStartDateSet;
+	public void setIsDateSet(boolean isDateSet) {
+		_dateSet = isDateSet;
 	}
 
-	public boolean isEndDateSet() {
-		return _isEndDateSet;
+	public boolean isTimeSet() {
+		return _timeSet;
 	}
 
-	public void setEndDateSet(boolean isEndDateSet) {
-		_isEndDateSet = isEndDateSet;
-	}
-
-	public boolean isStartTimeSet() {
-		return _isStartTimeSet;
-	}
-
-	public void setStartTimeSet(boolean isStartTimeSet) {
-		_isStartTimeSet = isStartTimeSet;
-	}
-
-	public boolean isEndTimeSet() {
-		return _isEndTimeSet;
-	}
-
-	public void setEndTimeSet(boolean isEndTimeSet) {
-		_isEndTimeSet = isEndTimeSet;
+	public void setTimeSet(boolean isTimeSet) {
+		_timeSet = isTimeSet;
 	}
 
 }
