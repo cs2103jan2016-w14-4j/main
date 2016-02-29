@@ -7,11 +7,21 @@ public class Task {
 
 	private int _index;
 	private String _description;
-	private TaskDate _startDate;
-	private TaskDate _endDate;
+	private TaskDate _taskDate;
 	private boolean _isCompleted;
 	private Recur _recur;
 
+	public String getType(){
+		if(this._taskDate.isStartDateSet() && this._taskDate.isEndDateSet())
+		{
+			return "event";
+		}else if(this._taskDate.isEndDateSet())
+		{
+			return "deadline";
+		}
+		return "floating";
+	}
+	
 	public static void addTask(Task task) {
 		_taskList.add(task);
 	}
@@ -51,7 +61,7 @@ public class Task {
 	}
 
 	public TaskDate getStartDate() {
-		return _startDate;
+		return this._taskDate._startDate;
 	}
 
 	public void setStartDate(TaskDate startDate) {
