@@ -92,6 +92,13 @@ public class Task {
 		return _recur;
 	}
 
+	public Boolean isRecurr(){
+		if(this._recur == null)
+		{
+			return false;
+		}
+		return true;
+	}
 	public void setRecur(Recur recur) {
 		_recur = recur;
 	}
