@@ -1,3 +1,5 @@
+package defaultPart;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class Task {
 	private TaskDate _startDate;
 	private TaskDate _endDate;
 	private boolean _isCompleted;
+
 	private Recur _recur;
 
 	public String getType(){
@@ -98,6 +101,10 @@ public class Task {
 	}
 	public void setRecur(Recur recur) {
 		_recur = recur;
+	}
+
+	public String get_dateAdded(){
+		return "";
 	}
 
 	@Override
