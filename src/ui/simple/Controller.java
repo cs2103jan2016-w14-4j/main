@@ -27,6 +27,11 @@ public class Controller implements Initializable{
     public ListView<Task> overDueTaskList;
     public ListView<Task> todayTaskList;
     public ListView<Task> floatingTaskList;
+
+    public Label overdueCountLabel;
+    public Label todayCountLabel;
+    public Label floatingCountLabel;
+
     public StackPane root;
     public Label title;
     public TextField inputBox;
@@ -45,6 +50,8 @@ public class Controller implements Initializable{
                 new Task("world"),
                 new Task("try")
         ));
+
+
     }
 
 
