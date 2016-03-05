@@ -4,16 +4,16 @@ import java.util.LinkedList;
 
 public class Parser {
 	
+	private static final String COMMAND_EDIT = "e";
+	private static final String COMMAND_MARK_AS_COMPLETE = "c";
+	private static final String COMMAND_DELETE = "d";
+	private static final String COMMAND_FIND = "f";
+	private static final String COMMAND_UNDO = "u";
+	private static final String COMMAND_STORE = "s";
+	private static final String COMMAND_QUIT = "q";
 	private static final List<String> commandList = makeCommandList();
 	
 	private static List<String> makeCommandList(){
-		String COMMAND_EDIT = "e";
-		String COMMAND_MARK_AS_COMPLETE = "c";
-		String COMMAND_DELETE = "d";
-		String COMMAND_FIND = "f";
-		String COMMAND_UNDO = "u";
-		String COMMAND_STORE = "s";
-		String COMMAND_QUIT = "q";
 		String[] commandArray = {COMMAND_EDIT,COMMAND_MARK_AS_COMPLETE,
 				  COMMAND_DELETE,COMMAND_FIND,COMMAND_UNDO,
 				  COMMAND_STORE,COMMAND_QUIT};
@@ -49,7 +49,7 @@ public class Parser {
 	private void setArguments(String[] arguments) {
 		if(commandList.contains(arguments[0])){
 			_arguments = arguments[1];
-		}else{ //add case
+		}else{
 			_arguments = String.join(" ", arguments[0] , arguments[1]);
 		}
 	}
@@ -57,7 +57,7 @@ public class Parser {
 	private void setCommandType(String commandTypeStr) {
 		if(commandList.contains(commandTypeStr)){
 			_commandTypeStr = commandTypeStr;
-		}else{ //add case
+		}else{
 			_commandTypeStr = "a";
 		}
 	}
@@ -67,22 +67,12 @@ public class Parser {
 	}
 
 	public String getTaskDescription() {
-		return _arguments;
+		// todo
+		return null;
 	}
 
 	public TaskDate getStartDate() {
 		// todo
-		LinkedList<String> dateTimeRecur = new LinkedList<String>();
-		String[] argumentSplit = _arguments.split(" ");
-		if(argumentSplit.length<=5){
-			dateTimeRecur.addAll(Arrays.asList(argumentSplit));
-		}else{
-			int i = argumentSplit.length-5;
-			while(i<argumentSplit.length){
-				dateTimeRecur.add(argumentSplit[i]);
-				i++;
-			}
-		}
 		return null;
 	}
 
