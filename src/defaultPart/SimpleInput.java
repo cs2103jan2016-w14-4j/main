@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+package defaultPart;
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -9,15 +10,19 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.util.ArrayList;
+
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class SimpleInput extends Application {
 	ObservableList<String> items = null;
@@ -63,7 +68,7 @@ public class SimpleInput extends Application {
 		vBox.getChildren().add(prompt);
 		prompt.setId("prompt");
 
-		input.setOnKeyPressed(new EventHandler<javafx.scene.input.KeyEvent>() {
+		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(javafx.scene.input.KeyEvent event) {
 				// TODO Auto-generated method stub

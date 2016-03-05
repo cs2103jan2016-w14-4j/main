@@ -1,0 +1,22 @@
+.task {
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, transparent, transparent, transparent;
+    -fx-highlight-fill: yellow;
+    -fx-highlight-text-fill: black;
+
+    -fx-font-size: 14;
+    -fx-font-weight: bolder;
+}
+
+.task .content {
+    -fx-background-color: transparent, transparent, transparent, transparent;
+    -fx-padding: 0px;
+    -fx-text-fill: black;
+    -fx-highlight-fill: yellow;
+}
+
+.task:editable {
+    -fx-highlight-fill: default;
+    -fx-highlight-text-fill: default;
+}
+
