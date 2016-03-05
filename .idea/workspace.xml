@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="21f1e8df-727d-461f-b2a9-75674f4dc1a0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="21f1e8df-727d-461f-b2a9-75674f4dc1a0" name="Default" comment="" />
     <ignored path="main.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -78,7 +76,7 @@
             <state vertical-scroll-proportion="-0.6551724">
               <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding>
-                <marker date="1457170586413" expanded="true" signature="2158:2159" placeholder="..." />
+                <marker date="1457173394264" expanded="true" signature="2158:2159" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -174,9 +172,9 @@
         <option value="$PROJECT_DIR$/src/ui/simple/TaskItem.java" />
         <option value="$PROJECT_DIR$/src/ui/simple/TaskCell.java" />
         <option value="$PROJECT_DIR$/src/ui/simple/Controller.java" />
-        <option value="$PROJECT_DIR$/src/ui/simple/TaskCellController.java" />
         <option value="$PROJECT_DIR$/src/ui/simple/Main.java" />
         <option value="$PROJECT_DIR$/src/ui/simple/simpleUI.css" />
+        <option value="$PROJECT_DIR$/src/ui/simple/TaskCellController.java" />
       </list>
     </option>
   </component>
@@ -831,13 +829,16 @@
     </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="21f1e8df-727d-461f-b2a9-75674f4dc1a0" name="Default" comment="" />
       <created>1457148926278</created>
       <option name="number" value="Default" />
       <updated>1457148926278</updated>
-      <workItem from="1457148927649" duration="14551000" />
+      <workItem from="1457148927649" duration="15008000" />
     </task>
     <task id="LOCAL-00001" summary="some structure">
       <created>1457168621071</created>
@@ -849,11 +850,11 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14551000" />
+    <option name="totallyTimeSpent" value="15008000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1280" height="1400" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="0" width="1280" height="1400" extended-state="1" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -862,7 +863,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32943925" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329653" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27459016" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
@@ -952,7 +953,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -962,7 +963,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1027,7 +1028,7 @@
         <state vertical-scroll-proportion="-0.6551724">
           <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding>
-            <marker date="1457170586413" expanded="true" signature="2158:2159" placeholder="..." />
+            <marker date="1457173394264" expanded="true" signature="2158:2159" placeholder="..." />
           </folding>
         </state>
       </provider>
