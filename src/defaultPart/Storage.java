@@ -87,7 +87,7 @@ public class Storage {
 		Element stateElement = doc.createElement("state");
 
 		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
-		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.getEndDate())));
+		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.getEndDate().getTime())));
 		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"COMPLETE":"NOT COMPLETE"));
 		deadlineTasks.appendChild(nameElement);
 		deadlineTasks.appendChild(endElement);
@@ -104,8 +104,8 @@ public class Storage {
 		Element stateElement = doc.createElement("state");
 
 		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
-		startElement.appendChild(doc.createTextNode(formatter.format(taskItem.getStartDate())));
-		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.getEndDate())));
+		startElement.appendChild(doc.createTextNode(formatter.format(taskItem.getStartDate().getTime())));
+		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.getEndDate().getTime())));
 		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"COMPLETE":"NOT COMPLETE"));
 		eventTasks.appendChild(nameElement);
 		eventTasks.appendChild(startElement);
@@ -200,7 +200,7 @@ public class Storage {
 		
 		// Setting other attributes from extracted data
 		newTask.setEndDate(_end);
-		if(_state == "NOT COMPLETE"){
+		if(_state.equals("NOT COMPLETE")){
 			newTask.setCompleted(false);
 		}else{
 			newTask.setCompleted(true);
@@ -221,7 +221,7 @@ public class Storage {
 		// Setting other attributes from extracted data
 		newTask.setStartDate(_start);
 		newTask.setEndDate(_end);
-		if(_state == "NOT COMPLETE"){
+		if(_state.equals("NOT COMPLETE")){
 			newTask.setCompleted(false);
 		}else{
 			newTask.setCompleted(true);
@@ -237,7 +237,7 @@ public class Storage {
 		String _state = extractStringFromNode(taskElement,"state");
 		
 		// Setting other attributes from extracted data
-		if(_state == "NOT COMPLETE"){
+		if(_state.equals("NOT COMPLETE")){
 			newTask.setCompleted(false);
 		}else{
 			newTask.setCompleted(true);

@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wuriTasks>
-   <floating>
+   <floating recur = "false">
       <name>Find potato</name>
       <state>NOT COMPLETE</state>
    </floating>
-   <floating>
+   <floating recur = "false">
       <name>Eat potato</name>
       <state>NOT COMPLETE</state>
    </floating>
-   <event>
+   <event recur = "false">
       <name>Date with Julien</name>
       <start>20-2-2016 12:12:12</start>
       <end>20-2-2016 12:12:12</end>
       <state>NOT COMPLETE</state>
    </event>
-   <event>
+   <event recur = "false">
       <name>Date with Riwu</name>
       <start>20-2-2016 12:12:12</start>
       <end>20-2-2016 12:12:12</end>
       <state>NOT COMPLETE</state>
    </event>
-   <deadline>
+   <deadline recur = "false">
       <name>CS2103 Assignment 1</name>
       <end>20-2-2016 12:12:12</end>
       <state>NOT COMPLETE</state>
    </deadline>
-   <deadline>
+   <deadline recur = "false">
       <name>CS2103 Assignment 2</name>
       <end>20-2-2016 12:12:12</end>
       <state>NOT COMPLETE</state>

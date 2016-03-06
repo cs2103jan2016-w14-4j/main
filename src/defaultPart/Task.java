@@ -16,10 +16,10 @@ public class Task {
 	private Recur _recur;
 
 	public String getType(){
-		if(this._startDate.isDateSet() && this._endDate.isDateSet())
+		if(this._startDate != null && this._endDate != null)
 		{
 			return "event";
-		}else if(this._endDate.isDateSet())
+		}else if(this._endDate != null)
 		{
 			return "deadline";
 		}
