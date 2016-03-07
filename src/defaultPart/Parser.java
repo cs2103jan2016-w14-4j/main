@@ -22,6 +22,7 @@ public class Parser {
 	private static final List<String> commandList = makeCommandList();
 	
 	private static List<String> makeCommandList(){
+		//for add case to check so that first word of args isn't put into commandType
 		String COMMAND_EDIT = "e";
 		String COMMAND_MARK_AS_COMPLETE = "c";
 		String COMMAND_DELETE = "d";
