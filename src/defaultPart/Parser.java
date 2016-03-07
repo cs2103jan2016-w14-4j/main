@@ -6,7 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Parser {
-	
+
+	private static final String COMMAND_EDIT = "e";
+	private static final String COMMAND_MARK_AS_COMPLETE = "c";
+	private static final String COMMAND_DELETE = "d";
+	private static final String COMMAND_FIND = "f";
+	private static final String COMMAND_UNDO = "u";
+	private static final String COMMAND_STORE = "s";
+	private static final String COMMAND_QUIT = "q";
+	private static final String COMMAND_NULL = "";
+
 	private static final String FILE_NAME = "WURI.txt";
 
 	private static final String MESSAGE_TASK_ADDED = "added to %1$s: \"%2$s\"";
@@ -18,51 +27,38 @@ public class Parser {
 
 	private static final String MESSAGE_INVALID_INDEX = "Invalid index %1$s";
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s";
-	
-	private static final List<String> commandList = makeCommandList();
-	
-	private static List<String> makeCommandList(){
-		//for add case to check so that first word of args isn't put into commandType
-		String COMMAND_EDIT = "e";
-		String COMMAND_MARK_AS_COMPLETE = "c";
-		String COMMAND_DELETE = "d";
-		String COMMAND_FIND = "f";
-		String COMMAND_UNDO = "u";
-		String COMMAND_STORE = "s";
-		String COMMAND_QUIT = "q";
-		String[] commandArray = {COMMAND_EDIT,COMMAND_MARK_AS_COMPLETE,
-				  COMMAND_DELETE,COMMAND_FIND,COMMAND_UNDO,
-				  COMMAND_STORE,COMMAND_QUIT};
-		return new LinkedList<String>(Arrays.asList(commandArray));
-	}
 
 	private static final int ERROR_INDEX = -1;
 	private static final String ERROR_FIND = "Mismatch: not FIND command, but trying to get keyword.";
-	private String _commandTypeStr;
+
+	public enum CommandType {
+		EDIT, EDIT_SHOW_TASK, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD, ERROR, STORE, NULL
+	};
+
 	private String _arguments;
-	
-	public CommandDetails executeCommand(String userInput) {
-		setCommandTypeAndArguments(userInput);
-		CommandDetails commandDetails = new CommandDetails(this.getCommandTypeStr());
-		switch (commandDetails.getCommandType()) {
+	private CommandDetails _commandDetails;
+
+	public Parser(String input) {
+		setCommandTypeAndArguments(input);
+		switch (_commandDetails.getCommandType()) {
 			case ADD :
-				addTask(commandDetails);
+				addTask();
 				break;
 
 			case EDIT :
-				editTask(commandDetails);
+				editTask();
 				break;
 
 			case MARK_AS_COMPLETE :
-				markTaskAsComplete(commandDetails);
+				markTaskAsComplete();
 				break;
 
 			case DELETE :
-				deleteTask(commandDetails);
+				deleteTask();
 				break;
 
 			case FIND :
-				findTask(commandDetails);
+				findTask();
 				break;
 
 			case UNDO :
@@ -72,138 +68,19 @@ public class Parser {
 			case STORE :
 				// todo
 				break;
-
-			case QUIT :
-				break;
-		}
-		return commandDetails;
-	}
-	
-	private void addTask(CommandDetails commandDetails) {
-		//todo
-		Task newTask = new Task(parser.getTaskDescription());
-		newTask.setStartDate(parser.getStartDate());
-		newTask.setEndDate(parser.getEndDate());
-		newTask.setRecur(parser.getRecur());
-
-		Task.addTask(newTask);
-
-		commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
-	}
-	
-
-	private void editTask(CommandDetails commandDetails) {
-		//todo
-		String description = this.getTaskDescription();
-		String[] descriptionSplit = description.split(" ");
-		int taskIndex = Integer.parseInt(descriptionSplit[0]);
-
-		Task task = Task.getTask(taskIndex);
-		
-		switch(descriptionSplit.length){
-			case(1):
-				//todo
-				//copy task to input box for editing
-				break;
-			case(2):
-				//todo
-				checkDateOrTime(descriptionSplit[1]);
-				break;
-			case(3):
-				//have not handled time yet
-				String date = descriptionSplit[1];
-				String time = descriptionSplit[2];
-				String[] dateArray = date.split("/");
-				TaskDate td = task.getEndDate();
-				if(dateArray.length==1){
-					if(dateArray[0].matches("\\d")){
-						td.DATE = Integer.parseInt(dateArray[0]);
-					}else{
-						//handle mon,tues,wed, etc.
-					}
-				}else if(dateArray.length==2){
-					td.DATE = Integer.parseInt(dateArray[0]);
-					td.MONTH = Integer.parseInt(dateArray[1]);
-				}else if(dateArray.length==3){
-					td.DATE = Integer.parseInt(dateArray[0]);
-					td.MONTH = Integer.parseInt(dateArray[1]);
-					td.YEAR = Integer.parseInt(dateArray[2]);
-				}
-				task.setEndDate(td);
-		}
-		/*task.setDescription(description);
-
-		TaskDate startDate = parser.getStartDate();
-		task.setStartDate(startDate);
-
-		TaskDate endDate = parser.getEndDate();
-		task.setEndDate(endDate);
-
-		Recur recur = parser.getRecur();
-		task.setRecur(recur);
-
-		if (description == null && startDate == null && endDate == null & recur == null) {
-			commandDetails.setCommandType(CommandDetails.CommandType.EDIT_SHOW_TASK);
-		} else {
-			commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex));
-		}*/
-	}
-
-	private void markTaskAsComplete(CommandDetails commandDetails) {
-		//todo
-		int taskIndex = parser.getTaskIndex();
-		Task task = Task.getTask(taskIndex);
-		if (task != null) {
-			task.setCompleted(true);
-			commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
-		} else {
-			commandDetails.setCommandType(CommandDetails.CommandType.ERROR);
-			commandDetails.setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
 		}
 	}
 
-	private void deleteTask(CommandDetails commandDetails) {
-		//todo
-		int taskIndex = parser.getTaskIndex();
-		Task task = Task.getTask(taskIndex);
-		Recur recur = task.getRecur();
-
-		if (recur == null || !recur.willRecur() || parser.isDeletingRecur()) {
-			Task.removeTask(taskIndex);
-			commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
-		} else {
-			task.setEndDate(recur.getNextRecur());
-			commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
-		}
-	}
-
-	private void findTask(CommandDetails commandDetails) {
-		//todo
-		List<Integer> indexesFound = new ArrayList<Integer>();
-		String keywords = parser.getTaskDescription();
-		for (int i = 0; i < Task.getTaskCount(); i++) {
-			if (Task.getTask(i).getDescription().contains(keywords)) {
-				indexesFound.add(i);
-			}
-		}
-		commandDetails.setIndexesFound(indexesFound);
-		if (indexesFound.size() == 0) {
-			commandDetails.setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
-		} else {
-			commandDetails.setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
-		}
-	}
-	
+	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
 	private void setCommandTypeAndArguments(String input) {
-		String[] commandDetails = splitCommand(input);
-		switch (commandDetails.length) {
-			case 2 :
-				setArguments(commandDetails);
-				// Fallthrough
+		String[] commandTypeAndArguments = splitCommand(input);
 
-			case 1 :
-				setCommandType(commandDetails[0]);
-				break;
+		String commandTypeStr = (commandTypeAndArguments.length > 0) ? commandTypeAndArguments[0] : "";
+		setCommandType(commandTypeStr);
+
+		if (commandTypeAndArguments.length >= 2) {
+			_arguments = (_commandDetails.getCommandType() == CommandType.ADD) ? input
+					: commandTypeAndArguments[1];
 		}
 	}
 
@@ -211,24 +88,156 @@ public class Parser {
 		return input.trim().split(" ", 2);
 	}
 
-	private void setArguments(String[] arguments) {
-		if(commandList.contains(arguments[0])){
-			_arguments = arguments[1];
-		}else{ //add case
-			_arguments = String.join(" ", arguments[0] , arguments[1]);
-		}
-	}
-
 	private void setCommandType(String commandTypeStr) {
-		if(commandList.contains(commandTypeStr)){
-			_commandTypeStr = commandTypeStr;
-		}else{ //add case
-			_commandTypeStr = "a";
+		CommandType commandType;
+		switch (commandTypeStr.toLowerCase()) {
+			case COMMAND_EDIT :
+				commandType = CommandType.EDIT;
+				break;
+
+			case COMMAND_MARK_AS_COMPLETE :
+				commandType = CommandType.MARK_AS_COMPLETE;
+				break;
+
+			case COMMAND_DELETE :
+				commandType = CommandType.DELETE;
+				break;
+
+			case COMMAND_FIND :
+				commandType = CommandType.FIND;
+				break;
+
+			case COMMAND_UNDO :
+				commandType = CommandType.UNDO;
+				break;
+
+			case COMMAND_STORE :
+				commandType = CommandType.STORE;
+				break;
+
+			case COMMAND_QUIT :
+				commandType = CommandType.QUIT;
+				break;
+
+			case COMMAND_NULL :
+				commandType = CommandType.NULL;
+				break;
+
+			default :
+				commandType = CommandType.ADD;
+		}
+		_commandDetails = new CommandDetails(commandType);
+	}
+
+	private void addTask() {
+		// todo
+		/*
+		 * Task newTask = new Task(parser.getTaskDescription()); newTask.setStartDate(parser.getStartDate());
+		 * newTask.setEndDate(parser.getEndDate()); newTask.setRecur(parser.getRecur());
+		 * 
+		 * Task.addTask(newTask);
+		 * 
+		 * commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
+		 */
+	}
+
+	private void editTask() {
+		// todo
+		String description = this.getTaskDescription();
+		String[] descriptionSplit = description.split(" ");
+		int taskIndex = Integer.parseInt(descriptionSplit[0]);
+
+		Task task = Task.getTask(taskIndex);
+
+		switch (descriptionSplit.length) {
+			case (1) :
+				// todo
+				// copy task to input box for editing
+				break;
+			case (2) :
+				// todo
+				checkDateOrTime(descriptionSplit[1]);
+				break;
+			case (3) :
+				// have not handled time yet
+				String date = descriptionSplit[1];
+				String time = descriptionSplit[2];
+				String[] dateArray = date.split("/");
+				TaskDate td = task.getEndDate();
+				if (dateArray.length == 1) {
+					if (dateArray[0].matches("\\d")) {
+						td.DATE = Integer.parseInt(dateArray[0]);
+					} else {
+						// handle mon,tues,wed, etc.
+					}
+				} else if (dateArray.length == 2) {
+					td.DATE = Integer.parseInt(dateArray[0]);
+					td.MONTH = Integer.parseInt(dateArray[1]);
+				} else if (dateArray.length == 3) {
+					td.DATE = Integer.parseInt(dateArray[0]);
+					td.MONTH = Integer.parseInt(dateArray[1]);
+					td.YEAR = Integer.parseInt(dateArray[2]);
+				}
+				task.setEndDate(td);
+		}
+		/*
+		 * task.setDescription(description);
+		 * 
+		 * TaskDate startDate = parser.getStartDate(); task.setStartDate(startDate);
+		 * 
+		 * TaskDate endDate = parser.getEndDate(); task.setEndDate(endDate);
+		 * 
+		 * Recur recur = parser.getRecur(); task.setRecur(recur);
+		 * 
+		 * if (description == null && startDate == null && endDate == null & recur == null) {
+		 * commandDetails.setCommandType(CommandDetails.CommandType.EDIT_SHOW_TASK); } else {
+		 * commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex)); }
+		 */
+	}
+
+	private void markTaskAsComplete() {
+		// todo
+		int taskIndex = parser.getTaskIndex();
+		Task task = Task.getTask(taskIndex);
+		if (task != null) {
+			task.setCompleted(true);
+			_commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
+		} else {
+			_commandDetails.setCommandType(CommandDetails.CommandType.ERROR);
+			_commandDetails.setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
 		}
 	}
 
-	public String getCommandTypeStr() {
-		return _commandTypeStr;
+	private void deleteTask() {
+		// todo
+		int taskIndex = parser.getTaskIndex();
+		Task task = Task.getTask(taskIndex);
+		Recur recur = task.getRecur();
+
+		if (recur == null || !recur.willRecur() || parser.isDeletingRecur()) {
+			Task.removeTask(taskIndex);
+			_commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
+		} else {
+			task.setEndDate(recur.getNextRecur());
+			_commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
+		}
+	}
+
+	private void findTask() {
+		// todo
+		List<Integer> indexesFound = new ArrayList<Integer>();
+		String keywords = parser.getTaskDescription();
+		for (int i = 0; i < Task.getTaskCount(); i++) {
+			if (Task.getTask(i).getDescription().contains(keywords)) {
+				indexesFound.add(i);
+			}
+		}
+		_commandDetails.setIndexesFound(indexesFound);
+		if (indexesFound.size() == 0) {
+			_commandDetails.setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
+		} else {
+			_commandDetails.setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
+		}
 	}
 
 	public String getTaskDescription() {
@@ -239,11 +248,11 @@ public class Parser {
 		// todo
 		LinkedList<String> dateTimeRecur = new LinkedList<String>();
 		String[] argumentSplit = _arguments.split(" ");
-		if(argumentSplit.length<=5){
+		if (argumentSplit.length <= 5) {
 			dateTimeRecur.addAll(Arrays.asList(argumentSplit));
-		}else{
-			int i = argumentSplit.length-5;
-			while(i<argumentSplit.length){
+		} else {
+			int i = argumentSplit.length - 5;
+			while (i < argumentSplit.length) {
 				dateTimeRecur.add(argumentSplit[i]);
 				i++;
 			}
@@ -267,10 +276,7 @@ public class Parser {
 	}
 
 	public String getKeywords() {
-		if(_commandTypeStr.equals("f")){
-			return _arguments;
-		}
-		return ERROR_FIND;
+		return _arguments;
 	}
 
 	public Recur getRecur() {
