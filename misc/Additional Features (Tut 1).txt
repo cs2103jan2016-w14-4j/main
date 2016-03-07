@@ -1,0 +1,117 @@
+﻿Yes
+
+-----Riwu-----
+- Time: if 7-11: default to AM, 12-6: default to PM -- range adjustable
+- Tasks can be set to activate alarm/reminder (notification at tray, or more intrusive type) x hour in advance (x can be 0)
+- Command to set all tasks before certain date as done
+- Option to automatically hide overdue tasks instead of putting them in the overdue category
+- Keep a record of words user used and frequency of usage, to be used as prioritized suggestion to autocomplete/auto-correct
+- Separate column for tasks with no date specified
+- Option to add priority to a task (trivial, important, urgent) -- tasks are shaded/just a colored icon beside to indicate priority
+- 2 types of undo: type 1. ctrl+z: remove last word typed (like most text editors) type 2. undo modifications to task
+- redo (2 types too, see above) (ctrl+y for type 1 -- consistent with most text editors)
+- shift+enter = make new line (for task description) instead of sending the command
+- todo: think about what other useful features text editors, chat messengers, smartphone text etc have
+
+-----Ruo Mu-----
+- Label priority for each task
+- It should recognize aliases
+- Sharing of tasks via exportable files
+- It can be called out using hotkey
+- Attach files/images to tasks
+- Search through tasks
+- Color each task
+- Give tag to each task
+- Group tasks based on deadline
+- Alert when deadline is approaching
+- Customize short-cuts and aliases in the software
+
+-----Shaun-----
+- Have a way of distinguishing importance of a task (different color perhaps?)
+- User can key in highly-flexible commands so that he does not need to memorize a fixed format.
+- Key in "floating tasks" with no fixed time or deadline
+- "Block" certain timeslots for important events/meetings
+- Mark a task as done to keep it in case he needs to check if something has been done yet
+- Keyboard shortcuts
+- "Import" or "export" task data
+- User can edit a task in case of updated deadlines
+- Order tasks by date
+- Search tasks by date
+- "Undo" a few actions for convenience if he made a few mistakes
+- Cannot add "timed task" with clashing time blocks to prevent overlapping tasks at the same time
+- Read and manipulate certain tasks in the text file where data is stored, for advanced editting
+- Search for tasks with keywords
+- Set alert notifications
+- Key in keywords to facilitate smooth and fast capturing of new tasks.
+
+-----Julian-----
+- If no date is specified, default to x days from date of entry, where x can be customized by user.
+- Reinstate deleted entries
+- Name events
+- Retrieve deleted entries
+- Change event names
+- Create sort priorities for tasks
+- Add task without date, which can be added later
+- Shortcuts available for proficient users
+- Change event names
+- Reinstate completed entries
+- Manually sort events
+- Set alarms for tasks
+- Choose between manual completion and autocompletion
+- Delete notes for events
+- Add notes for events
+- Change dates for events
+- Guide for user to begin to learn usage of software
+- Delete entries
+- Retrieve tasks that have been entered (duh)
+- Set tasks by deadlines
+- See deleted entries
+- See past deadlines
+- View completed tasks
+- Add deadlines for tasks
+
+
+Maybe
+
+- Task can be set to self-destruct (hidden) after a certain deadline
+- Regular expression search
+- Task can be set to remain hidden until certain date
+- Extract task info from email 
+- Group task based on location of task (for delivery/estate agent?)
+- Compute optimal task completion order (shortest distance) if location of tasks are different
+- Encrypt specific (only show first few letter) or all tasks (confidential/sensitive info)
+- Mute software (no alarm/reminder) --- maybe automute if keyboard inactive for x min/full screen app
+
+- Window auto resize to show al tasks x days to deadline
+- Voice recognition for setting / off alarms
+- Tasks can be set to auto perform an OS operation
+- Auto-completion using dictionary
+- Encryption of tasks
+- Attach files (img/video/documents) to tasks
+- Location-based reminder/alarm
+- Auto-correction
+- Search for empty slots for task
+- Be able to set recurring task
+- GUI
+- User can use a keyboard shortcut to call the program
+
+
+~GUI-specific
+- Option to sort by date, time and or priority
+- Display only tasks x days from deadline
+- Modify/add task with GUI
+
+~Internect required
+- Assign task to someone
+- Collaborate on tasks
+
+
+
+
+Unlikely
+
+- Stylus/touch support (for GUI)
+- Location-based alarm/reminder (requires GPS/internet)
+- Store statistics (avg time taken to complete task, avg number of task/day during different months, 
+  highest num of tasks in a day etc) for user's self analysis
+- Handwritten text recognition – if user uses tablet (if we can find a free and reliable software to integrate into our app)
