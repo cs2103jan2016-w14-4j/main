@@ -35,7 +35,7 @@ public class Parser {
 		EDIT, EDIT_SHOW_TASK, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD, ERROR, STORE, NULL
 	};
 
-	private String _arguments;
+	private String _argument;
 	private CommandDetails _commandDetails;
 
 	/* Used for CommandType.UNDO */
@@ -87,7 +87,7 @@ public class Parser {
 		setCommandType(commandTypeStr);
 
 		if (commandTypeAndArguments.length >= 2) {
-			_arguments = (_commandDetails.getCommandType() == CommandType.ADD) ? input
+			_argument = (_commandDetails.getCommandType() == CommandType.ADD) ? input
 					: commandTypeAndArguments[1];
 		}
 	}
@@ -138,15 +138,54 @@ public class Parser {
 	}
 
 	private void addTask() {
-		// todo
-		/*
-		 * Task newTask = new Task(parser.getTaskDescription()); newTask.setStartDate(parser.getStartDate());
-		 * newTask.setEndDate(parser.getEndDate()); newTask.setRecur(parser.getRecur());
-		 * 
-		 * Task.addTask(newTask);
-		 * 
-		 * commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
-		 */
+		Task newTask = new Task();
+
+		List<String> args = Arrays.asList(_argument.split(" "));
+		setRecur(newTask, args);
+
+		// todo: process rest of args
+
+		_prevTaskList = _currentTaskList;
+		_currentTaskList.add(newTask);
+
+		_commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
+	}
+
+	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
+	private void setRecur(Task newTask, List<String> args) {
+		if (args.size() >= 3) {
+			int frequencyAndUnitIndex = args.size() - 2;
+			int endConditionIndex = args.size() - 1;
+			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+			String endCondition = args.get(endConditionIndex);
+			if (frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*")) {
+				Recur recur = new Recur();
+				switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
+					case 'd' :
+						recur.setTimeUnit(Recur.TimeUnit.DAY);
+						break;
+
+					case 'w' :
+						recur.setTimeUnit(Recur.TimeUnit.WEEK);
+						break;
+					case 'm' :
+						recur.setTimeUnit(Recur.TimeUnit.MONTH);
+						break;
+
+					case 'y' :
+						recur.setTimeUnit(Recur.TimeUnit.YEAR);
+						break;
+				}
+				char frequency = frequencyAndUnit.charAt(0);
+				if (Character.isDigit(frequency)) {
+					recur.setFrequency(Character.getNumericValue(frequency));
+				}
+				// todo: process endCondition
+				newTask.setRecur(recur);
+				args.remove(endConditionIndex);
+				args.remove(frequencyAndUnitIndex);
+			}
+		}
 	}
 
 	private void editTask() {
@@ -249,13 +288,13 @@ public class Parser {
 	}
 
 	public String getTaskDescription() {
-		return _arguments;
+		return _argument;
 	}
 
 	public TaskDate getStartDate() {
 		// todo
 		LinkedList<String> dateTimeRecur = new LinkedList<String>();
-		String[] argumentSplit = _arguments.split(" ");
+		String[] argumentSplit = _argument.split(" ");
 		if (argumentSplit.length <= 5) {
 			dateTimeRecur.addAll(Arrays.asList(argumentSplit));
 		} else {
@@ -274,8 +313,8 @@ public class Parser {
 	}
 
 	public int getTaskIndex() {
-		if (_arguments != null) {
-			String taskIndex = _arguments.split(" ", 2)[0];
+		if (_argument != null) {
+			String taskIndex = _argument.split(" ", 2)[0];
 			if (taskIndex.matches("\\d")) {
 				return Integer.parseInt(taskIndex);
 			}
@@ -284,7 +323,7 @@ public class Parser {
 	}
 
 	public String getKeywords() {
-		return _arguments;
+		return _argument;
 	}
 
 	public Recur getRecur() {

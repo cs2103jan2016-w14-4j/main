@@ -7,7 +7,7 @@ public class Task {
 	private boolean _isCompleted;
 	private Recur _recur;
 
-	public Task(String description) {
+	public void setDescription(String description) {
 		_description = description;
 	}
 

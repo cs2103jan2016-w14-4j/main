@@ -3,20 +3,21 @@ package defaultPart;
 import java.util.Calendar;
 
 public class Recur {
+
 	public enum TimeUnit {
 		DAY, WEEK, MONTH, YEAR
 	}
 
-	private TimeUnit _unit;
-	private int _frequency;
+	private TimeUnit _timeUnit;
+	private int _frequency = 1;
 	private Calendar _endDate;
 
-	public TimeUnit getUnit() {
-		return _unit;
+	public TimeUnit getTimeUnit() {
+		return _timeUnit;
 	}
 
-	public void setUnit(TimeUnit unit) {
-		_unit = unit;
+	public void setTimeUnit(TimeUnit timeUnit) {
+		_timeUnit = timeUnit;
 	}
 
 	public int getFrequency() {
