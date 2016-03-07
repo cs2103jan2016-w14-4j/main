@@ -38,6 +38,10 @@ public class Parser {
 	private String _arguments;
 	private CommandDetails _commandDetails;
 
+	/* Used for CommandType.UNDO */
+	private List<Task> _prevTaskList = new LinkedList<Task>();
+	private List<Task> _currentTaskList = new LinkedList<Task>();
+
 	public Parser(String input) {
 		setCommandTypeAndArguments(input);
 		switch (_commandDetails.getCommandType()) {
@@ -69,6 +73,10 @@ public class Parser {
 				// todo
 				break;
 		}
+	}
+
+	public CommandDetails getCommandDetails() {
+		return _commandDetails;
 	}
 
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */

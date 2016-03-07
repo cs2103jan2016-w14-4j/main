@@ -1,28 +1,35 @@
 package defaultPart;
 
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 
-import java.util.GregorianCalendar;
+public class TaskDate {
 
-public class TaskDate extends GregorianCalendar {
+	private Calendar _date;
+	private Calendar _startTime;
+	private Calendar _endTime;
 
-	private boolean _dateSet;
-	private boolean _timeSet;
-	
-	public boolean isDateSet() {
-		return _dateSet;
+	public Calendar getDate() {
+		return _date;
 	}
 
-	public void setIsDateSet(boolean isDateSet) {
-		_dateSet = isDateSet;
+	public void setDate(Calendar date) {
+		_date = date;
 	}
 
-	public boolean isTimeSet() {
-		return _timeSet;
+	public Calendar getStartTime() {
+		return _startTime;
 	}
 
-	public void setTimeSet(boolean isTimeSet) {
-		_timeSet = isTimeSet;
+	public void setStartTime(Calendar startTime) {
+		_startTime = startTime;
+	}
+
+	public Calendar getEndTime() {
+		return _endTime;
+	}
+
+	public void setEndTime(Calendar endTime) {
+		_endTime = endTime;
 	}
 
 }

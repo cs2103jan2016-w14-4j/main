@@ -26,52 +26,61 @@ public class Storage {
 	// Date format used to save/load from XML
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
+	public static String getType(Task task) {
+		TaskDate taskDate = task.getTaskDate();
+		if (taskDate == null) {
+			return "floating";
+		} else {
+			return (taskDate.getEndTime() == null) ? "deadline" : "event";
+		}
+	}
+
 	// Function to save tasks to the XML file
 	public static void saveTasks(File file, List<Task> taskList)
 			throws ParserConfigurationException, TransformerException {
-		
+
 		Document doc = initializeDocBuilder();
-		
+
 		// root element
 		Element rootElement = doc.createElement("wuriTasks");
 		doc.appendChild(rootElement);
-		
+
 		// Add the tasks by type
 		for (Task taskItem : taskList) {
-			if (taskItem.getType() == ("floating")) {
+			if (getType(taskItem) == ("floating")) {
 				createFloatingTasksXML(doc, rootElement, taskItem);
 			}
 		}
-		
+
 		for (Task taskItem : taskList) {
-			if (taskItem.getType().equals("event")) {
+			if (getType(taskItem).equals("event")) {
 				createEventTasksXML(doc, rootElement, taskItem);
 			}
 		}
 
 		for (Task taskItem : taskList) {
-			if (taskItem.getType().equals("deadline")) {
+			if (getType(taskItem).equals("deadline")) {
 				createDeadlineTasksXML(doc, rootElement, taskItem);
 			}
 		}
-		
+
 		// Save the XML file in a "pretty" format
-		transformAndSaveXML(doc, file);			
+		transformAndSaveXML(doc, file);
 	}
-	
+
 	// Save the XML file in a "pretty" format
 	private static void transformAndSaveXML(Document doc, File file)
 			throws TransformerFactoryConfigurationError, TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
-		
+
 		// Properties of the XML format to save the file in
 		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
 		DOMSource source = new DOMSource(doc);
 		StreamResult result = new StreamResult(file);
-		transformer.transform(source, result);		
+		transformer.transform(source, result);
 	}
 
 	// Initialize and returns a new document object
@@ -91,24 +100,21 @@ public class Storage {
 
 		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
 		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.getEndDate().getTime())));
-		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"COMPLETE":"NOT COMPLETE"));
+		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted() ? "COMPLETE" : "NOT COMPLETE"));
 		deadlineTasks.appendChild(nameElement);
 		deadlineTasks.appendChild(endElement);
 		deadlineTasks.appendChild(stateElement);
 		rootElement.appendChild(deadlineTasks);
-		
-		if(taskItem.isRecurr())
-		{
+
+		if (taskItem.isRecurr()) {
 			extractRecurrFromTask(doc, taskItem, deadlineTasks);
-			deadlineTasks.setAttribute("recur","true");
-		}else
-		{
-			deadlineTasks.setAttribute("recur","false");
+			deadlineTasks.setAttribute("recur", "true");
+		} else {
+			deadlineTasks.setAttribute("recur", "false");
 		}
-				
+
 		rootElement.appendChild(deadlineTasks);
 	}
-
 
 	// Extracts out the recurrence part of the task and convert it into a XML node format
 	public static void extractRecurrFromTask(Document doc, Task taskItem, Element parentElement) {
@@ -117,8 +123,10 @@ public class Storage {
 		Element recurFrequencyElement = doc.createElement("frequency");
 		Element recurEndOfRecurrElement = doc.createElement("endOfRecurr");
 		recurTimeUnitElement.appendChild(doc.createTextNode(taskItem.getRecur().getUnit().toString()));
-		recurFrequencyElement.appendChild(doc.createTextNode(Integer.toString(taskItem.getRecur().getFrequency())));
-		recurEndOfRecurrElement.appendChild(doc.createTextNode(formatter.format(taskItem.getRecur().getEndDate().getTime())));
+		recurFrequencyElement
+				.appendChild(doc.createTextNode(Integer.toString(taskItem.getRecur().getFrequency())));
+		recurEndOfRecurrElement.appendChild(
+				doc.createTextNode(formatter.format(taskItem.getRecur().getEndDate().getTime())));
 		recurrElement.appendChild(recurTimeUnitElement);
 		recurrElement.appendChild(recurFrequencyElement);
 		recurrElement.appendChild(recurEndOfRecurrElement);
@@ -136,22 +144,20 @@ public class Storage {
 		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
 		startElement.appendChild(doc.createTextNode(formatter.format(taskItem.getStartDate().getTime())));
 		endElement.appendChild(doc.createTextNode(formatter.format(taskItem.getEndDate().getTime())));
-		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"COMPLETE":"NOT COMPLETE"));
+		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted() ? "COMPLETE" : "NOT COMPLETE"));
 		eventTasks.appendChild(nameElement);
 		eventTasks.appendChild(startElement);
 		eventTasks.appendChild(endElement);
 		eventTasks.appendChild(stateElement);
-		
+
 		// Handles the recurrence section
-		if(taskItem.isRecurr())
-		{
+		if (taskItem.isRecurr()) {
 			extractRecurrFromTask(doc, taskItem, eventTasks);
-			eventTasks.setAttribute("recur","true");
-		}else
-		{
-			eventTasks.setAttribute("recur","false");
+			eventTasks.setAttribute("recur", "true");
+		} else {
+			eventTasks.setAttribute("recur", "false");
 		}
-				
+
 		rootElement.appendChild(eventTasks);
 	}
 
@@ -161,27 +167,24 @@ public class Storage {
 		Element nameElement = doc.createElement("name");
 		Element stateElement = doc.createElement("state");
 		nameElement.appendChild(doc.createTextNode(taskItem.getDescription()));
-		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted()?"COMPLETE":"NOT COMPLETE"));
+		stateElement.appendChild(doc.createTextNode(taskItem.isCompleted() ? "COMPLETE" : "NOT COMPLETE"));
 		floatingTasks.appendChild(nameElement);
 		floatingTasks.appendChild(stateElement);
-		
+
 		// Handles the recurrence section
-		if(taskItem.isRecurr())
-		{
+		if (taskItem.isRecurr()) {
 			extractRecurrFromTask(doc, taskItem, floatingTasks);
-			floatingTasks.setAttribute("recur","true");
-		}else
-		{
-			floatingTasks.setAttribute("recur","false");
+			floatingTasks.setAttribute("recur", "true");
+		} else {
+			floatingTasks.setAttribute("recur", "false");
 		}
-				
+
 		rootElement.appendChild(floatingTasks);
 	}
-	
-	
-	 // The loadTasks function has to be called separately for all 3 types of
-	 // tasks to make it more modular (easier to add new task type) and make it
-	 // easier to parse due to the different attributes each type contain.
+
+	// The loadTasks function has to be called separately for all 3 types of
+	// tasks to make it more modular (easier to add new task type) and make it
+	// easier to parse due to the different attributes each type contain.
 	public static List<Task> loadTasks(File file, String type)
 			throws ParserConfigurationException, SAXException, IOException {
 
@@ -190,7 +193,7 @@ public class Storage {
 
 		// Extracts out the list of task nodes
 		NodeList nList = extractListFromDocument(file, type);
-		
+
 		// Iterates through the list of tasks extracted
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			{
@@ -204,17 +207,17 @@ public class Storage {
 						// Different type of tasks are imported differently due
 						// to different attributes
 						switch (type) {
-						case "floating":
-							newTask = importFloatingTask(taskElement);
-							break;
+							case "floating" :
+								newTask = importFloatingTask(taskElement);
+								break;
 
-						case "event":
-							newTask = importEventTask(taskElement);
-							break;
+							case "event" :
+								newTask = importEventTask(taskElement);
+								break;
 
-						case "deadline":
-							newTask = importDeadlineTask(taskElement);
-							break;
+							case "deadline" :
+								newTask = importDeadlineTask(taskElement);
+								break;
 						}
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
@@ -230,7 +233,7 @@ public class Storage {
 	// Extracts a NodeList object containing all the tasks associated with the specified type from the file
 	public static NodeList extractListFromDocument(File file, String type)
 			throws ParserConfigurationException, SAXException, IOException {
-		
+
 		// Reading the XML file
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -244,88 +247,84 @@ public class Storage {
 
 	// Extracts a deadline task from an element object
 	public static Task importDeadlineTask(Element taskElement) throws ParseException {
-		
+
 		// Create new task with extracted description & extract other attributes
-		Task newTask = new Task(extractStringFromNode(taskElement,"name"));
+		Task newTask = new Task(extractStringFromNode(taskElement, "name"));
 		TaskDate _end = extractDateFromNode(taskElement, "end");
-		String _state = extractStringFromNode(taskElement,"state");
-		
+		String _state = extractStringFromNode(taskElement, "state");
+
 		// Setting other attributes from extracted data
 		newTask.setEndDate(_end);
-		if(_state.equals("NOT COMPLETE")){
+		if (_state.equals("NOT COMPLETE")) {
 			newTask.setCompleted(false);
-		}else{
+		} else {
 			newTask.setCompleted(true);
-		}		
-		
-		// Handles recurrence portion of the task 
-		if(Boolean.valueOf(taskElement.getAttribute("recur")))
-		{
+		}
+
+		// Handles recurrence portion of the task
+		if (Boolean.valueOf(taskElement.getAttribute("recur"))) {
 			Recur taskRecurr = extractRecurFromXML(taskElement);
 			newTask.setRecur(taskRecurr);
 		}
-		
+
 		return newTask;
 	}
-
-
 
 	// Extracts a event task from an element object
 	public static Task importEventTask(Element taskElement) throws ParseException {
-		
+
 		// Create new task with extracted description & extract other attributes
-		Task newTask = new Task(extractStringFromNode(taskElement,"name"));
+		Task newTask = new Task(extractStringFromNode(taskElement, "name"));
 
 		TaskDate _start = extractDateFromNode(taskElement, "start");
 		TaskDate _end = extractDateFromNode(taskElement, "end");
-		String _state = extractStringFromNode(taskElement,"state");
-		
+		String _state = extractStringFromNode(taskElement, "state");
+
 		// Setting other attributes from extracted data
 		newTask.setStartDate(_start);
 		newTask.setEndDate(_end);
-		if(_state.equals("NOT COMPLETE")){
+		if (_state.equals("NOT COMPLETE")) {
 			newTask.setCompleted(false);
-		}else{
+		} else {
 			newTask.setCompleted(true);
-		}		
-		
-		// Handles recurrence portion of the task 
-		if(Boolean.valueOf(taskElement.getAttribute("recur")))
-		{
+		}
+
+		// Handles recurrence portion of the task
+		if (Boolean.valueOf(taskElement.getAttribute("recur"))) {
 			Recur taskRecurr = extractRecurFromXML(taskElement);
 			newTask.setRecur(taskRecurr);
 		}
 		return newTask;
 	}
-	
+
 	// Extracts a floating task from an element object
 	public static Task importFloatingTask(Element taskElement) throws ParseException {
-		
+
 		// Create new task with extracted description & extract other attributes
-		Task newTask = new Task(extractStringFromNode(taskElement,"name"));
-		String _state = extractStringFromNode(taskElement,"state");
-		
+		Task newTask = new Task(extractStringFromNode(taskElement, "name"));
+		String _state = extractStringFromNode(taskElement, "state");
+
 		// Setting other attributes from extracted data
-		if(_state.equals("NOT COMPLETE")){
+		if (_state.equals("NOT COMPLETE")) {
 			newTask.setCompleted(false);
-		}else{
+		} else {
 			newTask.setCompleted(true);
-		}		
-		
-		// Handles recurrence portion of the task 
-		if(Boolean.valueOf(taskElement.getAttribute("recur")))
-		{
+		}
+
+		// Handles recurrence portion of the task
+		if (Boolean.valueOf(taskElement.getAttribute("recur"))) {
 			Recur taskRecurr = extractRecurFromXML(taskElement);
 			newTask.setRecur(taskRecurr);
 		}
 		return newTask;
-	}	
-	
-	// Extracts a recur class from the XML component of a task while importing tasks (used by all 3 types of tasks)
+	}
+
+	// Extracts a recur class from the XML component of a task while importing tasks (used by all 3 types of
+	// tasks)
 	public static Recur extractRecurFromXML(Element taskElement) throws ParseException {
 		Recur taskRecurr = new Recur();
-		String timeUnit = extractStringFromNode(taskElement,"timeUnit");
-		int frequency = Integer.parseInt(extractStringFromNode(taskElement,"frequency"));
+		String timeUnit = extractStringFromNode(taskElement, "timeUnit");
+		int frequency = Integer.parseInt(extractStringFromNode(taskElement, "frequency"));
 		TaskDate endOfRecurr = extractDateFromNode(taskElement, "endOfRecurr");
 		taskRecurr.setUnit(TimeUnit.valueOf(timeUnit));
 		taskRecurr.setFrequency(frequency);
@@ -335,7 +334,8 @@ public class Storage {
 
 	// Extracts a date from node with specified tag & Convert it into TaskDate class for output
 	public static TaskDate extractDateFromNode(Element taskElement, String tag) throws ParseException {
-		Date _date = formatter.parse((taskElement.getElementsByTagName(tag).item(0).getTextContent()).toString());
+		Date _date = formatter
+				.parse((taskElement.getElementsByTagName(tag).item(0).getTextContent()).toString());
 		TaskDate taskDate = new TaskDate();
 		taskDate.setTime(_date);
 		return taskDate;
