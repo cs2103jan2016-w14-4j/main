@@ -14,7 +14,11 @@
       <HBox>
          <children>
             <CheckBox fx:id="checkBox" mnemonicParsing="false" />
-            <TextArea fx:id="descriptionText" editable="false" styleClass="task" text="This is a sample task: avoid going for CS2103T lecture" wrapText="true" />
+            <TextArea fx:id="descriptionText" editable="false" styleClass="task" text="This is a sample task: avoid going for CS2103T lecture" wrapText="true">
+               <font>
+                  <Font name="Calibri Bold" size="13.0" />
+               </font>
+            </TextArea>
          </children>
       </HBox>
       <GridPane alignment="TOP_CENTER">
