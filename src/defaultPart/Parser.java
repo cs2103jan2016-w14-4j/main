@@ -25,10 +25,11 @@ public class Parser {
 	private static final String ERROR_FIND = "Mismatch: not FIND command, but trying to get keyword.";
 
 	public enum CommandType {
-		//User command is first letter
-		EDIT, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, STORE, 
-		//for internal use
-		EDIT_SHOW_TASK, ADD, ERROR, NULL 
+		// User command is first letter
+		EDIT, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, STORE,
+
+		// for internal use
+		EDIT_SHOW_TASK, ADD, ERROR, NULL
 	};
 
 	private String _argument;
