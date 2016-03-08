@@ -5,6 +5,3 @@
 .idea
 out
 *.iml
-*.classpath
-out/production/main/TEST.xml
-out/production/main/ui/simple/taskItem.fxml
