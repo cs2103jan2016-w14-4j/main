@@ -202,10 +202,8 @@ public class Parser {
 			int taskDateIndex = args.size() - 2;
 			String taskDateString = (args.size() >= 3) ? args.get(taskDateIndex) : "";
 
-			String timeRegex = "\\d((:|.)\\d{2})?(am|pm)?";
 			Calendar date = getDateFromString(taskDateString);
-			if (taskTimeString.matches(timeRegex + "(-" + timeRegex + ")?")
-					|| (taskTimeString.matches("\\d") && date != null)) {
+			if (isTime(taskTimeString) || (taskTimeString.matches("\\d") && date != null)) {
 				TaskDate taskDate = new TaskDate();
 				taskDate.setDate(date);
 				// todo: set time
@@ -214,6 +212,11 @@ public class Parser {
 				args.remove(taskDateIndex);
 			}
 		}
+	}
+	
+	private boolean isTime(String timeString) {
+		String timeRegex = "\\d((:|.)\\d{2})?(am|pm)?";
+		return timeString.matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
 	private Calendar getDateFromString(String dateString) {
