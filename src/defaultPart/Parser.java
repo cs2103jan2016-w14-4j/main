@@ -42,8 +42,8 @@ public class Parser {
 	private List<Integer> _indexesFound;
 
 	/* Used for CommandType.UNDO */
-	private List<Task> _prevTaskList = new LinkedList<Task>();
-	private List<Task> _currentTaskList = new LinkedList<Task>();
+	private static List<Task> _prevTaskList = new LinkedList<Task>();
+	private static List<Task> _currentTaskList = new LinkedList<Task>();
 
 	public Parser(String input) {
 		setCommandTypeAndArguments(input);
@@ -97,7 +97,7 @@ public class Parser {
 	private void setCommandType(String commandTypeStr) {
 		commandTypeStr = commandTypeStr.toUpperCase();
 		for (CommandType commandType : CommandType.values()) {
-			if (commandType.name().substring(0, 1) == commandTypeStr) {
+			if (commandType.name().substring(0, 1).equals(commandTypeStr)) {
 				_commandType = commandType;
 				return;
 			}
@@ -120,7 +120,7 @@ public class Parser {
 
 		setRecurIfExists(newTask, args);
 		setTaskDateIfExists(newTask, args);
-		setDescription(newTask, args);
+		newTask.setDescription(String.join(" ", args));
 
 		addToTaskList(newTask);
 
@@ -175,19 +175,28 @@ public class Parser {
 
 	private void setTaskDateIfExists(Task task, List<String> args) {
 		if (args.size() >= 2) {
-			int taskTimeIndex = args.size() - 1;
-			String taskTimeString = args.get(taskTimeIndex);
+			int lastIndex = args.size() - 1;
+			String lastString = args.get(lastIndex);
 
-			int taskDateIndex = args.size() - 2;
-			String taskDateString = (args.size() >= 3) ? args.get(taskDateIndex) : "";
+			int secondLastIndex = args.size() - 2;
+			String secondLastString = (args.size() >= 3) ? args.get(secondLastIndex) : "";
 
-			Calendar date = getDateFromString(taskDateString);
-			if (isTime(taskTimeString) || (taskTimeString.matches("\\d") && date != null)) {
+			Calendar date = getDateFromString(secondLastString);
+			if (isTime(lastString) || (lastString.matches("\\d") && date != null)) {
 				TaskDate taskDate = new TaskDate();
 				taskDate.setDate(date);
 				// todo: set time
 				task.setTaskDate(taskDate);
-				removeIndexesFromList(args, new int[] { taskTimeIndex, taskDateIndex });
+				removeIndexesFromList(args, new int[] { lastIndex, secondLastIndex });
+			} else {
+				date = getDateFromString(lastString);
+				if (date == null) {
+					return;
+				}
+				TaskDate taskDate = new TaskDate();
+				taskDate.setDate(date);
+				task.setTaskDate(taskDate);
+				args.remove(lastIndex);
 			}
 		}
 	}
@@ -240,11 +249,6 @@ public class Parser {
 				// fallthrough
 		}
 		return newDate;
-	}
-
-	private void setDescription(Task task, List<String> args) {
-		// task.setDescription(String.join(" ", args));
-		task.setDescription(" " + args);
 	}
 
 	private void editTask() {
