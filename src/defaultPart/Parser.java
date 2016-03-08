@@ -204,7 +204,7 @@ public class Parser {
 		// }
 		String[] dayAndMonthAndYear = dateString.split(dateDelimiterRegex, 3);
 		Calendar newDate = new GregorianCalendar();
-		Calendar currentDate = newDate;
+		Calendar currentDate = (Calendar) newDate.clone();
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
