@@ -100,42 +100,7 @@ public class Parser {
 	}
 
 	private void setCommandType(String commandTypeStr) {
-		switch (commandTypeStr.toLowerCase()) {
-			case COMMAND_EDIT :
-				_commandType = CommandType.EDIT;
-				break;
-
-			case COMMAND_MARK_AS_COMPLETE :
-				_commandType = CommandType.MARK_AS_COMPLETE;
-				break;
-
-			case COMMAND_DELETE :
-				_commandType = CommandType.DELETE;
-				break;
-
-			case COMMAND_FIND :
-				_commandType = CommandType.FIND;
-				break;
-
-			case COMMAND_UNDO :
-				_commandType = CommandType.UNDO;
-				break;
-
-			case COMMAND_STORE :
-				_commandType = CommandType.STORE;
-				break;
-
-			case COMMAND_QUIT :
-				_commandType = CommandType.QUIT;
-				break;
-
-			case COMMAND_NULL :
-				_commandType = CommandType.NULL;
-				break;
-
-			default :
-				_commandType = CommandType.ADD;
-		}
+		_commandType = CommandType.valueOf(commandTypeStr);
 	}
 
 	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
@@ -157,7 +122,7 @@ public class Parser {
 
 		addToTaskList(newTask);
 
-		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
+		setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
 	}
 
 	private void addToTaskList(Task newTask) {
@@ -341,21 +306,23 @@ public class Parser {
 		// }
 	}
 
+	
 	private void findTask() {
-		// todo
-		// List<Integer> indexesFound = new ArrayList<Integer>();
-		// String keywords = parser.getTaskDescription();
-		// for (int i = 0; i < Task.getTaskCount(); i++) {
-		// if (Task.getTask(i).getDescription().contains(keywords)) {
-		// indexesFound.add(i);
-		// }
-		// }
-		// _commandDetails.setIndexesFound(indexesFound);
-		// if (indexesFound.size() == 0) {
-		// _commandDetails.setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
-		// } else {
-		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
-		// }
+	
+		 List<Integer> indexesFound = new ArrayList<Integer>();
+		 String keywords = getTaskDescription();
+		 for (int i = 0; i < _currentTaskList.size(); i++) {
+		 if (_currentTaskList.get(i).getDescription().contains(keywords)) {
+			 indexesFound.add(i);
+			}
+		 }
+		 
+		 setIndexesFound(indexesFound);
+		 if (indexesFound.size() == 0) {
+			 setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
+		 } else {
+			 setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
+		 }
 	}
 
 	public String getTaskDescription() {
@@ -423,5 +390,13 @@ public class Parser {
 
 	public List<Integer> getIndexesFound() {
 		return _indexesFound;
+	}
+
+	private void setFeedback(String feedback) {
+		_feedback = feedback;
+	}
+
+	private void setIndexesFound(List<Integer> indexesFound) {
+		_indexesFound = indexesFound;
 	}
 }
