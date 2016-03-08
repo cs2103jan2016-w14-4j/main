@@ -1,7 +1,10 @@
-package defaultPart;
+package test;
 
 import static org.junit.Assert.*;
 import org.xml.sax.SAXException;
+
+import defaultPart.*;
+
 import javax.xml.parsers.*;
 import javax.xml.transform.TransformerException;
 import java.io.*;

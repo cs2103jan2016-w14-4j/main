@@ -45,4 +45,9 @@ public class Recur {
 		// todo
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return "Recur [timeUnit=" + _timeUnit + ", frequency=" + _frequency + ", endDate=" + _endDate + "]";
+	}
 }

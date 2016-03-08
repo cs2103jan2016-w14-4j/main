@@ -38,4 +38,10 @@ public class Task {
 	public void setRecur(Recur recur) {
 		_recur = recur;
 	}
+
+	@Override
+	public String toString() {
+		return "Task [description=" + _description + ", taskDate=" + _taskDate + ", isCompleted="
+				+ _isCompleted + ", recur=" + _recur + "]";
+	}
 }

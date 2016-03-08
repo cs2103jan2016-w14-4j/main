@@ -2,8 +2,12 @@ package defaultPart;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+
+import defaultPart.Parser.CommandType;
 
 public class Parser {
 
@@ -18,10 +22,10 @@ public class Parser {
 
 	private static final String FILE_NAME = "WURI.txt";
 
-	private static final String MESSAGE_TASK_ADDED = "added to %1$s: \"%2$s\"";
+	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
 	private static final String MESSAGE_TASK_EDITED = "Edited task %1$s";
 	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as complete";
-	private static final String MESSAGE_TASK_DELETED = "deleted task %1$s";
+	private static final String MESSAGE_TASK_DELETED = "Deleted task %1$s";
 	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords %1$s";
 	private static final String MESSAGE_TASK_FOUND = "Found %1$s tasks";
 
@@ -36,7 +40,13 @@ public class Parser {
 	};
 
 	private String _argument;
-	private CommandDetails _commandDetails;
+	private CommandType _commandType;
+
+	/* Feedback to be shown to user after a user operation */
+	private String _feedback;
+
+	/* Used for CommandType.FIND */
+	private List<Integer> _indexesFound;
 
 	/* Used for CommandType.UNDO */
 	private List<Task> _prevTaskList = new LinkedList<Task>();
@@ -44,7 +54,7 @@ public class Parser {
 
 	public Parser(String input) {
 		setCommandTypeAndArguments(input);
-		switch (_commandDetails.getCommandType()) {
+		switch (_commandType) {
 			case ADD :
 				addTask();
 				break;
@@ -75,10 +85,6 @@ public class Parser {
 		}
 	}
 
-	public CommandDetails getCommandDetails() {
-		return _commandDetails;
-	}
-
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
 	private void setCommandTypeAndArguments(String input) {
 		String[] commandTypeAndArguments = splitCommand(input);
@@ -87,8 +93,7 @@ public class Parser {
 		setCommandType(commandTypeStr);
 
 		if (commandTypeAndArguments.length >= 2) {
-			_argument = (_commandDetails.getCommandType() == CommandType.ADD) ? input
-					: commandTypeAndArguments[1];
+			_argument = (_commandType == CommandType.ADD) ? input : commandTypeAndArguments[1];
 		}
 	}
 
@@ -97,67 +102,69 @@ public class Parser {
 	}
 
 	private void setCommandType(String commandTypeStr) {
-		CommandType commandType;
 		switch (commandTypeStr.toLowerCase()) {
 			case COMMAND_EDIT :
-				commandType = CommandType.EDIT;
+				_commandType = CommandType.EDIT;
 				break;
 
 			case COMMAND_MARK_AS_COMPLETE :
-				commandType = CommandType.MARK_AS_COMPLETE;
+				_commandType = CommandType.MARK_AS_COMPLETE;
 				break;
 
 			case COMMAND_DELETE :
-				commandType = CommandType.DELETE;
+				_commandType = CommandType.DELETE;
 				break;
 
 			case COMMAND_FIND :
-				commandType = CommandType.FIND;
+				_commandType = CommandType.FIND;
 				break;
 
 			case COMMAND_UNDO :
-				commandType = CommandType.UNDO;
+				_commandType = CommandType.UNDO;
 				break;
 
 			case COMMAND_STORE :
-				commandType = CommandType.STORE;
+				_commandType = CommandType.STORE;
 				break;
 
 			case COMMAND_QUIT :
-				commandType = CommandType.QUIT;
+				_commandType = CommandType.QUIT;
 				break;
 
 			case COMMAND_NULL :
-				commandType = CommandType.NULL;
+				_commandType = CommandType.NULL;
 				break;
 
 			default :
-				commandType = CommandType.ADD;
+				_commandType = CommandType.ADD;
 		}
-		_commandDetails = new CommandDetails(commandType);
 	}
 
 	private void addTask() {
 		Task newTask = new Task();
 
-		List<String> args = Arrays.asList(_argument.split(" "));
-		setRecur(newTask, args);
+		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
 
-		// todo: process rest of args
+		setRecurIfExists(newTask, args);
+		setTaskDateIfExists(newTask, args);
+		setDescription(newTask, args);
 
 		_prevTaskList = _currentTaskList;
 		_currentTaskList.add(newTask);
 
-		_commandDetails.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
+		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
-	private void setRecur(Task newTask, List<String> args) {
+	private void setRecurIfExists(Task task, List<String> args) {
 		if (args.size() >= 3) {
+
 			int frequencyAndUnitIndex = args.size() - 2;
-			int endConditionIndex = args.size() - 1;
 			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+
+			int endConditionIndex = args.size() - 1;
 			String endCondition = args.get(endConditionIndex);
+
 			if (frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*")) {
 				Recur recur = new Recur();
 				switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
@@ -168,6 +175,7 @@ public class Parser {
 					case 'w' :
 						recur.setTimeUnit(Recur.TimeUnit.WEEK);
 						break;
+
 					case 'm' :
 						recur.setTimeUnit(Recur.TimeUnit.MONTH);
 						break;
@@ -181,52 +189,107 @@ public class Parser {
 					recur.setFrequency(Character.getNumericValue(frequency));
 				}
 				// todo: process endCondition
-				newTask.setRecur(recur);
+				task.setRecur(recur);
 				args.remove(endConditionIndex);
 				args.remove(frequencyAndUnitIndex);
 			}
 		}
 	}
 
-	private void editTask() {
-		// todo
-		String description = this.getTaskDescription();
-		String[] descriptionSplit = description.split(" ");
-		int taskIndex = Integer.parseInt(descriptionSplit[0]);
+	private void setTaskDateIfExists(Task task, List<String> args) {
+		if (args.size() >= 2) {
+			int taskTimeIndex = args.size() - 1;
+			String taskTimeString = args.get(taskTimeIndex);
 
-		Task task = Task.getTask(taskIndex);
+			int taskDateIndex = args.size() - 2;
+			String taskDateString = (args.size() >= 3) ? args.get(taskDateIndex) : "";
 
-		switch (descriptionSplit.length) {
-			case (1) :
-				// todo
-				// copy task to input box for editing
-				break;
-			case (2) :
-				// todo
-				checkDateOrTime(descriptionSplit[1]);
-				break;
-			case (3) :
-				// have not handled time yet
-				String date = descriptionSplit[1];
-				String time = descriptionSplit[2];
-				String[] dateArray = date.split("/");
-				TaskDate td = task.getEndDate();
-				if (dateArray.length == 1) {
-					if (dateArray[0].matches("\\d")) {
-						td.DATE = Integer.parseInt(dateArray[0]);
-					} else {
-						// handle mon,tues,wed, etc.
-					}
-				} else if (dateArray.length == 2) {
-					td.DATE = Integer.parseInt(dateArray[0]);
-					td.MONTH = Integer.parseInt(dateArray[1]);
-				} else if (dateArray.length == 3) {
-					td.DATE = Integer.parseInt(dateArray[0]);
-					td.MONTH = Integer.parseInt(dateArray[1]);
-					td.YEAR = Integer.parseInt(dateArray[2]);
-				}
-				task.setEndDate(td);
+			String timeRegex = "\\d((:|.)\\d{2})?(am|pm)?";
+			Calendar date = getDateFromString(taskDateString);
+			if (taskTimeString.matches(timeRegex + "(-" + timeRegex + ")?")
+					|| (taskTimeString.matches("\\d") && date != null)) {
+				TaskDate taskDate = new TaskDate();
+				taskDate.setDate(date);
+				// todo: set time
+				task.setTaskDate(taskDate);
+				args.remove(taskTimeIndex);
+				args.remove(taskDateIndex);
+			}
 		}
+	}
+
+	private Calendar getDateFromString(String dateString) {
+		String dateDelimiterRegex = "/|\\.";
+		// if (dateString.matches(
+		// "\\d{1,2}(" + dateDelimiterRegex + "\\d{1,2}(" + dateDelimiterRegex + "\\d{1,4})?)?")) {
+		// }
+		String[] dayAndMonthAndYear = dateString.split(dateDelimiterRegex, 3);
+		Calendar date = new GregorianCalendar();
+		switch (dayAndMonthAndYear.length) {
+			case 3 :
+				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
+					return null;
+				}
+				// todo: set year
+			case 2 :
+				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
+					return null;
+				}
+				System.out.println(Integer.parseInt(dayAndMonthAndYear[1]));
+				date.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
+				System.out.println(date.getTime());
+			case 1 :
+				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
+					return null;
+				}
+				date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
+		}
+		return date;
+	}
+
+	private void setDescription(Task task, List<String> args) {
+		task.setDescription(String.join(" ", args));
+	}
+
+	private void editTask() {
+		// // todo
+		// String description = this.getTaskDescription();
+		// String[] descriptionSplit = description.split(" ");
+		// int taskIndex = Integer.parseInt(descriptionSplit[0]);
+		//
+		// Task task = Task.getTask(taskIndex);
+		//
+		// switch (descriptionSplit.length) {
+		// case (1) :
+		// // todo
+		// // copy task to input box for editing
+		// break;
+		// case (2) :
+		// // todo
+		// checkDateOrTime(descriptionSplit[1]);
+		// break;
+		// case (3) :
+		// // have not handled time yet
+		// String date = descriptionSplit[1];
+		// String time = descriptionSplit[2];
+		// String[] dateArray = date.split("/");
+		// TaskDate td = task.getEndDate();
+		// if (dateArray.length == 1) {
+		// if (dateArray[0].matches("\\d")) {
+		// td.DATE = Integer.parseInt(dateArray[0]);
+		// } else {
+		// // handle mon,tues,wed, etc.
+		// }
+		// } else if (dateArray.length == 2) {
+		// td.DATE = Integer.parseInt(dateArray[0]);
+		// td.MONTH = Integer.parseInt(dateArray[1]);
+		// } else if (dateArray.length == 3) {
+		// td.DATE = Integer.parseInt(dateArray[0]);
+		// td.MONTH = Integer.parseInt(dateArray[1]);
+		// td.YEAR = Integer.parseInt(dateArray[2]);
+		// }
+		// task.setEndDate(td);
+		// }
 		/*
 		 * task.setDescription(description);
 		 * 
@@ -244,47 +307,47 @@ public class Parser {
 
 	private void markTaskAsComplete() {
 		// todo
-		int taskIndex = parser.getTaskIndex();
-		Task task = Task.getTask(taskIndex);
-		if (task != null) {
-			task.setCompleted(true);
-			_commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
-		} else {
-			_commandDetails.setCommandType(CommandDetails.CommandType.ERROR);
-			_commandDetails.setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
-		}
+		// int taskIndex = parser.getTaskIndex();
+		// Task task = Task.getTask(taskIndex);
+		// if (task != null) {
+		// task.setCompleted(true);
+		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
+		// } else {
+		// _commandDetails.setCommandType(CommandDetails.CommandType.ERROR);
+		// _commandDetails.setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
+		// }
 	}
 
 	private void deleteTask() {
 		// todo
-		int taskIndex = parser.getTaskIndex();
-		Task task = Task.getTask(taskIndex);
-		Recur recur = task.getRecur();
-
-		if (recur == null || !recur.willRecur() || parser.isDeletingRecur()) {
-			Task.removeTask(taskIndex);
-			_commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
-		} else {
-			task.setEndDate(recur.getNextRecur());
-			_commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
-		}
+		// int taskIndex = parser.getTaskIndex();
+		// Task task = Task.getTask(taskIndex);
+		// Recur recur = task.getRecur();
+		//
+		// if (recur == null || !recur.willRecur() || parser.isDeletingRecur()) {
+		// Task.removeTask(taskIndex);
+		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
+		// } else {
+		// task.setEndDate(recur.getNextRecur());
+		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
+		// }
 	}
 
 	private void findTask() {
 		// todo
-		List<Integer> indexesFound = new ArrayList<Integer>();
-		String keywords = parser.getTaskDescription();
-		for (int i = 0; i < Task.getTaskCount(); i++) {
-			if (Task.getTask(i).getDescription().contains(keywords)) {
-				indexesFound.add(i);
-			}
-		}
-		_commandDetails.setIndexesFound(indexesFound);
-		if (indexesFound.size() == 0) {
-			_commandDetails.setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
-		} else {
-			_commandDetails.setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
-		}
+		// List<Integer> indexesFound = new ArrayList<Integer>();
+		// String keywords = parser.getTaskDescription();
+		// for (int i = 0; i < Task.getTaskCount(); i++) {
+		// if (Task.getTask(i).getDescription().contains(keywords)) {
+		// indexesFound.add(i);
+		// }
+		// }
+		// _commandDetails.setIndexesFound(indexesFound);
+		// if (indexesFound.size() == 0) {
+		// _commandDetails.setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
+		// } else {
+		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
+		// }
 	}
 
 	public String getTaskDescription() {
@@ -334,5 +397,23 @@ public class Parser {
 	public boolean isDeletingRecur() {
 		// todo
 		return false;
+	}
+
+	/* Getters for UI */
+
+	public List<Task> getTaskList() {
+		return _currentTaskList;
+	}
+
+	public CommandType getCommandType() {
+		return _commandType;
+	}
+
+	public String getFeedback() {
+		return _feedback;
+	}
+
+	public List<Integer> getIndexesFound() {
+		return _indexesFound;
 	}
 }
