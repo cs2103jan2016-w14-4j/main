@@ -9,15 +9,6 @@ import java.util.List;
 
 public class Parser {
 
-	private static final String COMMAND_EDIT = "e";
-	private static final String COMMAND_MARK_AS_COMPLETE = "c";
-	private static final String COMMAND_DELETE = "d";
-	private static final String COMMAND_FIND = "f";
-	private static final String COMMAND_UNDO = "u";
-	private static final String COMMAND_STORE = "s";
-	private static final String COMMAND_QUIT = "q";
-	private static final String COMMAND_NULL = "";
-
 	private static final String FILE_NAME = "WURI.txt";
 
 	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
@@ -34,7 +25,10 @@ public class Parser {
 	private static final String ERROR_FIND = "Mismatch: not FIND command, but trying to get keyword.";
 
 	public enum CommandType {
-		EDIT, EDIT_SHOW_TASK, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD, ERROR, STORE, NULL
+		//User command is first letter
+		EDIT, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, STORE, 
+		//for internal use
+		EDIT_SHOW_TASK, ADD, ERROR, NULL 
 	};
 
 	private String _argument;
@@ -100,7 +94,14 @@ public class Parser {
 	}
 
 	private void setCommandType(String commandTypeStr) {
-		_commandType = CommandType.valueOf(commandTypeStr.toUpperCase());
+		commandTypeStr = commandTypeStr.toUpperCase();
+		for (CommandType commandType : CommandType.values()) {
+			if (commandType.name().substring(0, 1) == commandTypeStr) {
+				_commandType = commandType;
+				return;
+			}
+		}
+		_commandType = CommandType.ADD;
 	}
 
 	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
@@ -201,15 +202,16 @@ public class Parser {
 		// "\\d{1,2}(" + dateDelimiterRegex + "\\d{1,2}(" + dateDelimiterRegex + "\\d{1,4})?)?")) {
 		// }
 		String[] dayAndMonthAndYear = dateString.split(dateDelimiterRegex, 3);
-		Calendar date = new GregorianCalendar();
+		Calendar newDate = new GregorianCalendar();
+		Calendar currentDate = newDate;
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
 					return null;
 				}
-				int currentYear = date.get(Calendar.YEAR);
+				int currentYear = newDate.get(Calendar.YEAR);
 				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
-				date.set(Calendar.YEAR,
+				newDate.set(Calendar.YEAR,
 						currentYear / factor * factor + Integer.parseInt(dayAndMonthAndYear[2]));
 				// fallthrough
 
@@ -217,14 +219,11 @@ public class Parser {
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-				Long currentTimeInMillisMonth = date.getTimeInMillis();
 
-				date.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
+				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
 
-				Long newTimeInMillisMonth = date.getTimeInMillis();
-
-				if (currentTimeInMillisMonth.compareTo(newTimeInMillisMonth) > 0) {
-					wrapAroundYear(date);
+				if (currentDate.compareTo(newDate) > 0) {
+					newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
 				}
 				// fallthrough
 
@@ -232,28 +231,14 @@ public class Parser {
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
-				Long currentTimeInMillisDay = date.getTimeInMillis();
-				date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
-				Long newTimeInMillisDay = date.getTimeInMillis();
+				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
 
-				if (currentTimeInMillisDay.compareTo(newTimeInMillisDay) > 0) {
-					int nextMonth = date.get(Calendar.MONTH);
-
-					if (nextMonth == 11) {
-						wrapAroundYear(date);
-					}
-					nextMonth++;
-					date.set(Calendar.MONTH, nextMonth % 12);
+				if (currentDate.compareTo(newDate) > 0) {
+					newDate.set(Calendar.MONTH, newDate.get(Calendar.MONTH) + 1);
 				}
 				// fallthrough
 		}
-		return date;
-	}
-
-	private void wrapAroundYear(Calendar date) {
-		int nextYear = date.get(Calendar.YEAR);
-		nextYear++;
-		date.set(Calendar.YEAR, nextYear);
+		return newDate;
 	}
 
 	private void setDescription(Task task, List<String> args) {
@@ -263,7 +248,7 @@ public class Parser {
 
 	private void editTask() {
 		// todo
-		String description = this.getTaskDescription();
+		String description = _argument;
 		String[] descriptionSplit = description.split(" ");
 		int taskIndex = Integer.parseInt(descriptionSplit[0]);
 
@@ -317,7 +302,7 @@ public class Parser {
 			task.setCompleted(true);
 			_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex);
 		} else {
-			setCommandType("ERROR");
+			_commandType = CommandType.ERROR;
 			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
 		}
 	}
@@ -338,25 +323,17 @@ public class Parser {
 	}
 
 	private void findTask() {
-
-		List<Integer> indexesFound = new ArrayList<Integer>();
-		String keywords = getTaskDescription();
+		_indexesFound = new ArrayList<Integer>();
+		String keywords = _argument;
 		for (int i = 0; i < _currentTaskList.size(); i++) {
 			if (_currentTaskList.get(i).getDescription().contains(keywords)) {
-				indexesFound.add(i);
+				_indexesFound.add(i);
 			}
 		}
 
-		_indexesFound = indexesFound;
-		if (indexesFound.size() == 0) {
-			_feedback = String.format(MESSAGE_SEARCH_NO_RESULT, keywords);
-		} else {
-			_feedback = String.format(MESSAGE_TASK_FOUND, indexesFound.size());
-		}
-	}
+		_feedback = (_indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
+				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
 
-	public String getTaskDescription() {
-		return _argument;
 	}
 
 	public TaskDate getStartDate() {
