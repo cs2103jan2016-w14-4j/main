@@ -255,44 +255,28 @@ public class Parser {
 	}
 
 	private void editTask() {
-		// // todo
-		// String description = this.getTaskDescription();
-		// String[] descriptionSplit = description.split(" ");
-		// int taskIndex = Integer.parseInt(descriptionSplit[0]);
-		//
-		// Task task = Task.getTask(taskIndex);
-		//
-		// switch (descriptionSplit.length) {
-		// case (1) :
-		// // todo
-		// // copy task to input box for editing
-		// break;
-		// case (2) :
-		// // todo
-		// checkDateOrTime(descriptionSplit[1]);
-		// break;
-		// case (3) :
-		// // have not handled time yet
-		// String date = descriptionSplit[1];
-		// String time = descriptionSplit[2];
-		// String[] dateArray = date.split("/");
-		// TaskDate td = task.getEndDate();
-		// if (dateArray.length == 1) {
-		// if (dateArray[0].matches("\\d")) {
-		// td.DATE = Integer.parseInt(dateArray[0]);
-		// } else {
-		// // handle mon,tues,wed, etc.
-		// }
-		// } else if (dateArray.length == 2) {
-		// td.DATE = Integer.parseInt(dateArray[0]);
-		// td.MONTH = Integer.parseInt(dateArray[1]);
-		// } else if (dateArray.length == 3) {
-		// td.DATE = Integer.parseInt(dateArray[0]);
-		// td.MONTH = Integer.parseInt(dateArray[1]);
-		// td.YEAR = Integer.parseInt(dateArray[2]);
-		// }
-		// task.setEndDate(td);
-		// }
+		// todo
+		String description = this.getTaskDescription();
+		String[] descriptionSplit = description.split(" ");
+		int taskIndex = Integer.parseInt(descriptionSplit[0]);
+
+		Task task = _currentTaskList.get(taskIndex);
+		TaskDate taskDate = task.getTaskDate();
+
+		switch (descriptionSplit.length) {
+			case (1) :
+				// todo
+				// copy task to input box for editing
+				break;
+			case (2) :
+				// todo
+				checkDateOrTime(descriptionSplit[1]);
+				break;
+			case (3) :
+				// have not handled time yet
+				Calendar date = changeTaskDate(descriptionSplit, taskDate);
+				String time = descriptionSplit[2];
+		}
 		/*
 		 * task.setDescription(description);
 		 * 
@@ -306,6 +290,12 @@ public class Parser {
 		 * commandDetails.setCommandType(CommandDetails.CommandType.EDIT_SHOW_TASK); } else {
 		 * commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex)); }
 		 */
+	}
+
+	private Calendar changeTaskDate(String[] descriptionSplit, TaskDate taskDate) {
+		Calendar date = getDateFromString(descriptionSplit[1]);
+		taskDate.setDate(date);
+		return date;
 	}
 
 	private void markTaskAsComplete() {
