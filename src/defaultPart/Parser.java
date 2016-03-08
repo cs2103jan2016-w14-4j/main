@@ -231,7 +231,8 @@ public class Parser {
 	}
 
 	private void setDescription(Task task, List<String> args) {
-		task.setDescription(String.join(" ", args));
+		//task.setDescription(String.join(" ", args));
+		task.setDescription(" " + args);
 	}
 
 	private void editTask() {
