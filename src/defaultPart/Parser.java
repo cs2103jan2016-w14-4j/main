@@ -9,15 +9,6 @@ import java.util.List;
 
 public class Parser {
 
-	private static final String COMMAND_EDIT = "e";
-	private static final String COMMAND_MARK_AS_COMPLETE = "c";
-	private static final String COMMAND_DELETE = "d";
-	private static final String COMMAND_FIND = "f";
-	private static final String COMMAND_UNDO = "u";
-	private static final String COMMAND_STORE = "s";
-	private static final String COMMAND_QUIT = "q";
-	private static final String COMMAND_NULL = "";
-
 	private static final String FILE_NAME = "WURI.txt";
 
 	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
@@ -34,11 +25,16 @@ public class Parser {
 	private static final String ERROR_FIND = "Mismatch: not FIND command, but trying to get keyword.";
 
 	public enum CommandType {
-		EDIT, EDIT_SHOW_TASK, MARK_AS_COMPLETE, DELETE, FIND, UNDO, QUIT, ADD, ERROR, STORE, NULL
+		// User command is first letter -- make sure no duplicate
+		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
+
+		// for internal use
+		EDIT_SHOW_TASK, ADD, ERROR, NULL
 	};
 
 	private String _argument;
-	private CommandType _commandType;
+	private static CommandType _oldCommandType;
+	private static CommandType _newCommandType;
 
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
@@ -47,12 +43,12 @@ public class Parser {
 	private List<Integer> _indexesFound;
 
 	/* Used for CommandType.UNDO */
-	private List<Task> _prevTaskList = new LinkedList<Task>();
-	private List<Task> _currentTaskList = new LinkedList<Task>();
+	private static List<Task> _prevTaskList = new LinkedList<Task>();
+	private static List<Task> _currentTaskList = new LinkedList<Task>();
 
 	public Parser(String input) {
 		setCommandTypeAndArguments(input);
-		switch (_commandType) {
+		switch (_newCommandType) {
 			case ADD :
 				addTask();
 				break;
@@ -61,8 +57,8 @@ public class Parser {
 				editTask();
 				break;
 
-			case MARK_AS_COMPLETE :
-				markTaskAsComplete();
+			case TOGGLE_COMPLETE :
+				toggleTaskComplete();
 				break;
 
 			case DELETE :
@@ -74,7 +70,7 @@ public class Parser {
 				break;
 
 			case UNDO :
-				// todo
+				undoLastCommand();
 				break;
 
 			case STORE :
@@ -90,8 +86,10 @@ public class Parser {
 		String commandTypeStr = (commandTypeAndArguments.length > 0) ? commandTypeAndArguments[0] : "";
 		setCommandType(commandTypeStr);
 
-		if (commandTypeAndArguments.length >= 2) {
-			_argument = (_commandType == CommandType.ADD) ? input : commandTypeAndArguments[1];
+		if (_newCommandType == CommandType.ADD) {
+			_argument = input;
+		} else if (commandTypeAndArguments.length >= 2) {
+			_argument = commandTypeAndArguments[1];
 		}
 	}
 
@@ -100,7 +98,15 @@ public class Parser {
 	}
 
 	private void setCommandType(String commandTypeStr) {
-		_commandType = CommandType.valueOf(commandTypeStr.toUpperCase());
+		_oldCommandType = _newCommandType;
+		commandTypeStr = commandTypeStr.toUpperCase();
+		for (CommandType commandType : CommandType.values()) {
+			if (commandType.name().substring(0, 1).equals(commandTypeStr)) {
+				_newCommandType = commandType;
+				return;
+			}
+		}
+		_newCommandType = CommandType.ADD;
 	}
 
 	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
@@ -113,21 +119,15 @@ public class Parser {
 
 	private void addTask() {
 		Task newTask = new Task();
-
 		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
-
 		setRecurIfExists(newTask, args);
 		setTaskDateIfExists(newTask, args);
-		setDescription(newTask, args);
+		newTask.setDescription(String.join(" ", args));
 
-		addToTaskList(newTask);
+		setPreviousListAsCurrent();
+		_currentTaskList.add(newTask);
 
 		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
-	}
-
-	private void addToTaskList(Task newTask) {
-		_prevTaskList = _currentTaskList;
-		_currentTaskList.add(newTask);
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
@@ -173,43 +173,50 @@ public class Parser {
 
 	private void setTaskDateIfExists(Task task, List<String> args) {
 		if (args.size() >= 2) {
-			int taskTimeIndex = args.size() - 1;
-			String taskTimeString = args.get(taskTimeIndex);
+			int lastIndex = args.size() - 1;
+			String lastString = args.get(lastIndex);
+			int secondLastIndex = args.size() - 2;
+			String secondLastString = (args.size() >= 3) ? args.get(secondLastIndex) : "";
 
-			int taskDateIndex = args.size() - 2;
-			String taskDateString = (args.size() >= 3) ? args.get(taskDateIndex) : "";
-
-			Calendar date = getDateFromString(taskDateString);
-			if (isTime(taskTimeString) || (taskTimeString.matches("\\d") && date != null)) {
+			Calendar date = getDateFromString(secondLastString);
+			boolean isDigit = lastString.matches("\\d");
+			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
+				System.out.println(isTime(lastString));
 				TaskDate taskDate = new TaskDate();
 				taskDate.setDate(date);
 				// todo: set time
 				task.setTaskDate(taskDate);
-				removeIndexesFromList(args, new int[] { taskTimeIndex, taskDateIndex });
+				removeIndexesFromList(args, new int[] { lastIndex, secondLastIndex });
+			} else {
+				date = getDateFromString(lastString);
+				if (date == null) {
+					return;
+				}
+				TaskDate taskDate = new TaskDate();
+				taskDate.setDate(date);
+				task.setTaskDate(taskDate);
+				args.remove(lastIndex);
 			}
 		}
 	}
 
 	private boolean isTime(String timeString) {
-		String timeRegex = "\\d((:|.)\\d{2})?(am|pm)?";
+		String timeRegex = "\\d((:|\\.)\\d{2})?(am|pm)?";
 		return timeString.matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
 	private Calendar getDateFromString(String dateString) {
-		String dateDelimiterRegex = "/|\\.";
-		// if (dateString.matches(
-		// "\\d{1,2}(" + dateDelimiterRegex + "\\d{1,2}(" + dateDelimiterRegex + "\\d{1,4})?)?")) {
-		// }
-		String[] dayAndMonthAndYear = dateString.split(dateDelimiterRegex, 3);
-		Calendar date = new GregorianCalendar();
+		String[] dayAndMonthAndYear = dateString.split("/", 3);
+		Calendar newDate = new GregorianCalendar();
+		Calendar currentDate = (Calendar) newDate.clone();
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
 					return null;
 				}
-				int currentYear = date.get(Calendar.YEAR);
+				int currentYear = newDate.get(Calendar.YEAR);
 				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
-				date.set(Calendar.YEAR,
+				newDate.set(Calendar.YEAR,
 						currentYear / factor * factor + Integer.parseInt(dayAndMonthAndYear[2]));
 				// fallthrough
 
@@ -217,27 +224,31 @@ public class Parser {
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-				date.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
+
+				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
+
+				if (currentDate.compareTo(newDate) > 0) {
+					newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
+				}
 				// fallthrough
 
 			case 1 :
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
-				date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
+				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
+
+				if (currentDate.compareTo(newDate) > 0) {
+					newDate.set(Calendar.MONTH, newDate.get(Calendar.MONTH) + 1);
+				}
 				// fallthrough
 		}
-		return date;
-	}
-
-	private void setDescription(Task task, List<String> args) {
-		// task.setDescription(String.join(" ", args));
-		task.setDescription(" " + args);
+		return newDate;
 	}
 
 	private void editTask() {
 		// todo
-		String description = this.getTaskDescription();
+		String description = _argument;
 		String[] descriptionSplit = description.split(" ");
 		int taskIndex = Integer.parseInt(descriptionSplit[0]);
 
@@ -251,12 +262,17 @@ public class Parser {
 				break;
 			case (2) :
 				// todo
-				checkDateOrTime(descriptionSplit[1]);
+				if (isTime(descriptionSplit[1])) {
+					// Calendar time = getTimeFromString(descriptionSplit[1]));
+					// taskDate.setEndTime()
+				}
+				;
 				break;
 			case (3) :
 				// have not handled time yet
 				Calendar date = changeTaskDate(descriptionSplit, taskDate);
 				String time = descriptionSplit[2];
+				break;
 		}
 		/*
 		 * task.setDescription(description);
@@ -279,75 +295,56 @@ public class Parser {
 		return date;
 	}
 
-	private void markTaskAsComplete() {
-
+	private void toggleTaskComplete() {
 		int taskIndex = getTaskIndex();
-		Task task = _currentTaskList.get(taskIndex);
-		if (task != null) {
-			task.setCompleted(true);
-			_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex);
-		} else {
-			setCommandType("ERROR");
+		if (taskIndex > _currentTaskList.size()) {
+			_newCommandType = CommandType.ERROR;
 			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
+			return;
 		}
+		setPreviousListAsCurrent();
+		Task task = _currentTaskList.get(taskIndex - 1);
+		task.toggleCompleted();
+		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex);
 	}
 
 	private void deleteTask() {
-		// todo
-		// int taskIndex = parser.getTaskIndex();
-		// Task task = Task.getTask(taskIndex);
-		// Recur recur = task.getRecur();
-		//
-		// if (recur == null || !recur.willRecur() || parser.isDeletingRecur()) {
-		// Task.removeTask(taskIndex);
-		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
-		// } else {
-		// task.setEndDate(recur.getNextRecur());
-		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex));
-		// }
+		int taskIndex = getTaskIndex();
+		if (taskIndex > _currentTaskList.size()) {
+			_newCommandType = CommandType.ERROR;
+			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
+			return;
+		}
+		Task task = _currentTaskList.get(taskIndex - 1);
+		Recur recur = task.getRecur();
+
+		if (recur == null || !recur.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
+			setPreviousListAsCurrent();
+			_currentTaskList.remove(taskIndex - 1);
+			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex);
+		} else {
+			task.getTaskDate().setDate(recur.getNextRecur());
+			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex);
+		}
+	}
+
+	private void setPreviousListAsCurrent() {
+		_prevTaskList = new LinkedList<Task>(_currentTaskList);
+		// todo: clone all object fields (TaskDate, Recur)
 	}
 
 	private void findTask() {
-
-		List<Integer> indexesFound = new ArrayList<Integer>();
-		String keywords = getTaskDescription();
+		_indexesFound = new ArrayList<Integer>();
+		String keywords = _argument;
 		for (int i = 0; i < _currentTaskList.size(); i++) {
 			if (_currentTaskList.get(i).getDescription().contains(keywords)) {
-				indexesFound.add(i);
+				_indexesFound.add(i);
 			}
 		}
 
-		_indexesFound = indexesFound;
-		if (indexesFound.size() == 0) {
-			_feedback = String.format(MESSAGE_SEARCH_NO_RESULT, keywords);
-		} else {
-			_feedback = String.format(MESSAGE_TASK_FOUND, indexesFound.size());
-		}
-	}
+		_feedback = (_indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
+				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
 
-	public String getTaskDescription() {
-		return _argument;
-	}
-
-	public TaskDate getStartDate() {
-		// todo
-		LinkedList<String> dateTimeRecur = new LinkedList<String>();
-		String[] argumentSplit = _argument.split(" ");
-		if (argumentSplit.length <= 5) {
-			dateTimeRecur.addAll(Arrays.asList(argumentSplit));
-		} else {
-			int i = argumentSplit.length - 5;
-			while (i < argumentSplit.length) {
-				dateTimeRecur.add(argumentSplit[i]);
-				i++;
-			}
-		}
-		return null;
-	}
-
-	public TaskDate getEndDate() {
-		// todo
-		return null;
 	}
 
 	public int getTaskIndex() {
@@ -360,18 +357,9 @@ public class Parser {
 		return ERROR_INDEX;
 	}
 
-	public String getKeywords() {
-		return _argument;
-	}
-
-	public Recur getRecur() {
-		// todo
-		return null;
-	}
-
-	public boolean isDeletingRecur() {
-		// todo
-		return false;
+	private void undoLastCommand() {
+		_currentTaskList = _prevTaskList;
+		_feedback = String.format("Undid last command: %1$s", _oldCommandType);
 	}
 
 	/* Getters for UI */
@@ -381,7 +369,7 @@ public class Parser {
 	}
 
 	public CommandType getCommandType() {
-		return _commandType;
+		return _newCommandType;
 	}
 
 	public String getFeedback() {
@@ -391,6 +379,5 @@ public class Parser {
 	public List<Integer> getIndexesFound() {
 		return _indexesFound;
 	}
-
 
 }
