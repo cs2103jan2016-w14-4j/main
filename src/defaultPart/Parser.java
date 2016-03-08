@@ -7,8 +7,6 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import defaultPart.Parser.CommandType;
-
 public class Parser {
 
 	private static final String COMMAND_EDIT = "e";
@@ -230,19 +228,24 @@ public class Parser {
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
 					return null;
 				}
-				// todo: set year
+				int currentYear = date.get(Calendar.YEAR);
+				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
+				date.set(Calendar.YEAR, currentYear/factor*factor + Integer.parseInt(dayAndMonthAndYear[2]));
+				//fallthrough
+
 			case 2 :
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-				System.out.println(Integer.parseInt(dayAndMonthAndYear[1]));
 				date.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
-				System.out.println(date.getTime());
+				//fallthrough
+				
 			case 1 :
-				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
+				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
 				date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
+				//fallthrough
 		}
 		return date;
 	}

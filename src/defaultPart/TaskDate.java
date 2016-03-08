@@ -35,7 +35,7 @@ public class TaskDate {
 
 	@Override
 	public String toString() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		String formattedDate = dateFormat.format(_date.getTime());
 		String timeString = "";
 		if (_startTime != null) {
