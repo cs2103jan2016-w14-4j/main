@@ -42,7 +42,7 @@ public class Recur {
 		return false;
 	}
 
-	public TaskDate getNextRecur() {
+	public Calendar getNextRecur() {
 		// todo
 		return null;
 	}

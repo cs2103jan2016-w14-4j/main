@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="defaultPart/Storage.java|defaultPart/StorageTest.java|defaultPart/SimpleInput.java|ui/simple/|ui/|test/StorageTest.java" kind="src" path=""/>
+	<classpathentry excluding="defaultPart/StorageTest.java|defaultPart/SimpleInput.java|ui/simple/|ui/|test/StorageTest.java" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="xmlunit-core-2.0.0-alpha-04.jar"/>

@@ -27,8 +27,8 @@ public class Task {
 		return _isCompleted;
 	}
 
-	public void setCompleted(boolean isCompleted) {
-		_isCompleted = isCompleted;
+	public void toggleCompleted() {
+		_isCompleted = !_isCompleted;
 	}
 
 	public Recur getRecur() {
