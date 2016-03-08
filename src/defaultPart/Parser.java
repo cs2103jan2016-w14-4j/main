@@ -122,7 +122,7 @@ public class Parser {
 
 		addToTaskList(newTask);
 
-		setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
+		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 	}
 
 	private void addToTaskList(Task newTask) {
@@ -285,10 +285,10 @@ public class Parser {
 		Task task = _currentTaskList.get(taskIndex);
 		if (task != null) {
 			task.setCompleted(true);
-			setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
+			_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex);
 		} else {
 			setCommandType("ERROR");
-			setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
+			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
 		}
 	}
 
@@ -317,11 +317,11 @@ public class Parser {
 			}
 		}
 
-		setIndexesFound(indexesFound);
+		_indexesFound = indexesFound;
 		if (indexesFound.size() == 0) {
-			setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
+			_feedback = String.format(MESSAGE_SEARCH_NO_RESULT, keywords);
 		} else {
-			setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
+			_feedback = String.format(MESSAGE_TASK_FOUND, indexesFound.size());
 		}
 	}
 
@@ -392,11 +392,5 @@ public class Parser {
 		return _indexesFound;
 	}
 
-	private void setFeedback(String feedback) {
-		_feedback = feedback;
-	}
 
-	private void setIndexesFound(List<Integer> indexesFound) {
-		_indexesFound = indexesFound;
-	}
 }
