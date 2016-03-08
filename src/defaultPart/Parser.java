@@ -248,10 +248,9 @@ public class Parser {
 	}
 
 	private void editTask() {
-		// todo
 		String description = _argument;
 		String[] descriptionSplit = description.split(" ");
-		int taskIndex = Integer.parseInt(descriptionSplit[0]);
+		int taskIndex = Integer.parseInt(descriptionSplit[0]); //error-checking to be implemented
 
 		Task task = _currentTaskList.get(taskIndex);
 		TaskDate taskDate = task.getTaskDate();
@@ -260,20 +259,23 @@ public class Parser {
 			case (1) :
 				// todo
 				// copy task to input box for editing
+				System.out.println(task.toString());
 				break;
 			case (2) :
-				// todo
+				// Change either time or date
 				if(isTime(descriptionSplit[1])){
-					Calendar time = getTimeFromString(descriptionSplit[1]));
-					taskDate.setEndTime()
+					changeTaskStartTime(descriptionSplit[1], taskDate);
+				}else{
+					changeTaskDate(descriptionSplit[1], taskDate);
 				};
 				break;
 			case (3) :
 				// have not handled time yet
-				Calendar date = changeTaskDate(descriptionSplit, taskDate);
-				String time = descriptionSplit[2];
+				changeTaskDate(descriptionSplit[1], taskDate);
+				changeTaskStartTime(descriptionSplit[2],taskDate);
 				break;
 		}
+		System.out.println(String.format(MESSAGE_TASK_EDITED,taskIndex));
 		/*
 		 * task.setDescription(description);
 		 * 
@@ -289,10 +291,42 @@ public class Parser {
 		 */
 	}
 
-	private Calendar changeTaskDate(String[] descriptionSplit, TaskDate taskDate) {
-		Calendar date = getDateFromString(descriptionSplit[1]);
+	private void changeTaskStartTime(String timeString, TaskDate taskDate) {
+		Calendar time = taskDate.getDate();
+		String timeDelimiterRegex = ":|\\.";
+		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex,2);
+		switch(hoursAndMinutes.length){
+			case 2:
+				String minutesToChange = hoursAndMinutes[1];
+				int minutes = 0;
+				if(minutesToChange.contains("pm")){
+					minutes = Integer.parseInt(minutesToChange.split("pm")[0]) + 12*60;
+				}else if(minutesToChange.contains("am")){
+					minutes = Integer.parseInt(minutesToChange.split("am")[0]);
+				}else{
+					minutes = Integer.parseInt(minutesToChange);
+				}
+				time.set(Calendar.MINUTE,minutes);
+				//fallthrough
+			case 1:
+				String hoursToChange = hoursAndMinutes[0];
+				int hours = 0;
+				if(hoursToChange.contains("pm")){
+					hours = Integer.parseInt(hoursToChange.split("pm")[0])+12;
+				}else if(hoursToChange.contains("am")){
+					hours = Integer.parseInt(hoursToChange.split("am")[0]);
+				}else{
+					hours = Integer.parseInt(hoursToChange);
+				}
+				time.set(Calendar.HOUR,hours);
+				break;
+		}
+		taskDate.setStartTime(time);
+	}
+
+	private void changeTaskDate(String descriptionSplit, TaskDate taskDate) {
+		Calendar date = getDateFromString(descriptionSplit);
 		taskDate.setDate(date);
-		return date;
 	}
 
 	private void markTaskAsComplete() {
