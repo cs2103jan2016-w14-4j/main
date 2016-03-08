@@ -100,7 +100,7 @@ public class Parser {
 	}
 
 	private void setCommandType(String commandTypeStr) {
-		_commandType = CommandType.valueOf(commandTypeStr);
+		_commandType = CommandType.valueOf(commandTypeStr.toUpperCase());
 	}
 
 	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
