@@ -217,15 +217,14 @@ public class Parser {
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-				Long currentTimeInMillis = date.getTimeInMillis();
-				
+				Long currentTimeInMillisMonth = date.getTimeInMillis();
+
 				date.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
-				
-				Long newTimeInMillis = date.getTimeInMillis();
-				if(currentTimeInMillis.compareTo(newTimeInMillis)>0){
-					int nextYear = date.get(Calendar.YEAR);
-					nextYear++;
-					date.set(Calendar.YEAR, nextYear);
+
+				Long newTimeInMillisMonth = date.getTimeInMillis();
+
+				if (currentTimeInMillisMonth.compareTo(newTimeInMillisMonth) > 0) {
+					wrapAroundYear(date);
 				}
 				// fallthrough
 
@@ -233,10 +232,28 @@ public class Parser {
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
+				Long currentTimeInMillisDay = date.getTimeInMillis();
 				date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
+				Long newTimeInMillisDay = date.getTimeInMillis();
+
+				if (currentTimeInMillisDay.compareTo(newTimeInMillisDay) > 0) {
+					int nextMonth = date.get(Calendar.MONTH);
+
+					if (nextMonth == 11) {
+						wrapAroundYear(date);
+					}
+					nextMonth++;
+					date.set(Calendar.MONTH, nextMonth % 12);
+				}
 				// fallthrough
 		}
 		return date;
+	}
+
+	private void wrapAroundYear(Calendar date) {
+		int nextYear = date.get(Calendar.YEAR);
+		nextYear++;
+		date.set(Calendar.YEAR, nextYear);
 	}
 
 	private void setDescription(Task task, List<String> args) {
@@ -404,6 +421,5 @@ public class Parser {
 	public List<Integer> getIndexesFound() {
 		return _indexesFound;
 	}
-
 
 }
