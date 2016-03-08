@@ -33,7 +33,8 @@ public class Parser {
 	};
 
 	private String _argument;
-	private CommandType _commandType;
+	private static CommandType _oldCommandType;
+	private static CommandType _newCommandType;
 
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
@@ -47,7 +48,7 @@ public class Parser {
 
 	public Parser(String input) {
 		setCommandTypeAndArguments(input);
-		switch (_commandType) {
+		switch (_newCommandType) {
 			case ADD :
 				addTask();
 				break;
@@ -69,7 +70,7 @@ public class Parser {
 				break;
 
 			case UNDO :
-				// todo
+				undoLastCommand();
 				break;
 
 			case STORE :
@@ -85,7 +86,7 @@ public class Parser {
 		String commandTypeStr = (commandTypeAndArguments.length > 0) ? commandTypeAndArguments[0] : "";
 		setCommandType(commandTypeStr);
 
-		if (_commandType == CommandType.ADD) {
+		if (_newCommandType == CommandType.ADD) {
 			_argument = input;
 		} else if (commandTypeAndArguments.length >= 2) {
 			_argument = commandTypeAndArguments[1];
@@ -97,14 +98,15 @@ public class Parser {
 	}
 
 	private void setCommandType(String commandTypeStr) {
+		_oldCommandType = _newCommandType;
 		commandTypeStr = commandTypeStr.toUpperCase();
 		for (CommandType commandType : CommandType.values()) {
 			if (commandType.name().substring(0, 1).equals(commandTypeStr)) {
-				_commandType = commandType;
+				_newCommandType = commandType;
 				return;
 			}
 		}
-		_commandType = CommandType.ADD;
+		_newCommandType = CommandType.ADD;
 	}
 
 	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
@@ -122,14 +124,10 @@ public class Parser {
 		setTaskDateIfExists(newTask, args);
 		newTask.setDescription(String.join(" ", args));
 
-		addToTaskList(newTask);
+		setPreviousListAsCurrent();
+		_currentTaskList.add(newTask);
 
 		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
-	}
-
-	private void addToTaskList(Task newTask) {
-		_prevTaskList = _currentTaskList;
-		_currentTaskList.add(newTask);
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
@@ -300,10 +298,11 @@ public class Parser {
 	private void toggleTaskComplete() {
 		int taskIndex = getTaskIndex();
 		if (taskIndex > _currentTaskList.size()) {
-			_commandType = CommandType.ERROR;
+			_newCommandType = CommandType.ERROR;
 			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
 			return;
 		}
+		setPreviousListAsCurrent();
 		Task task = _currentTaskList.get(taskIndex - 1);
 		task.toggleCompleted();
 		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex);
@@ -312,7 +311,7 @@ public class Parser {
 	private void deleteTask() {
 		int taskIndex = getTaskIndex();
 		if (taskIndex > _currentTaskList.size()) {
-			_commandType = CommandType.ERROR;
+			_newCommandType = CommandType.ERROR;
 			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
 			return;
 		}
@@ -320,12 +319,18 @@ public class Parser {
 		Recur recur = task.getRecur();
 
 		if (recur == null || !recur.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
+			setPreviousListAsCurrent();
 			_currentTaskList.remove(taskIndex - 1);
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex);
 		} else {
 			task.getTaskDate().setDate(recur.getNextRecur());
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex);
 		}
+	}
+
+	private void setPreviousListAsCurrent() {
+		_prevTaskList = new LinkedList<Task>(_currentTaskList);
+		// todo: clone all object fields (TaskDate, Recur)
 	}
 
 	private void findTask() {
@@ -352,6 +357,11 @@ public class Parser {
 		return ERROR_INDEX;
 	}
 
+	private void undoLastCommand() {
+		_currentTaskList = _prevTaskList;
+		_feedback = String.format("Undid last command: %1$s", _oldCommandType);
+	}
+
 	/* Getters for UI */
 
 	public List<Task> getTaskList() {
@@ -359,7 +369,7 @@ public class Parser {
 	}
 
 	public CommandType getCommandType() {
-		return _commandType;
+		return _newCommandType;
 	}
 
 	public String getFeedback() {
