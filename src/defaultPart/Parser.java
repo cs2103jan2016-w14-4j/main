@@ -217,7 +217,16 @@ public class Parser {
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
+				Long currentTimeInMillis = date.getTimeInMillis();
+				
 				date.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
+				
+				Long newTimeInMillis = date.getTimeInMillis();
+				if(currentTimeInMillis.compareTo(newTimeInMillis)>0){
+					int nextYear = date.get(Calendar.YEAR);
+					nextYear++;
+					date.set(Calendar.YEAR, nextYear);
+				}
 				// fallthrough
 
 			case 1 :
@@ -251,12 +260,16 @@ public class Parser {
 				break;
 			case (2) :
 				// todo
-				checkDateOrTime(descriptionSplit[1]);
+				if(isTime(descriptionSplit[1])){
+					Calendar time = getTimeFromString(descriptionSplit[1]));
+					taskDate.setEndTime()
+				};
 				break;
 			case (3) :
 				// have not handled time yet
 				Calendar date = changeTaskDate(descriptionSplit, taskDate);
 				String time = descriptionSplit[2];
+				break;
 		}
 		/*
 		 * task.setDescription(description);
