@@ -231,7 +231,7 @@ public class Parser {
 	}
 
 	private void setDescription(Task task, List<String> args) {
-		//task.setDescription(String.join(" ", args));
+		// task.setDescription(String.join(" ", args));
 		task.setDescription(" " + args);
 	}
 
@@ -280,16 +280,16 @@ public class Parser {
 	}
 
 	private void markTaskAsComplete() {
-		// todo
-		// int taskIndex = parser.getTaskIndex();
-		// Task task = Task.getTask(taskIndex);
-		// if (task != null) {
-		// task.setCompleted(true);
-		// _commandDetails.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
-		// } else {
-		// _commandDetails.setCommandType(CommandDetails.CommandType.ERROR);
-		// _commandDetails.setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
-		// }
+
+		int taskIndex = getTaskIndex();
+		Task task = _currentTaskList.get(taskIndex);
+		if (task != null) {
+			task.setCompleted(true);
+			setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex));
+		} else {
+			setCommandType("ERROR");
+			setFeedback(String.format(MESSAGE_INVALID_INDEX, taskIndex));
+		}
 	}
 
 	private void deleteTask() {
@@ -307,23 +307,22 @@ public class Parser {
 		// }
 	}
 
-	
 	private void findTask() {
-	
-		 List<Integer> indexesFound = new ArrayList<Integer>();
-		 String keywords = getTaskDescription();
-		 for (int i = 0; i < _currentTaskList.size(); i++) {
-		 if (_currentTaskList.get(i).getDescription().contains(keywords)) {
-			 indexesFound.add(i);
+
+		List<Integer> indexesFound = new ArrayList<Integer>();
+		String keywords = getTaskDescription();
+		for (int i = 0; i < _currentTaskList.size(); i++) {
+			if (_currentTaskList.get(i).getDescription().contains(keywords)) {
+				indexesFound.add(i);
 			}
-		 }
-		 
-		 setIndexesFound(indexesFound);
-		 if (indexesFound.size() == 0) {
-			 setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
-		 } else {
-			 setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
-		 }
+		}
+
+		setIndexesFound(indexesFound);
+		if (indexesFound.size() == 0) {
+			setFeedback(String.format(MESSAGE_SEARCH_NO_RESULT, keywords));
+		} else {
+			setFeedback(String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
+		}
 	}
 
 	public String getTaskDescription() {
