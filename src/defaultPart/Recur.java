@@ -1,5 +1,6 @@
 package defaultPart;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Recur {
@@ -48,6 +49,9 @@ public class Recur {
 
 	@Override
 	public String toString() {
-		return "Recur [timeUnit=" + _timeUnit + ", frequency=" + _frequency + ", endDate=" + _endDate + "]";
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		String formattedDate = dateFormat.format(_endDate.getTime());
+		return "Recur [timeUnit=" + _timeUnit + ", frequency=" + _frequency + ", endDate=" + formattedDate
+				+ "]";
 	}
 }

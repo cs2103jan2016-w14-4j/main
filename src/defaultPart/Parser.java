@@ -138,6 +138,14 @@ public class Parser {
 		}
 	}
 
+	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
+	private void removeIndexesFromList(List<String> list, int[] indexes) {
+		Arrays.sort(indexes);
+		for (int i = indexes.length - 1; i >= 0; i--) {
+			list.remove(indexes[i]);
+		}
+	}
+
 	private void addTask() {
 		Task newTask = new Task();
 
@@ -147,10 +155,14 @@ public class Parser {
 		setTaskDateIfExists(newTask, args);
 		setDescription(newTask, args);
 
-		_prevTaskList = _currentTaskList;
-		_currentTaskList.add(newTask);
+		addToTaskList(newTask);
 
 		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
+	}
+
+	private void addToTaskList(Task newTask) {
+		_prevTaskList = _currentTaskList;
+		_currentTaskList.add(newTask);
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
@@ -186,10 +198,10 @@ public class Parser {
 				if (Character.isDigit(frequency)) {
 					recur.setFrequency(Character.getNumericValue(frequency));
 				}
-				// todo: process endCondition
+				// todo: endCondition support for number of times
+				recur.setEndDate(getDateFromString(endCondition));
 				task.setRecur(recur);
-				args.remove(endConditionIndex);
-				args.remove(frequencyAndUnitIndex);
+				removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
 			}
 		}
 	}
@@ -208,12 +220,11 @@ public class Parser {
 				taskDate.setDate(date);
 				// todo: set time
 				task.setTaskDate(taskDate);
-				args.remove(taskTimeIndex);
-				args.remove(taskDateIndex);
+				removeIndexesFromList(args, new int[] { taskTimeIndex, taskDateIndex });
 			}
 		}
 	}
-	
+
 	private boolean isTime(String timeString) {
 		String timeRegex = "\\d((:|.)\\d{2})?(am|pm)?";
 		return timeString.matches(timeRegex + "(-" + timeRegex + ")?");
@@ -233,22 +244,23 @@ public class Parser {
 				}
 				int currentYear = date.get(Calendar.YEAR);
 				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
-				date.set(Calendar.YEAR, currentYear/factor*factor + Integer.parseInt(dayAndMonthAndYear[2]));
-				//fallthrough
+				date.set(Calendar.YEAR,
+						currentYear / factor * factor + Integer.parseInt(dayAndMonthAndYear[2]));
+				// fallthrough
 
 			case 2 :
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
 				date.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
-				//fallthrough
-				
+				// fallthrough
+
 			case 1 :
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
 				date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
-				//fallthrough
+				// fallthrough
 		}
 		return date;
 	}
