@@ -1,7 +1,6 @@
 *.class
 .metadata
 .recommenders
-.settings
 .idea
 out
 *.iml
