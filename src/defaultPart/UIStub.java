@@ -42,8 +42,10 @@ public class UIStub {
 
 			// Prints the tasklist
 			System.out.println();
+			int i =1;
 			for (Task task : parser.getTaskList()) {
-				System.out.println(task);
+				System.out.println(i + ": " + task);
+				i++;
 			}
 
 			try {
