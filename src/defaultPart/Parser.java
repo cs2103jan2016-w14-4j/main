@@ -256,9 +256,9 @@ public class Parser {
 
 		switch (descriptionSplit.length) {
 			case (1) :
-				// todo
 				// copy task to input box for editing
-				System.out.println(task.toString());
+				_newCommandType = CommandType.EDIT_SHOW_TASK;
+				_indexesFound.add(taskIndex);
 				break;
 			case (2) :
 				// Change either time or date
