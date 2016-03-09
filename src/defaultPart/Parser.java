@@ -134,14 +134,14 @@ public class Parser {
 
 	private void addToTaskList(Task newTask) {
 		Calendar newTaskDate = newTask.getDate();
-		for (int i = 0; i < _currentTaskList.size(); i++) {
-			Calendar taskDate = _currentTaskList.get(i).getDate();
+		for (int i = 0; i < Storage.get_currentTaskList().size(); i++) {
+			Calendar taskDate = Storage.get_currentTaskList().get(i).getDate();
 			if (taskDate == null || (newTaskDate != null && newTaskDate.compareTo(taskDate) <= 0)) {
-				_currentTaskList.add(i, newTask);
+				Storage.get_currentTaskList().add(i, newTask);
 				return;
 			}
 		}
-		_currentTaskList.add(newTask);
+		Storage.get_currentTaskList().add(newTask);
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
@@ -264,7 +264,7 @@ public class Parser {
 		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
-		Task task = _currentTaskList.get(taskIndex);
+		Task task = Storage.get_currentTaskList().get(taskIndex);
 
 		switch (args.length) {
 			case 1 :
@@ -340,13 +340,13 @@ public class Parser {
 			return;
 		}
 		setPreviousListAsCurrent();
-		Task task = _currentTaskList.get(taskIndex);
+		Task task = Storage.get_currentTaskList().get(taskIndex);
 		task.toggleCompleted();
 		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
 
 	private boolean isTaskIndexValid(int taskIndex) {
-		if (taskIndex < 0 || taskIndex >= _currentTaskList.size()) {
+		if (taskIndex < 0 || taskIndex >= Storage.get_currentTaskList().size()) {
 			_newCommandType = CommandType.ERROR;
 			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex + LIST_NUMBERING_OFFSET);
 			return false;
@@ -359,12 +359,12 @@ public class Parser {
 		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
-		Task task = _currentTaskList.get(taskIndex);
+		Task task = Storage.get_currentTaskList().get(taskIndex);
 		Recur recur = task.getRecur();
 
 		if (recur == null || !recur.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
 			setPreviousListAsCurrent();
-			_currentTaskList.remove(taskIndex);
+			Storage.get_currentTaskList().remove(taskIndex);
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
 			task.setDate(recur.getNextRecur());
@@ -373,15 +373,15 @@ public class Parser {
 	}
 
 	private void setPreviousListAsCurrent() {
-		_prevTaskList = new LinkedList<Task>(_currentTaskList);
+		Storage.set_currentTaskList(new LinkedList<Task>(Storage.get_currentTaskList()));
 		// todo: clone all object fields (TaskDate, Recur)
 	}
 
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
 		String keywords = _argument;
-		for (int i = 0; i < _currentTaskList.size(); i++) {
-			if (_currentTaskList.get(i).getDescription().contains(keywords)) {
+		for (int i = 0; i < Storage.get_currentTaskList().size(); i++) {
+			if (Storage.get_currentTaskList().get(i).getDescription().contains(keywords)) {
 				_indexesFound.add(i);
 			}
 		}
@@ -402,19 +402,12 @@ public class Parser {
 	}
 
 	private void undoLastCommand() {
-		_currentTaskList = _prevTaskList;
+		Storage.undoTaskListChange();
 		_feedback = String.format("Undid last command: %1$s", _oldCommandType);
 	}
 
-	public static void setTaskList(List<Task> taskList) {
-		_currentTaskList = taskList;
-	}
-
+	
 	/* Getters for UI */
-
-	public static List<Task> getTaskList() {
-		return _currentTaskList;
-	}
 
 	public CommandType getCommandType() {
 		return _newCommandType;

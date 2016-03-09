@@ -42,7 +42,7 @@ public class Storage {
 		Element rootElement = doc.createElement("wuriTasks");
 		doc.appendChild(rootElement);
 
-		for (Task taskItem : _currentTaskList) {
+		for (Task taskItem : get_currentTaskList()) {
 			createTasksXML(doc, rootElement, taskItem);
 		}
 
@@ -221,6 +221,19 @@ public class Storage {
 	public static String extractStringFromNode(Element taskElement, String tag) {
 		Node node = taskElement.getElementsByTagName(tag).item(0);
 		return (node == null) ? "" : node.getTextContent();
+	}
+
+	public static List<Task> get_currentTaskList() {
+		return _currentTaskList;
+	}
+
+	public static void set_currentTaskList(List<Task> _currentTaskList) {
+		Storage._currentTaskList = _currentTaskList;
+	}
+
+	public static void undoTaskListChange()
+	{
+		Storage._currentTaskList = Storage._prevTaskList;
 	}
 
 }
