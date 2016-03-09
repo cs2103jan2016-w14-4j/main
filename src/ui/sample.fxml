@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-
 <StackPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Controller">
    <children>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -44,7 +43,7 @@
                </children>
             </HBox>
             <ListView fx:id="floatingTaskList" minHeight="0.0" prefHeight="100.0" />
-            <TextField fx:id="inputBox" alignment="BOTTOM_CENTER" />
+            <TextField fx:id="inputBox" />
          </children>
       </VBox>
    </children>

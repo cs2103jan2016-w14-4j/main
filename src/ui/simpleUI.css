@@ -36,7 +36,7 @@
 
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: lightblue;
+    -fx-background-color: white;
     -fx-text-fill: white;
 }
 
@@ -45,6 +45,6 @@
 }
 
 .list-cell:filled:hover {
-    -fx-background-color: lightgrey;
+    -fx-background-color: #eeeeee;
     -fx-text-fill: white;
 }

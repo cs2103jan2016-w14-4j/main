@@ -52,6 +52,15 @@ public class Controller implements Initializable {
 	    overDueTaskList.setItems(FXCollections.observableArrayList(
                 task
         ));
+
+		inputBox.addEventHandler(KeyEvent.KEY_PRESSED, (e)->{
+			if(e.getCode().equals(KeyCode.ENTER)){
+				System.out.println(inputBox.getText());
+				inputBox.clear();
+			}
+		});
+
+		inputBox.requestFocus();
 	}
 
 }
