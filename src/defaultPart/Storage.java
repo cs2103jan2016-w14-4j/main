@@ -25,11 +25,15 @@ import java.util.List;
 
 public class Storage {
 
+	// prevTaskList is for undo function
+	private static List<Task> _prevTaskList = new LinkedList<Task>();
+	private static List<Task> _currentTaskList = new LinkedList<Task>();
+	
 	// Date format used to save/load from XML
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	// Function to save tasks to the XML file
-	public static void saveTasks(File file, List<Task> taskList)
+	public static void saveTasks(File file)
 			throws ParserConfigurationException, TransformerException {
 
 		Document doc = initializeDocBuilder();
@@ -38,7 +42,7 @@ public class Storage {
 		Element rootElement = doc.createElement("wuriTasks");
 		doc.appendChild(rootElement);
 
-		for (Task taskItem : taskList) {
+		for (Task taskItem : _currentTaskList) {
 			createTasksXML(doc, rootElement, taskItem);
 		}
 

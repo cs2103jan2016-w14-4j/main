@@ -46,10 +46,6 @@ public class Parser {
 	/* Used for CommandType.FIND */
 	private List<Integer> _indexesFound;
 
-	/* Used for CommandType.UNDO */
-	private static List<Task> _prevTaskList = new LinkedList<Task>();
-	private static List<Task> _currentTaskList = new LinkedList<Task>();
-
 	public Parser(String input) {
 		setCommandTypeAndArguments(input);
 		switch (_newCommandType) {
