@@ -1,10 +1,10 @@
 package defaultPart;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -197,7 +197,7 @@ public class Parser {
 			Calendar date = getDateFromString(secondLastString);
 			boolean isDigit = lastString.matches("\\d");
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
-				task.setStartTime(getTaskStartTime(lastString));
+				task.setStartTime(getTimeFromString(lastString));
 				args.remove(lastIndex);
 			}
 		}
@@ -218,7 +218,7 @@ public class Parser {
 
 	private boolean isTime(String timeString) {
 		String timeRegex = "\\d((:|\\.)\\d{2})?(am|pm)?";
-		return timeString.matches(timeRegex + "(-" + timeRegex + ")?");
+		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
 	private Calendar getDateFromString(String dateString) {
@@ -283,7 +283,7 @@ public class Parser {
 				if (date != null) {
 					task.setDate(date);
 				} else if (isTime(args[1])) {
-					task.setStartTime(getTaskStartTime(args[1]));
+					task.setStartTime(getTimeFromString(args[1]));
 				} else {
 					task.setDescription(args[1]);
 				}
@@ -295,7 +295,7 @@ public class Parser {
 				if (date != null) {
 					task.setDate(date);
 				}
-				task.setStartTime(getTaskStartTime(args[2]));
+				task.setStartTime(getTimeFromString(args[2]));
 				break;
 
 			case 4 :
@@ -304,6 +304,24 @@ public class Parser {
 		_feedback = String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
 
+	private Calendar getTimeFromString(String timeString) {
+		String minuteFormat = "";
+		if (timeString.contains(":")) {
+			minuteFormat = ":mm";
+		} else if (timeString.contains(".")) {
+			minuteFormat = ".mm";
+		}
+		String amOrPmMarker = (timeString.toLowerCase().contains("m")) ? "a" : ""; 
+		SimpleDateFormat timeFormat = new SimpleDateFormat("h" + minuteFormat + amOrPmMarker);
+		Calendar time = new GregorianCalendar();
+		try {
+			time.setTime(timeFormat.parse(timeString));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return time;
+	}
+	
 	private Calendar getTaskStartTime(String timeString) {
 		Calendar time = new GregorianCalendar();
 		time.set(Calendar.MINUTE, 0);
