@@ -3,6 +3,7 @@ package defaultPart;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import defaultPart.Parser.CommandType;
 import defaultPart.Recur.TimeUnit;
 
 import javax.xml.parsers.*;
@@ -25,11 +26,53 @@ import java.util.List;
 
 public class Storage {
 
+	private static List<Task> _currentTaskList = new LinkedList<Task>();
+	/* Used for CommandType.UNDO */
+	private static List<Task> _prevTaskList = new LinkedList<Task>();
+	
+	/* Returns a clone to prevent undesired modification */
+	public static List<Task> getTaskList() {
+		return new LinkedList<Task>(_currentTaskList);
+	}	
+	
+	public static Task getTask(int index) {
+		return _currentTaskList.get(index);
+	}
+	
+	public static boolean isTaskIndexValid(int taskIndex) {
+		return (taskIndex >= 0 && taskIndex < _currentTaskList.size());
+	}
+	
+	public static void removeTask(int index) {
+		_currentTaskList.remove(index);
+	}
+	
+	public static void setPreviousListAsCurrent() {
+		_currentTaskList = _prevTaskList;
+	}
+	
+	public static void setCurrentListAsPrevious() {
+		_prevTaskList = new LinkedList<Task>(_currentTaskList);
+		// todo: clone all object fields (TaskDate, Recur)
+	}
+	
+	public static void addToTaskList(Task newTask) {
+		Calendar newTaskDate = newTask.getDate();
+		for (int i = 0; i < _currentTaskList.size(); i++) {
+			Calendar taskDate = _currentTaskList.get(i).getDate();
+			if (taskDate == null || (newTaskDate != null && newTaskDate.compareTo(taskDate) <= 0)) {
+				_currentTaskList.add(i, newTask);
+				return;
+			}
+		}
+		_currentTaskList.add(newTask);
+	}
+	
 	// Date format used to save/load from XML
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	// Function to save tasks to the XML file
-	public static void saveTasks(File file, List<Task> taskList)
+	public static void saveTasks(File file)
 			throws ParserConfigurationException, TransformerException {
 
 		Document doc = initializeDocBuilder();
@@ -38,7 +81,7 @@ public class Storage {
 		Element rootElement = doc.createElement("wuriTasks");
 		doc.appendChild(rootElement);
 
-		for (Task taskItem : taskList) {
+		for (Task taskItem : _currentTaskList) {
 			createTasksXML(doc, rootElement, taskItem);
 		}
 
@@ -121,7 +164,7 @@ public class Storage {
 	// The loadTasks function has to be called separately for all 3 types of
 	// tasks to make it more modular (easier to add new task type) and make it
 	// easier to parse due to the different attributes each type contain.
-	public static List<Task> loadTasks(File file, String type)
+	public static void loadTasks(File file, String type)
 			throws ParserConfigurationException, SAXException, IOException {
 
 		// Initialize list of tasks
@@ -148,7 +191,6 @@ public class Storage {
 				}
 			}
 		}
-		return taskList;
 	}
 
 	// Extracts a NodeList object containing all the tasks associated with the specified type from the file

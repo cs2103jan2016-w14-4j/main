@@ -14,8 +14,9 @@ public class ParserTest {
 
 	@Test
 	public void testAdd() {
-		Parser parser = new Parser("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
-		List<Task> taskList = parser.getTaskList();
+		Parser parser = new Parser();
+		parser.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
+		List<Task> taskList = Storage.getTaskList();
 		assertEquals(1, taskList.size());
 		Task task = taskList.get(0);
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
@@ -39,7 +40,8 @@ public class ParserTest {
 		dateFormat = new SimpleDateFormat("d/M/yyyy");
 		assertEquals("13/8/2016", dateFormat.format(date.getTime()));
 
-		parser = new Parser("dev guide 13");
+		parser.executeCommand("dev guide 13");
+		taskList = Storage.getTaskList();
 		assertEquals(2, taskList.size());
 		task = taskList.get(0);
 		assertEquals("dev guide", task.getDescription());

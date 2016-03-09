@@ -2,6 +2,7 @@ package defaultPart;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,43 +14,28 @@ public class UIStub {
 	private static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		//loadTasks();
+		//Storage.loadTasks();
 		executeCommandUntilExit();
 	}
 
-	private static void loadTasks() {
-		try {
-			Parser.setTaskList(Storage.loadTasks(new File("WURI.txt"), "Task"));
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	private static void executeCommandUntilExit() {
+		Parser parser = new Parser();
 		for (;;) {
 			String userInput = getUserInput();
-			Parser parser = new Parser(userInput);
+			parser.executeCommand(userInput);
 
 			// Prints the feedback
 			System.out.println(parser.getFeedback());
 
 			// Prints the tasklist
 			System.out.println();
-			int i =1;
-			for (Task task : parser.getTaskList()) {
-				System.out.println(i + ": " + task);
-				i++;
+			List<Task> taskList = Storage.getTaskList();
+			for (int i=0; i<taskList.size();i++) {
+				System.out.println(i + 1 + ": " + taskList.get(i));
 			}
 
 			try {
-				Storage.saveTasks(new File("WURI.txt"), parser.getTaskList());
+				Storage.saveTasks(new File("WURI.txt"));
 			} catch (ParserConfigurationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
