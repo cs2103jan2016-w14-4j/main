@@ -337,6 +337,9 @@ public class Logic {
 		return time;
 	}
 
+	/**
+	 *  Toggles a task's isComplete between true and false
+	 */
 	private void toggleTaskComplete() {
 		int taskIndex = getTaskIndex();
 		if (!isTaskIndexValid(taskIndex)) {
@@ -378,6 +381,9 @@ public class Logic {
 		}
 	}
 
+	/**
+	 *  Find a task with a description which matches the keywords 
+	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
 		String keywords = _argument;
@@ -387,7 +393,7 @@ public class Logic {
 				_indexesFound.add(i);
 			}
 		}
-
+		// Feedback directed back to UI depending on whether it is successful or not
 		_feedback = (_indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
 				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
 
