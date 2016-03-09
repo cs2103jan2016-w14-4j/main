@@ -26,7 +26,7 @@ public class UIStub {
 			for (Task task : parser.getTaskList()) {
 				System.out.println(task);
 			}
-			
+
 			try {
 				Storage.saveTasks(new File("WURI.txt"), parser.getTaskList());
 			} catch (ParserConfigurationException e) {

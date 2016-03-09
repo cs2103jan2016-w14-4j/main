@@ -137,18 +137,15 @@ public class Parser {
 	}
 
 	private void addToTaskList(Task newTask) {
-		if (_currentTaskList.isEmpty()) {
-			_currentTaskList.add(newTask);
-		} else {
-			Calendar newTaskDate = newTask.getDate();
-    		for (int i = 0; i < _currentTaskList.size(); i++) {
-    			Calendar taskDate = _currentTaskList.get(i).getDate();
-    			if (taskDate == null || (newTaskDate != null && newTaskDate.compareTo(taskDate) <= 0)) {
-    				_currentTaskList.add(i, newTask);
-    				break;
-    			}
-    		}
+		Calendar newTaskDate = newTask.getDate();
+		for (int i = 0; i < _currentTaskList.size(); i++) {
+			Calendar taskDate = _currentTaskList.get(i).getDate();
+			if (taskDate == null || (newTaskDate != null && newTaskDate.compareTo(taskDate) <= 0)) {
+				_currentTaskList.add(i, newTask);
+				return;
+			}
 		}
+		_currentTaskList.add(newTask);
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */

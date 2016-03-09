@@ -19,17 +19,17 @@ public class ParserTest {
 		assertEquals(1, taskList.size());
 		Task task = taskList.get(0);
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
-		
+
 		Calendar date = task.getDate();
 		assertTrue(date != null);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
 		assertEquals("1/1/2017", dateFormat.format(date.getTime()));
-			
+
 		Calendar time = task.getStartTime();
 		assertTrue(time != null);
 		dateFormat = new SimpleDateFormat("HH:mm");
-		assertEquals("15:22", dateFormat.format(time.getTime()));		
-		
+		assertEquals("15:22", dateFormat.format(time.getTime()));
+
 		Recur recur = task.getRecur();
 		assertTrue(recur != null);
 		assertEquals(3, recur.getFrequency());
