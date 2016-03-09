@@ -20,6 +20,7 @@ public class UIStub {
 
 	private static void executeCommandUntilExit() {
 		Parser parser = new Parser();
+		Storage storage = new Storage();
 		for (;;) {
 			String userInput = getUserInput();
 			parser.executeCommand(userInput);
@@ -35,7 +36,7 @@ public class UIStub {
 			}
 
 			try {
-				Storage.saveTasks(new File("WURI.txt"));
+				storage.saveTasks(new File("WURI.txt"));
 			} catch (ParserConfigurationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -129,8 +129,6 @@ public class Parser {
 		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 	}
 
-
-
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
 	private void setRecurIfExists(Task task, List<String> args) {
 		if (args.size() >= 3) {
@@ -251,6 +249,7 @@ public class Parser {
 		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
+
 		Task task = Storage.getTask(taskIndex);
 
 		switch (args.length) {
@@ -294,7 +293,7 @@ public class Parser {
 		} else if (timeString.contains(".")) {
 			minuteFormat = ".mm";
 		}
-		String amOrPmMarker = (timeString.toLowerCase().contains("m")) ? "a" : ""; 
+		String amOrPmMarker = (timeString.toLowerCase().contains("m")) ? "a" : "";
 		SimpleDateFormat timeFormat = new SimpleDateFormat("h" + minuteFormat + amOrPmMarker);
 		Calendar time = new GregorianCalendar();
 		try {
@@ -304,7 +303,7 @@ public class Parser {
 		}
 		return time;
 	}
-	
+
 	private Calendar getTaskStartTime(String timeString) {
 		Calendar time = new GregorianCalendar();
 		time.set(Calendar.MINUTE, 0);
@@ -344,8 +343,10 @@ public class Parser {
 		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
+
 		Storage.setCurrentListAsPrevious();
 		Task task = Storage.getTask(taskIndex);
+
 		task.toggleCompleted();
 		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
@@ -364,6 +365,7 @@ public class Parser {
 		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
+
 		Task task = Storage.getTask(taskIndex);
 		Recur recur = task.getRecur();
 
@@ -408,9 +410,6 @@ public class Parser {
 	}
 
 	/* Getters for UI */
-
-
-
 	public CommandType getCommandType() {
 		return _newCommandType;
 	}
