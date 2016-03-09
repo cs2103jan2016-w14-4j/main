@@ -1,6 +1,7 @@
 package ui;
 
 
+import defaultPart.Recur;
 import defaultPart.Task;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,14 +38,15 @@ public class TaskCellController extends Region{
     public void refresh(){
         try {
            // taskIdText.setText("Task ID: " + task.getIndex());
-
+        	
             descriptionText.setText(task.getDescription());
 
             if (task.isCompleted())
                 checkBox.setSelected(true);
-
-            if (task.getRecur().willRecur())
-                recurText.setText("Recur: " + task.getRecur().getTimeUnit().toString());
+            
+            Recur recur = task.getRecur();
+            if (recur != null)
+                recurText.setText("Recur: " + recur.getTimeUnit());
             
             Calendar calendar = task.getDate();
             if (calendar != null)
