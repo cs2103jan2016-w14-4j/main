@@ -1,4 +1,4 @@
-package ui.simple;
+package ui;
 
 import defaultPart.Task;
 import javafx.fxml.FXMLLoader;

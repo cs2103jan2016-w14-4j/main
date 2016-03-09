@@ -1,4 +1,4 @@
-package ui.simple;
+package ui;
 
 
 import defaultPart.Task;
@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 /**
  * TasCellController is the Controller for the taskcell customized control
@@ -35,7 +36,7 @@ public class TaskCellController extends Region{
 
     public void refresh(){
         try {
-            taskIdText.setText("Task ID: " + task.getIndex());
+           // taskIdText.setText("Task ID: " + task.getIndex());
 
             descriptionText.setText(task.getDescription());
 
@@ -43,13 +44,15 @@ public class TaskCellController extends Region{
                 checkBox.setSelected(true);
 
             if (task.getRecur().willRecur())
-                recurText.setText("Recur: " + task.getRecur().getUnit().toString());
+                recurText.setText("Recur: " + task.getRecur().getTimeUnit().toString());
+            
+            Calendar calendar = task.getDate();
+            if (calendar != null)
+                dueText.setText("Due: " + calendar.getTime());
 
-            if (task.getEndDate().isDateSet())
-                dueText.setText("Due: " + task.getEndDate().toString());
-
-            if (task.getStartDate().isDateSet())
-                startText.setText("Due: " + task.getStartDate().toString());
+            calendar = task.getStartTime();
+            if (calendar != null)
+                startText.setText("Due: " + calendar.getTime());
         }catch(NullPointerException e){
             System.err.println("Error running: " + e.toString() + "\n check default constructor of Task!");
         }
@@ -58,9 +61,7 @@ public class TaskCellController extends Region{
 
         checkBox.selectedProperty().addListener((p,o,n)->{
             if(n)
-                task.setCompleted(true);
-            else
-                task.setCompleted(false);
+                task.toggleCompleted();
         });
     }
 
