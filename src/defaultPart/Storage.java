@@ -33,7 +33,7 @@ public class Storage {
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	// Function to save tasks to the XML file
-	public static void saveTasks(File file)
+	public void saveTasks(File file)
 			throws ParserConfigurationException, TransformerException {
 
 		Document doc = initializeDocBuilder();
@@ -50,8 +50,39 @@ public class Storage {
 		transformAndSaveXML(doc, file);
 	}
 
+	// Function to load tasks from XML file
+	public void loadTasks(File file)
+			throws ParserConfigurationException, SAXException, IOException {
+
+		// Initialize list of tasks
+		List<Task> taskList = new LinkedList<Task>();
+
+		// Extracts out the list of task nodes
+		NodeList nList = extractListFromDocument(file);
+
+		// Iterates through the list of tasks extracted
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+			{
+				Node taskNode = nList.item(temp);
+				if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element taskElement = (Element) taskNode;
+
+					Task newTask = null;
+					try {
+						newTask = importTask(taskElement);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					taskList.add(newTask);
+				}
+			}
+		}
+		_currentTaskList = taskList;
+	}
+	
 	// Save the XML file in a "pretty" format
-	private static void transformAndSaveXML(Document doc, File file)
+	private void transformAndSaveXML(Document doc, File file)
 			throws TransformerFactoryConfigurationError, TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
@@ -66,7 +97,7 @@ public class Storage {
 	}
 
 	// Initialize and returns a new document object
-	private static Document initializeDocBuilder() throws ParserConfigurationException {
+	private Document initializeDocBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document doc = builder.newDocument();
@@ -74,7 +105,7 @@ public class Storage {
 	}
 
 	// Extracts out the recurrence part of the task and convert it into a XML node format
-	public static void extractRecurrFromTask(Document doc, Task taskItem, Element parentElement) {
+	public void extractRecurrFromTask(Document doc, Task taskItem, Element parentElement) {
 		Recur recur = taskItem.getRecur();
 		if (recur == null) {
 			return;
@@ -93,7 +124,7 @@ public class Storage {
 		parentElement.appendChild(recurrElement);
 	}
 
-	private static void createTasksXML(Document doc, Element rootElement, Task taskItem) {
+	private void createTasksXML(Document doc, Element rootElement, Task taskItem) {
 		Element taskElement = doc.createElement("Task");
 		Element descriptionElement = doc.createElement("Description");
 		Element dateElement = doc.createElement("Date");
@@ -118,45 +149,12 @@ public class Storage {
 		rootElement.appendChild(taskElement);
 	}
 
-	private static String getCalendarString(Calendar calendar) {
+	private String getCalendarString(Calendar calendar) {
 		return (calendar == null) ? "" : formatter.format(calendar.getTime());
 	}
 
-	// The loadTasks function has to be called separately for all 3 types of
-	// tasks to make it more modular (easier to add new task type) and make it
-	// easier to parse due to the different attributes each type contain.
-	public static List<Task> loadTasks(File file, String type)
-			throws ParserConfigurationException, SAXException, IOException {
-
-		// Initialize list of tasks
-		List<Task> taskList = new LinkedList<Task>();
-
-		// Extracts out the list of task nodes
-		NodeList nList = extractListFromDocument(file, type);
-
-		// Iterates through the list of tasks extracted
-		for (int temp = 0; temp < nList.getLength(); temp++) {
-			{
-				Node taskNode = nList.item(temp);
-				if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element taskElement = (Element) taskNode;
-
-					Task newTask = null;
-					try {
-						newTask = importTask(taskElement);
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					taskList.add(newTask);
-				}
-			}
-		}
-		return taskList;
-	}
-
 	// Extracts a NodeList object containing all the tasks associated with the specified type from the file
-	public static NodeList extractListFromDocument(File file, String type)
+	private NodeList extractListFromDocument(File file)
 			throws ParserConfigurationException, SAXException, IOException {
 
 		// Reading the XML file
@@ -166,11 +164,12 @@ public class Storage {
 		document.getDocumentElement().normalize();
 
 		// Getting all the tasks in the XML structure for this task type
-		NodeList nList = document.getElementsByTagName(type);
+		NodeList nList = document.getElementsByTagName("task");
 		return nList;
 	}
 
-	public static Task importTask(Element taskElement) throws ParseException {
+	// Import a task object from a XML element 
+	private Task importTask(Element taskElement) throws ParseException {
 
 		// Create new task with extracted description & extract other attributes
 		Task newTask = new Task();
@@ -191,7 +190,7 @@ public class Storage {
 
 	// Extracts a recur class from the XML component of a task while importing tasks (used by all 3 types of
 	// tasks)
-	public static Recur extractRecurFromXML(Element taskElement) throws ParseException {
+	private Recur extractRecurFromXML(Element taskElement) throws ParseException {
 		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
 			return null;
 		}
@@ -207,7 +206,7 @@ public class Storage {
 	}
 
 	// Extracts a date from node with specified tag & Convert it into TaskDate class for output
-	public static Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
+	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
 		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
 		if (calendarString == "") {
 			return null;
@@ -218,11 +217,12 @@ public class Storage {
 	}
 
 	// Extracts a string from node with specified tag
-	public static String extractStringFromNode(Element taskElement, String tag) {
+	private String extractStringFromNode(Element taskElement, String tag) {
 		Node node = taskElement.getElementsByTagName(tag).item(0);
 		return (node == null) ? "" : node.getTextContent();
 	}
 
+	// Getters and Setters for taskList and undo function.	
 	public static List<Task> get_currentTaskList() {
 		return _currentTaskList;
 	}
