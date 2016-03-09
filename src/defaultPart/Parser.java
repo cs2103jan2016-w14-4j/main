@@ -309,6 +309,7 @@ public class Parser {
 
 	private Calendar getTaskStartTime(String timeString) {
 		Calendar time = new GregorianCalendar();
+		time.set(Calendar.MINUTE, 0);
 		String timeDelimiterRegex = ":|\\.";
 		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
 		switch (hoursAndMinutes.length) {
