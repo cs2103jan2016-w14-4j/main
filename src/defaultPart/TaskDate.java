@@ -36,11 +36,14 @@ public class TaskDate {
 	@Override
 	public String toString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		String formattedDate = dateFormat.format(_date.getTime());
+		String formattedDate = "";
+		if (_date != null) {
+			formattedDate = dateFormat.format(_date.getTime());
+		}
 		String timeString = "";
 		if (_startTime != null) {
 			SimpleDateFormat timeFormat = new SimpleDateFormat("K.mma");
-			timeString = dateFormat.format(_startTime.getTime());
+			timeString = timeFormat.format(_startTime.getTime());
 			if (_endTime != null) {
 				timeString += "-" + dateFormat.format(_endTime.getTime());
 			}

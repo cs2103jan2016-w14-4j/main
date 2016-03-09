@@ -3,4 +3,5 @@
 .recommenders
 .settings
 .idea
+out
 *.iml
