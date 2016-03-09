@@ -44,6 +44,10 @@
     -fx-background-color: white;
 }
 
+list-cell:odd{
+    -fx-background-color: white;
+}
+
 .list-cell:filled:hover {
     -fx-background-color: #eeeeee;
     -fx-text-fill: white;
