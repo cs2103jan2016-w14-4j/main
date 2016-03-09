@@ -48,7 +48,7 @@ public class TaskDate {
 				timeString += "-" + dateFormat.format(_endTime.getTime());
 			}
 		}
-		return "[" + formattedDate + timeString + "]";
+		return "[" + formattedDate + " " + timeString + "]";
 	}
 
 }

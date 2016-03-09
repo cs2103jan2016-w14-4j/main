@@ -1,13 +1,17 @@
 package defaultPart;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Parser {
+
+	private static final int LIST_NUMBERING_OFFSET = 1;
 
 	private static final String FILE_NAME = "WURI.txt";
 
@@ -176,18 +180,18 @@ public class Parser {
 			int lastIndex = args.size() - 1;
 			String lastString = args.get(args.size() - 1);
 			String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
-
 			Calendar date = getDateFromString(secondLastString);
 			boolean isDigit = lastString.matches("\\d");
 			TaskDate taskDate = new TaskDate();
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
 				// todo: set time
 				args.remove(lastIndex);
-			} 
-			
-			//todo: change TaskDate implementation to allow separate setting of date/time (just 3 Calendar var in Task?)
+			}
+
+			// todo: change TaskDate implementation to allow separate setting of date/time (just 3 Calendar
+			// var in Task?)
 			lastIndex = args.size() - 1;
-			if (lastIndex == 1) {
+			if (lastIndex == 0) {
 				return;
 			}
 			lastString = args.get(lastIndex);
@@ -248,85 +252,87 @@ public class Parser {
 	}
 
 	private void editTask() {
-		String description = _argument;
-		String[] descriptionSplit = description.split(" ");
-		int taskIndex = Integer.parseInt(descriptionSplit[0]); //error-checking to be implemented
-
+		String[] args = _argument.split(" ");
+		int taskIndex = getTaskIndex();
+		if (!isTaskIndexValid(taskIndex)) {
+			return;
+		}
 		Task task = _currentTaskList.get(taskIndex);
 		TaskDate taskDate = task.getTaskDate();
+		if (taskDate == null) {
+			taskDate = new TaskDate();
+		}
 
-		switch (descriptionSplit.length) {
-			case (1) :
+		switch (args.length) {
+			case 1 :
 				// copy task to input box for editing
 				_newCommandType = CommandType.EDIT_SHOW_TASK;
+				_indexesFound = new ArrayList<Integer>();
 				_indexesFound.add(taskIndex);
 				break;
-			case (2) :
-				// Change either time or date
-				if(isTime(descriptionSplit[1])){
-					changeTaskStartTime(descriptionSplit[1], taskDate);
-				}else{
-					changeTaskDate(descriptionSplit[1], taskDate);
-				};
+
+			case 2 :
+				 if (!changeTaskDate(args[1], taskDate) && isTime(args[1])) {
+					changeTaskStartTime(args[1], taskDate);
+				} else {
+					task.setDescription(args[1]);
+				}
 				break;
-			case (3) :
+
+			case 3 :
 				// have not handled time yet
-				changeTaskDate(descriptionSplit[1], taskDate);
-				changeTaskStartTime(descriptionSplit[2],taskDate);
+				changeTaskDate(args[1], taskDate);
+				changeTaskStartTime(args[2], taskDate);
 				break;
+
+			case 4 :
+				// todo: allows changing recur
 		}
-		System.out.println(String.format(MESSAGE_TASK_EDITED,taskIndex));
-		/*
-		 * task.setDescription(description);
-		 * 
-		 * TaskDate startDate = parser.getStartDate(); task.setStartDate(startDate);
-		 * 
-		 * TaskDate endDate = parser.getEndDate(); task.setEndDate(endDate);
-		 * 
-		 * Recur recur = parser.getRecur(); task.setRecur(recur);
-		 * 
-		 * if (description == null && startDate == null && endDate == null & recur == null) {
-		 * commandDetails.setCommandType(CommandDetails.CommandType.EDIT_SHOW_TASK); } else {
-		 * commandDetails.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex)); }
-		 */
+		task.setTaskDate(taskDate);
+		_feedback = String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
 
 	private void changeTaskStartTime(String timeString, TaskDate taskDate) {
-		Calendar time = taskDate.getDate();
+		
+		Calendar time = new GregorianCalendar();
 		String timeDelimiterRegex = ":|\\.";
-		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex,2);
-		switch(hoursAndMinutes.length){
-			case 2:
+		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
+		switch (hoursAndMinutes.length) {
+			case 2 :
 				String minutesToChange = hoursAndMinutes[1];
 				int minutes = 0;
-				if(minutesToChange.contains("pm")){
-					minutes = Integer.parseInt(minutesToChange.split("pm")[0]) + 12*60;
-				}else if(minutesToChange.contains("am")){
+				if (minutesToChange.contains("pm")) {
+					minutes = Integer.parseInt(minutesToChange.split("pm")[0]) + 12 * 60;
+				} else if (minutesToChange.contains("am")) {
 					minutes = Integer.parseInt(minutesToChange.split("am")[0]);
-				}else{
+				} else {
 					minutes = Integer.parseInt(minutesToChange);
 				}
-				time.set(Calendar.MINUTE,minutes);
-				//fallthrough
-			case 1:
+				time.set(Calendar.MINUTE, minutes);
+				// fallthrough
+			case 1 :
 				String hoursToChange = hoursAndMinutes[0];
 				int hours = 0;
-				if(hoursToChange.contains("pm")){
-					hours = Integer.parseInt(hoursToChange.split("pm")[0])+12;
-				}else if(hoursToChange.contains("am")){
+				if (hoursToChange.contains("pm")) {
+					hours = Integer.parseInt(hoursToChange.split("pm")[0]) + 12;
+				} else if (hoursToChange.contains("am")) {
 					hours = Integer.parseInt(hoursToChange.split("am")[0]);
-				}else{
+				} else {
 					hours = Integer.parseInt(hoursToChange);
 				}
-				time.set(Calendar.HOUR,hours);
+				time.set(Calendar.HOUR, hours);
 				break;
 		}
 		taskDate.setStartTime(time);
 	}
 
-	private void changeTaskDate(String descriptionSplit, TaskDate taskDate) {
+	private boolean changeTaskDate(String descriptionSplit, TaskDate taskDate) {
 		Calendar date = getDateFromString(descriptionSplit);
+		if (date == null) {
+			return false;
+		}
 		taskDate.setDate(date);
+		return true;
 	}
 
 	private void toggleTaskComplete() {
@@ -335,15 +341,15 @@ public class Parser {
 			return;
 		}
 		setPreviousListAsCurrent();
-		Task task = _currentTaskList.get(taskIndex - 1);
+		Task task = _currentTaskList.get(taskIndex);
 		task.toggleCompleted();
-		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex);
+		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
 
 	private boolean isTaskIndexValid(int taskIndex) {
-		if (taskIndex < 1 || taskIndex > _currentTaskList.size()) {
+		if (taskIndex < 0 || taskIndex >= _currentTaskList.size()) {
 			_newCommandType = CommandType.ERROR;
-			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
+			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex + LIST_NUMBERING_OFFSET);
 			return false;
 		}
 		return true;
@@ -354,16 +360,16 @@ public class Parser {
 		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
-		Task task = _currentTaskList.get(taskIndex - 1);
+		Task task = _currentTaskList.get(taskIndex);
 		Recur recur = task.getRecur();
 
 		if (recur == null || !recur.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
 			setPreviousListAsCurrent();
-			_currentTaskList.remove(taskIndex - 1);
-			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex);
+			_currentTaskList.remove(taskIndex);
+			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
 			task.getTaskDate().setDate(recur.getNextRecur());
-			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex);
+			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		}
 	}
 
@@ -388,9 +394,9 @@ public class Parser {
 
 	public int getTaskIndex() {
 		if (_argument != null) {
-			String taskIndex = _argument.split(" ", 2)[0];
+			String taskIndex = _argument.split(" ", 2)[0];//todo: bound check
 			if (taskIndex.matches("\\d")) {
-				return Integer.parseInt(taskIndex);
+				return Integer.parseInt(taskIndex) - LIST_NUMBERING_OFFSET;
 			}
 		}
 		return ERROR_INDEX;
