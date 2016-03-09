@@ -1,8 +1,9 @@
-###User guide  
+###User & Developer guide  
 https://docs.google.com/document/d/1LSLocndrb20IBqGtKNFbteeOpyvbvzdDZL1gZmaVH4k  
 
 ###Resources  
 http://www.comp.nus.edu.sg/~cs2103/AY1516S2/ (please read the entire handbook by Jan -- contains critical information!)  
+http://www.comp.nus.edu.sg/~cs2103/AY1516S2/contents/coding-standards-java.html  
 
 ###Github  
 -GUI-only guide (view with google chrome) https://rawgit.com/riwu/Github-Basics/master/main.html  
