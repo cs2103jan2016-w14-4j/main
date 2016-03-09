@@ -3,7 +3,6 @@ package defaultPart;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import defaultPart.Parser.CommandType;
 import defaultPart.Recur.TimeUnit;
 
 import javax.xml.parsers.*;
@@ -19,7 +18,6 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,33 +27,33 @@ public class Storage {
 	private static List<Task> _currentTaskList = new LinkedList<Task>();
 	/* Used for CommandType.UNDO */
 	private static List<Task> _prevTaskList = new LinkedList<Task>();
-	
+
 	/* Returns a clone to prevent undesired modification */
 	public static List<Task> getTaskList() {
 		return new LinkedList<Task>(_currentTaskList);
-	}	
-	
+	}
+
 	public static Task getTask(int index) {
 		return _currentTaskList.get(index);
 	}
-	
+
 	public static boolean isTaskIndexValid(int taskIndex) {
 		return (taskIndex >= 0 && taskIndex < _currentTaskList.size());
 	}
-	
+
 	public static void removeTask(int index) {
 		_currentTaskList.remove(index);
 	}
-	
+
 	public static void setPreviousListAsCurrent() {
 		_currentTaskList = _prevTaskList;
 	}
-	
+
 	public static void setCurrentListAsPrevious() {
 		_prevTaskList = new LinkedList<Task>(_currentTaskList);
 		// todo: clone all object fields (TaskDate, Recur)
 	}
-	
+
 	public static void addToTaskList(Task newTask) {
 		Calendar newTaskDate = newTask.getDate();
 		for (int i = 0; i < _currentTaskList.size(); i++) {
@@ -67,13 +65,12 @@ public class Storage {
 		}
 		_currentTaskList.add(newTask);
 	}
-	
+
 	// Date format used to save/load from XML
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	// Function to save tasks to the XML file
-	public void saveTasks(File file)
-			throws ParserConfigurationException, TransformerException {
+	public void saveTasks(File file) throws ParserConfigurationException, TransformerException {
 
 		Document doc = initializeDocBuilder();
 
@@ -90,8 +87,7 @@ public class Storage {
 	}
 
 	// Function to load tasks from XML file
-	public void loadTasks(File file)
-			throws ParserConfigurationException, SAXException, IOException {
+	public void loadTasks(File file) throws ParserConfigurationException, SAXException, IOException {
 		// Extracts out the list of task nodes
 		NodeList nList = extractListFromDocument(file);
 
@@ -114,7 +110,7 @@ public class Storage {
 			}
 		}
 	}
-	
+
 	// Save the XML file in a "pretty" format
 	private void transformAndSaveXML(Document doc, File file)
 			throws TransformerFactoryConfigurationError, TransformerException {
@@ -234,7 +230,7 @@ public class Storage {
 		return nList;
 	}
 
-	// Import a task object from a XML element 
+	// Import a task object from a XML element
 	private Task importTask(Element taskElement) throws ParseException {
 
 		// Create new task with extracted description & extract other attributes
