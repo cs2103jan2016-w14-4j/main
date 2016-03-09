@@ -10,12 +10,12 @@ import org.junit.Test;
 import defaultPart.*;
 import defaultPart.Recur.TimeUnit;
 
-public class ParserTest {
+public class LogicTest {
 
 	@Test
 	public void testAdd() {
-		Parser parser = new Parser();
-		parser.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
+		Logic logic = new Logic();
+		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
 		List<Task> taskList = Storage.getTaskList();
 		assertEquals(1, taskList.size());
 		Task task = taskList.get(0);
@@ -40,7 +40,7 @@ public class ParserTest {
 		dateFormat = new SimpleDateFormat("d/M/yyyy");
 		assertEquals("13/8/2016", dateFormat.format(date.getTime()));
 
-		parser.executeCommand("dev guide 13");
+		logic.executeCommand("dev guide 13");
 		taskList = Storage.getTaskList();
 		assertEquals(2, taskList.size());
 		task = taskList.get(0);

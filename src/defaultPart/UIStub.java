@@ -16,14 +16,14 @@ public class UIStub {
 	}
 
 	private static void executeCommandUntilExit() {
-		Parser parser = new Parser();
+		Logic logic = new Logic();
 		Storage storage = new Storage();
 		for (;;) {
 			String userInput = getUserInput();
-			parser.executeCommand(userInput);
+			logic.executeCommand(userInput);
 
 			// Prints the feedback
-			System.out.println(parser.getFeedback());
+			System.out.println(logic.getFeedback());
 
 			// Prints the tasklist
 			System.out.println();

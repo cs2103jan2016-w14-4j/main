@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class Parser {
+public class Logic {
 
 	private static final int LIST_NUMBERING_OFFSET = 1;
 
