@@ -410,9 +410,13 @@ public class Parser {
 		_feedback = String.format("Undid last command: %1$s", _oldCommandType);
 	}
 
+	public static void setTaskList(List<Task> taskList) {
+		_currentTaskList = taskList;
+	}
+
 	/* Getters for UI */
 
-	public List<Task> getTaskList() {
+	public static List<Task> getTaskList() {
 		return _currentTaskList;
 	}
 
