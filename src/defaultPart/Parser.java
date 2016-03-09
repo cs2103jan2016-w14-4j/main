@@ -174,29 +174,30 @@ public class Parser {
 	private void setTaskDateIfExists(Task task, List<String> args) {
 		if (args.size() >= 2) {
 			int lastIndex = args.size() - 1;
-			String lastString = args.get(lastIndex);
-			int secondLastIndex = args.size() - 2;
-			String secondLastString = (args.size() >= 3) ? args.get(secondLastIndex) : "";
+			String lastString = args.get(args.size() - 1);
+			String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
 
 			Calendar date = getDateFromString(secondLastString);
 			boolean isDigit = lastString.matches("\\d");
+			TaskDate taskDate = new TaskDate();
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
-				System.out.println(isTime(lastString));
-				TaskDate taskDate = new TaskDate();
-				taskDate.setDate(date);
 				// todo: set time
-				task.setTaskDate(taskDate);
-				removeIndexesFromList(args, new int[] { lastIndex, secondLastIndex });
-			} else {
-				date = getDateFromString(lastString);
-				if (date == null) {
-					return;
-				}
-				TaskDate taskDate = new TaskDate();
-				taskDate.setDate(date);
-				task.setTaskDate(taskDate);
 				args.remove(lastIndex);
+			} 
+			
+			//todo: change TaskDate implementation to allow separate setting of date/time (just 3 Calendar var in Task?)
+			lastIndex = args.size() - 1;
+			if (lastIndex == 1) {
+				return;
 			}
+			lastString = args.get(lastIndex);
+			date = getDateFromString(lastString);
+			if (date == null) {
+				return;
+			}
+			taskDate.setDate(date);
+			task.setTaskDate(taskDate);
+			args.remove(lastIndex);
 		}
 	}
 
@@ -330,9 +331,7 @@ public class Parser {
 
 	private void toggleTaskComplete() {
 		int taskIndex = getTaskIndex();
-		if (taskIndex > _currentTaskList.size()) {
-			_newCommandType = CommandType.ERROR;
-			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
+		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
 		setPreviousListAsCurrent();
@@ -341,11 +340,18 @@ public class Parser {
 		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex);
 	}
 
-	private void deleteTask() {
-		int taskIndex = getTaskIndex();
-		if (taskIndex > _currentTaskList.size()) {
+	private boolean isTaskIndexValid(int taskIndex) {
+		if (taskIndex < 1 || taskIndex > _currentTaskList.size()) {
 			_newCommandType = CommandType.ERROR;
 			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex);
+			return false;
+		}
+		return true;
+	}
+
+	private void deleteTask() {
+		int taskIndex = getTaskIndex();
+		if (!isTaskIndexValid(taskIndex)) {
 			return;
 		}
 		Task task = _currentTaskList.get(taskIndex - 1);
