@@ -24,6 +24,9 @@ import java.util.List;
 
 public class Storage {
 
+	/* Date format used to save/load from XML */
+	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
+
 	/* Stores current list of tasks in the program */
 	private static List<Task> _currentTaskList = new LinkedList<Task>();
 	/* Used for CommandType.UNDO */
@@ -99,9 +102,6 @@ public class Storage {
 		}
 		_currentTaskList.add(newTask);
 	}
-
-	/* Date format used to save/load from XML */
-	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/**
 	 * Function to save the tasks in current task list into an XML file
@@ -253,7 +253,7 @@ public class Storage {
 	 * @param taskItem
 	 *            Task to extract out the task details from
 	 */
-	private void createTasksXML(Document doc, Element rootElement, Task taskItem) {
+	private void createTasksXML(Document doc, Task taskItem, Element rootElement) {
 		Element taskElement = doc.createElement("Task");
 		Element descriptionElement = doc.createElement("Description");
 		Element dateElement = doc.createElement("Date");
