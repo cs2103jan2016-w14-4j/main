@@ -131,7 +131,7 @@ public class Storage {
 
 	/**
 	 * Function to load tasks from an XML file into current task list, if file does not exists, function will
-	 * not attempt to load tasks
+	 * not attempt to load tasks ( usually the case when user starts WURI for the first time )
 	 * 
 	 * @param file
 	 *            File to load from
