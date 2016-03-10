@@ -32,8 +32,14 @@ public class Storage {
 	/* Used for CommandType.UNDO */
 	private static List<Task> _prevTaskList = new LinkedList<Task>();
 
-	/* Returns a clone to prevent undesired modification */
+	/**
+	 * Get a copy of the task list
+	 * 
+	 * @return
+	 */
+
 	public static List<Task> getTaskList() {
+		/* Returns a clone to prevent undesired modification */
 		return new LinkedList<Task>(_currentTaskList);
 	}
 
@@ -60,7 +66,7 @@ public class Storage {
 	}
 
 	/**
-	 * Removes task from task list at specified index
+	 * Remove task from task list at specified index
 	 * 
 	 * @param taskIndex
 	 *            Index of task to remove
@@ -70,15 +76,14 @@ public class Storage {
 	}
 
 	/**
-	 * For the "undo" function, replaces current task list with previous task list
+	 * Replace current task list with previous task list, for the "undo" function
 	 */
 	public static void setPreviousListAsCurrent() {
 		_currentTaskList = _prevTaskList;
 	}
 
 	/**
-	 * After every operation which makes changes to task list, to save the "state" for possible
-	 * undo-operations in the future
+	 * "Save-state" for future undo operations.
 	 */
 	public static void setCurrentListAsPrevious() {
 		_prevTaskList = new LinkedList<Task>(_currentTaskList);
@@ -86,7 +91,7 @@ public class Storage {
 	}
 
 	/**
-	 * Adds a task into the current task list
+	 * Add a task into the current task list
 	 * 
 	 * @param newTask
 	 *            Task to be added to task list
@@ -104,7 +109,7 @@ public class Storage {
 	}
 
 	/**
-	 * Function to save the tasks in current task list into an XML file
+	 * Save the tasks in current task list into an XML file
 	 * 
 	 * @param file
 	 *            File to be saved
@@ -122,7 +127,7 @@ public class Storage {
 		doc.appendChild(rootElement);
 
 		for (Task taskItem : _currentTaskList) {
-			createTasksXML(doc, rootElement, taskItem);
+			createTasksXML(doc, taskItem,rootElement);
 		}
 
 		// Save the XML file in a "pretty" format
@@ -130,7 +135,7 @@ public class Storage {
 	}
 
 	/**
-	 * Function to load tasks from an XML file into current task list, if file does not exists, function will
+	 * Load tasks from an XML file into current task list, if file does not exists, function will
 	 * not attempt to load tasks ( usually the case when user starts WURI for the first time )
 	 * 
 	 * @param file
@@ -172,7 +177,7 @@ public class Storage {
 	}
 
 	/**
-	 * To transform the XML file into a properly indented and formatted XML document
+	 * Transform the XML file into a properly indented and formatted XML document
 	 * 
 	 * @param doc
 	 *            Doc file with all the XML structures
@@ -213,8 +218,7 @@ public class Storage {
 	}
 
 	/**
-	 * Extracts out recur class from task and creates the proper XML structure to be processed in the save
-	 * function
+	 * Extract out recur class from task and creates the proper XML structure for saving
 	 * 
 	 * @param doc
 	 *            Document which contains the current XML structure
@@ -243,7 +247,7 @@ public class Storage {
 	}
 
 	/**
-	 * Creates the associated XML structure for a Task class, calls extractRecurrFromTask to handle the recur
+	 * Create the associated XML structure for a Task class, calls extractRecurrFromTask to handle the recur
 	 * portion
 	 * 
 	 * @param doc
@@ -279,7 +283,7 @@ public class Storage {
 	}
 
 	/**
-	 * Returns a formatted string from a calendar object
+	 * Get a formatted date string from a calendar object
 	 * 
 	 * @param calendar
 	 *            Calendar object to extract string from
@@ -290,7 +294,7 @@ public class Storage {
 	}
 
 	/**
-	 * Extracts a NodeList object with all the tasks inside the XML file
+	 * Extract a NodeList object with all the tasks inside the XML file
 	 * 
 	 * @param file
 	 *            File to extract tasks from
@@ -317,7 +321,7 @@ public class Storage {
 	}
 
 	/**
-	 * Imports a Task object from a Element object found in the XML structure
+	 * Import a Task object from a Element object found in the XML structure
 	 * 
 	 * @param taskElement
 	 *            Element object containing the task details
@@ -345,7 +349,7 @@ public class Storage {
 	}
 
 	/**
-	 * Extracts out a recur class from the recur XML structure of a task, called when importing tasks
+	 * Extract out a recur class from the recur XML structure of a task, called when importing tasks
 	 * 
 	 * @param taskElement
 	 *            Element object containing the task/recur details
@@ -369,7 +373,7 @@ public class Storage {
 	}
 
 	/**
-	 * Extracts a date from node with specified tag, convert it into a Calendar class object and returns it
+	 * Extract a date from node with specified tag and returns as Calendar object
 	 * 
 	 * @param taskElement
 	 *            Element object containing the task details
@@ -390,7 +394,7 @@ public class Storage {
 	}
 
 	/**
-	 * Extracts a string from node with specified tag
+	 * Extract a string from node with specified tag
 	 * 
 	 * @param taskElement
 	 *            Element object containing the task details
