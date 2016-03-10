@@ -338,7 +338,7 @@ public class Logic {
 	}
 
 	/**
-	 *  Toggles a task's isComplete between true and false
+	 * Toggles a task's isComplete between true and false
 	 */
 	private void toggleTaskComplete() {
 		int taskIndex = getTaskIndex();
@@ -382,7 +382,7 @@ public class Logic {
 	}
 
 	/**
-	 *  Find a task with a description which matches the keywords 
+	 * Find a task with a description which matches the keywords
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
