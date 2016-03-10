@@ -37,18 +37,20 @@ public class Storage {
 	/**
 	 * Returns the task at specified index
 	 * 
-	 * @param index								Index of task to get
-	 * @return									Task at specified index
+	 * @param index
+	 *            Index of task to get
+	 * @return Task at specified index
 	 */
 	public static Task getTask(int index) {
 		return _currentTaskList.get(index);
 	}
 
 	/**
-	 * Checks if the task index is within the task list size
-	 * *
-	 * @param taskIndex 						Index of task to check
-	 * @return									True if task index is valid
+	 * Checks if the task index is within the task list size *
+	 * 
+	 * @param taskIndex
+	 *            Index of task to check
+	 * @return True if task index is valid
 	 */
 	public static boolean isTaskIndexValid(int taskIndex) {
 		return (taskIndex >= 0 && taskIndex < _currentTaskList.size());
@@ -57,22 +59,23 @@ public class Storage {
 	/**
 	 * Removes task from task list at specified index
 	 * 
-	 * @param taskIndex							Index of task to remove
+	 * @param taskIndex
+	 *            Index of task to remove
 	 */
 	public static void removeTask(int taskIndex) {
 		_currentTaskList.remove(taskIndex);
 	}
 
 	/**
-	 * 	For the "undo" function, replaces current task list with previous task list
+	 * For the "undo" function, replaces current task list with previous task list
 	 */
 	public static void setPreviousListAsCurrent() {
 		_currentTaskList = _prevTaskList;
 	}
 
 	/**
-	 *  After every operation which makes changes to task list, to save the "state"
-	 *  for possible undo-operations in the future
+	 * After every operation which makes changes to task list, to save the "state" for possible
+	 * undo-operations in the future
 	 */
 	public static void setCurrentListAsPrevious() {
 		_prevTaskList = new LinkedList<Task>(_currentTaskList);
@@ -80,9 +83,10 @@ public class Storage {
 	}
 
 	/**
-	 *  Adds a task into the current task list
+	 * Adds a task into the current task list
 	 * 
-	 * @param newTask							Task to be added to task list
+	 * @param newTask
+	 *            Task to be added to task list
 	 */
 	public static void addToTaskList(Task newTask) {
 		Calendar newTaskDate = newTask.getDate();
@@ -100,11 +104,14 @@ public class Storage {
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/**
-	 *  Function to save the tasks in current task list into an XML file
+	 * Function to save the tasks in current task list into an XML file
 	 * 
-	 * @param file								File to be saved
-	 * @throws ParserConfigurationException		Error in parser configuration
-	 * @throws TransformerException				Error with XML transformation 
+	 * @param file
+	 *            File to be saved
+	 * @throws ParserConfigurationException
+	 *             Error in parser configuration
+	 * @throws TransformerException
+	 *             Error with XML transformation
 	 */
 	public void saveTasks(File file) throws ParserConfigurationException, TransformerException {
 
@@ -123,12 +130,16 @@ public class Storage {
 	}
 
 	/**
-	 *  Function to load tasks from an XML file into current task list
+	 * Function to load tasks from an XML file into current task list
 	 * 
-	 * @param file								File to load from
-	 * @throws ParserConfigurationException		Error in parser configuration
-	 * @throws SAXException						Error in XML file structure
-	 * @throws IOException						Error accessing file
+	 * @param file
+	 *            File to load from
+	 * @throws ParserConfigurationException
+	 *             Error in parser configuration
+	 * @throws SAXException
+	 *             Error in XML file structure
+	 * @throws IOException
+	 *             Error accessing file
 	 */
 	public void loadTasks(File file) throws ParserConfigurationException, SAXException, IOException {
 		// Extracts out the list of task nodes
@@ -155,12 +166,16 @@ public class Storage {
 	}
 
 	/**
-	 *  To transform the XML file into a properly indented and formatted XML document
+	 * To transform the XML file into a properly indented and formatted XML document
 	 * 
-	 * @param doc								Doc file with all the XML structures
-	 * @param file								Output file to save the formatted XML document
-	 * @throws TransformerFactoryConfigurationError When transformerFactory is unable to be instantiated
-	 * @throws TransformerException				Error in transformation process
+	 * @param doc
+	 *            Doc file with all the XML structures
+	 * @param file
+	 *            Output file to save the formatted XML document
+	 * @throws TransformerFactoryConfigurationError
+	 *             When transformerFactory is unable to be instantiated
+	 * @throws TransformerException
+	 *             Error in transformation process
 	 */
 	private void transformAndSaveXML(Document doc, File file)
 			throws TransformerFactoryConfigurationError, TransformerException {
@@ -171,17 +186,18 @@ public class Storage {
 		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
-		
+
 		DOMSource source = new DOMSource(doc);
 		StreamResult result = new StreamResult(file);
 		transformer.transform(source, result);
 	}
 
 	/**
-	 *  Instantiate document builder, a commonly used function in Storage component
+	 * Instantiate document builder, a commonly used function in Storage component
 	 * 
-	 * @return									Instantiated new Document class
-	 * @throws ParserConfigurationException		Error in parser configuration
+	 * @return Instantiated new Document class
+	 * @throws ParserConfigurationException
+	 *             Error in parser configuration
 	 */
 	private Document initializeDocBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -191,12 +207,15 @@ public class Storage {
 	}
 
 	/**
-	 * 	Extracts out recur class from task and creates the proper XML structure to be processed
-	 *  in the save function
+	 * Extracts out recur class from task and creates the proper XML structure to be processed in the save
+	 * function
 	 * 
-	 * @param doc								Document which contains the current XML structure
-	 * @param taskItem							Task to extract out the recur class from
-	 * @param parentElement						Parent element to append the recur XML structure to
+	 * @param doc
+	 *            Document which contains the current XML structure
+	 * @param taskItem
+	 *            Task to extract out the recur class from
+	 * @param parentElement
+	 *            Parent element to append the recur XML structure to
 	 */
 	public void extractRecurrFromTask(Document doc, Task taskItem, Element parentElement) {
 		Recur recur = taskItem.getRecur();
@@ -218,12 +237,15 @@ public class Storage {
 	}
 
 	/**
-	 *  Creates the associated XML structure for a Task class, calls extractRecurrFromTask
-	 *  to handle the recur portion
+	 * Creates the associated XML structure for a Task class, calls extractRecurrFromTask to handle the recur
+	 * portion
 	 * 
-	 * @param doc								Document which contains the current XML structure
-	 * @param rootElement						Root element of the XML structure
-	 * @param taskItem							Task to extract out the task details from
+	 * @param doc
+	 *            Document which contains the current XML structure
+	 * @param rootElement
+	 *            Root element of the XML structure
+	 * @param taskItem
+	 *            Task to extract out the task details from
 	 */
 	private void createTasksXML(Document doc, Element rootElement, Task taskItem) {
 		Element taskElement = doc.createElement("Task");
@@ -251,24 +273,28 @@ public class Storage {
 	}
 
 	/**
-	 *  Returns a formatted string from a calendar object
+	 * Returns a formatted string from a calendar object
 	 * 
-	 * @param calendar							Calendar object to extract string from
-	 * @return									Formatted string containing date/time 
+	 * @param calendar
+	 *            Calendar object to extract string from
+	 * @return Formatted string containing date/time
 	 */
 	private String getCalendarString(Calendar calendar) {
 		return (calendar == null) ? "" : formatter.format(calendar.getTime());
 	}
 
-
 	/**
-	 *  Extracts a NodeList object with all the tasks inside the XML file
-	 *  
-	 * @param file								File to extract tasks from
-	 * @return									NodeList object with all the task elements
-	 * @throws ParserConfigurationException		Error in parser configuration
-	 * @throws SAXException						Error in XML file structure
-	 * @throws IOException						Error accessing file
+	 * Extracts a NodeList object with all the tasks inside the XML file
+	 * 
+	 * @param file
+	 *            File to extract tasks from
+	 * @return NodeList object with all the task elements
+	 * @throws ParserConfigurationException
+	 *             Error in parser configuration
+	 * @throws SAXException
+	 *             Error in XML file structure
+	 * @throws IOException
+	 *             Error accessing file
 	 */
 	private NodeList extractListFromDocument(File file)
 			throws ParserConfigurationException, SAXException, IOException {
@@ -285,11 +311,13 @@ public class Storage {
 	}
 
 	/**
-	 *  Imports a Task object from a Element object found in the XML structure
+	 * Imports a Task object from a Element object found in the XML structure
 	 * 
-	 * @param taskElement						Element object containing the task details
-	 * @return									Task object described by the specified Element
-	 * @throws ParseException					Error in parsing different data types
+	 * @param taskElement
+	 *            Element object containing the task details
+	 * @return Task object described by the specified Element
+	 * @throws ParseException
+	 *             Error in parsing different data types
 	 */
 	private Task importTask(Element taskElement) throws ParseException {
 
@@ -311,12 +339,13 @@ public class Storage {
 	}
 
 	/**
-	 * Extracts out a recur class from the recur XML structure of a task, called 
-	 * when importing tasks 
+	 * Extracts out a recur class from the recur XML structure of a task, called when importing tasks
 	 * 
-	 * @param taskElement						Element object containing the task/recur details
-	 * @return									Recur object in taskElement object, null if task does not recur
-	 * @throws ParseException					Error in parsing different data types
+	 * @param taskElement
+	 *            Element object containing the task/recur details
+	 * @return Recur object in taskElement object, null if task does not recur
+	 * @throws ParseException
+	 *             Error in parsing different data types
 	 */
 	private Recur extractRecurFromXML(Element taskElement) throws ParseException {
 		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
@@ -334,12 +363,15 @@ public class Storage {
 	}
 
 	/**
-	 *  Extracts a date from node with specified tag, convert it into a Calendar class object and returns it
+	 * Extracts a date from node with specified tag, convert it into a Calendar class object and returns it
 	 * 
-	 * @param taskElement						Element object containing the task details
-	 * @param tag								Tag to specify which date, e.g. "start", "end'
-	 * @return									Calendar class object converted from the date 
-	 * @throws ParseException					Error in parsing different data types
+	 * @param taskElement
+	 *            Element object containing the task details
+	 * @param tag
+	 *            Tag to specify which date, e.g. "start", "end'
+	 * @return Calendar class object converted from the date
+	 * @throws ParseException
+	 *             Error in parsing different data types
 	 */
 	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
 		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
@@ -352,11 +384,13 @@ public class Storage {
 	}
 
 	/**
-	 * 	Extracts a string from node with specified tag
+	 * Extracts a string from node with specified tag
 	 * 
-	 * @param taskElement						Element object containing the task details
-	 * @param tag								Tag to specify which attribute, e.g. "description"
-	 * @return									String inside taskElement with specified tag
+	 * @param taskElement
+	 *            Element object containing the task details
+	 * @param tag
+	 *            Tag to specify which attribute, e.g. "description"
+	 * @return String inside taskElement with specified tag
 	 */
 	private String extractStringFromNode(Element taskElement, String tag) {
 		Node node = taskElement.getElementsByTagName(tag).item(0);
