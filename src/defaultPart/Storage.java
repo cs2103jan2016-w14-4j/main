@@ -130,7 +130,8 @@ public class Storage {
 	}
 
 	/**
-	 * Function to load tasks from an XML file into current task list
+	 * Function to load tasks from an XML file into current task list, if file does not exists, function will
+	 * not attempt to load tasks
 	 * 
 	 * @param file
 	 *            File to load from
@@ -142,24 +143,29 @@ public class Storage {
 	 *             Error accessing file
 	 */
 	public void loadTasks(File file) throws ParserConfigurationException, SAXException, IOException {
-		// Extracts out the list of task nodes
-		NodeList nList = extractListFromDocument(file);
 
-		// Iterates through the list of tasks extracted
-		for (int temp = 0; temp < nList.getLength(); temp++) {
-			{
-				Node taskNode = nList.item(temp);
-				if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element taskElement = (Element) taskNode;
+		// First check if the file exists and is not a directory but an actual file
+		if (file.isFile() && file.canRead()) {
 
-					Task newTask = null;
-					try {
-						newTask = importTask(taskElement);
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+			// Extracts out the list of task nodes
+			NodeList nList = extractListFromDocument(file);
+
+			// Iterates through the list of tasks extracted
+			for (int temp = 0; temp < nList.getLength(); temp++) {
+				{
+					Node taskNode = nList.item(temp);
+					if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element taskElement = (Element) taskNode;
+
+						Task newTask = null;
+						try {
+							newTask = importTask(taskElement);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						_currentTaskList.add(newTask);
 					}
-					_currentTaskList.add(newTask);
 				}
 			}
 		}
