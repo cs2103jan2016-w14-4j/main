@@ -1,38 +1,66 @@
 package tableUi;
 
 import defaultPart.Task;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 /**
  * Created by houruomu on 2016/3/12.
  */
 public class TaskModel {
-    private IntegerProperty taskId;
-    private StringProperty taskDescription;
-    private BooleanProperty isEvent;
-    private StringProperty dateTime;
-    private BooleanProperty isRecur;
-    private StringProperty recur;
-    private BooleanProperty isComplete;
+    private final SimpleIntegerProperty taskId;
+    private final SimpleStringProperty taskDescription;
+    private final SimpleBooleanProperty isEvent;
+    private final SimpleStringProperty dateTime;
+    private final SimpleBooleanProperty isRecur;
+    private final SimpleStringProperty recur;
+    private final SimpleBooleanProperty isComplete;
 
     private Task task;
 
+    public Task getTask(){
+        return task;
+    }
+
     public TaskModel(Task task, int id){
         this.task = task;
-        taskId.setValue(id);
+        taskId = new SimpleIntegerProperty(id);
+        taskDescription = new SimpleStringProperty(task.getDescription());
+        isComplete = new SimpleBooleanProperty(task.isCompleted());
+
+        if(task.getEndTime() != null){
+            isEvent = new SimpleBooleanProperty(true);
+            dateTime = new SimpleStringProperty(task.getEndTime().toString());
+        }else{
+            isEvent = new SimpleBooleanProperty(false);
+            dateTime = new SimpleStringProperty("");
+        }
+
+        if(task.getRecur() != null && task.getRecur().willRecur()){
+            isRecur = new SimpleBooleanProperty(true);
+            recur = new SimpleStringProperty(task.getRecur().toString());
+        }else{
+            isRecur = new SimpleBooleanProperty(false);
+            recur = new SimpleStringProperty("");
+        }
+    }
+
+    public void update(){
         taskDescription.setValue(task.getDescription());
         isComplete.setValue(task.isCompleted());
-
-        if(task.getDate() != null){
+        if(task.getEndTime() != null){
             isEvent.setValue(true);
-            dateTime.set(task.getEndTime().toString());
+            dateTime.setValue(task.getEndTime().toString());
+        }else{
+            isEvent.setValue(false);
+            dateTime.setValue("");
         }
 
         if(task.getRecur() != null && task.getRecur().willRecur()){
             isRecur.setValue(true);
             recur.setValue(task.getRecur().toString());
+        }else{
+            isRecur.setValue(false);
+            recur.setValue("");
         }
     }
 
