@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tableUi.Controller">
+   <children>
+      <SplitPane dividerPositions="0.381">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0">
+               <children>
+                  <Label layoutX="7.0" layoutY="7.0" text="Floating tasks" />
+                  <Button fx:id="addFloatingTask" layoutX="275.0" layoutY="3.0" mnemonicParsing="false" text="+" />
+                  <Button fx:id="deleteFloatingTask" layoutX="252.0" layoutY="3.0" mnemonicParsing="false" text="-" />
+                  <TableView fx:id="floatingTaskTable" layoutX="-1.0" layoutY="25.0">
+                    <columns>
+                      <TableColumn fx:id="floatingTaskId" editable="false" prefWidth="30.0" text="id" />
+                      <TableColumn fx:id="floatingTaskCheckbox" prefWidth="21.0" text="C" />
+                        <TableColumn fx:id="floatingTaskDescription" minWidth="0.0" prefWidth="250.0" sortable="false" text="Description" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0">
+               <children>
+                  <Button fx:id="showAllEvents" layoutX="163.0" layoutY="3.0" mnemonicParsing="false" text="All Events" />
+                  <Button fx:id="showIncompleteEvents" layoutX="82.0" layoutY="3.0" mnemonicParsing="false" text="Incomplete" />
+                  <Button fx:id="showOverdueEvents" layoutX="236.0" layoutY="3.0" mnemonicParsing="false" text="Overdue" />
+                  <Button fx:id="showCompletedEvents" layoutX="301.0" layoutY="3.0" mnemonicParsing="false" text="Completed" />
+                  <Button fx:id="addEvent" layoutX="466.0" layoutY="3.0" mnemonicParsing="false" text="+" />
+                  <Label layoutX="6.0" layoutY="7.0" text="Events" />
+                  <Button fx:id="deleteEvent" layoutX="443.0" layoutY="3.0" mnemonicParsing="false" text="-" />
+                  <TableView fx:id="eventsTable" layoutY="25.0">
+                    <columns>
+                      <TableColumn fx:id="eventsId" editable="false" prefWidth="30.0" text="id" />
+                      <TableColumn fx:id="eventsCheckbox" prefWidth="21.0" text="C" />
+                        <TableColumn fx:id="eventsDescription" prefWidth="250.0" sortable="false" text="Description" />
+                        <TableColumn fx:id="eventsDate" prefWidth="103.0" text="Date/Time" />
+                        <TableColumn fx:id="eventsRecur" prefWidth="87.0" text="Recur" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <TextField fx:id="inputBox" prefHeight="23.0" prefWidth="313.0" />
+            <Label fx:id="userPrompt" text="Welcome to WURI, type something to start. F1 for help" wrapText="true" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>
