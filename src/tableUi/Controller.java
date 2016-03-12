@@ -98,6 +98,8 @@ public class Controller implements Initializable {
 					System.out.println("Send to logic: " + inputBox.getText());
 				}
 				inputBox.clear();
+				userPrompt.setText(logic.getFeedback());
+				showAllTasks();
 			}
 		});
 	}
