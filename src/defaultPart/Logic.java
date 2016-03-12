@@ -355,11 +355,11 @@ public class Logic {
 
 	private boolean isTaskIndexValid(int taskIndex) {
 		if (Storage.isTaskIndexValid(taskIndex)) {
-			_newCommandType = CommandType.ERROR;
-			_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex + LIST_NUMBERING_OFFSET);
-			return false;
+			return true;
 		}
-		return true;
+		_newCommandType = CommandType.ERROR;
+		_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex + LIST_NUMBERING_OFFSET);
+		return false;
 	}
 
 	private void deleteTask() {
