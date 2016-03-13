@@ -26,7 +26,7 @@ public class Logic {
 
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
-		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
+		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO, 
 
 		// for internal use
 		EDIT_SHOW_TASK, ADD, ERROR, NULL
@@ -72,6 +72,16 @@ public class Logic {
 			case STORE :
 				// todo
 				break;
+				
+			/* Additional functions to be implemented later
+			case HELP :
+				// todo
+				break;
+				
+			case EXIT :
+				// todo
+				break;
+			*/
 		}
 	}
 
