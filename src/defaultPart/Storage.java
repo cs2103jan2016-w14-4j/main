@@ -28,26 +28,43 @@ import java.util.logging.Logger;
 
 public class Storage {
 
-	/* For Logging	 */
-	private static final Logger log= Logger.getLogger( Storage.class.getName() );
-	
+	/* For Logging */
+	private static final Logger log = Logger.getLogger(Storage.class.getName());
+
 	/* Date format used to save/load from XML */
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/* Stores current list of tasks in the program */
-	private static List<Task> _currentTaskList = new LinkedList<Task>();
+	private List<Task> _currentTaskList;
+
 	/* Used for CommandType.UNDO */
-	private static List<Task> _prevTaskList = new LinkedList<Task>();
+	private List<Task> _prevTaskList;
+
+	/* Singleton Pattern Initialization */
+	private Storage storageObject;
+
+	private Storage() {
+		_prevTaskList = new LinkedList<Task>();
+		_currentTaskList = new LinkedList<Task>();
+	}
+
+	public Storage getInstance() {
+		if (storageObject == null) {
+			storageObject = new Storage();
+
+		}
+		return storageObject;
+	}
+	/* end of Singleton Pattern initialization */
 
 	/**
 	 * Get a copy of the task list
 	 * 
-	 * @return
+	 * @return The current Task list
 	 */
+	public List<Task> getTaskList() {
 
-	public static List<Task> getTaskList() { // todo: remove static
-		/* Returns a clone to prevent undesired modification */
-		return new LinkedList<Task>(_currentTaskList);
+		return _currentTaskList;
 	}
 
 	/**
@@ -57,7 +74,7 @@ public class Storage {
 	 *            Index of task to get
 	 * @return Task at specified index
 	 */
-	public static Task getTask(int index) {
+	public  Task getTask(int index) {
 		return _currentTaskList.get(index);
 	}
 
@@ -68,7 +85,7 @@ public class Storage {
 	 *            Index of task to check
 	 * @return True if task index is valid
 	 */
-	public static boolean isTaskIndexValid(int taskIndex) {
+	public boolean isTaskIndexValid(int taskIndex) {
 		return (taskIndex >= 0 && taskIndex < _currentTaskList.size());
 	}
 
@@ -78,21 +95,21 @@ public class Storage {
 	 * @param taskIndex
 	 *            Index of task to remove
 	 */
-	public static void removeTask(int taskIndex) {
+	public void removeTask(int taskIndex) {
 		_currentTaskList.remove(taskIndex);
 	}
 
 	/**
 	 * Replace current task list with previous task list, for the "undo" function
 	 */
-	public static void setPreviousListAsCurrent() {
+	public void setPreviousListAsCurrent() {
 		_currentTaskList = _prevTaskList;
 	}
 
 	/**
 	 * "Save-state" for future undo operations.
 	 */
-	public static void setCurrentListAsPrevious() {
+	public void setCurrentListAsPrevious() {
 		_prevTaskList = new LinkedList<Task>(_currentTaskList);
 		// todo: clone all object fields (TaskDate, Recur)
 	}
@@ -103,7 +120,7 @@ public class Storage {
 	 * @param newTask
 	 *            Task to be added to task list
 	 */
-	public static void addToTaskList(Task newTask) {
+	public void addToTaskList(Task newTask) {
 		Calendar newTaskDate = newTask.getDate();
 		for (int i = 0; i < _currentTaskList.size(); i++) {
 			Calendar taskDate = _currentTaskList.get(i).getDate();
@@ -354,7 +371,7 @@ public class Storage {
 
 		// Ensure that recurring tasks imported will recur
 		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
-			assert(newTask.getRecur().willRecur());
+			assert (newTask.getRecur().willRecur());
 		}
 		return newTask;
 	}
@@ -403,7 +420,7 @@ public class Storage {
 		try {
 			calendar.setTime(formatter.parse(calendarString));
 		} catch (ParseException ex) {
-			//Parse error in formatting the date
+			// Parse error in formatting the date
 			log.log(Level.FINE, ex.toString(), ex);
 		}
 		return calendar;
