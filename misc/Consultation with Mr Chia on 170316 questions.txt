@@ -20,3 +20,6 @@
 	undo find commmand, what happens?
 	
 -	how should find command be displayed? will executing another command exit the 'find mode'?
+
+-	if not doing GUI bucket, will implementing GUI-based functionalities complicate the user interface for a non-GUI user
+	hence marks get deducted?
