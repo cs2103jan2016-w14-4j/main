@@ -16,8 +16,8 @@ public class UIStub {
 	}
 
 	private static void executeCommandUntilExit() {
-		Logic logic = new Logic();
 		Storage storage = new Storage();
+		Logic logic = new Logic(storage);
 		for (;;) {
 			String userInput = getUserInput();
 			logic.executeCommand(userInput);
@@ -27,20 +27,12 @@ public class UIStub {
 
 			// Prints the tasklist
 			System.out.println();
-			List<Task> taskList = Storage.getTaskList();
+			List<Task> taskList = storage.getTaskList();
 			for (int i = 0; i < taskList.size(); i++) {
 				System.out.println(i + 1 + ": " + taskList.get(i));
 			}
 
-			try {
-				storage.saveTasks(new File("WURI.txt"));
-			} catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			storage.saveTasks(new File("WURI.txt"));
 		}
 	}
 

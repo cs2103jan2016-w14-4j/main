@@ -34,27 +34,10 @@ public class Storage {
 
 	/* Stores current list of tasks in the program */
 
-	private List<Task> _currentTaskList;
+	private List<Task> _currentTaskList = new LinkedList<Task>();
 
 	/* Used for CommandType.UNDO */
-	private List<Task> _prevTaskList;
-
-	/* Singleton Pattern Initialization */
-	private Storage storageObject;
-
-	private Storage() {
-		_prevTaskList = new LinkedList<Task>();
-		_currentTaskList = new LinkedList<Task>();
-	}
-
-	public Storage getInstance() {
-		if (storageObject == null) {
-			storageObject = new Storage();
-
-		}
-		return storageObject;
-	}
-	/* end of Singleton Pattern initialization */
+	private List<Task> _prevTaskList = new LinkedList<Task>();
 
 	/**
 	 * Get a copy of the task list
@@ -62,6 +45,7 @@ public class Storage {
 	 * @return The current Task list
 	 */
 	public List<Task> getTaskList() {
+		/* Returns a clone to prevent undesired modification */
 		return new LinkedList<Task>(_currentTaskList);
 	}
 
@@ -72,8 +56,12 @@ public class Storage {
 	 *            Index of task to get
 	 * @return Task at specified index
 	 */
-
-	public Task getTask(int index) {
+	public Task getTask(int index) throws IOException {
+		System.out.println("indx: " + index);
+		if (!isTaskIndexValid(index)) {
+			System.out.println("err: " + String.valueOf(index));
+			throw new IOException(String.valueOf(index));
+		}
 		return _currentTaskList.get(index);
 	}
 
@@ -205,8 +193,8 @@ public class Storage {
 		} catch (TransformerConfigurationException ex) {
 			// Error in Transformer Configuration
 			ex.printStackTrace();
-			assert (false);
 			log.log(Level.FINE, ex.toString(), ex);
+			assert false;
 		}
 
 		// Properties of the XML format to save the file in
@@ -221,8 +209,8 @@ public class Storage {
 		} catch (TransformerException ex) {
 			// Error in transformation process
 			ex.printStackTrace();
-			assert (false);
 			log.log(Level.FINE, ex.toString(), ex);
+			assert false;
 		}
 	}
 
@@ -242,8 +230,8 @@ public class Storage {
 
 			// Will not occur unless builder object is configured wrongly
 			ex.printStackTrace();
-			assert (false);
 			log.log(Level.FINE, ex.toString(), ex);
+			assert false;
 		}
 
 		return doc;

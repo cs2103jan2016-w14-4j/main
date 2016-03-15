@@ -1,5 +1,6 @@
 package defaultPart;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,44 +51,50 @@ public class Logic {
 	}
 	public void executeCommand(String input) {
 		setCommandTypeAndArguments(input);
-		switch (_newCommandType) {
-			case ADD :
-				addTask();
-				break;
-
-			case EDIT :
-				editTask();
-				break;
-
-			case TOGGLE_COMPLETE :
-				toggleTaskComplete();
-				break;
-
-			case DELETE :
-				deleteTask();
-				break;
-
-			case FIND :
-				findTask();
-				break;
-
-			case UNDO :
-				undoLastCommand();
-				break;
-
-			case STORE :
-				// todo
-				break;
-				
-			/* Additional functions to be implemented later
-			case HELP :
-				// todo
-				break;
-				
-			case EXIT :
-				// todo
-				break;
-			*/
+		try {
+    		switch (_newCommandType) {
+    			case ADD :
+    				addTask();
+    				break;
+    
+    			case EDIT :
+    				editTask();
+    				break;
+    
+    			case TOGGLE_COMPLETE :
+    				toggleTaskComplete();
+    				break;
+    
+    			case DELETE :
+    				deleteTask();
+    				break;
+    
+    			case FIND :
+    				findTask();
+    				break;
+    
+    			case UNDO :
+    				undoLastCommand();
+    				break;
+    
+    			case STORE :
+    				// todo
+    				break;
+    				
+    			/* Additional functions to be implemented later
+    			case HELP :
+    				// todo
+    				break;
+    				
+    			case EXIT :
+    				// todo
+    				break;
+    			*/
+    		}
+		} catch (IOException e) {
+			_newCommandType = CommandType.ERROR;
+			System.out.println("mess: " + e.getMessage());
+			_feedback = String.format(MESSAGE_INVALID_INDEX, Integer.parseInt(e.getMessage()) + LIST_NUMBERING_OFFSET);			
 		}
 	}
 
@@ -258,15 +265,11 @@ public class Logic {
 		return newDate;
 	}
 
-	private void editTask() {
-		String[] args = _argument.split(" ");
+	private void editTask() throws IOException {
 		int taskIndex = getTaskIndex();
-		if (!isTaskIndexValid(taskIndex)) {
-			return;
-		}
-
 		Task task = _storage.getTask(taskIndex);
-
+		
+		String[] args = _argument.split(" ");
 		switch (args.length) {
 			case 1 :
 				// copy task to input box for editing
@@ -356,34 +359,18 @@ public class Logic {
 	/**
 	 * Toggles a task's isComplete between true and false
 	 */
-	private void toggleTaskComplete() {
+	private void toggleTaskComplete() throws IOException {
 		int taskIndex = getTaskIndex();
-		if (!isTaskIndexValid(taskIndex)) {
-			return;
-		}
-
-		_storage.setCurrentListAsPrevious();
 		Task task = _storage.getTask(taskIndex);
-
+		
+		_storage.setCurrentListAsPrevious();
+		
 		task.toggleCompleted();
 		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
 
-	private boolean isTaskIndexValid(int taskIndex) {
-		if (_storage.isTaskIndexValid(taskIndex)) {
-			return true;
-		}
-		_newCommandType = CommandType.ERROR;
-		_feedback = String.format(MESSAGE_INVALID_INDEX, taskIndex + LIST_NUMBERING_OFFSET);
-		return false;
-	}
-
-	private void deleteTask() {
+	private void deleteTask() throws IOException {
 		int taskIndex = getTaskIndex();
-		if (!isTaskIndexValid(taskIndex)) {
-			return;
-		}
-
 		Task task = _storage.getTask(taskIndex);
 		Recur recur = task.getRecur();
 
