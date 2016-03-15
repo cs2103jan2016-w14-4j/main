@@ -62,7 +62,7 @@ public class Storage {
 	 * @return The current Task list
 	 */
 	public List<Task> getTaskList() {
-		return _currentTaskList;
+		return new LinkedList<Task>(_currentTaskList);
 	}
 
 	/**
@@ -184,14 +184,8 @@ public class Storage {
 					Node taskNode = nList.item(temp);
 					if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
 						Element taskElement = (Element) taskNode;
-
 						Task newTask = null;
-						try {
-							newTask = importTask(taskElement);
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						newTask = importTask(taskElement);
 						_currentTaskList.add(newTask);
 					}
 				}
@@ -352,7 +346,7 @@ public class Storage {
 	 * @throws ParseException
 	 *             Error in parsing different data types
 	 */
-	private Task importTask(Element taskElement) throws ParseException {
+	private Task importTask(Element taskElement) {
 
 		// Create new task with extracted description & extract other attributes
 		Task newTask = new Task();
@@ -365,8 +359,13 @@ public class Storage {
 		}
 
 		// Handles recurrence portion of the task
-		Recur taskRecurr = extractRecurFromXML(taskElement);
-		newTask.setRecur(taskRecurr);
+		Recur taskRecurr;
+		try {
+			taskRecurr = extractRecurFromXML(taskElement);
+			newTask.setRecur(taskRecurr);
+		} catch (ParseException ex) {
+			log.log(Level.FINE, ex.toString(), ex);
+		}
 
 		// Ensure that recurring tasks imported will recur
 		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
