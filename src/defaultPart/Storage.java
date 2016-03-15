@@ -35,6 +35,7 @@ public class Storage {
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/* Stores current list of tasks in the program */
+<<<<<<< HEAD
 	private List<Task> _currentTaskList;
 
 	/* Used for CommandType.UNDO */
@@ -56,6 +57,11 @@ public class Storage {
 		return storageObject;
 	}
 	/* end of Singleton Pattern initialization */
+=======
+	private List<Task> _currentTaskList = new LinkedList<Task>();
+	/* Used for CommandType.UNDO */
+	private List<Task> _prevTaskList = new LinkedList<Task>();
+>>>>>>> origin/master
 
 	/**
 	 * Get a copy of the task list
@@ -64,7 +70,13 @@ public class Storage {
 	 */
 	public List<Task> getTaskList() {
 
+<<<<<<< HEAD
 		return _currentTaskList;
+=======
+	public List<Task> getTaskList() { // todo: remove static
+		/* Returns a clone to prevent undesired modification */
+		return new LinkedList<Task>(_currentTaskList);
+>>>>>>> origin/master
 	}
 
 	/**
@@ -74,7 +86,11 @@ public class Storage {
 	 *            Index of task to get
 	 * @return Task at specified index
 	 */
+<<<<<<< HEAD
 	public  Task getTask(int index) {
+=======
+	public Task getTask(int index) {
+>>>>>>> origin/master
 		return _currentTaskList.get(index);
 	}
 

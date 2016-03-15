@@ -19,9 +19,17 @@
 -	is undo once sufficient? need to implement redo?
 	undo find commmand, what happens?
 	
+-	design of undo -- just keep previous tasklist?
+	
 -	how should find command be displayed? will executing another command exit the 'find mode'?
 
 -	if not doing GUI bucket, will implementing GUI-based functionalities complicate the user interface for a non-GUI user
 	hence marks get deducted?
 
 -	using FXML for UI creation
+
+-	date, startTime, endTime: bundle into 1 class?
+
+-	Observer how to implement? UI object?
+
+-	Will we know our grading for V0.5? will feedback be given?
