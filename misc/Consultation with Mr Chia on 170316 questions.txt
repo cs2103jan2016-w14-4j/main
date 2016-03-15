@@ -23,3 +23,5 @@
 
 -	if not doing GUI bucket, will implementing GUI-based functionalities complicate the user interface for a non-GUI user
 	hence marks get deducted?
+
+-	using FXML for UI creation
