@@ -33,3 +33,5 @@
 -	Observer how to implement? UI object?
 
 -	Will we know our grading for V0.5? will feedback be given?
+
+- 	Exceptions, one big try catch or multiple try catch?

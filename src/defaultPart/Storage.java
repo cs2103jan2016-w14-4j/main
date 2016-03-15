@@ -8,9 +8,9 @@ import defaultPart.Recur.TimeUnit;
 import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -110,7 +110,7 @@ public class Storage {
 	 */
 	public void setCurrentListAsPrevious() {
 		_prevTaskList = new LinkedList<Task>(_currentTaskList);
-		// todo: clone all object fields (TaskDate, Recur)
+		// TODO: clone all object fields (TaskDate, Recur)
 	}
 
 	/**
@@ -136,12 +136,8 @@ public class Storage {
 	 * 
 	 * @param file
 	 *            File to be saved
-	 * @throws ParserConfigurationException
-	 *             Error in parser configuration
-	 * @throws TransformerException
-	 *             Error with XML transformation
 	 */
-	public void saveTasks(File file) throws ParserConfigurationException, TransformerException {
+	public void saveTasks(File file) {
 
 		Document doc = initializeDocBuilder();
 
@@ -163,14 +159,13 @@ public class Storage {
 	 * 
 	 * @param file
 	 *            File to load from
-	 * @throws ParserConfigurationException
-	 *             Error in parser configuration
 	 * @throws SAXException
 	 *             Error in XML file structure
-	 * @throws IOException
-	 *             Error accessing file
+	 * @throws ParseException
+	 *             Error in formatting the date
 	 */
-	public void loadTasks(File file) throws ParserConfigurationException, SAXException, IOException {
+	public void loadTasks(File file)
+			throws SAXException, ParseException {
 
 		// First check if the file exists and is not a directory but an actual file
 		if (file.isFile() && file.canRead()) {
@@ -200,15 +195,19 @@ public class Storage {
 	 *            Doc file with all the XML structures
 	 * @param file
 	 *            Output file to save the formatted XML document
-	 * @throws TransformerFactoryConfigurationError
-	 *             When transformerFactory is unable to be instantiated
-	 * @throws TransformerException
-	 *             Error in transformation process
 	 */
-	private void transformAndSaveXML(Document doc, File file)
-			throws TransformerFactoryConfigurationError, TransformerException {
+	private void transformAndSaveXML(Document doc, File file) {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
+		Transformer transformer = null;
+		try {
+			transformer = transformerFactory.newTransformer();
+
+		} catch (TransformerConfigurationException ex) {
+			// Error in Transformer Configuration
+			ex.printStackTrace();
+			assert (false);
+			log.log(Level.FINE, ex.toString(), ex);
+		}
 
 		// Properties of the XML format to save the file in
 		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
@@ -217,20 +216,36 @@ public class Storage {
 
 		DOMSource source = new DOMSource(doc);
 		StreamResult result = new StreamResult(file);
-		transformer.transform(source, result);
+		try {
+			transformer.transform(source, result);
+		} catch (TransformerException ex) {
+			// Error in transformation process
+			ex.printStackTrace();
+			assert (false);
+			log.log(Level.FINE, ex.toString(), ex);
+		}
 	}
 
 	/**
 	 * Instantiate document builder, a commonly used function in Storage component
 	 * 
 	 * @return Instantiated new Document class
-	 * @throws ParserConfigurationException
-	 *             Error in parser configuration
 	 */
-	private Document initializeDocBuilder() throws ParserConfigurationException {
+
+	private Document initializeDocBuilder() {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.newDocument();
+		Document doc = null;
+		try {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			doc = builder.newDocument();
+		} catch (ParserConfigurationException ex) {
+
+			// Will not occur unless builder object is configured wrongly
+			ex.printStackTrace();
+			assert (false);
+			log.log(Level.FINE, ex.toString(), ex);
+		}
+
 		return doc;
 	}
 
@@ -316,25 +331,40 @@ public class Storage {
 	 * @param file
 	 *            File to extract tasks from
 	 * @return NodeList object with all the task elements
-	 * @throws ParserConfigurationException
-	 *             Error in parser configuration
+	 * 
 	 * @throws SAXException
 	 *             Error in XML file structure
-	 * @throws IOException
-	 *             Error accessing file
 	 */
-	private NodeList extractListFromDocument(File file)
-			throws ParserConfigurationException, SAXException, IOException {
+	private NodeList extractListFromDocument(File file) throws SAXException {
 
 		// Reading the XML file
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document document = builder.parse(file);
-		document.getDocumentElement().normalize();
+		DocumentBuilder builder;
+		NodeList nList = null;
+		try {
 
-		// Getting all the tasks in the XML structure for this task type
-		NodeList nList = document.getElementsByTagName("task");
+			builder = factory.newDocumentBuilder();
+			Document document = builder.parse(file);
+			document.getDocumentElement().normalize();
+
+			// Getting all the tasks in the XML structure for this task type
+			nList = document.getElementsByTagName("task");
+
+		} catch (ParserConfigurationException ex) {
+			// Error in parser configuration
+			ex.printStackTrace();
+			assert (false);
+			log.log(Level.FINE, ex.toString(), ex);
+
+		} catch (IOException iex) {
+			// Error accessing file
+			iex.printStackTrace();
+			assert (false);
+			log.log(Level.FINE, iex.toString(), iex);
+		}
+
 		return nList;
+
 	}
 
 	/**
@@ -344,9 +374,9 @@ public class Storage {
 	 *            Element object containing the task details
 	 * @return Task object described by the specified Element
 	 * @throws ParseException
-	 *             Error in parsing different data types
+	 *             Error in parsing different date
 	 */
-	private Task importTask(Element taskElement) {
+	private Task importTask(Element taskElement) throws ParseException {
 
 		// Create new task with extracted description & extract other attributes
 		Task newTask = new Task();
@@ -360,12 +390,9 @@ public class Storage {
 
 		// Handles recurrence portion of the task
 		Recur taskRecurr;
-		try {
-			taskRecurr = extractRecurFromXML(taskElement);
-			newTask.setRecur(taskRecurr);
-		} catch (ParseException ex) {
-			log.log(Level.FINE, ex.toString(), ex);
-		}
+
+		taskRecurr = extractRecurFromXML(taskElement);
+		newTask.setRecur(taskRecurr);
 
 		// Ensure that recurring tasks imported will recur
 		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
@@ -381,7 +408,7 @@ public class Storage {
 	 *            Element object containing the task/recur details
 	 * @return Recur object in taskElement object, null if task does not recur
 	 * @throws ParseException
-	 *             Error in parsing different data types
+	 *             Error in formatting the date
 	 */
 	private Recur extractRecurFromXML(Element taskElement) throws ParseException {
 		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
@@ -407,20 +434,15 @@ public class Storage {
 	 *            Tag to specify which date, e.g. "start", "end'
 	 * @return Calendar class object converted from the date
 	 * @throws ParseException
-	 *             Error in parsing different data types
+	 *             Error in formatting the date
 	 */
-	private Calendar extractDateFromNode(Element taskElement, String tag) {
+	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
 		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
 		if (calendarString == "") {
 			return null;
 		}
 		Calendar calendar = new GregorianCalendar();
-		try {
-			calendar.setTime(formatter.parse(calendarString));
-		} catch (ParseException ex) {
-			// Parse error in formatting the date
-			log.log(Level.FINE, ex.toString(), ex);
-		}
+		calendar.setTime(formatter.parse(calendarString));
 		return calendar;
 	}
 
