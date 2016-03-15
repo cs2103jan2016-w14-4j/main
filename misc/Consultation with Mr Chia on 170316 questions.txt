@@ -1,0 +1,22 @@
+-	preference of UI design
+	multiple columns of different headings, or same headings
+
+-	format of the storage file
+	commandline format, or xml? if xml, should empty fields be omitted or included so that user can add in
+	
+-	merging of logic and parser
+	if not merge, a lot redundant code (getters in parser)
+	logic high coupling on parser (eg. logic want to add additional command, have to edit parser)
+	
+-	Bundling of logic return values into a single CommandDetails class
+	commandType = logic.executeCommand(); 
+	feedback = logic.getFeedback(); 
+	if (commandType == Command.FIND) 
+		indexesFound = logic.getIndexes();
+	
+-	Create instance variable or keep it local and pass as arguments to other methods? eg. _argument	
+	
+-	is undo once sufficient? need to implement redo?
+	undo find commmand, what happens?
+	
+-	how should find command be displayed? will executing another command exit the 'find mode'?
