@@ -3,8 +3,6 @@ package defaultPart;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import com.ibm.jvm.Log;
-
 import defaultPart.Recur.TimeUnit;
 
 import javax.xml.parsers.*;
