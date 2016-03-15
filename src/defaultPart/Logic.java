@@ -44,7 +44,6 @@ public class Logic {
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
-	//todo: Logic and Storage singleton (private constructor, ensure single instance)
 	public void executeCommand(String input) {
 		setCommandTypeAndArguments(input);
 		switch (_newCommandType) {
