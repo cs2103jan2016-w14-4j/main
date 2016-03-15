@@ -47,6 +47,7 @@ public class LogicTest {
 		assertEquals("dev guide", task.getDescription());
 		date = task.getDate();
 		assertTrue(date != null);
+		//todo: cant hardcode the date used for testing!
 		assertEquals("13/3/2016", dateFormat.format(date.getTime()));
 	}
 

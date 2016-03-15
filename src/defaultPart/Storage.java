@@ -38,7 +38,7 @@ public class Storage {
 	 * @return
 	 */
 
-	public static List<Task> getTaskList() {
+	public static List<Task> getTaskList() { // todo: remove static
 		/* Returns a clone to prevent undesired modification */
 		return new LinkedList<Task>(_currentTaskList);
 	}
@@ -127,7 +127,7 @@ public class Storage {
 		doc.appendChild(rootElement);
 
 		for (Task taskItem : _currentTaskList) {
-			createTasksXML(doc, taskItem,rootElement);
+			createTasksXML(doc, taskItem, rootElement);
 		}
 
 		// Save the XML file in a "pretty" format
@@ -135,8 +135,8 @@ public class Storage {
 	}
 
 	/**
-	 * Load tasks from an XML file into current task list, if file does not exists, function will
-	 * not attempt to load tasks ( usually the case when user starts WURI for the first time )
+	 * Load tasks from an XML file into current task list, if file does not exists, function will not attempt
+	 * to load tasks ( usually the case when user starts WURI for the first time )
 	 * 
 	 * @param file
 	 *            File to load from

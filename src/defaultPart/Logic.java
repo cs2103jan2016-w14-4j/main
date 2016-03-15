@@ -26,20 +26,22 @@ public class Logic {
 
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
-		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO, 
+		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
 
 		// for internal use
 		EDIT_SHOW_TASK, ADD, ERROR, NULL
 	};
 
 	private String _argument;
-	private static CommandType _oldCommandType;
-	private static CommandType _newCommandType;
+	private CommandType _oldCommandType;
+	private CommandType _newCommandType;
 
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
 
 	/* Used for CommandType.FIND */
+	// todo: clear it before inserting, or get rid of it by putting found task in currentTaskList?
+	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
 	public void executeCommand(String input) {
