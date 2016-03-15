@@ -28,9 +28,9 @@ public class Storage {
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/* Stores current list of tasks in the program */
-	private static List<Task> _currentTaskList = new LinkedList<Task>();
+	private List<Task> _currentTaskList = new LinkedList<Task>();
 	/* Used for CommandType.UNDO */
-	private static List<Task> _prevTaskList = new LinkedList<Task>();
+	private List<Task> _prevTaskList = new LinkedList<Task>();
 
 	/**
 	 * Get a copy of the task list
@@ -38,7 +38,7 @@ public class Storage {
 	 * @return
 	 */
 
-	public static List<Task> getTaskList() { // todo: remove static
+	public List<Task> getTaskList() { // todo: remove static
 		/* Returns a clone to prevent undesired modification */
 		return new LinkedList<Task>(_currentTaskList);
 	}
@@ -50,7 +50,7 @@ public class Storage {
 	 *            Index of task to get
 	 * @return Task at specified index
 	 */
-	public static Task getTask(int index) {
+	public Task getTask(int index) {
 		return _currentTaskList.get(index);
 	}
 
@@ -61,7 +61,7 @@ public class Storage {
 	 *            Index of task to check
 	 * @return True if task index is valid
 	 */
-	public static boolean isTaskIndexValid(int taskIndex) {
+	public boolean isTaskIndexValid(int taskIndex) {
 		return (taskIndex >= 0 && taskIndex < _currentTaskList.size());
 	}
 
@@ -71,21 +71,21 @@ public class Storage {
 	 * @param taskIndex
 	 *            Index of task to remove
 	 */
-	public static void removeTask(int taskIndex) {
+	public void removeTask(int taskIndex) {
 		_currentTaskList.remove(taskIndex);
 	}
 
 	/**
 	 * Replace current task list with previous task list, for the "undo" function
 	 */
-	public static void setPreviousListAsCurrent() {
+	public void setPreviousListAsCurrent() {
 		_currentTaskList = _prevTaskList;
 	}
 
 	/**
 	 * "Save-state" for future undo operations.
 	 */
-	public static void setCurrentListAsPrevious() {
+	public void setCurrentListAsPrevious() {
 		_prevTaskList = new LinkedList<Task>(_currentTaskList);
 		// todo: clone all object fields (TaskDate, Recur)
 	}
@@ -96,7 +96,7 @@ public class Storage {
 	 * @param newTask
 	 *            Task to be added to task list
 	 */
-	public static void addToTaskList(Task newTask) {
+	public void addToTaskList(Task newTask) {
 		Calendar newTaskDate = newTask.getDate();
 		for (int i = 0; i < _currentTaskList.size(); i++) {
 			Calendar taskDate = _currentTaskList.get(i).getDate();

@@ -56,6 +56,7 @@ public class Controller implements Initializable {
 	private int lastId;
 
 	private Logic logic;
+	private Storage storage;
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		floatingTaskList = FXCollections.observableArrayList();
@@ -89,8 +90,8 @@ public class Controller implements Initializable {
 			e.getTableView().getItems().get(e.getTablePosition().getRow()).setTaskDescription(e.getNewValue());
 		});
 
-		logic = new Logic();
-		taskList = Storage.getTaskList();
+		storage = new Storage();
+		logic = new Logic(storage);
 		inputBox.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if(e.getCode().equals(KeyCode.ENTER)){
 				logic.executeCommand(inputBox.getText());
@@ -143,7 +144,7 @@ public class Controller implements Initializable {
 		lastId = 0;
 		eventList.clear();
 		floatingTaskList.clear();
-		taskList = Storage.getTaskList();
+		taskList = storage.getTaskList();
 
 		for(int i = 0; i < taskList.size(); i++){
 			Task task = taskList.get(i);

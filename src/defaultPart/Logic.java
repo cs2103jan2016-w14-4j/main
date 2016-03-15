@@ -35,6 +35,7 @@ public class Logic {
 	private String _argument;
 	private CommandType _oldCommandType;
 	private CommandType _newCommandType;
+	private Storage _storage;
 
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
@@ -44,6 +45,9 @@ public class Logic {
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
+	public Logic(Storage storage) {
+		_storage = storage;
+	}
 	public void executeCommand(String input) {
 		setCommandTypeAndArguments(input);
 		switch (_newCommandType) {
@@ -133,9 +137,9 @@ public class Logic {
 		setTaskDateIfExists(newTask, args);
 		newTask.setDescription(String.join(" ", args));
 
-		Storage.setCurrentListAsPrevious();
+		_storage.setCurrentListAsPrevious();
 
-		Storage.addToTaskList(newTask);
+		_storage.addToTaskList(newTask);
 
 		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 	}
@@ -261,7 +265,7 @@ public class Logic {
 			return;
 		}
 
-		Task task = Storage.getTask(taskIndex);
+		Task task = _storage.getTask(taskIndex);
 
 		switch (args.length) {
 			case 1 :
@@ -358,15 +362,15 @@ public class Logic {
 			return;
 		}
 
-		Storage.setCurrentListAsPrevious();
-		Task task = Storage.getTask(taskIndex);
+		_storage.setCurrentListAsPrevious();
+		Task task = _storage.getTask(taskIndex);
 
 		task.toggleCompleted();
 		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
 
 	private boolean isTaskIndexValid(int taskIndex) {
-		if (Storage.isTaskIndexValid(taskIndex)) {
+		if (_storage.isTaskIndexValid(taskIndex)) {
 			return true;
 		}
 		_newCommandType = CommandType.ERROR;
@@ -380,12 +384,12 @@ public class Logic {
 			return;
 		}
 
-		Task task = Storage.getTask(taskIndex);
+		Task task = _storage.getTask(taskIndex);
 		Recur recur = task.getRecur();
 
 		if (recur == null || !recur.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
-			Storage.setCurrentListAsPrevious();
-			Storage.removeTask(taskIndex);
+			_storage.setCurrentListAsPrevious();
+			_storage.removeTask(taskIndex);
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
 			task.setDate(recur.getNextRecur());
@@ -399,7 +403,7 @@ public class Logic {
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
 		String keywords = _argument;
-		List<Task> taskList = Storage.getTaskList();
+		List<Task> taskList = _storage.getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
 			if (taskList.get(i).getDescription().contains(keywords)) {
 				_indexesFound.add(i);
@@ -422,7 +426,7 @@ public class Logic {
 	}
 
 	private void undoLastCommand() {
-		Storage.setPreviousListAsCurrent();
+		_storage.setPreviousListAsCurrent();
 		_feedback = String.format("Undid last command: %1$s", _oldCommandType);
 	}
 
