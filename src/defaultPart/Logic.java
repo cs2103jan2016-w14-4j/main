@@ -22,6 +22,8 @@ public class Logic {
 
 	private static final String MESSAGE_INVALID_INDEX = "Invalid index %1$s";
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s";
+	private static final String MESSAGE_NO_ARGUMENTS = "No arguments";
+	private static final String MESSAGE_UNDO = "Undid last command: %1$s";
 
 	private static final int ERROR_INDEX = -1;
 
@@ -49,52 +51,48 @@ public class Logic {
 	public Logic(Storage storage) {
 		_storage = storage;
 	}
+
 	public void executeCommand(String input) {
 		setCommandTypeAndArguments(input);
 		try {
-    		switch (_newCommandType) {
-    			case ADD :
-    				addTask();
-    				break;
-    
-    			case EDIT :
-    				editTask();
-    				break;
-    
-    			case TOGGLE_COMPLETE :
-    				toggleTaskComplete();
-    				break;
-    
-    			case DELETE :
-    				deleteTask();
-    				break;
-    
-    			case FIND :
-    				findTask();
-    				break;
-    
-    			case UNDO :
-    				undoLastCommand();
-    				break;
-    
-    			case STORE :
-    				// todo
-    				break;
-    				
-    			/* Additional functions to be implemented later
-    			case HELP :
-    				// todo
-    				break;
-    				
-    			case EXIT :
-    				// todo
-    				break;
-    			*/
-    		}
+			switch (_newCommandType) {
+				case ADD :
+					addTask();
+					break;
+
+				case EDIT :
+					editTask();
+					break;
+
+				case TOGGLE_COMPLETE :
+					toggleTaskComplete();
+					break;
+
+				case DELETE :
+					deleteTask();
+					break;
+
+				case FIND :
+					findTask();
+					break;
+
+				case UNDO :
+					undoLastCommand();
+					break;
+
+				case STORE :
+					// todo
+					break;
+
+				/*
+				 * Additional functions to be implemented later case HELP : // todo break;
+				 * 
+				 * case EXIT : // todo break;
+				 */
+			}
 		} catch (IOException e) {
 			_newCommandType = CommandType.ERROR;
-			System.out.println("mess: " + e.getMessage());
-			_feedback = String.format(MESSAGE_INVALID_INDEX, Integer.parseInt(e.getMessage()) + LIST_NUMBERING_OFFSET);			
+			_feedback = e.getMessage();
 		}
 	}
 
@@ -268,7 +266,7 @@ public class Logic {
 	private void editTask() throws IOException {
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
-		
+
 		String[] args = _argument.split(" ");
 		switch (args.length) {
 			case 1 :
@@ -362,9 +360,9 @@ public class Logic {
 	private void toggleTaskComplete() throws IOException {
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
-		
+
 		_storage.setCurrentListAsPrevious();
-		
+
 		task.toggleCompleted();
 		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
@@ -402,19 +400,21 @@ public class Logic {
 
 	}
 
-	public int getTaskIndex() {
-		if (_argument != null) {
-			String taskIndex = _argument.split(" ", 2)[0];// todo: bound check
-			if (taskIndex.matches("\\d")) {
-				return Integer.parseInt(taskIndex) - LIST_NUMBERING_OFFSET;
-			}
+	public int getTaskIndex() throws IOException {
+		if (_argument == null) {
+			throw new IOException(MESSAGE_NO_ARGUMENTS);
 		}
-		return ERROR_INDEX;
+		assert _argument.length() > 0;
+		String taskIndex = _argument.split(" ", 2)[0];
+		if (taskIndex.matches("\\D")) {
+			throw new IOException(String.format(MESSAGE_INVALID_INDEX, taskIndex));
+		}
+		return Integer.parseInt(taskIndex) - LIST_NUMBERING_OFFSET;
 	}
 
 	private void undoLastCommand() {
 		_storage.setPreviousListAsCurrent();
-		_feedback = String.format("Undid last command: %1$s", _oldCommandType);
+		_feedback = String.format(MESSAGE_UNDO, _oldCommandType);
 	}
 
 	/* Getters for UI */

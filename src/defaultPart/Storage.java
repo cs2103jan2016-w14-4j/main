@@ -57,10 +57,8 @@ public class Storage {
 	 * @return Task at specified index
 	 */
 	public Task getTask(int index) throws IOException {
-		System.out.println("indx: " + index);
 		if (!isTaskIndexValid(index)) {
-			System.out.println("err: " + String.valueOf(index));
-			throw new IOException(String.valueOf(index));
+			throw new IOException(String.valueOf(index)); // todo: create a new exception for index error?
 		}
 		return _currentTaskList.get(index);
 	}
@@ -152,8 +150,7 @@ public class Storage {
 	 * @throws ParseException
 	 *             Error in formatting the date
 	 */
-	public void loadTasks(File file)
-			throws SAXException, ParseException {
+	public void loadTasks(File file) throws SAXException, ParseException {
 
 		// First check if the file exists and is not a directory but an actual file
 		if (file.isFile() && file.canRead()) {

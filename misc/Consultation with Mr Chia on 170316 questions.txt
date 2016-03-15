@@ -35,3 +35,7 @@
 -	Will we know our grading for V0.5? will feedback be given?
 
 - 	Exceptions, one big try catch or multiple try catch?
+
+-	assert false on catch block?
+
+-	which exception to throw if user enter wrong input
