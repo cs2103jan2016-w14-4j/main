@@ -3,6 +3,8 @@ package defaultPart;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import com.ibm.jvm.Log;
+
 import defaultPart.Recur.TimeUnit;
 
 import javax.xml.parsers.*;
@@ -21,9 +23,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Storage {
 
+	/* For Logging	 */
+	private static final Logger log= Logger.getLogger( Storage.class.getName() );
+	
 	/* Date format used to save/load from XML */
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
@@ -345,6 +352,10 @@ public class Storage {
 		Recur taskRecurr = extractRecurFromXML(taskElement);
 		newTask.setRecur(taskRecurr);
 
+		// Ensure that recurring tasks imported will recur
+		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
+			assert(newTask.getRecur().willRecur());
+		}
 		return newTask;
 	}
 
@@ -383,13 +394,18 @@ public class Storage {
 	 * @throws ParseException
 	 *             Error in parsing different data types
 	 */
-	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
+	private Calendar extractDateFromNode(Element taskElement, String tag) {
 		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
 		if (calendarString == "") {
 			return null;
 		}
 		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(formatter.parse(calendarString));
+		try {
+			calendar.setTime(formatter.parse(calendarString));
+		} catch (ParseException ex) {
+			//Parse error in formatting the date
+			log.log(Level.FINE, ex.toString(), ex);
+		}
 		return calendar;
 	}
 
