@@ -18,7 +18,8 @@ public class TaskModel {
     private final SimpleStringProperty recur;
     private final SimpleBooleanProperty isComplete;
 
-    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("EEE dd/MM");
+    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+    public Controller controller;
 
     private Task task;
 
@@ -26,7 +27,8 @@ public class TaskModel {
         return task;
     }
 
-    public TaskModel(Task task, int id){
+    public TaskModel(Task task, int id, Controller controller){
+        this.controller = controller;
         if(task == null)
             throw new NullPointerException("Null task is passed to the UI");
 
@@ -50,6 +52,11 @@ public class TaskModel {
             isRecur = new SimpleBooleanProperty(false);
             recur = new SimpleStringProperty("");
         }
+
+        isComplete.addListener((p,o,n)->{
+            if(o != n)
+                controller.sendToLogicAndUpdatePrompt(String.format(controller.TOGGLE_COMMAND, taskId.get()));
+        });
     }
 
     public void update(){
@@ -87,6 +94,8 @@ public class TaskModel {
     public StringProperty recur(){
         return recur;
     }
+
+    public BooleanProperty isComplete() {return isComplete;}
 
     public int getTaskId() {
         return taskId.get();

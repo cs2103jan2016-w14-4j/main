@@ -9,6 +9,7 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
@@ -46,12 +47,13 @@ public class Controller implements Initializable {
 	public Button showOverdueEvents;
 	public Button showCompletedEvents;
 
-	private static final boolean DEVELOPER_MODE = true;
-	private static final String EDIT_COMMAND = "e %d %s";
-	private static final String EDIT_DATE = "e %d %s %s";
-	private static final String DELETE_COMMAND = "d %d";
-	private static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+	public static final boolean DEVELOPER_MODE = true;
+	public static final String EDIT_COMMAND = "e %d %s";
+	public static final String EDIT_DATE = "e %d %s %s";
+	public static final String DELETE_COMMAND = "d %d";
+	public static final String TOGGLE_COMMAND = "t %d";
+	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
 
 	private List<Task> taskList;
 
@@ -80,6 +82,12 @@ public class Controller implements Initializable {
 				return null;
 			}
 		});
+
+		floatingTaskCheckbox.setCellValueFactory(cellData -> cellData.getValue().isComplete());
+		floatingTaskCheckbox.setCellFactory(e -> new CheckBoxTableCell());
+
+		eventsCheckbox.setCellValueFactory(cellData -> cellData.getValue().isComplete());
+		eventsCheckbox.setCellFactory(e -> new CheckBoxTableCell());
 
 		eventsDate.setCellValueFactory(cellData -> cellData.getValue().dateTime());
 		eventsDate.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -135,14 +143,14 @@ public class Controller implements Initializable {
 	public void addFloatingTask(){
 		Task newTask = new Task();
 		newTask.setDescription("sample Task");
-		floatingTaskList.add(new TaskModel(newTask, ++lastId));
+		floatingTaskList.add(new TaskModel(newTask, ++lastId, this));
 	}
 
 	public void addEvent(){
 		Task newTask = new Task();
 		newTask.setDescription("sample Task");
 		newTask.setEndTime(Calendar.getInstance());
-		eventList.add(new TaskModel(newTask, ++lastId));
+		eventList.add(new TaskModel(newTask, ++lastId, this));
 	}
 
 	public void deleteFloatingTask(){
@@ -182,9 +190,9 @@ public class Controller implements Initializable {
 		for(int i = 0; i < taskList.size(); i++){
 			Task task = taskList.get(i);
 			if(task.getDate() == null){
-				floatingTaskList.add(new TaskModel(task, i+1));
+				floatingTaskList.add(new TaskModel(task, i+1, this));
 			}else{
-				eventList.add(new TaskModel(task, i+1));
+				eventList.add(new TaskModel(task, i+1, this));
 			}
 			lastId++;
 		}
@@ -203,20 +211,20 @@ public class Controller implements Initializable {
 	public void showIncompleteEvents(){
 		showAllTasks();
 		eventList.stream().filter(e -> e.getIsComplete()).forEach(e -> eventList.remove(e));
-		floatingTaskList.stream().filter(e -> e.getIsComplete()).forEach(e -> eventList.remove(e));
+		floatingTaskList.stream().filter(e -> e.getIsComplete()).forEach(e -> floatingTaskList.remove(e));
 	}
 
 	public void showOverdueEvents(){
 		Calendar today = new GregorianCalendar();
 		showAllTasks();
 		eventList.stream().filter(e -> e.getTask().getEndTime().compareTo(today) == 1).forEach(e -> eventList.remove(e));
-		floatingTaskList.stream().filter(e -> e.getTask().getEndTime().compareTo(today) == 1).forEach(e -> eventList.remove(e));
+		floatingTaskList.stream().filter(e -> e.getTask().getEndTime().compareTo(today) == 1).forEach(e -> floatingTaskList.remove(e));
 	}
 
 	public void setShowCompletedEvents(){
 		showAllTasks();
 		eventList.stream().filter(e -> !e.getIsComplete()).forEach(e -> eventList.remove(e));
-		floatingTaskList.stream().filter(e -> !e.getIsComplete()).forEach(e -> eventList.remove(e));
+		floatingTaskList.stream().filter(e -> !e.getIsComplete()).forEach(e -> floatingTaskList.remove(e));
 	}
 
 }
