@@ -6,6 +6,5 @@
 	<classpathentry kind="lib" path="xmlunit-core-2.0.0-alpha-04.jar"/>
 	<classpathentry kind="lib" path="xmlunit-legacy-2.0.0-alpha-04.jar"/>
 	<classpathentry kind="lib" path="xmlunit-matchers-2.0.0-alpha-04.jar"/>
-	<classpathentry kind="lib" path="test/StorageTest.java"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

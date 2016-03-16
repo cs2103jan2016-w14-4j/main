@@ -1,36 +1,100 @@
+package test;
 
 import static org.junit.Assert.*;
-import org.xml.sax.SAXException;
 
-import defaultPart.*;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
+import org.xml.sax.SAXException;
+
+import defaultPart.Storage;
+import defaultPart.Task;
 
 public class StorageTest {
 
 	// Testing method to check if two tasks are equal
-	public static boolean taskEquals(Task task1, Task task2) {
-		if (task1 == null || task2 == null) {
-			return false;
+		public static boolean taskEquals(Task task1, Task task2) {
+			if (task1 == null || task2 == null) {
+				return false;
+			}
+			if (!task1.getDescription().equals(task2.getDescription())) {
+				return false;
+			}
+			if (task1.isCompleted() != task2.isCompleted()) {
+				return false;
+			}
+			if (!task1.getDate().equals(task2.getDate()))
+				return false;
+			if (!task1.getRecur().equals(task2.getRecur())) {
+				return false;
+			}
+			return true;
 		}
-		if (!task1.getDescription().equals(task2.getDescription())) {
-			return false;
-		}
-		if (task1.isCompleted() != task2.isCompleted()) {
-			return false;
-		}
-		if (!task1.getDate().equals(task2.getDate()))
-			return false;
-		if (!task1.getRecur().equals(task2.getRecur())) {
-			return false;
-		}
-		return true;
+		
+	@Test
+	public void testStorage() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetTaskList() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetTask() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testIsTaskIndexValid() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testRemoveTask() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSetPreviousListAsCurrent() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSetCurrentListAsPrevious() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testAddToTaskList() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSaveTasks() throws SAXException, IOException {
+		File inputFile = new File("sampleXML.xml");
+		File outputFile = new File("test.xml");
+		Storage storage = new Storage();
+		storage.loadTasks(inputFile);
+		storage.saveTasks(outputFile);
+
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		FileReader fr1 = new FileReader(inputFile);
+		FileReader fr2 = new FileReader(outputFile);
+		// XMLUnit.compareXML(fr1, fr2);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+
 	}
 
 	@Test
@@ -53,23 +117,8 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testSaveTasks() throws SAXException, IOException {
-		File inputFile = new File("sampleXML.xml");
-		File outputFile = new File("test.xml");
-		Storage storage = new Storage();
-		storage.loadTasks(inputFile);
-		storage.saveTasks(outputFile);
-
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
-		FileReader fr1 = new FileReader(inputFile);
-		FileReader fr2 = new FileReader(outputFile);
-		// XMLUnit.compareXML(fr1, fr2);
-		XMLAssert.assertXMLEqual(fr1, fr2);
-
+	public void testExtractRecurrFromTask() {
+		fail("Not yet implemented");
 	}
 
 }
