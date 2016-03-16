@@ -39,3 +39,5 @@
 -	assert false on catch block?
 
 -	which exception to throw if user enter wrong input
+
+-	sequence diagram for add, edit, delete, mark as complete same, need to include all in dev guide?
