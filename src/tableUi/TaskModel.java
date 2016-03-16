@@ -27,6 +27,9 @@ public class TaskModel {
     }
 
     public TaskModel(Task task, int id){
+        if(task == null)
+            throw new NullPointerException("Null task is passed to the UI");
+
         this.task = task;
         taskId = new SimpleIntegerProperty(id);
         taskDescription = new SimpleStringProperty(task.getDescription());

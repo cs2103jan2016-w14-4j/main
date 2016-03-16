@@ -108,6 +108,8 @@ public class Controller implements Initializable {
 	public void setUserPrompt(String prompt){
 		// the length of feedback should not be longer than 100 characters
 		assert(prompt.length() <= 100);
+		if(DEVELOPER_MODE)
+			System.out.println("Sent back to user: " + prompt);
 		userPrompt.setText(prompt);
 	}
 
