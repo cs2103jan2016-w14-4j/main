@@ -23,7 +23,7 @@ public class Logic {
 
 	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
 	private static final String MESSAGE_TASK_EDITED = "Edited task %1$s";
-	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as complete";
+	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as %2$scomplete";
 	private static final String MESSAGE_TASK_DELETED = "Deleted task %1$s";
 	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords %1$s";
 	private static final String MESSAGE_TASK_FOUND = "Found %1$s tasks";
@@ -394,7 +394,8 @@ public class Logic {
 		_storage.setCurrentListAsPrevious();
 
 		task.toggleCompleted();
-		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
+		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET,
+				task.isCompleted() ? "" : "in");
 	}
 
 	private void deleteTask() throws IOException {
