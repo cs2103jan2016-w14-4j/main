@@ -3,6 +3,9 @@ package tableUi;
 import defaultPart.Task;
 import javafx.beans.property.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by houruomu on 2016/3/12.
  */
@@ -14,6 +17,8 @@ public class TaskModel {
     private final SimpleBooleanProperty isRecur;
     private final SimpleStringProperty recur;
     private final SimpleBooleanProperty isComplete;
+
+    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("EEE dd.MM");
 
     private Task task;
 
@@ -27,9 +32,9 @@ public class TaskModel {
         taskDescription = new SimpleStringProperty(task.getDescription());
         isComplete = new SimpleBooleanProperty(task.isCompleted());
 
-        if(task.getEndTime() != null){
+        if(task.getDate() != null){
             isEvent = new SimpleBooleanProperty(true);
-            dateTime = new SimpleStringProperty(task.getEndTime().toString());
+            dateTime = new SimpleStringProperty(DATE_FORMAT.format(task.getDate().getTime()));
         }else{
             isEvent = new SimpleBooleanProperty(false);
             dateTime = new SimpleStringProperty("");
@@ -47,9 +52,9 @@ public class TaskModel {
     public void update(){
         taskDescription.setValue(task.getDescription());
         isComplete.setValue(task.isCompleted());
-        if(task.getEndTime() != null){
+        if(task.getDate() != null){
             isEvent.setValue(true);
-            dateTime.setValue(task.getEndTime().toString());
+            dateTime.setValue(DATE_FORMAT.format(task.getDate().getTime()));
         }else{
             isEvent.setValue(false);
             dateTime.setValue("");

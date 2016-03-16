@@ -46,6 +46,7 @@ public class Controller implements Initializable {
 	public Button showCompletedEvents;
 
 	private static final boolean DEVELOPER_MODE = true;
+	private static final String EDIT_COMMAND = "e %d %s";
 	private static final String DELETE_COMMAND = "d %d";
 
 	private List<Task> taskList;
@@ -81,28 +82,33 @@ public class Controller implements Initializable {
 		floatingTaskDescription.setCellValueFactory(cellData -> cellData.getValue().taskDescription());
 		floatingTaskDescription.setCellFactory(TextFieldTableCell.forTableColumn());
 		floatingTaskDescription.setOnEditCommit(e -> {
-			e.getTableView().getItems().get(e.getTablePosition().getRow()).setTaskDescription(e.getNewValue());
+			int id = e.getTableView().getItems().get(e.getTablePosition().getRow()).getTaskId();
+			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
 		});
 
 		eventsDescription.setCellValueFactory(cellData -> cellData.getValue().taskDescription());
 		eventsDescription.setCellFactory(TextFieldTableCell.forTableColumn());
 		eventsDescription.setOnEditCommit(e -> {
-			e.getTableView().getItems().get(e.getTablePosition().getRow()).setTaskDescription(e.getNewValue());
+			int id = e.getTableView().getItems().get(e.getTablePosition().getRow()).getTaskId();
+			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
 		});
 
 		storage = new Storage();
 		logic = new Logic(storage);
 		inputBox.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if(e.getCode().equals(KeyCode.ENTER)){
-				logic.executeCommand(inputBox.getText());
-				if(DEVELOPER_MODE){
-					System.out.println("Send to logic: " + inputBox.getText());
-				}
+				sendToLogicAndUpdatePrompt(inputBox.getText());
 				inputBox.clear();
-				userPrompt.setText(logic.getFeedback());
-				showAllTasks();
 			}
 		});
+
+		inputBox.requestFocus();
+	}
+
+	public void setUserPrompt(String prompt){
+		// the length of feedback should not be longer than 100 characters
+		assert(prompt.length() <= 100);
+		userPrompt.setText(prompt);
 	}
 
 	public void addFloatingTask(){
@@ -121,19 +127,25 @@ public class Controller implements Initializable {
 	public void deleteFloatingTask(){
 		int selectedIndex = floatingTaskTable.getSelectionModel().getSelectedIndex();
 		if (selectedIndex >= 0) {
-			floatingTaskTable.getItems().remove(selectedIndex);
+			int id = floatingTaskTable.getItems().get(selectedIndex).getTaskId();
+			sendToLogicAndUpdatePrompt(String.format(DELETE_COMMAND, id));
 		} else {
-			// Nothing selected.
+			// Nothing selected
+			setUserPrompt("No floating task is selected");
 		}
+		inputBox.requestFocus();
 	}
 
 	public void deleteEvent(){
 		int selectedIndex = eventsTable.getSelectionModel().getSelectedIndex();
 		if (selectedIndex >= 0) {
-			eventsTable.getItems().remove(selectedIndex);
+			int id = eventsTable.getItems().get(selectedIndex).getTaskId();
+			sendToLogicAndUpdatePrompt(String.format(DELETE_COMMAND, id));
 		} else {
-			// Nothing selected.
+			// Nothing selected
+			setUserPrompt("No event is selected");
 		}
+		inputBox.requestFocus();
 	}
 
 	public void updateTaskList(List<Task> tasks){
@@ -148,12 +160,23 @@ public class Controller implements Initializable {
 
 		for(int i = 0; i < taskList.size(); i++){
 			Task task = taskList.get(i);
-			if(task.getEndTime() == null){
-				floatingTaskList.add(new TaskModel(task, ++lastId));
+			if(task.getDate() == null){
+				floatingTaskList.add(new TaskModel(task, i+1));
 			}else{
-				eventList.add(new TaskModel(task, ++lastId));
+				eventList.add(new TaskModel(task, i+1));
 			}
+			lastId++;
 		}
+		inputBox.requestFocus();
+	}
+
+	public void sendToLogicAndUpdatePrompt(String command){
+		logic.executeCommand(command);
+		if(DEVELOPER_MODE){
+			System.out.println("Send to logic: " + command);
+		}
+		setUserPrompt(logic.getFeedback());
+		showAllTasks();
 	}
 
 	public void showIncompleteEvents(){
