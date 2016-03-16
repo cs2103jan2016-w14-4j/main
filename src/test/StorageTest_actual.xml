@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wuriTasks>
+   <Task>
+      <Description>Find potato</Description>
+      <Date/>
+      <StartTime/>
+      <EndTime/>
+      <Completed>yes</Completed>
+   </Task>
+   <Task>
+      <Description>CS2103 meeting</Description>
+      <Date>08-11-2016 06:21:21</Date>
+      <StartTime/>
+      <EndTime/>
+      <Completed>yes</Completed>
+   </Task>
+   <Task>
+      <Description>Group project</Description>
+      <Date>15-7-2017 06:21:58</Date>
+      <StartTime>01-1-1970 15:22:00</StartTime>
+      <EndTime/>
+      <Completed>no</Completed>
+   </Task>
+   <Task>
+      <Description>meeting CS2103T at COM2 1/1 12:22pm</Description>
+      <Date/>
+      <StartTime/>
+      <EndTime/>
+      <Completed>no</Completed>
+      <recur>
+         <timeUnit>DAY</timeUnit>
+         <frequency>3</frequency>
+         <endOfRecurr>13-8-2016 06:23:02</endOfRecurr>
+      </recur>
+   </Task>
+   <Task>
+      <Description>Read a book</Description>
+      <Date/>
+      <StartTime/>
+      <EndTime/>
+      <Completed>no</Completed>
+   </Task>
+</wuriTasks>

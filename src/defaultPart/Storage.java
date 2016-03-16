@@ -29,6 +29,8 @@ import java.util.logging.SimpleFormatter;
 
 public class Storage {
 
+	private static final String TAG_TASK_HEADING = "Task";
+
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
 
@@ -186,7 +188,7 @@ public class Storage {
 
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(file);
-
+			
 			// Iterates through the list of tasks extracted
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				{
@@ -324,7 +326,7 @@ public class Storage {
 		assert (taskItem != null);
 		assert (rootElement != null);
 
-		Element taskElement = doc.createElement("Task");
+		Element taskElement = doc.createElement(TAG_TASK_HEADING);
 		Element descriptionElement = doc.createElement("Description");
 		Element dateElement = doc.createElement("Date");
 		Element startTimeElement = doc.createElement("StartTime");
@@ -388,8 +390,7 @@ public class Storage {
 			document.getDocumentElement().normalize();
 
 			// Getting all the tasks in the XML structure for this task type
-			nList = document.getElementsByTagName("task");
-
+			nList = document.getElementsByTagName(TAG_TASK_HEADING);
 		} catch (ParserConfigurationException e) {
 			// Error in parser configuration
 			e.printStackTrace();

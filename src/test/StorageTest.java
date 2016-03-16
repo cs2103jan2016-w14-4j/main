@@ -17,11 +17,13 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import defaultPart.Recur;
 import defaultPart.Storage;
 import defaultPart.Task;
 
 public class StorageTest {
 
+	private static final String TASK_FILE_NAME = "test/StorageTest_expected.xml";
 	/* Date format used to save/load from XML */
 	public static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
@@ -73,9 +75,18 @@ public class StorageTest {
 		if (task1.isCompleted() != task2.isCompleted()) {
 			return false;
 		}
-		if (!task1.getDate().equals(task2.getDate()))
+		Calendar date1 = task1.getDate();
+		Calendar date2 = task2.getDate();
+		if (date1 == null) {
+			return date2 == null;
+		} else if (!date1.equals(date2)) {
 			return false;
-		if (!task1.getRecur().equals(task2.getRecur())) {
+		}
+		Recur recur1 = task1.getRecur();
+		Recur recur2 = task2.getRecur();
+		if (recur1 == null) {
+			return recur2 == null;
+		} else if (!recur1.equals(recur2)) {
 			return false;
 		}
 		return true;
@@ -143,8 +154,8 @@ public class StorageTest {
 
 	@Test
 	public void testSaveTasks() throws SAXException, IOException {
-		File inputFile = new File("sampleXML.xml");
-		File outputFile = new File("test.xml");
+		File inputFile = new File(TASK_FILE_NAME);
+		File outputFile = new File("test/StorageTest_actual.xml");
 		Storage storage = new Storage();
 		storage.loadTasks(inputFile);
 		storage.saveTasks(outputFile);
@@ -163,21 +174,16 @@ public class StorageTest {
 
 	@Test
 	public void testLoadTasks() throws SAXException, IOException {
-		File file = new File("sampleXML.xml");
+		File file = new File(TASK_FILE_NAME);
 		Storage storage = new Storage();
 		storage.loadTasks(file);
-		List<Task> testList = storage.getTaskList();
-
-		List<Task> expectedList = new LinkedList<Task>();
-		Task expTask1 = testList.get(0);
+		Task expTask1 = storage.getTask(0);
 
 		Task testTask1 = new Task();
 		testTask1.setDescription("Find potato");
 		testTask1.toggleCompleted();
-		expectedList.add(testTask1);
 
 		assertTrue(taskEquals(expTask1, testTask1));
-
 	}
 
 	@Test
