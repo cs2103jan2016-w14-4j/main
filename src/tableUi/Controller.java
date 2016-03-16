@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class Controller implements Initializable {
 	@FXML
@@ -54,6 +55,8 @@ public class Controller implements Initializable {
 	public static final String TOGGLE_COMMAND = "t %d";
 	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+
+	private static final Logger log = Logger.getLogger(Logic.class.getName());
 
 	private List<Task> taskList;
 
@@ -134,7 +137,9 @@ public class Controller implements Initializable {
 
 	public void setUserPrompt(String prompt){
 		// the length of feedback should not be longer than 100 characters
-		assert(prompt.length() <= 100);
+		if(prompt.length() > 100){
+			prompt = prompt.substring(0,97) + "...";
+		}
 		if(DEVELOPER_MODE)
 			System.out.println("Sent back to user: " + prompt);
 		userPrompt.setText(prompt);
