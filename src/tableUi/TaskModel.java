@@ -3,6 +3,9 @@ package tableUi;
 import defaultPart.Task;
 import javafx.beans.property.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by houruomu on 2016/3/12.
  */
@@ -15,21 +18,28 @@ public class TaskModel {
     private final SimpleStringProperty recur;
     private final SimpleBooleanProperty isComplete;
 
+    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+    public Controller controller;
+
     private Task task;
 
     public Task getTask(){
         return task;
     }
 
-    public TaskModel(Task task, int id){
+    public TaskModel(Task task, int id, Controller controller){
+        this.controller = controller;
+        if(task == null)
+            throw new NullPointerException("Null task is passed to the UI");
+
         this.task = task;
         taskId = new SimpleIntegerProperty(id);
         taskDescription = new SimpleStringProperty(task.getDescription());
         isComplete = new SimpleBooleanProperty(task.isCompleted());
 
-        if(task.getEndTime() != null){
+        if(task.getDate() != null){
             isEvent = new SimpleBooleanProperty(true);
-            dateTime = new SimpleStringProperty(task.getEndTime().toString());
+            dateTime = new SimpleStringProperty(DATE_FORMAT.format(task.getDate().getTime()));
         }else{
             isEvent = new SimpleBooleanProperty(false);
             dateTime = new SimpleStringProperty("");
@@ -42,14 +52,19 @@ public class TaskModel {
             isRecur = new SimpleBooleanProperty(false);
             recur = new SimpleStringProperty("");
         }
+
+        isComplete.addListener((p,o,n)->{
+            if(o != n)
+                controller.sendToLogicAndUpdatePrompt(String.format(controller.TOGGLE_COMMAND, taskId.get()));
+        });
     }
 
     public void update(){
         taskDescription.setValue(task.getDescription());
         isComplete.setValue(task.isCompleted());
-        if(task.getEndTime() != null){
+        if(task.getDate() != null){
             isEvent.setValue(true);
-            dateTime.setValue(task.getEndTime().toString());
+            dateTime.setValue(DATE_FORMAT.format(task.getDate().getTime()));
         }else{
             isEvent.setValue(false);
             dateTime.setValue("");
@@ -79,6 +94,8 @@ public class TaskModel {
     public StringProperty recur(){
         return recur;
     }
+
+    public BooleanProperty isComplete() {return isComplete;}
 
     public int getTaskId() {
         return taskId.get();

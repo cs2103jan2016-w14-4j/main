@@ -7,22 +7,8 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tableUi.Controller">
    <children>
-      <SplitPane dividerPositions="0.381">
+      <SplitPane dividerPositions="0.619">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0">
-               <children>
-                  <Label layoutX="7.0" layoutY="7.0" text="Floating tasks" />
-                  <Button fx:id="addFloatingTask" layoutX="275.0" layoutY="3.0" mnemonicParsing="false" onAction="#addFloatingTask" text="+" />
-                  <Button fx:id="deleteFloatingTask" layoutX="252.0" layoutY="3.0" mnemonicParsing="false" onAction="#deleteFloatingTask" text="-" />
-                  <TableView fx:id="floatingTaskTable" editable="true" layoutX="-1.0" layoutY="25.0">
-                    <columns>
-                      <TableColumn fx:id="floatingTaskId" editable="false" prefWidth="30.0" text="id" />
-                      <TableColumn fx:id="floatingTaskCheckbox" prefWidth="21.0" text="C" />
-                        <TableColumn fx:id="floatingTaskDescription" minWidth="0.0" prefWidth="250.0" sortable="false" text="Description" />
-                    </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
                   <Button fx:id="showAllEvents" layoutX="163.0" layoutY="3.0" mnemonicParsing="false" onAction="#showAllTasks" text="All Events" />
@@ -43,11 +29,25 @@
                   </TableView>
                </children>
             </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0">
+               <children>
+                  <Label layoutX="7.0" layoutY="7.0" text="Floating tasks" />
+                  <Button fx:id="addFloatingTask" layoutX="275.0" layoutY="3.0" mnemonicParsing="false" onAction="#addFloatingTask" text="+" />
+                  <Button fx:id="deleteFloatingTask" layoutX="252.0" layoutY="3.0" mnemonicParsing="false" onAction="#deleteFloatingTask" text="-" />
+                  <TableView fx:id="floatingTaskTable" editable="true" layoutX="-1.0" layoutY="25.0">
+                    <columns>
+                      <TableColumn fx:id="floatingTaskId" editable="false" prefWidth="30.0" text="id" />
+                      <TableColumn fx:id="floatingTaskCheckbox" prefWidth="21.0" text="C" />
+                        <TableColumn fx:id="floatingTaskDescription" minWidth="0.0" prefWidth="250.0" sortable="false" text="Description" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
         </items>
       </SplitPane>
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
-            <TextField fx:id="inputBox" prefHeight="23.0" prefWidth="313.0" />
+            <TextField fx:id="inputBox" prefHeight="23.0" prefWidth="313.0" promptText="Start Here!" />
             <Label fx:id="userPrompt" text="Welcome to WURI, type something to start. F1 for help" wrapText="true" />
          </children>
          <opaqueInsets>

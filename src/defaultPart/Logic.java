@@ -247,7 +247,7 @@ public class Logic {
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
-	private Calendar getDateFromString(String dateString) {
+	public Calendar getDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
 		Calendar newDate = new GregorianCalendar();
 		Calendar currentDate = (Calendar) newDate.clone();
