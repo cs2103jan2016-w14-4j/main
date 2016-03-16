@@ -1,3 +1,4 @@
+package test;
 
 import static org.junit.Assert.*;
 
@@ -93,7 +94,6 @@ public class StorageTest {
 		// Setting up expected Task List for comparison
 		Task newTask = new Task();
 		newTask.setDescription("Test case");
-		newTask.setDate(new Calendar("12-12-2001"));
 		List<Task> expectedTaskList = new LinkedList<Task>();
 		expectedTaskList.add(newTask);
 
