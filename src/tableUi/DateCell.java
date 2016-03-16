@@ -4,12 +4,19 @@ import defaultPart.Task;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by houruomu on 2016/3/16.
  */
 public class DateCell extends TableCell<TaskModel, String> {
     private TextField textField;
-    public DateCell(){};
+    private TaskModel taskModel;
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+
+    public DateCell(TaskModel model){
+        this.taskModel = model;
+    };
 
     @Override
     public void startEdit() {
@@ -51,7 +58,7 @@ public class DateCell extends TableCell<TaskModel, String> {
     }
 
     private void createTextField() {
-        textField = new TextField(getString());
+        textField = new TextField(DATE_FORMAT.format(taskModel.getTask().getDate().getTime()));
         textField.setMinWidth(this.getWidth() - this.getGraphicTextGap()* 2);
         textField.focusedProperty().addListener((p,o,n)->{
             if(!n)

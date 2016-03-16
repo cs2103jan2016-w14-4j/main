@@ -17,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -47,7 +48,10 @@ public class Controller implements Initializable {
 
 	private static final boolean DEVELOPER_MODE = true;
 	private static final String EDIT_COMMAND = "e %d %s";
+	private static final String EDIT_DATE = "e %d %s %s";
 	private static final String DELETE_COMMAND = "d %d";
+	private static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
 
 	private List<Task> taskList;
 
@@ -80,7 +84,16 @@ public class Controller implements Initializable {
 		eventsDate.setCellValueFactory(cellData -> cellData.getValue().dateTime());
 		eventsDate.setCellFactory(TextFieldTableCell.forTableColumn());
 		eventsDate.setOnEditCommit(e ->{
-
+			TaskModel taskModel = e.getTableView().getItems().get(e.getTablePosition().getRow());
+			int id = taskModel.getTaskId();
+			try{
+				Calendar newDate = logic.getDateFromString(e.getNewValue());
+				String dateString = DATE_FORMAT.format(newDate.getTime());
+				sendToLogicAndUpdatePrompt(String.format(EDIT_DATE, id, taskModel.getTaskDescription(), dateString));
+			}catch(Exception exception){
+				setUserPrompt(String.format(INVALID_DATE_PROMPT, e.getNewValue()));
+				e.consume();
+			}
 		});
 
 
