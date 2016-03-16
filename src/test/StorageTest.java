@@ -26,7 +26,8 @@ public class StorageTest {
 	public static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/**
-	 * Function to create a sample task for testing" 
+	 * Function to create a sample task for testing"
+	 * 
 	 * @param type
 	 *            1-Floating 2-Deadline 3-Event
 	 * @return new task Created
@@ -34,7 +35,6 @@ public class StorageTest {
 	 */
 	public static Task instantiateTestTask(int type) throws ParseException {
 
-		
 		Calendar calDate = new GregorianCalendar();
 		Calendar calStart = new GregorianCalendar();
 		Calendar calEnd = new GregorianCalendar();
@@ -43,17 +43,16 @@ public class StorageTest {
 		calDate.setTime(formatter.parse("20-6-2016 12:00:00"));
 
 		Task newTask = new Task();
-		switch(type)
-		{
-			case 1:
+		switch (type) {
+			case 1 :
 				newTask.setDescription("Floating Test case");
 				break;
-			case 2:
+			case 2 :
 				newTask.setDescription("Deadline Test case");
 				newTask.setDate(calDate);
 				newTask.setEndTime(calEnd);
 				break;
-			case 3:
+			case 3 :
 				newTask.setDescription("Event Test case");
 				newTask.setDate(calDate);
 				newTask.setStartTime(calStart);
