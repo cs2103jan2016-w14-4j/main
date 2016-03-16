@@ -42,11 +42,6 @@ public class Storage {
 	/* Used for CommandType.UNDO */
 	private List<Task> _prevTaskList = new LinkedList<Task>();
 
-	/**
-	 * Get a copy of the task list
-	 * 
-	 * @return The current Task list
-	 */
 
 	public Storage() {
 		try {
@@ -55,14 +50,19 @@ public class Storage {
 			logger.addHandler(handler);
 
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
+			logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Get a copy of the task list
+	 * 
+	 * @return The current Task list
+	 */
 	public List<Task> getTaskList() {
 		/* Returns a clone to prevent undesired modification */
 		return new LinkedList<Task>(_currentTaskList);
@@ -207,10 +207,10 @@ public class Storage {
 		try {
 			transformer = transformerFactory.newTransformer();
 
-		} catch (TransformerConfigurationException ex) {
+		} catch (TransformerConfigurationException e) {
 			// Error in Transformer Configuration
-			ex.printStackTrace();
-			logger.log(Level.FINE, ex.toString(), ex);
+			e.printStackTrace();
+			logger.log(Level.FINE, e.toString(), e);
 			assert false;
 		}
 
@@ -223,10 +223,10 @@ public class Storage {
 		StreamResult result = new StreamResult(file);
 		try {
 			transformer.transform(source, result);
-		} catch (TransformerException ex) {
+		} catch (TransformerException e) {
 			// Error in transformation process
-			ex.printStackTrace();
-			logger.log(Level.FINE, ex.toString(), ex);
+			e.printStackTrace();
+			logger.log(Level.FINE, e.toString(), e);
 			assert false;
 		}
 	}
@@ -243,11 +243,11 @@ public class Storage {
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			doc = builder.newDocument();
-		} catch (ParserConfigurationException ex) {
+		} catch (ParserConfigurationException e) {
 
 			// Will not occur unless builder object is configured wrongly
-			ex.printStackTrace();
-			logger.log(Level.FINE, ex.toString(), ex);
+			e.printStackTrace();
+			logger.log(Level.FINE, e.toString(), e);
 			assert false;
 		}
 
@@ -355,17 +355,17 @@ public class Storage {
 			// Getting all the tasks in the XML structure for this task type
 			nList = document.getElementsByTagName("task");
 
-		} catch (ParserConfigurationException ex) {
+		} catch (ParserConfigurationException e) {
 			// Error in parser configuration
-			ex.printStackTrace();
+			e.printStackTrace();
 			assert (false);
-			logger.log(Level.FINE, ex.toString(), ex);
+			logger.log(Level.FINE, e.toString(), e);
 
-		} catch (IOException iex) {
+		} catch (IOException e) {
 			// Error accessing file
-			iex.printStackTrace();
+			e.printStackTrace();
 			assert (false);
-			logger.log(Level.FINE, iex.toString(), iex);
+			logger.log(Level.FINE, e.toString(), e);
 		}
 
 		return nList;
