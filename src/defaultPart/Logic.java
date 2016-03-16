@@ -301,11 +301,11 @@ public class Logic {
 				if (date != null) {
 					task.setDate(date);
 				}
-				try{
+				/*try{
 					task.setStartTime(getTimeFromString(args[2]));
 				}catch(Exception e){
 					e.printStackTrace();
-				}
+				}*/
 				break;
 
 			case 4 :
