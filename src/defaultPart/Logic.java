@@ -64,11 +64,10 @@ public class Logic {
 			logger.addHandler(handler);
 
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Security exception: {0}", e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "IOexception: {0}", e.getMessage());
+
 		}
 	}
 
@@ -199,7 +198,7 @@ public class Logic {
 						recur.setTimeUnit(Recur.TimeUnit.YEAR);
 						break;
 				}
-				assert recur.getTimeUnit() != null;
+				assert (recur.getTimeUnit() != null);
 				char frequency = frequencyAndUnit.charAt(0);
 				if (Character.isDigit(frequency)) {
 					recur.setFrequency(Character.getNumericValue(frequency));
