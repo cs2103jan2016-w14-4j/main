@@ -42,7 +42,6 @@ public class Storage {
 	/* Used for CommandType.UNDO */
 	private List<Task> _prevTaskList = new LinkedList<Task>();
 
-
 	public Storage() {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
@@ -57,7 +56,7 @@ public class Storage {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Get a copy of the task list
 	 * 
@@ -126,6 +125,10 @@ public class Storage {
 	 *            Task to be added to task list
 	 */
 	public void addToTaskList(Task newTask) {
+		
+		// Assert that the new task is not null
+		assert (newTask != null);
+		
 		Calendar newTaskDate = newTask.getDate();
 		for (int i = 0; i < _currentTaskList.size(); i++) {
 			Calendar taskDate = _currentTaskList.get(i).getDate();
@@ -144,6 +147,9 @@ public class Storage {
 	 *            File to be saved
 	 */
 	public void saveTasks(File file) {
+
+		// Assert that file are not null
+		assert (file != null);
 
 		Document doc = initializeDocBuilder();
 
@@ -172,6 +178,9 @@ public class Storage {
 	 */
 	public void loadTasks(File file) throws SAXException, ParseException {
 
+		// Assert that file is not null
+		assert (file != null);
+		
 		// First check if the file exists and is not a directory but an actual file
 		if (file.isFile() && file.canRead()) {
 
@@ -202,6 +211,11 @@ public class Storage {
 	 *            Output file to save the formatted XML document
 	 */
 	private void transformAndSaveXML(Document doc, File file) {
+
+		// Assert that doc & file are not null
+		assert (doc != null);
+		assert (file != null);
+
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = null;
 		try {
@@ -211,7 +225,6 @@ public class Storage {
 			// Error in Transformer Configuration
 			e.printStackTrace();
 			logger.log(Level.FINE, e.toString(), e);
-			assert false;
 		}
 
 		// Properties of the XML format to save the file in
@@ -226,8 +239,7 @@ public class Storage {
 		} catch (TransformerException e) {
 			// Error in transformation process
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
-			assert false;
+			logger.log(Level.SEVERE, e.toString(), e);
 		}
 	}
 
@@ -248,7 +260,6 @@ public class Storage {
 			// Will not occur unless builder object is configured wrongly
 			e.printStackTrace();
 			logger.log(Level.FINE, e.toString(), e);
-			assert false;
 		}
 
 		return doc;
@@ -269,6 +280,12 @@ public class Storage {
 		if (recur == null) {
 			return;
 		}
+
+		// Assert that the parameters are not null
+		assert (doc != null);
+		assert (taskItem != null);
+		assert (parentElement != null);
+
 		Element recurrElement = doc.createElement("recur");
 		Element recurTimeUnitElement = doc.createElement("timeUnit");
 		Element recurFrequencyElement = doc.createElement("frequency");
@@ -295,6 +312,12 @@ public class Storage {
 	 *            Task to extract out the task details from
 	 */
 	private void createTasksXML(Document doc, Task taskItem, Element rootElement) {
+
+		// Assert that the parameters are not null
+		assert (doc != null);
+		assert (taskItem != null);
+		assert (rootElement != null);
+
 		Element taskElement = doc.createElement("Task");
 		Element descriptionElement = doc.createElement("Description");
 		Element dateElement = doc.createElement("Date");
@@ -315,7 +338,6 @@ public class Storage {
 
 		// Handles the recurrence section
 		extractRecurrFromTask(doc, taskItem, taskElement);
-
 		rootElement.appendChild(taskElement);
 	}
 
@@ -327,6 +349,10 @@ public class Storage {
 	 * @return Formatted string containing date/time
 	 */
 	private String getCalendarString(Calendar calendar) {
+
+		// Assert that the calendar is not null
+		assert (calendar != null);
+
 		return (calendar == null) ? "" : formatter.format(calendar.getTime());
 	}
 
@@ -341,6 +367,9 @@ public class Storage {
 	 *             Error in XML file structure
 	 */
 	private NodeList extractListFromDocument(File file) throws SAXException {
+
+		// Assert that the file is not null
+		assert (file != null);
 
 		// Reading the XML file
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -358,13 +387,11 @@ public class Storage {
 		} catch (ParserConfigurationException e) {
 			// Error in parser configuration
 			e.printStackTrace();
-			assert (false);
 			logger.log(Level.FINE, e.toString(), e);
 
 		} catch (IOException e) {
 			// Error accessing file
 			e.printStackTrace();
-			assert (false);
 			logger.log(Level.FINE, e.toString(), e);
 		}
 
@@ -382,6 +409,9 @@ public class Storage {
 	 *             Error in parsing different date
 	 */
 	private Task importTask(Element taskElement) throws ParseException {
+
+		// Assert than taskElement is not null
+		assert (taskElement != null);
 
 		// Create new task with extracted description & extract other attributes
 		Task newTask = new Task();
@@ -416,6 +446,10 @@ public class Storage {
 	 *             Error in formatting the date
 	 */
 	private Recur extractRecurFromXML(Element taskElement) throws ParseException {
+
+		// Assert than taskElement is not null
+		assert (taskElement != null);
+
 		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
 			return null;
 		}
@@ -442,6 +476,11 @@ public class Storage {
 	 *             Error in formatting the date
 	 */
 	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
+
+		// Assert than taskElement & tag are not null
+		assert (taskElement != null);
+		assert (tag != null || tag != "");
+
 		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
 		if (calendarString == "") {
 			return null;
@@ -461,6 +500,11 @@ public class Storage {
 	 * @return String inside taskElement with specified tag
 	 */
 	private String extractStringFromNode(Element taskElement, String tag) {
+
+		// Assert than taskElement & tag are not null
+		assert (taskElement != null);
+		assert (tag != null || tag != "");
+
 		Node node = taskElement.getElementsByTagName(tag).item(0);
 		return (node == null) ? "" : node.getTextContent();
 	}
