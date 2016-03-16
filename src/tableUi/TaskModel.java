@@ -18,7 +18,6 @@ public class TaskModel {
     private final SimpleStringProperty recur;
     private final SimpleBooleanProperty isComplete;
 
-    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
     public Controller controller;
 
     private Task task;
@@ -29,8 +28,7 @@ public class TaskModel {
 
     public TaskModel(Task task, int id, Controller controller){
         this.controller = controller;
-        if(task == null)
-            throw new NullPointerException("Null task is passed to the UI");
+        assert(task != null);
 
         this.task = task;
         taskId = new SimpleIntegerProperty(id);
@@ -39,7 +37,7 @@ public class TaskModel {
 
         if(task.getDate() != null){
             isEvent = new SimpleBooleanProperty(true);
-            dateTime = new SimpleStringProperty(DATE_FORMAT.format(task.getDate().getTime()));
+            dateTime = new SimpleStringProperty(controller.DATE_FORMAT.format(task.getDate().getTime()));
         }else{
             isEvent = new SimpleBooleanProperty(false);
             dateTime = new SimpleStringProperty("");
@@ -64,7 +62,7 @@ public class TaskModel {
         isComplete.setValue(task.isCompleted());
         if(task.getDate() != null){
             isEvent.setValue(true);
-            dateTime.setValue(DATE_FORMAT.format(task.getDate().getTime()));
+            dateTime.setValue(controller.DATE_FORMAT.format(task.getDate().getTime()));
         }else{
             isEvent.setValue(false);
             dateTime.setValue("");

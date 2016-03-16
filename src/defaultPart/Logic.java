@@ -23,7 +23,7 @@ public class Logic {
 
 	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
 	private static final String MESSAGE_TASK_EDITED = "Edited task %1$s";
-	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as complete";
+	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as %2$scomplete";
 	private static final String MESSAGE_TASK_DELETED = "Deleted task %1$s";
 	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords %1$s";
 	private static final String MESSAGE_TASK_FOUND = "Found %1$s tasks";
@@ -64,11 +64,10 @@ public class Logic {
 			logger.addHandler(handler);
 
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Security exception: {0}", e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "IOexception: {0}", e.getMessage());
+
 		}
 	}
 
@@ -199,7 +198,7 @@ public class Logic {
 						recur.setTimeUnit(Recur.TimeUnit.YEAR);
 						break;
 				}
-				assert recur.getTimeUnit() != null;
+				assert (recur.getTimeUnit() != null);
 				char frequency = frequencyAndUnit.charAt(0);
 				if (Character.isDigit(frequency)) {
 					recur.setFrequency(Character.getNumericValue(frequency));
@@ -395,7 +394,8 @@ public class Logic {
 		_storage.setCurrentListAsPrevious();
 
 		task.toggleCompleted();
-		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET);
+		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET,
+				task.isCompleted() ? "" : "in");
 	}
 
 	private void deleteTask() throws IOException {

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class Controller implements Initializable {
 	@FXML
@@ -49,11 +50,14 @@ public class Controller implements Initializable {
 
 	public static final boolean DEVELOPER_MODE = true;
 	public static final String EDIT_COMMAND = "e %d %s";
-	public static final String EDIT_DATE = "e %d %s %s";
 	public static final String DELETE_COMMAND = "d %d";
 	public static final String TOGGLE_COMMAND = "t %d";
 	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+	public static final String ADD_EMPTY_FLOATING_TASK = "new Task, double click to edit";
+	public static final String ADD_EMPTY_EVENT = "new Task, double click to edit 1/1/00";
+
+	private static final Logger log = Logger.getLogger(Logic.class.getName());
 
 	private List<Task> taskList;
 
@@ -97,7 +101,7 @@ public class Controller implements Initializable {
 			try{
 				Calendar newDate = logic.getDateFromString(e.getNewValue());
 				String dateString = DATE_FORMAT.format(newDate.getTime());
-				sendToLogicAndUpdatePrompt(String.format(EDIT_DATE, id, taskModel.getTaskDescription(), dateString));
+				sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, dateString));
 			}catch(Exception exception){
 				setUserPrompt(String.format(INVALID_DATE_PROMPT, e.getNewValue()));
 				e.consume();
@@ -134,23 +138,20 @@ public class Controller implements Initializable {
 
 	public void setUserPrompt(String prompt){
 		// the length of feedback should not be longer than 100 characters
-		assert(prompt.length() <= 100);
+		if(prompt.length() > 100){
+			prompt = prompt.substring(0,97) + "...";
+		}
 		if(DEVELOPER_MODE)
 			System.out.println("Sent back to user: " + prompt);
 		userPrompt.setText(prompt);
 	}
 
 	public void addFloatingTask(){
-		Task newTask = new Task();
-		newTask.setDescription("sample Task");
-		floatingTaskList.add(new TaskModel(newTask, ++lastId, this));
+		sendToLogicAndUpdatePrompt(ADD_EMPTY_FLOATING_TASK);
 	}
 
 	public void addEvent(){
-		Task newTask = new Task();
-		newTask.setDescription("sample Task");
-		newTask.setEndTime(Calendar.getInstance());
-		eventList.add(new TaskModel(newTask, ++lastId, this));
+		sendToLogicAndUpdatePrompt(ADD_EMPTY_EVENT);
 	}
 
 	public void deleteFloatingTask(){
