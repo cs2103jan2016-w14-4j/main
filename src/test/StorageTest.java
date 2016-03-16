@@ -1,12 +1,15 @@
-package test;
 
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -18,38 +21,100 @@ import defaultPart.Task;
 
 public class StorageTest {
 
-	// Testing method to check if two tasks are equal
-		public static boolean taskEquals(Task task1, Task task2) {
-			if (task1 == null || task2 == null) {
-				return false;
-			}
-			if (!task1.getDescription().equals(task2.getDescription())) {
-				return false;
-			}
-			if (task1.isCompleted() != task2.isCompleted()) {
-				return false;
-			}
-			if (!task1.getDate().equals(task2.getDate()))
-				return false;
-			if (!task1.getRecur().equals(task2.getRecur())) {
-				return false;
-			}
-			return true;
-		}
+	/* Date format used to save/load from XML */
+	public static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
+
+	/**
+	 * Function to create a sample task for testing" 
+	 * @param type
+	 *            1-Floating 2-Deadline 3-Event
+	 * @return new task Created
+	 * @throws ParseException
+	 */
+	public static Task instantiateTestTask(int type) throws ParseException {
+
 		
+		Calendar calDate = new GregorianCalendar();
+		Calendar calStart = new GregorianCalendar();
+		Calendar calEnd = new GregorianCalendar();
+		calDate.setTime(formatter.parse("20-6-2016 00:00:00"));
+		calDate.setTime(formatter.parse("20-6-2016 10:00:00"));
+		calDate.setTime(formatter.parse("20-6-2016 12:00:00"));
+
+		Task newTask = new Task();
+		switch(type)
+		{
+			case 1:
+				newTask.setDescription("Floating Test case");
+				break;
+			case 2:
+				newTask.setDescription("Deadline Test case");
+				newTask.setDate(calDate);
+				newTask.setEndTime(calEnd);
+				break;
+			case 3:
+				newTask.setDescription("Event Test case");
+				newTask.setDate(calDate);
+				newTask.setStartTime(calStart);
+				newTask.setEndTime(calEnd);
+				break;
+		}
+		return newTask;
+	}
+
+	/* Testing method to check if two tasks are equal */
+	public static boolean taskEquals(Task task1, Task task2) {
+		if (task1 == null || task2 == null) {
+			return false;
+		}
+		if (!task1.getDescription().equals(task2.getDescription())) {
+			return false;
+		}
+		if (task1.isCompleted() != task2.isCompleted()) {
+			return false;
+		}
+		if (!task1.getDate().equals(task2.getDate()))
+			return false;
+		if (!task1.getRecur().equals(task2.getRecur())) {
+			return false;
+		}
+		return true;
+	}
+
 	@Test
 	public void testStorage() {
-		fail("Not yet implemented");
+		Storage storage = new Storage();
+		assert (storage != null);
 	}
 
 	@Test
 	public void testGetTaskList() {
-		fail("Not yet implemented");
+
+		// Setting up expected Task List for comparison
+		Task newTask = new Task();
+		newTask.setDescription("Test case");
+		newTask.setDate(new Calendar("12-12-2001"));
+		List<Task> expectedTaskList = new LinkedList<Task>();
+		expectedTaskList.add(newTask);
+
+		// Setting up test task list
+		Storage storage = new Storage();
+		storage.addToTaskList(newTask);
+		assertEquals(expectedTaskList, storage.getTaskList());
+
 	}
 
 	@Test
-	public void testGetTask() {
-		fail("Not yet implemented");
+	public void testGetTask() throws IOException {
+
+		// Setting up expected Task for comparison
+		Task expectedTask = new Task();
+		expectedTask.setDescription("Test case");
+
+		// Setting up test task
+		Storage storage = new Storage();
+		storage.addToTaskList(expectedTask);
+		assertEquals(expectedTask, storage.getTask(0));
 	}
 
 	@Test
