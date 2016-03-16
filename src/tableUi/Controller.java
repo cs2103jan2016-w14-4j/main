@@ -210,21 +210,21 @@ public class Controller implements Initializable {
 
 	public void showIncompleteEvents(){
 		showAllTasks();
-		eventList.stream().filter(e -> e.getIsComplete()).forEach(e -> eventList.remove(e));
-		floatingTaskList.stream().filter(e -> e.getIsComplete()).forEach(e -> floatingTaskList.remove(e));
+		eventList.removeIf(e->e.getIsComplete());
+		floatingTaskList.removeIf(e->e.getIsComplete());
 	}
 
 	public void showOverdueEvents(){
 		Calendar today = new GregorianCalendar();
 		showAllTasks();
-		eventList.stream().filter(e -> e.getTask().getEndTime().compareTo(today) == 1).forEach(e -> eventList.remove(e));
-		floatingTaskList.stream().filter(e -> e.getTask().getEndTime().compareTo(today) == 1).forEach(e -> floatingTaskList.remove(e));
+		eventList.removeIf(e -> e.getTask().getEndTime().compareTo(today) == 1);
+		floatingTaskList.removeIf(e -> e.getTask().getEndTime().compareTo(today) == 1);
 	}
 
 	public void setShowCompletedEvents(){
 		showAllTasks();
-		eventList.stream().filter(e -> !e.getIsComplete()).forEach(e -> eventList.remove(e));
-		floatingTaskList.stream().filter(e -> !e.getIsComplete()).forEach(e -> floatingTaskList.remove(e));
+		eventList.removeIf(e->!e.getIsComplete());
+		floatingTaskList.removeIf(e->!e.getIsComplete());
 	}
 
 }
