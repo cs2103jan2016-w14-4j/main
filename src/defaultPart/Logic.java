@@ -9,7 +9,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Logic {
+	
+	private static final Logger log = Logger.getLogger(Logic.class.getName());
 
 	private static final int LIST_NUMBERING_OFFSET = 1;
 
@@ -265,6 +270,8 @@ public class Logic {
 
 	private void editTask() throws IOException {
 		int taskIndex = getTaskIndex();
+		System.out.println(getClass().getClassLoader().getResource("logging.properties"));
+		log.log(Level.SEVERE, "Trying to get task " + taskIndex);
 		Task task = _storage.getTask(taskIndex);
 		assert(task!=null);
 
@@ -294,7 +301,11 @@ public class Logic {
 				if (date != null) {
 					task.setDate(date);
 				}
-				task.setStartTime(getTimeFromString(args[2]));
+				try{
+					task.setStartTime(getTimeFromString(args[2]));
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 				break;
 
 			case 4 :
