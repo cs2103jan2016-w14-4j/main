@@ -36,12 +36,14 @@ public class Storage {
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/* Stores current list of tasks in the program */
-
 	private List<Task> _currentTaskList = new LinkedList<Task>();
 
 	/* Used for CommandType.UNDO */
 	private List<Task> _prevTaskList = new LinkedList<Task>();
 
+	/**
+	 * Constructor for Storage Also handles and formats log file for logging purposes
+	 */
 	public Storage() {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
@@ -125,10 +127,10 @@ public class Storage {
 	 *            Task to be added to task list
 	 */
 	public void addToTaskList(Task newTask) {
-		
+
 		// Assert that the new task is not null
 		assert (newTask != null);
-		
+
 		Calendar newTaskDate = newTask.getDate();
 		for (int i = 0; i < _currentTaskList.size(); i++) {
 			Calendar taskDate = _currentTaskList.get(i).getDate();
@@ -173,14 +175,12 @@ public class Storage {
 	 *            File to load from
 	 * @throws SAXException
 	 *             Error in XML file structure
-	 * @throws ParseException
-	 *             Error in formatting the date
 	 */
-	public void loadTasks(File file) throws SAXException, ParseException {
+	public void loadTasks(File file) throws SAXException {
 
 		// Assert that file is not null
 		assert (file != null);
-		
+
 		// First check if the file exists and is not a directory but an actual file
 		if (file.isFile() && file.canRead()) {
 
@@ -194,7 +194,13 @@ public class Storage {
 					if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
 						Element taskElement = (Element) taskNode;
 						Task newTask = null;
-						newTask = importTask(taskElement);
+						try {
+							newTask = importTask(taskElement);
+						} catch (ParseException e) {
+							// Error in parser configuration
+							e.printStackTrace();
+							logger.log(Level.FINE, e.toString(), e);
+						}
 						_currentTaskList.add(newTask);
 					}
 				}
