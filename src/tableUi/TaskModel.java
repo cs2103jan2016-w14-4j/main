@@ -18,7 +18,7 @@ public class TaskModel {
     private final SimpleStringProperty recur;
     private final SimpleBooleanProperty isComplete;
 
-    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("EEE dd.MM");
+    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("EEE dd/MM");
 
     private Task task;
 

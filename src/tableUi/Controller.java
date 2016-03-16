@@ -69,13 +69,18 @@ public class Controller implements Initializable {
 
 		floatingTaskId.setCellValueFactory(cellData -> cellData.getValue().taskId());
 		eventsId.setCellValueFactory(cellData -> cellData.getValue().taskId());
-		eventsDate.setCellValueFactory(cellData -> cellData.getValue().dateTime());
 		eventsRecur.setCellValueFactory(cellData -> {
 			if(cellData.getValue().getIsRecur()){
 				return cellData.getValue().recur();
 			}else{
 				return null;
 			}
+		});
+
+		eventsDate.setCellValueFactory(cellData -> cellData.getValue().dateTime());
+		eventsDate.setCellFactory(TextFieldTableCell.forTableColumn());
+		eventsDate.setOnEditCommit(e ->{
+
 		});
 
 
@@ -92,6 +97,7 @@ public class Controller implements Initializable {
 			int id = e.getTableView().getItems().get(e.getTablePosition().getRow()).getTaskId();
 			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
 		});
+
 
 		storage = new Storage();
 		logic = new Logic(storage);
