@@ -8,13 +8,16 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Logic {
-	
-	private static final Logger log = Logger.getLogger(Logic.class.getName());
+
+	private static final Logger logger = Logger.getLogger(Logic.class.getName());
 
 	private static final int LIST_NUMBERING_OFFSET = 1;
 
@@ -55,10 +58,23 @@ public class Logic {
 
 	public Logic(Storage storage) {
 		_storage = storage;
+		try {
+			Handler handler = new FileHandler("logs/log.txt");
+			handler.setFormatter(new SimpleFormatter());
+			logger.addHandler(handler);
+
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void executeCommand(String input) {
 		setCommandTypeAndArguments(input);
+		logger.log(Level.FINE, "Executing {0}", _newCommandType);
 		try {
 			switch (_newCommandType) {
 				case ADD :
@@ -104,7 +120,7 @@ public class Logic {
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
 	private void setCommandTypeAndArguments(String input) {
 		String[] commandTypeAndArguments = splitCommand(input);
-
+		logger.log(Level.FINE, "Split command length: {0}", commandTypeAndArguments.length);
 		String commandTypeStr = (commandTypeAndArguments.length > 0) ? commandTypeAndArguments[0] : "";
 		setCommandType(commandTypeStr);
 
@@ -183,12 +199,14 @@ public class Logic {
 						recur.setTimeUnit(Recur.TimeUnit.YEAR);
 						break;
 				}
+				assert recur.getTimeUnit() != null;
 				char frequency = frequencyAndUnit.charAt(0);
 				if (Character.isDigit(frequency)) {
 					recur.setFrequency(Character.getNumericValue(frequency));
 				}
 				// todo: endCondition support for number of times
 				recur.setEndDate(getDateFromString(endCondition));
+				logger.log(Level.FINER, "Setting recur: {0}", recur);
 				task.setRecur(recur);
 				removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
 			}
@@ -203,6 +221,7 @@ public class Logic {
 			Calendar date = getDateFromString(secondLastString);
 			boolean isDigit = lastString.matches("\\d");
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
+				logger.log(Level.FINER, "Setting task time using \"{0}\"", lastString);
 				task.setStartTime(getTimeFromString(lastString));
 				args.remove(lastIndex);
 			}
@@ -218,6 +237,7 @@ public class Logic {
 		if (date == null) {
 			return;
 		}
+		logger.log(Level.FINER, "Setting task date using \"{0}\"", args.get(lastIndex));
 		task.setDate(date);
 		args.remove(lastIndex);
 	}
@@ -270,10 +290,8 @@ public class Logic {
 
 	private void editTask() throws IOException {
 		int taskIndex = getTaskIndex();
-		System.out.println(getClass().getClassLoader().getResource("logging.properties"));
-		log.log(Level.SEVERE, "Trying to get task " + taskIndex);
 		Task task = _storage.getTask(taskIndex);
-		assert(task!=null);
+		assert (task != null);
 
 		String[] args = _argument.split(" ");
 		switch (args.length) {
@@ -301,9 +319,9 @@ public class Logic {
 				if (date != null) {
 					task.setDate(date);
 				}
-				try{
+				try {
 					task.setStartTime(getTimeFromString(args[2]));
-				}catch(Exception e){
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				break;
@@ -337,7 +355,7 @@ public class Logic {
 		time.set(Calendar.MINUTE, 0);
 		String timeDelimiterRegex = ":|\\.";
 		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
-		assert(hoursAndMinutes.length>0);
+		assert (hoursAndMinutes.length > 0);
 		switch (hoursAndMinutes.length) {
 			case 2 :
 				String minutesToChange = hoursAndMinutes[1];
@@ -419,6 +437,7 @@ public class Logic {
 		}
 		assert _argument.length() > 0;
 		String taskIndex = _argument.split(" ", 2)[0];
+		logger.log(Level.FINE, "Task index string is \"{0}\"", taskIndex);
 		if (taskIndex.matches("\\D")) {
 			throw new IOException(String.format(MESSAGE_INVALID_INDEX, taskIndex));
 		}

@@ -21,13 +21,16 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Storage {
 
 	/* For Logging */
-	private static final Logger log = Logger.getLogger(Storage.class.getName());
+	private static final Logger logger = Logger.getLogger(Storage.class.getName());
 
 	/* Date format used to save/load from XML */
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
@@ -44,6 +47,22 @@ public class Storage {
 	 * 
 	 * @return The current Task list
 	 */
+
+	public Storage() {
+		try {
+			Handler handler = new FileHandler("logs/log.txt");
+			handler.setFormatter(new SimpleFormatter());
+			logger.addHandler(handler);
+
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public List<Task> getTaskList() {
 		/* Returns a clone to prevent undesired modification */
 		return new LinkedList<Task>(_currentTaskList);
@@ -58,6 +77,7 @@ public class Storage {
 	 */
 	public Task getTask(int index) throws IOException {
 		if (!isTaskIndexValid(index)) {
+			logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
 			throw new IOException(String.valueOf(index)); // todo: create a new exception for index error?
 		}
 		return _currentTaskList.get(index);
@@ -190,7 +210,7 @@ public class Storage {
 		} catch (TransformerConfigurationException ex) {
 			// Error in Transformer Configuration
 			ex.printStackTrace();
-			log.log(Level.FINE, ex.toString(), ex);
+			logger.log(Level.FINE, ex.toString(), ex);
 			assert false;
 		}
 
@@ -206,7 +226,7 @@ public class Storage {
 		} catch (TransformerException ex) {
 			// Error in transformation process
 			ex.printStackTrace();
-			log.log(Level.FINE, ex.toString(), ex);
+			logger.log(Level.FINE, ex.toString(), ex);
 			assert false;
 		}
 	}
@@ -227,7 +247,7 @@ public class Storage {
 
 			// Will not occur unless builder object is configured wrongly
 			ex.printStackTrace();
-			log.log(Level.FINE, ex.toString(), ex);
+			logger.log(Level.FINE, ex.toString(), ex);
 			assert false;
 		}
 
@@ -339,13 +359,13 @@ public class Storage {
 			// Error in parser configuration
 			ex.printStackTrace();
 			assert (false);
-			log.log(Level.FINE, ex.toString(), ex);
+			logger.log(Level.FINE, ex.toString(), ex);
 
 		} catch (IOException iex) {
 			// Error accessing file
 			iex.printStackTrace();
 			assert (false);
-			log.log(Level.FINE, iex.toString(), iex);
+			logger.log(Level.FINE, iex.toString(), iex);
 		}
 
 		return nList;
