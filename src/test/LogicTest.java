@@ -14,9 +14,10 @@ public class LogicTest {
 
 	@Test
 	public void testAdd() {
-		Logic logic = new Logic();
+		Storage storage = new Storage();
+		Logic logic = new Logic(storage);
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
-		List<Task> taskList = Storage.getTaskList();
+		List<Task> taskList = storage.getTaskList();
 		assertEquals(1, taskList.size());
 		Task task = taskList.get(0);
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
@@ -41,14 +42,14 @@ public class LogicTest {
 		assertEquals("13/8/2016", dateFormat.format(date.getTime()));
 
 		logic.executeCommand("dev guide 13");
-		taskList = Storage.getTaskList();
+		taskList = storage.getTaskList();
 		assertEquals(2, taskList.size());
 		task = taskList.get(0);
 		assertEquals("dev guide", task.getDescription());
 		date = task.getDate();
 		assertTrue(date != null);
 		//todo: cant hardcode the date used for testing!
-		assertEquals("13/3/2016", dateFormat.format(date.getTime()));
+		assertEquals("13/4/2016", dateFormat.format(date.getTime()));
 	}
 
 }
