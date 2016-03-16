@@ -4,11 +4,7 @@ import org.xml.sax.SAXException;
 
 import defaultPart.*;
 
-import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,9 +32,6 @@ public class StorageTest {
 		}
 		return true;
 	}
-
-	// Date format used to save/load from XML
-	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	@Test
 	public void testLoadTasks() throws SAXException, IOException {
