@@ -266,6 +266,7 @@ public class Logic {
 	private void editTask() throws IOException {
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
+		assert(task!=null);
 
 		String[] args = _argument.split(" ");
 		switch (args.length) {
@@ -325,6 +326,7 @@ public class Logic {
 		time.set(Calendar.MINUTE, 0);
 		String timeDelimiterRegex = ":|\\.";
 		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
+		assert(hoursAndMinutes.length>0);
 		switch (hoursAndMinutes.length) {
 			case 2 :
 				String minutesToChange = hoursAndMinutes[1];
