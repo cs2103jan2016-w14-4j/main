@@ -41,3 +41,7 @@
 -	which exception to throw if user enter wrong input
 
 -	sequence diagram for add, edit, delete, mark as complete same, need to include all in dev guide?
+
+-	java coding standard formatter param description on next line
+
+-	totalStudents in student class -- violates OOP?
