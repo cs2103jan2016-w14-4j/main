@@ -294,7 +294,11 @@ public class Logic {
 				if (date != null) {
 					task.setDate(date);
 				}
-				task.setStartTime(getTimeFromString(args[2]));
+				try{
+					task.setStartTime(getTimeFromString(args[2]));
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 				break;
 
 			case 4 :
