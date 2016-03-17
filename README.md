@@ -1,5 +1,6 @@
 ###User & Developer guide  
 https://docs.google.com/document/d/1LSLocndrb20IBqGtKNFbteeOpyvbvzdDZL1gZmaVH4k  
+V0.0 Common Issues: https://docs.google.com/document/d/1kAth-pTOzwCJFVjS6KU8O50bCvijDqpb6GsOyJTD0Ds/pub?embedded%3Dtrue  
 
 ###Resources  
 http://www.comp.nus.edu.sg/~cs2103/AY1516S2/ (please read the entire handbook by Jan -- contains critical information!)  
