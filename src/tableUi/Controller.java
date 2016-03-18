@@ -22,6 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * Class for the main controller of the UI
+ * @author Hou Ruomu A0131421B
+ */
 public class Controller implements Initializable {
 	@FXML
 	public TableView<TaskModel> floatingTaskTable;
@@ -66,6 +70,12 @@ public class Controller implements Initializable {
 
 	private Logic logic;
 	private Storage storage;
+
+	/**
+	 * Initialize the controllers, define the listeners for each control
+	 * @param location
+	 * @param resources
+     */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		floatingTaskList = FXCollections.observableArrayList();
@@ -105,6 +115,7 @@ public class Controller implements Initializable {
 				// if the date format is invalid
 				setUserPrompt(String.format(INVALID_DATE_PROMPT, e.getNewValue()));
 				e.consume();
+				// refresh the column to undo the change
 				eventsDate.setVisible(false);
 				eventsDate.setVisible(true);
 			}
@@ -142,6 +153,10 @@ public class Controller implements Initializable {
 		editEventDescriptionById(3);
 	}
 
+	/**
+	 * Set the user prompt to the value String in the parameter
+	 * @param prompt The prompt String, length should be less than 100
+     */
 	public void setUserPrompt(String prompt){
 		// the length of feedback should not be longer than 100 characters
 		if(prompt.length() > 100){
@@ -152,6 +167,11 @@ public class Controller implements Initializable {
 		userPrompt.setText(prompt);
 	}
 
+	/**
+	 * This method gets the row number of a task from the corresponding task Model
+	 * @param task
+	 * @return The row index of the task
+     */
 	private int getRowFromModel(TaskModel task){
 		if(task.getIsEvent()){
 			return eventsTable.getItems().indexOf(task);
@@ -160,6 +180,10 @@ public class Controller implements Initializable {
 		}
 	}
 
+	/**
+	 * Initialize the editing event of a date tableCell related to the task ID, the task is an event
+	 * @param id
+     */
 	public void editEventDateById(int id){
 		try {
 			eventsTable.edit(getRowFromModel(getTaskModelFromId(id)), eventsDate);
@@ -168,6 +192,10 @@ public class Controller implements Initializable {
 		}
 	}
 
+	/**
+	 * Initialize the editing event of a Description tableCell related to the task ID, the task is an event
+	 * @param id
+	 */
 	public void editEventDescriptionById(int id){
 		try {
 			eventsTable.edit(getRowFromModel(getTaskModelFromId(id)), eventsDescription);
@@ -176,6 +204,10 @@ public class Controller implements Initializable {
 		}
 	}
 
+	/**
+	 * Initialize the editing event of a Description tableCell related to the task ID, the task is a floating task
+	 * @param id
+	 */
 	public void editFloatingTaskDescriptionById(int id){
 		try {
 			floatingTaskTable.edit(getRowFromModel(getTaskModelFromId(id)), floatingTaskDescription);
@@ -184,10 +216,18 @@ public class Controller implements Initializable {
 		}
 	}
 
+	/**
+	 * Get the taskModel from its id
+	 * @param id
+	 * @return
+     */
 	private TaskModel getTaskModelFromId(int id){
 		return taskModels.get(id - 1);
 	}
 
+	/**
+	 * Delete a floating task which has been selected in the tableView
+	 */
 	public void deleteFloatingTask(){
 		int selectedIndex = floatingTaskTable.getSelectionModel().getSelectedIndex();
 		if (selectedIndex >= 0) {
@@ -200,6 +240,9 @@ public class Controller implements Initializable {
 		inputBox.requestFocus();
 	}
 
+	/**
+	 * Delete an event which has been selected in the tableView
+	 */
 	public void deleteEvent(){
 		int selectedIndex = eventsTable.getSelectionModel().getSelectedIndex();
 		if (selectedIndex >= 0) {
@@ -212,11 +255,17 @@ public class Controller implements Initializable {
 		inputBox.requestFocus();
 	}
 
+	/**
+	 * Let the tableView show all the tasks
+	 */
 	public void showAllTasks(){
 		retrieveTaskFromStorage();
 		inputBox.requestFocus();
 	}
 
+	/**
+	 * refresh the tasks shown on UI based on the current storage (by default all tasks are shown)
+	 */
 	private void retrieveTaskFromStorage(){
 		lastId = 0;
 		eventList.clear();
@@ -237,6 +286,10 @@ public class Controller implements Initializable {
 		}
 	}
 
+	/**
+	 * Send a command to the Logic and update the tasks and prompt shown in the UI
+	 * @param command	The command that is going to be send to the parser
+     */
 	public void sendToLogicAndUpdatePrompt(String command){
 		logic.executeCommand(command);
 		if(DEVELOPER_MODE){
@@ -246,12 +299,18 @@ public class Controller implements Initializable {
 		showAllTasks();
 	}
 
+	/**
+	 * show all tasks that are incompleted
+	 */
 	public void showIncompleteEvents(){
 		retrieveTaskFromStorage();
 		eventList.removeIf(e->e.getIsComplete());
 		floatingTaskList.removeIf(e->e.getIsComplete());
 	}
 
+	/**
+	 * Show all the tasks which have end time before today
+	 */
 	public void showOverdueEvents(){
 		Calendar today = new GregorianCalendar();
 		retrieveTaskFromStorage();
@@ -259,6 +318,9 @@ public class Controller implements Initializable {
 		floatingTaskList.removeIf(e -> e.getTask().getEndTime().compareTo(today) == 1);
 	}
 
+	/**
+	 * Show all the tasks that are completed
+	 */
 	public void setShowCompletedEvents(){
 		retrieveTaskFromStorage();
 		eventList.removeIf(e->!e.getIsComplete());
