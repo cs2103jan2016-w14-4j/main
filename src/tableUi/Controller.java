@@ -103,8 +103,11 @@ public class Controller implements Initializable {
 				String dateString = DATE_FORMAT.format(newDate.getTime());
 				sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, dateString));
 			}catch(Exception exception){
+				// if the date format is invalid
 				setUserPrompt(String.format(INVALID_DATE_PROMPT, e.getNewValue()));
 				e.consume();
+				eventsDate.setVisible(false);
+				eventsDate.setVisible(true);
 			}
 		});
 
