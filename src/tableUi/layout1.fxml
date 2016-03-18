@@ -26,6 +26,7 @@
                         <TableColumn fx:id="eventsRecur" prefWidth="87.0" text="Recur" />
                     </columns>
                   </TableView>
+                  <Button layoutX="411.0" layoutY="3.0" mnemonicParsing="false" onAction="#debug" text="Debug" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0">

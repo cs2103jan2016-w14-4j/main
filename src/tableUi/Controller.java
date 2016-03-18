@@ -19,10 +19,7 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Controller implements Initializable {
@@ -54,8 +51,8 @@ public class Controller implements Initializable {
 	public static final String TOGGLE_COMMAND = "t %d";
 	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
-	public static final String ADD_EMPTY_FLOATING_TASK = "new Task, double click to edit";
-	public static final String ADD_EMPTY_EVENT = "new Task, double click to edit 1/1/00";
+	public static final String INVALID_EDIT_DATE_PROMPT = "edit date action could not be done on id %d";
+	public static final String INVALID_EDIT_DESCRIPTION_PROMPT = "edit date action could not be done on id %d";
 
 	private static final Logger log = Logger.getLogger(Logic.class.getName());
 
@@ -63,6 +60,7 @@ public class Controller implements Initializable {
 
 	private ObservableList<TaskModel> floatingTaskList;
 	private ObservableList<TaskModel> eventList;
+	private ArrayList<TaskModel> taskModels;
 
 	private int lastId;
 
@@ -72,6 +70,7 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		floatingTaskList = FXCollections.observableArrayList();
 		eventList = FXCollections.observableArrayList();
+		taskModels = new ArrayList<>();
 		lastId = 0;
 
 		floatingTaskTable.setItems(floatingTaskList);
@@ -139,6 +138,10 @@ public class Controller implements Initializable {
 		inputBox.requestFocus();
 	}
 
+	public void debug(){
+		editEventDescriptionById(3);
+	}
+
 	public void setUserPrompt(String prompt){
 		// the length of feedback should not be longer than 100 characters
 		if(prompt.length() > 100){
@@ -149,12 +152,40 @@ public class Controller implements Initializable {
 		userPrompt.setText(prompt);
 	}
 
-	public void addFloatingTask(){
-		sendToLogicAndUpdatePrompt(ADD_EMPTY_FLOATING_TASK);
+	private int getRowFromModel(TaskModel task){
+		if(task.getIsEvent()){
+			return eventsTable.getItems().indexOf(task);
+		}else{
+			return floatingTaskTable.getItems().indexOf(task);
+		}
 	}
 
-	public void addEvent(){
-		sendToLogicAndUpdatePrompt(ADD_EMPTY_EVENT);
+	public void editEventDateById(int id){
+		try {
+			eventsTable.edit(getRowFromModel(getTaskModelFromId(id)), eventsDate);
+		}catch (Exception e){
+			setUserPrompt(String.format(INVALID_EDIT_DATE_PROMPT, id));
+		}
+	}
+
+	public void editEventDescriptionById(int id){
+		try {
+			eventsTable.edit(getRowFromModel(getTaskModelFromId(id)), eventsDescription);
+		}catch (Exception e){
+			setUserPrompt(String.format(INVALID_EDIT_DESCRIPTION_PROMPT, id));
+		}
+	}
+
+	public void editFloatingTaskDescriptionById(int id){
+		try {
+			floatingTaskTable.edit(getRowFromModel(getTaskModelFromId(id)), floatingTaskDescription);
+		}catch (Exception e){
+			setUserPrompt(String.format(INVALID_EDIT_DESCRIPTION_PROMPT, id));
+		}
+	}
+
+	private TaskModel getTaskModelFromId(int id){
+		return taskModels.get(id - 1);
 	}
 
 	public void deleteFloatingTask(){
@@ -181,26 +212,29 @@ public class Controller implements Initializable {
 		inputBox.requestFocus();
 	}
 
-	public void updateTaskList(List<Task> tasks){
-		this.taskList = tasks;
+	public void showAllTasks(){
+		retrieveTaskFromStorage();
+		inputBox.requestFocus();
 	}
 
-	public void showAllTasks(){
+	private void retrieveTaskFromStorage(){
 		lastId = 0;
 		eventList.clear();
 		floatingTaskList.clear();
+		taskModels.clear();
 		taskList = storage.getTaskList();
 
 		for(int i = 0; i < taskList.size(); i++){
 			Task task = taskList.get(i);
+			TaskModel newModel = new TaskModel(task, i+1, this);
 			if(task.getDate() == null){
-				floatingTaskList.add(new TaskModel(task, i+1, this));
+				floatingTaskList.add(newModel);
 			}else{
-				eventList.add(new TaskModel(task, i+1, this));
+				eventList.add(newModel);
 			}
+			taskModels.add(newModel);
 			lastId++;
 		}
-		inputBox.requestFocus();
 	}
 
 	public void sendToLogicAndUpdatePrompt(String command){
@@ -213,20 +247,20 @@ public class Controller implements Initializable {
 	}
 
 	public void showIncompleteEvents(){
-		showAllTasks();
+		retrieveTaskFromStorage();
 		eventList.removeIf(e->e.getIsComplete());
 		floatingTaskList.removeIf(e->e.getIsComplete());
 	}
 
 	public void showOverdueEvents(){
 		Calendar today = new GregorianCalendar();
-		showAllTasks();
+		retrieveTaskFromStorage();
 		eventList.removeIf(e -> e.getTask().getEndTime().compareTo(today) == 1);
 		floatingTaskList.removeIf(e -> e.getTask().getEndTime().compareTo(today) == 1);
 	}
 
 	public void setShowCompletedEvents(){
-		showAllTasks();
+		retrieveTaskFromStorage();
 		eventList.removeIf(e->!e.getIsComplete());
 		floatingTaskList.removeIf(e->!e.getIsComplete());
 	}
