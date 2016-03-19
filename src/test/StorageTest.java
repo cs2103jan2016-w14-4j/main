@@ -23,7 +23,9 @@ import defaultPart.Task;
 
 public class StorageTest {
 
+	/* Location to load/save the expected test results */
 	private static final String TASK_FILE_NAME = "test/StorageTest_expected.xml";
+
 	/* Date format used to save/load from XML */
 	public static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
@@ -35,14 +37,19 @@ public class StorageTest {
 	 * @return new task Created
 	 * @throws ParseException
 	 */
-	public static Task instantiateTestTask(int type) throws ParseException {
+	public static Task instantiateTestTask(int type) {
 
 		Calendar calDate = new GregorianCalendar();
 		Calendar calStart = new GregorianCalendar();
 		Calendar calEnd = new GregorianCalendar();
-		calDate.setTime(formatter.parse("20-6-2016 00:00:00"));
-		calDate.setTime(formatter.parse("20-6-2016 10:00:00"));
-		calDate.setTime(formatter.parse("20-6-2016 12:00:00"));
+		try {
+			calDate.setTime(formatter.parse("20-6-2016 00:00:00"));
+			calDate.setTime(formatter.parse("20-6-2016 10:00:00"));
+			calDate.setTime(formatter.parse("20-6-2016 12:00:00"));
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+		}
 
 		Task newTask = new Task();
 		switch (type) {
@@ -64,26 +71,51 @@ public class StorageTest {
 		return newTask;
 	}
 
-	/* Testing method to check if two tasks are equal */
-	public static boolean taskEquals(Task task1, Task task2) {
-		if (task1 == null || task2 == null) {
+	/**
+	 * Testing method to check if two task lists are equal (contain same tasks)
+	 * 
+	 * @param expectedTask
+	 *            Task to compare
+	 * @param actualTask
+	 *            Task to compare against
+	 * @return True if it is the same, false if it is not
+	 */
+	public static boolean taskListEquals(List<Task> expectedList, List<Task> actualList) {
+		if (expectedList.containsAll(actualList) && actualList.containsAll(expectedList)) {
+			return true;
+		}
+		return false;
+
+	}
+
+	/**
+	 * Testing method to check if two tasks are equal
+	 * 
+	 * @param expectedTask
+	 *            Task to compare
+	 * @param actualTask
+	 *            Task to compare against
+	 * @return True if it is the same, false if it is not
+	 */
+	public static boolean taskEquals(Task expectedTask, Task actualTask) {
+		if (expectedTask == null || actualTask == null) {
 			return false;
 		}
-		if (!task1.getDescription().equals(task2.getDescription())) {
+		if (!expectedTask.getDescription().equals(actualTask.getDescription())) {
 			return false;
 		}
-		if (task1.isCompleted() != task2.isCompleted()) {
+		if (expectedTask.isCompleted() != actualTask.isCompleted()) {
 			return false;
 		}
-		Calendar date1 = task1.getDate();
-		Calendar date2 = task2.getDate();
+		Calendar date1 = expectedTask.getDate();
+		Calendar date2 = actualTask.getDate();
 		if (date1 == null) {
 			return date2 == null;
 		} else if (!date1.equals(date2)) {
 			return false;
 		}
-		Recur recur1 = task1.getRecur();
-		Recur recur2 = task2.getRecur();
+		Recur recur1 = expectedTask.getRecur();
+		Recur recur2 = actualTask.getRecur();
 		if (recur1 == null) {
 			return recur2 == null;
 		} else if (!recur1.equals(recur2)) {
@@ -94,7 +126,10 @@ public class StorageTest {
 
 	@Test
 	public void testStorage() {
+
+		// Ensure that the constructor works
 		Storage storage = new Storage();
+		
 		assert (storage != null);
 	}
 
@@ -102,15 +137,22 @@ public class StorageTest {
 	public void testGetTaskList() {
 
 		// Setting up expected Task List for comparison
-		Task newTask = new Task();
-		newTask.setDescription("Test case");
+		Task newTaskFloating = instantiateTestTask(1);
+		Task newTaskDeadline = instantiateTestTask(2);
+		Task newTaskEvent = instantiateTestTask(3);
 		List<Task> expectedTaskList = new LinkedList<Task>();
-		expectedTaskList.add(newTask);
+		expectedTaskList.add(newTaskFloating);
+		expectedTaskList.add(newTaskDeadline);
+		expectedTaskList.add(newTaskEvent);
+		// TODO - Add support for recurring tasks
 
-		// Setting up test task list
+		// Setting up actual storage behavior
 		Storage storage = new Storage();
-		storage.addToTaskList(newTask);
-		assertEquals(expectedTaskList, storage.getTaskList());
+		storage.addToTaskList(newTaskFloating);
+		storage.addToTaskList(newTaskDeadline);
+		storage.addToTaskList(newTaskEvent);
+
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 
 	}
 
@@ -121,20 +163,45 @@ public class StorageTest {
 		Task expectedTask = new Task();
 		expectedTask.setDescription("Test case");
 
-		// Setting up test task
+		// Setting up actual storage behavior
 		Storage storage = new Storage();
 		storage.addToTaskList(expectedTask);
+		
 		assertEquals(expectedTask, storage.getTask(0));
 	}
 
 	@Test
 	public void testIsTaskIndexValid() {
-		fail("Not yet implemented");
+		
+		// Setting up actual storage behavior
+		Storage storage = new Storage();
+		Task newTaskFloating = instantiateTestTask(1);
+		storage.addToTaskList(newTaskFloating);
+		
+		assertTrue(storage.isTaskIndexValid(0));
+		assertFalse(storage.isTaskIndexValid(1));
+		
 	}
 
 	@Test
-	public void testRemoveTask() {
-		fail("Not yet implemented");
+	public void testRemoveTask() throws SAXException {
+
+		// Setting up expected Task List for comparison
+		Task newTaskFloating = instantiateTestTask(1);
+		Task newTaskDeadline = instantiateTestTask(2);
+		Task newTaskEvent = instantiateTestTask(3);
+		List<Task> expectedTaskList = new LinkedList<Task>();
+		expectedTaskList.add(newTaskFloating);
+		expectedTaskList.add(newTaskEvent);
+
+		// Setting up the actual storage behavior
+		Storage storage = new Storage();
+		storage.addToTaskList(newTaskFloating);
+		storage.addToTaskList(newTaskDeadline);
+		storage.addToTaskList(newTaskEvent);
+		storage.removeTask(0);
+
+		assert(taskListEquals(expectedTaskList, storage.getTaskList()));
 	}
 
 	@Test
@@ -167,9 +234,8 @@ public class StorageTest {
 
 		FileReader fr1 = new FileReader(inputFile);
 		FileReader fr2 = new FileReader(outputFile);
-		// XMLUnit.compareXML(fr1, fr2);
-		XMLAssert.assertXMLEqual(fr1, fr2);
 
+		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
 	@Test
