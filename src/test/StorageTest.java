@@ -100,7 +100,6 @@ public class StorageTest {
 			return true;
 		}
 		return false;
-
 	}
 
 	/**
@@ -140,15 +139,6 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testStorage() {
-
-		// Ensure that the constructor works
-		Storage storage = new Storage();
-
-		assert (storage != null);
-	}
-
-	@Test
 	public void testGetTaskList() {
 
 		// Setting up expected Task List for comparison
@@ -157,18 +147,23 @@ public class StorageTest {
 		Task newTaskEvent = instantiateTestTask(3);
 		Task newTaskRecurEvent = instantiateTestTask(4);
 		List<Task> expectedTaskList = new LinkedList<Task>();
-		expectedTaskList.add(newTaskFloating);
-		expectedTaskList.add(newTaskDeadline);
-		expectedTaskList.add(newTaskEvent);
-		expectedTaskList.add(newTaskRecurEvent);
-
-		// Setting up actual storage behavior
 		Storage storage = new Storage();
-		storage.addToTaskList(newTaskFloating);
-		storage.addToTaskList(newTaskDeadline);
-		storage.addToTaskList(newTaskEvent);
-		storage.addToTaskList(newTaskRecurEvent);
 
+		// This is to test the expected behavior of this function
+		expectedTaskList.add(newTaskFloating);
+		storage.addToTaskList(newTaskFloating);
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
+
+		expectedTaskList.add(newTaskDeadline);
+		storage.addToTaskList(newTaskDeadline);
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
+
+		expectedTaskList.add(newTaskEvent);
+		storage.addToTaskList(newTaskEvent);
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
+
+		expectedTaskList.add(newTaskRecurEvent);
+		storage.addToTaskList(newTaskRecurEvent);
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 
 	}
@@ -184,10 +179,10 @@ public class StorageTest {
 		Storage storage = new Storage();
 		storage.addToTaskList(expectedTask);
 
+		// This is to test the expected behavior of this function
 		assertEquals(expectedTask, storage.getTask(0));
 	}
 
-	@Test
 	public void testIsTaskIndexValid() {
 
 		// Setting up actual storage behavior
@@ -195,7 +190,9 @@ public class StorageTest {
 		Task newTaskFloating = instantiateTestTask(1);
 		storage.addToTaskList(newTaskFloating);
 
+		// This is a boundary case for the positive value partition
 		assertTrue(storage.isTaskIndexValid(0));
+		// This is a boundary case for the negative value partition
 		assertFalse(storage.isTaskIndexValid(1));
 
 	}
@@ -218,6 +215,7 @@ public class StorageTest {
 		storage.addToTaskList(newTaskEvent);
 		storage.removeTask(0);
 
+		// This is to test the expected behavior of this function
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 	}
 
@@ -230,19 +228,25 @@ public class StorageTest {
 		Task newTaskEvent = instantiateTestTask(3);
 		Task newTaskRecurEvent = instantiateTestTask(4);
 		List<Task> expectedTaskList = new LinkedList<Task>();
-		expectedTaskList.add(newTaskFloating);
-		expectedTaskList.add(newTaskDeadline);
-		expectedTaskList.add(newTaskEvent);
-		expectedTaskList.add(newTaskRecurEvent);
-
-		// Setting up the actual storage behavior
 		Storage storage = new Storage();
-		storage.addToTaskList(newTaskFloating);
-		storage.addToTaskList(newTaskDeadline);
-		storage.addToTaskList(newTaskEvent);
-		storage.addToTaskList(newTaskRecurEvent);
 
+		// This is to test the expected behavior of this function
+		expectedTaskList.add(newTaskFloating);
+		storage.addToTaskList(newTaskFloating);
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
+
+		expectedTaskList.add(newTaskDeadline);
+		storage.addToTaskList(newTaskDeadline);
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
+
+		expectedTaskList.add(newTaskEvent);
+		storage.addToTaskList(newTaskEvent);
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
+
+		expectedTaskList.add(newTaskRecurEvent);
+		storage.addToTaskList(newTaskRecurEvent);
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
+
 	}
 
 	@Test
@@ -264,6 +268,7 @@ public class StorageTest {
 		FileReader fr1 = new FileReader(inputFile);
 		FileReader fr2 = new FileReader(outputFile);
 
+		// This is to test the expected behavior of this function
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
@@ -286,6 +291,7 @@ public class StorageTest {
 		Storage storage = new Storage();
 		storage.loadTasks(file);
 
+		// This is to test the expected behavior of this function
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 
 	}
