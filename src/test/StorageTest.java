@@ -33,7 +33,7 @@ public class StorageTest {
 	 * Function to create a sample task for testing"
 	 * 
 	 * @param type
-	 *            1-Floating 2-Deadline 3-Event
+	 *            1-Floating 2-Deadline 3-Event 4-Recurring Event
 	 * @return new task Created
 	 * @throws ParseException
 	 */
@@ -42,10 +42,13 @@ public class StorageTest {
 		Calendar calDate = new GregorianCalendar();
 		Calendar calStart = new GregorianCalendar();
 		Calendar calEnd = new GregorianCalendar();
+		Calendar calRecEnd = new GregorianCalendar();
 		try {
 			calDate.setTime(formatter.parse("20-6-2016 00:00:00"));
-			calDate.setTime(formatter.parse("20-6-2016 10:00:00"));
-			calDate.setTime(formatter.parse("20-6-2016 12:00:00"));
+			calStart.setTime(formatter.parse("20-6-2016 10:00:00"));
+			calEnd.setTime(formatter.parse("20-6-2016 12:00:00"));
+			calRecEnd.setTime(formatter.parse("20-8-2016 12:00:00"));
+
 		} catch (ParseException e) {
 
 			e.printStackTrace();
@@ -67,6 +70,18 @@ public class StorageTest {
 				newTask.setStartTime(calStart);
 				newTask.setEndTime(calEnd);
 				break;
+			case 4 :
+				newTask.setDescription("Event Recur Test case");
+				newTask.setDate(calDate);
+				newTask.setStartTime(calStart);
+				newTask.setEndTime(calEnd);
+				Recur newRecur = new Recur();
+				newRecur.setTimeUnit(Recur.TimeUnit.DAY);
+				newRecur.setFrequency(3);
+				newRecur.setEndDate(calRecEnd);
+				newTask.setRecur(newRecur);
+				break;
+
 		}
 		return newTask;
 	}
@@ -129,7 +144,7 @@ public class StorageTest {
 
 		// Ensure that the constructor works
 		Storage storage = new Storage();
-		
+
 		assert (storage != null);
 	}
 
@@ -140,17 +155,19 @@ public class StorageTest {
 		Task newTaskFloating = instantiateTestTask(1);
 		Task newTaskDeadline = instantiateTestTask(2);
 		Task newTaskEvent = instantiateTestTask(3);
+		Task newTaskRecurEvent = instantiateTestTask(4);
 		List<Task> expectedTaskList = new LinkedList<Task>();
 		expectedTaskList.add(newTaskFloating);
 		expectedTaskList.add(newTaskDeadline);
 		expectedTaskList.add(newTaskEvent);
-		// TODO - Add support for recurring tasks
+		expectedTaskList.add(newTaskRecurEvent);
 
 		// Setting up actual storage behavior
 		Storage storage = new Storage();
 		storage.addToTaskList(newTaskFloating);
 		storage.addToTaskList(newTaskDeadline);
 		storage.addToTaskList(newTaskEvent);
+		storage.addToTaskList(newTaskRecurEvent);
 
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 
@@ -166,21 +183,21 @@ public class StorageTest {
 		// Setting up actual storage behavior
 		Storage storage = new Storage();
 		storage.addToTaskList(expectedTask);
-		
+
 		assertEquals(expectedTask, storage.getTask(0));
 	}
 
 	@Test
 	public void testIsTaskIndexValid() {
-		
+
 		// Setting up actual storage behavior
 		Storage storage = new Storage();
 		Task newTaskFloating = instantiateTestTask(1);
 		storage.addToTaskList(newTaskFloating);
-		
+
 		assertTrue(storage.isTaskIndexValid(0));
 		assertFalse(storage.isTaskIndexValid(1));
-		
+
 	}
 
 	@Test
@@ -201,32 +218,88 @@ public class StorageTest {
 		storage.addToTaskList(newTaskEvent);
 		storage.removeTask(0);
 
-		assert(taskListEquals(expectedTaskList, storage.getTaskList()));
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 	}
 
 	@Test
 	public void testSetPreviousListAsCurrent() {
+
+		// Setting up expected Task List for comparison
+		Task newTaskFloating = instantiateTestTask(1);
+		Task newTaskDeadline = instantiateTestTask(2);
+		Task newTaskEvent = instantiateTestTask(3);
+		List<Task> expectedTaskList = new LinkedList<Task>();
+		expectedTaskList.add(newTaskFloating);
+		expectedTaskList.add(newTaskDeadline);
+		expectedTaskList.add(newTaskEvent);
+
+		// Setting up the actual storage behavior
+		Storage storage = new Storage();
+		storage.addToTaskList(newTaskFloating);
+		storage.addToTaskList(newTaskDeadline);
+		storage.addToTaskList(newTaskEvent);
+
+		// TODO testing for this function
 		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testSetCurrentListAsPrevious() {
+
+		// Setting up expected Task List for comparison
+		Task newTaskFloating = instantiateTestTask(1);
+		Task newTaskDeadline = instantiateTestTask(2);
+		Task newTaskEvent = instantiateTestTask(3);
+		List<Task> expectedTaskList = new LinkedList<Task>();
+		expectedTaskList.add(newTaskFloating);
+		expectedTaskList.add(newTaskDeadline);
+		expectedTaskList.add(newTaskEvent);
+
+		// Setting up the actual storage behavior
+		Storage storage = new Storage();
+		storage.addToTaskList(newTaskFloating);
+		storage.addToTaskList(newTaskDeadline);
+		storage.addToTaskList(newTaskEvent);
+
+		// TODO testing for this function
 		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testAddToTaskList() {
-		fail("Not yet implemented");
+
+		// Setting up expected Task List for comparison
+		Task newTaskFloating = instantiateTestTask(1);
+		Task newTaskDeadline = instantiateTestTask(2);
+		Task newTaskEvent = instantiateTestTask(3);
+		Task newTaskRecurEvent = instantiateTestTask(4);
+		List<Task> expectedTaskList = new LinkedList<Task>();
+		expectedTaskList.add(newTaskFloating);
+		expectedTaskList.add(newTaskDeadline);
+		expectedTaskList.add(newTaskEvent);
+		expectedTaskList.add(newTaskRecurEvent);
+
+		// Setting up the actual storage behavior
+		Storage storage = new Storage();
+		storage.addToTaskList(newTaskFloating);
+		storage.addToTaskList(newTaskDeadline);
+		storage.addToTaskList(newTaskEvent);
+		storage.addToTaskList(newTaskRecurEvent);
+
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 	}
 
 	@Test
 	public void testSaveTasks() throws SAXException, IOException {
+
+		// Load & Save the tasks from the file to see if it saves correctly
 		File inputFile = new File(TASK_FILE_NAME);
 		File outputFile = new File("test/StorageTest_actual.xml");
 		Storage storage = new Storage();
 		storage.loadTasks(inputFile);
 		storage.saveTasks(outputFile);
 
+		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
@@ -240,21 +313,25 @@ public class StorageTest {
 
 	@Test
 	public void testLoadTasks() throws SAXException, IOException {
+
+		// Setting up expected Task List for comparison
+		Task newTaskFloating = instantiateTestTask(1);
+		Task newTaskDeadline = instantiateTestTask(2);
+		Task newTaskEvent = instantiateTestTask(3);
+		Task newTaskRecurEvent = instantiateTestTask(4);
+		List<Task> expectedTaskList = new LinkedList<Task>();
+		expectedTaskList.add(newTaskFloating);
+		expectedTaskList.add(newTaskDeadline);
+		expectedTaskList.add(newTaskEvent);
+		expectedTaskList.add(newTaskRecurEvent);
+
+		// Setting up the actual storage behavior
 		File file = new File(TASK_FILE_NAME);
 		Storage storage = new Storage();
 		storage.loadTasks(file);
-		Task expTask1 = storage.getTask(0);
 
-		Task testTask1 = new Task();
-		testTask1.setDescription("Find potato");
-		testTask1.toggleCompleted();
+		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
 
-		assertTrue(taskEquals(expTask1, testTask1));
-	}
-
-	@Test
-	public void testExtractRecurrFromTask() {
-		fail("Not yet implemented");
 	}
 
 }

@@ -188,7 +188,7 @@ public class Storage {
 
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(file);
-			
+
 			// Iterates through the list of tasks extracted
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				{
@@ -283,7 +283,7 @@ public class Storage {
 	 * @param parentElement
 	 *            Parent element to append the recur XML structure to
 	 */
-	public void extractRecurrFromTask(Document doc, Task taskItem, Element parentElement) {
+	private void extractRecurrFromTask(Document doc, Task taskItem, Element parentElement) {
 		Recur recur = taskItem.getRecur();
 		if (recur == null) {
 			return;
