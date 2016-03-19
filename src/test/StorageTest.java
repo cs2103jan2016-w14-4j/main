@@ -222,50 +222,6 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testSetPreviousListAsCurrent() {
-
-		// Setting up expected Task List for comparison
-		Task newTaskFloating = instantiateTestTask(1);
-		Task newTaskDeadline = instantiateTestTask(2);
-		Task newTaskEvent = instantiateTestTask(3);
-		List<Task> expectedTaskList = new LinkedList<Task>();
-		expectedTaskList.add(newTaskFloating);
-		expectedTaskList.add(newTaskDeadline);
-		expectedTaskList.add(newTaskEvent);
-
-		// Setting up the actual storage behavior
-		Storage storage = new Storage();
-		storage.addToTaskList(newTaskFloating);
-		storage.addToTaskList(newTaskDeadline);
-		storage.addToTaskList(newTaskEvent);
-
-		// TODO testing for this function
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetCurrentListAsPrevious() {
-
-		// Setting up expected Task List for comparison
-		Task newTaskFloating = instantiateTestTask(1);
-		Task newTaskDeadline = instantiateTestTask(2);
-		Task newTaskEvent = instantiateTestTask(3);
-		List<Task> expectedTaskList = new LinkedList<Task>();
-		expectedTaskList.add(newTaskFloating);
-		expectedTaskList.add(newTaskDeadline);
-		expectedTaskList.add(newTaskEvent);
-
-		// Setting up the actual storage behavior
-		Storage storage = new Storage();
-		storage.addToTaskList(newTaskFloating);
-		storage.addToTaskList(newTaskDeadline);
-		storage.addToTaskList(newTaskEvent);
-
-		// TODO testing for this function
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testAddToTaskList() {
 
 		// Setting up expected Task List for comparison
