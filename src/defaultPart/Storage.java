@@ -29,7 +29,17 @@ import java.util.logging.SimpleFormatter;
 
 public class Storage {
 
+	/* For accessing the different Tags for the XML */
 	private static final String TAG_TASK_HEADING = "Task";
+	private static final String TAG_TASK_DESCRIPTION = "Description";
+	private static final String TAG_TASK_DATE = "Date";
+	private static final String TAG_TASK_STARTTIME = "StartTime";
+	private static final String TAG_TASK_ENDTIME = "EndTime";
+	private static final String TAG_TASK_COMPLETED = "Completed";
+	private static final String TAG_TASK_RECUR = "recur";
+	private static final String TAG_TASK_TIMEUNIT = "timeUnit";
+	private static final String TAG_TASK_FREQUENCY = "frequency";
+	private static final String TAG_TASK_ENDOFRECURR = "endOfRecurr";
 
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
@@ -118,8 +128,18 @@ public class Storage {
 	 * "Save-state" for future undo operations.
 	 */
 	public void setCurrentListAsPrevious() {
-		_prevTaskList = new LinkedList<Task>(_currentTaskList);
-		// TODO: clone all object fields (TaskDate, Recur)
+		_prevTaskList = new LinkedList<Task>();
+
+		for (Task task : _currentTaskList) {
+			Task taskClone = new Task();
+			taskClone.setDescription(task.getDescription());
+			taskClone.setDate(task.getDate());
+			taskClone.setStartTime(task.getStartTime());
+			taskClone.setEndTime(task.getEndTime());
+			taskClone.setRecur(task.getRecur());
+			_prevTaskList.add(taskClone);
+		}
+
 	}
 
 	/**
@@ -294,10 +314,10 @@ public class Storage {
 		assert (taskItem != null);
 		assert (parentElement != null);
 
-		Element recurrElement = doc.createElement("recur");
-		Element recurTimeUnitElement = doc.createElement("timeUnit");
-		Element recurFrequencyElement = doc.createElement("frequency");
-		Element recurEndOfRecurrElement = doc.createElement("endOfRecurr");
+		Element recurrElement = doc.createElement(TAG_TASK_RECUR);
+		Element recurTimeUnitElement = doc.createElement(TAG_TASK_TIMEUNIT);
+		Element recurFrequencyElement = doc.createElement(TAG_TASK_FREQUENCY);
+		Element recurEndOfRecurrElement = doc.createElement(TAG_TASK_ENDOFRECURR);
 		recurTimeUnitElement.appendChild(doc.createTextNode(recur.getTimeUnit().toString()));
 		recurFrequencyElement.appendChild(doc.createTextNode(Integer.toString(recur.getFrequency())));
 		recurEndOfRecurrElement
@@ -327,11 +347,11 @@ public class Storage {
 		assert (rootElement != null);
 
 		Element taskElement = doc.createElement(TAG_TASK_HEADING);
-		Element descriptionElement = doc.createElement("Description");
-		Element dateElement = doc.createElement("Date");
-		Element startTimeElement = doc.createElement("StartTime");
-		Element endTimeElement = doc.createElement("EndTime");
-		Element completedElement = doc.createElement("Completed");
+		Element descriptionElement = doc.createElement(TAG_TASK_DESCRIPTION);
+		Element dateElement = doc.createElement(TAG_TASK_DATE);
+		Element startTimeElement = doc.createElement(TAG_TASK_STARTTIME);
+		Element endTimeElement = doc.createElement(TAG_TASK_ENDTIME);
+		Element completedElement = doc.createElement(TAG_TASK_COMPLETED);
 
 		descriptionElement.appendChild(doc.createTextNode(taskItem.getDescription()));
 		dateElement.appendChild(doc.createTextNode(getCalendarString(taskItem.getDate())));
@@ -422,11 +442,11 @@ public class Storage {
 
 		// Create new task with extracted description & extract other attributes
 		Task newTask = new Task();
-		newTask.setDescription(extractStringFromNode(taskElement, "Description"));
-		newTask.setDate(extractDateFromNode(taskElement, "Date"));
-		newTask.setStartTime(extractDateFromNode(taskElement, "StartTime"));
-		newTask.setEndTime(extractDateFromNode(taskElement, "EndTime"));
-		if (extractStringFromNode(taskElement, "Completed").equals("yes")) {
+		newTask.setDescription(extractStringFromNode(taskElement, TAG_TASK_DESCRIPTION));
+		newTask.setDate(extractDateFromNode(taskElement, TAG_TASK_DATE));
+		newTask.setStartTime(extractDateFromNode(taskElement, TAG_TASK_STARTTIME));
+		newTask.setEndTime(extractDateFromNode(taskElement, TAG_TASK_ENDTIME));
+		if (extractStringFromNode(taskElement, TAG_TASK_COMPLETED).equals("yes")) {
 			newTask.toggleCompleted();
 		}
 
@@ -437,7 +457,7 @@ public class Storage {
 		newTask.setRecur(taskRecurr);
 
 		// Ensure that recurring tasks imported will recur
-		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
+		if (taskElement.getElementsByTagName(TAG_TASK_RECUR).getLength() == 0) {
 			assert (newTask.getRecur().willRecur());
 		}
 		return newTask;
@@ -457,13 +477,13 @@ public class Storage {
 		// Assert than taskElement is not null
 		assert (taskElement != null);
 
-		if (taskElement.getElementsByTagName("recur").getLength() == 0) {
+		if (taskElement.getElementsByTagName(TAG_TASK_RECUR).getLength() == 0) {
 			return null;
 		}
 
-		String timeUnit = extractStringFromNode(taskElement, "timeUnit");
-		int frequency = Integer.parseInt(extractStringFromNode(taskElement, "frequency"));
-		Calendar endOfRecurr = extractDateFromNode(taskElement, "endOfRecurr");
+		String timeUnit = extractStringFromNode(taskElement, TAG_TASK_TIMEUNIT);
+		int frequency = Integer.parseInt(extractStringFromNode(taskElement, TAG_TASK_FREQUENCY));
+		Calendar endOfRecurr = extractDateFromNode(taskElement, TAG_TASK_ENDOFRECURR);
 		Recur taskRecurr = new Recur();
 		taskRecurr.setTimeUnit(TimeUnit.valueOf(timeUnit));
 		taskRecurr.setFrequency(frequency);
