@@ -170,7 +170,7 @@ public class Storage {
 	 * @param file
 	 *            File to be saved
 	 */
-	public void saveTasks(File file) {
+	public void saveTasksToFile(File file) {
 
 		// Assert that file are not null
 		assert (file != null);
@@ -198,7 +198,7 @@ public class Storage {
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
-	public void loadTasks(File file) throws SAXException {
+	public void loadTasksFromFile(File file) throws SAXException {
 
 		// Assert that file is not null
 		assert (file != null);

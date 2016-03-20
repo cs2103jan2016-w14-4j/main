@@ -1,5 +1,6 @@
 package defaultPart;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -56,8 +56,8 @@ public class Logic {
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
-	public Logic(Storage storage) {
-		_storage = storage;
+	public Logic() {
+		_storage = new Storage();
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
 			handler.setFormatter(new SimpleFormatter());
@@ -431,7 +431,7 @@ public class Logic {
 
 	}
 
-	public int getTaskIndex() throws IOException {
+	private int getTaskIndex() throws IOException {
 		if (_argument == null) {
 			throw new IOException(MESSAGE_NO_ARGUMENTS);
 		}
@@ -462,4 +462,11 @@ public class Logic {
 		return _indexesFound;
 	}
 
+	public void saveTasksToFile(File file) {
+		_storage.saveTasksToFile(file);
+	}
+	
+	public List<Task> getTaskList() {
+		return _storage.getTaskList();
+	}
 }

@@ -69,7 +69,6 @@ public class Controller implements Initializable {
 	private int lastId;
 
 	private Logic logic;
-	private Storage storage;
 
 	/**
 	 * Initialize the controllers, define the listeners for each control
@@ -136,9 +135,7 @@ public class Controller implements Initializable {
 			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
 		});
 
-
-		storage = new Storage();
-		logic = new Logic(storage);
+		logic = new Logic();
 		inputBox.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if(e.getCode().equals(KeyCode.ENTER)){
 				sendToLogicAndUpdatePrompt(inputBox.getText());
@@ -271,7 +268,7 @@ public class Controller implements Initializable {
 		eventList.clear();
 		floatingTaskList.clear();
 		taskModels.clear();
-		taskList = storage.getTaskList();
+		taskList = logic.getTaskList();
 
 		for(int i = 0; i < taskList.size(); i++){
 			Task task = taskList.get(i);

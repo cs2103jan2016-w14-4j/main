@@ -256,8 +256,8 @@ public class StorageTest {
 		File inputFile = new File(TASK_FILE_NAME);
 		File outputFile = new File("test/StorageTest_actual.xml");
 		Storage storage = new Storage();
-		storage.loadTasks(inputFile);
-		storage.saveTasks(outputFile);
+		storage.loadTasksFromFile(inputFile);
+		storage.saveTasksToFile(outputFile);
 
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
@@ -289,7 +289,7 @@ public class StorageTest {
 		// Setting up the actual storage behavior
 		File file = new File(TASK_FILE_NAME);
 		Storage storage = new Storage();
-		storage.loadTasks(file);
+		storage.loadTasksFromFile(file);
 
 		// This is to test the expected behavior of this function
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
