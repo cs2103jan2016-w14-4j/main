@@ -93,6 +93,15 @@ public class LogicTest {
 		task = taskList.get(1);
 		date = task.getDate();
 		assertEquals("1/3/2017", dateFormat.format(date.getTime()));
+		
+		// change date of task to today (month,day)
+		logic.executeCommand("e 2 " + today.get(Calendar.MONTH) + "/" + today.get(Calendar.DATE));
+		
+		taskList = logic.getTaskList();
+		task = taskList.get(1);
+		date = task.getDate();
+		assertEquals(dateFormat.format(today.getTime()),dateFormat.format(date.getTime()));
+		
 
 		// change the time of a task
 		logic.executeCommand("e 2 3:27");
