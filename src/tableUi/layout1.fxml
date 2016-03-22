@@ -9,15 +9,25 @@
    <children>
       <SplitPane dividerPositions="0.619">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0">
+            <VBox>
                <children>
-                  <Button fx:id="showAllEvents" layoutX="163.0" layoutY="3.0" mnemonicParsing="false" onAction="#showAllTasks" text="All Events" />
-                  <Button fx:id="showIncompleteEvents" layoutX="82.0" layoutY="3.0" mnemonicParsing="false" onAction="#showIncompleteEvents" text="Incomplete" />
-                  <Button fx:id="showOverdueEvents" layoutX="236.0" layoutY="3.0" mnemonicParsing="false" onAction="#showOverdueEvents" text="Overdue" />
-                  <Button fx:id="showCompletedEvents" layoutX="301.0" layoutY="3.0" mnemonicParsing="false" onAction="#setShowCompletedEvents" text="Completed" />
-                  <Label layoutX="6.0" layoutY="7.0" text="Events" />
-                  <Button fx:id="deleteEvent" layoutX="466.0" layoutY="3.0" mnemonicParsing="false" onAction="#deleteEvent" text="-" />
-                  <TableView fx:id="eventsTable" editable="true" layoutY="25.0">
+                  <HBox alignment="BASELINE_CENTER" prefHeight="40.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Events" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="showAllEvents" alignment="CENTER" mnemonicParsing="false" onAction="#showAllTasks" text="All Events" />
+                        <Button fx:id="showIncompleteEvents" alignment="CENTER" mnemonicParsing="false" onAction="#showIncompleteEvents" text="Incomplete" />
+                        <Button fx:id="showOverdueEvents" alignment="CENTER" mnemonicParsing="false" onAction="#showOverdueEvents" text="Overdue" />
+                        <Button fx:id="showCompletedEvents" alignment="CENTER" mnemonicParsing="false" onAction="#setShowCompletedEvents" text="Completed" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="deleteEvent" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#deleteEvent" text="-" />
+                        <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#debug" text="Debug" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <TableView fx:id="eventsTable" editable="true">
                     <columns>
                       <TableColumn fx:id="eventsId" editable="false" prefWidth="30.0" text="id" />
                       <TableColumn fx:id="eventsCheckbox" prefWidth="21.0" text="C" />
@@ -26,14 +36,24 @@
                         <TableColumn fx:id="eventsRecur" prefWidth="87.0" text="Recur" />
                     </columns>
                   </TableView>
-                  <Button layoutX="411.0" layoutY="3.0" mnemonicParsing="false" onAction="#debug" text="Debug" />
                </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0">
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <Label layoutX="7.0" layoutY="7.0" text="Floating tasks" />
-                  <Button fx:id="deleteFloatingTask" layoutX="276.0" layoutY="3.0" mnemonicParsing="false" onAction="#deleteFloatingTask" text="-" />
-                  <TableView fx:id="floatingTaskTable" editable="true" layoutX="-1.0" layoutY="25.0">
+                  <HBox alignment="BASELINE_CENTER" prefHeight="40.0">
+                     <children>
+                        <Label text="Floating tasks" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="deleteFloatingTask" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#deleteFloatingTask" text="-" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <TableView fx:id="floatingTaskTable" editable="true">
                     <columns>
                       <TableColumn fx:id="floatingTaskId" editable="false" prefWidth="30.0" text="id" />
                       <TableColumn fx:id="floatingTaskCheckbox" prefWidth="21.0" text="C" />
@@ -41,7 +61,7 @@
                     </columns>
                   </TableView>
                </children>
-            </AnchorPane>
+            </VBox>
         </items>
       </SplitPane>
       <HBox alignment="CENTER_LEFT" spacing="10.0">
