@@ -12,11 +12,10 @@ import defaultPart.*;
 import defaultPart.Recur.TimeUnit;
 
 public class LogicTest {
-
+	private static final Logic logic = new Logic();
 	@Test
 	public void testAdd() {
 		// adding a task with date,time, and recurrence
-		Logic logic = new Logic();
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
 		List<Task> taskList = logic.getTaskList();
 		assertEquals(1, taskList.size());
@@ -67,6 +66,7 @@ public class LogicTest {
 		assertEquals("lalala", task.getDescription());
 	}
 
+
 	@Test
 	public void testEdit() {
 
@@ -75,7 +75,6 @@ public class LogicTest {
 		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
 		// adding 2 tasks and checking tasklist size
-		Logic logic = new Logic();
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
 		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
 		List<Task> taskList = logic.getTaskList();
@@ -133,7 +132,6 @@ public class LogicTest {
 		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
 		// adding 2 tasks and checking tasklist size
-		Logic logic = new Logic();
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
 		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
 		List<Task> taskList = logic.getTaskList();
