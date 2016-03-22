@@ -319,11 +319,7 @@ public class Logic {
 				_newCommandType = CommandType.EDIT_SHOW_TASK;
 				_indexesFound = new ArrayList<Integer>();
 				_indexesFound.add(taskIndex);
-				if(task.getDate() != null){
-					_ui.editEventDescriptionById(taskIndex + 1);
-				}else{
-					_ui.editFloatingTaskDescriptionById(taskIndex + 1);
-				}
+				_ui.debug();
 				break;
 
 			case 2 :

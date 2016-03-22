@@ -1,26 +1,22 @@
 package tableUi;
 
 import defaultPart.Logic;
-import defaultPart.Storage;
 import defaultPart.Task;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.util.Callback;
+import javafx.stage.Stage;
+
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Class for the main controller of the UI
@@ -40,14 +36,14 @@ public class Controller implements Initializable {
 	public TableColumn<TaskModel, Boolean> eventsCheckbox;
 	public TextField inputBox;
 	public Label userPrompt;
-	public Button addFloatingTask;
-	public Button addEvent;
 	public Button deleteFloatingTask;
 	public Button deleteEvent;
 	public Button showAllEvents;
 	public Button showIncompleteEvents;
 	public Button showOverdueEvents;
 	public Button showCompletedEvents;
+
+	public Stage stage;
 
 	public static final boolean DEVELOPER_MODE = true;
 	public static final String EDIT_COMMAND = "e %d %s";
@@ -57,8 +53,6 @@ public class Controller implements Initializable {
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
 	public static final String INVALID_EDIT_DATE_PROMPT = "edit date action could not be done on id %d";
 	public static final String INVALID_EDIT_DESCRIPTION_PROMPT = "edit date action could not be done on id %d";
-
-	private static final Logger log = Logger.getLogger(Logic.class.getName());
 
 	private List<Task> taskList;
 
@@ -138,9 +132,10 @@ public class Controller implements Initializable {
 		logic = new Logic(this);
 		inputBox.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if(e.getCode().equals(KeyCode.ENTER)){
-				e.consume();
-				sendToLogicAndUpdatePrompt(inputBox.getText());
+				String text = inputBox.getText();
 				inputBox.clear();
+				e.consume();
+				sendToLogicAndUpdatePrompt(text);
 			}
 		});
 
@@ -325,4 +320,10 @@ public class Controller implements Initializable {
 		floatingTaskList.removeIf(e->!e.getIsComplete());
 	}
 
+
+	public void close(){
+		if(stage != null){
+			stage.close();
+		}
+	}
 }
