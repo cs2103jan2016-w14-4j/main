@@ -270,6 +270,9 @@ public class Logic {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
 		Calendar newDate = new GregorianCalendar();
 		Calendar currentDate = (Calendar) newDate.clone();
+		int currYear = currentDate.get(Calendar.YEAR);
+		int currMonth = currentDate.get(Calendar.MONTH);
+		int currDay = currentDate.get(Calendar.DATE);
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
@@ -279,17 +282,28 @@ public class Logic {
 				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
 				newDate.set(Calendar.YEAR,
 						currentYear / factor * factor + Integer.parseInt(dayAndMonthAndYear[2]));
+				if(currYear == newDate.get(Calendar.YEAR) && currMonth == Integer.parseInt(dayAndMonthAndYear[1]) - 1 && currDay == Integer.parseInt(dayAndMonthAndYear[0])){
+					return currentDate;
+				}
 				// fallthrough
 
 			case 2 :
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-
+				
+				if(currYear == newDate.get(Calendar.YEAR) && currMonth == Integer.parseInt(dayAndMonthAndYear[1]) - 1 && currDay == Integer.parseInt(dayAndMonthAndYear[0])){
+					return currentDate;
+				}
+				
 				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
 
-				if (currentDate.compareTo(newDate) > 0) {
+				if (currentDate.compareTo(newDate) >= 0) {
 					newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
+				}
+				
+				if(currYear == newDate.get(Calendar.YEAR) && currMonth == Integer.parseInt(dayAndMonthAndYear[1]) - 1 && currDay == Integer.parseInt(dayAndMonthAndYear[0])){
+					return currentDate;
 				}
 				// fallthrough
 
@@ -297,6 +311,11 @@ public class Logic {
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
+				
+				if(currYear == newDate.get(Calendar.YEAR) && currMonth == newDate.get(Calendar.MONTH) && currDay == Integer.parseInt(dayAndMonthAndYear[0])){
+					return currentDate;
+				}
+				
 				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
 
 				if (currentDate.compareTo(newDate) > 0) {
@@ -304,6 +323,7 @@ public class Logic {
 				}
 				// fallthrough
 		}
+		
 		return newDate;
 	}
 
