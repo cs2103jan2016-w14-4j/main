@@ -58,6 +58,13 @@ public class LogicTest {
 		date = task.getDate();
 		assertTrue(date != null);
 		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
+		
+		// adding task today with (month,day)
+		logic.executeCommand("lalala " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH)+1));
+		taskList = logic.getTaskList();
+		assertEquals(3, taskList.size());
+		task = taskList.get(1);
+		assertEquals("lalala", task.getDescription());
 	}
 
 	@Test
@@ -95,8 +102,8 @@ public class LogicTest {
 		assertEquals("1/3/2017", dateFormat.format(date.getTime()));
 
 		// change date of task to today (month,day)
-		logic.executeCommand("e 2 " + today.get(Calendar.DATE) + "/" + today.get(Calendar.MONTH));
-
+		logic.executeCommand("e 2 " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH)+1));
+		
 		taskList = logic.getTaskList();
 		task = taskList.get(1);
 		date = task.getDate();
