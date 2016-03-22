@@ -68,6 +68,17 @@ public class LogicTest {
 	}
 
 	@Test
+	public void testAddEvent() {
+		Logic logic = new Logic();
+		logic.executeCommand("Wake up at midnight to watch the stars 1am-3");
+		List<Task> taskList = logic.getTaskList();
+		Task task = taskList.get(0);
+		assertTrue(task != null);
+		assertEquals(1, task.getStartTime().get(Calendar.HOUR_OF_DAY));
+		assertEquals(3, task.getEndTime().get(Calendar.HOUR_OF_DAY));
+	}
+	
+	@Test
 	public void testEdit() {
 
 		Calendar today = new GregorianCalendar();

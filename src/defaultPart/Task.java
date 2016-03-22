@@ -67,17 +67,20 @@ public class Task {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		String formattedDate = "";
 		if (_date != null) {
-			formattedDate = dateFormat.format(_date.getTime());
+			formattedDate = " | " + dateFormat.format(_date.getTime());
 		}
 		String timeString = "";
 		if (_startTime != null) {
 			SimpleDateFormat timeFormat = new SimpleDateFormat("K.mma");
-			timeString = timeFormat.format(_startTime.getTime());
+			timeString = " | " + timeFormat.format(_startTime.getTime());
 			if (_endTime != null) {
-				timeString += "-" + dateFormat.format(_endTime.getTime());
+				timeString += "-" + timeFormat.format(_endTime.getTime());
 			}
 		}
-		return _description + " | " + formattedDate + " | " + timeString + " | Completed=" + _isCompleted
-				+ " | recur=" + _recur;
+		String recurString = "";
+		if (_recur != null) {
+			recurString = " | recur=" + _recur;
+		}
+		return _description + formattedDate + timeString + recurString;
 	}
 }

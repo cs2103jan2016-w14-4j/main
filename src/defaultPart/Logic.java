@@ -241,7 +241,12 @@ public class Logic {
 			boolean isDigit = lastString.matches("\\d");
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
 				logger.log(Level.FINER, "Setting task time using \"{0}\"", lastString);
-				task.setStartTime(getTimeFromString(lastString));
+				String[] startAndEndTime = lastString.split("-", 2);
+				assert startAndEndTime.length > 0;
+				task.setStartTime(getTimeFromString(startAndEndTime[0]));
+				if (startAndEndTime.length == 2) {
+					task.setEndTime(getTimeFromString(startAndEndTime[1]));
+				}
 				args.remove(lastIndex);
 			}
 		}
