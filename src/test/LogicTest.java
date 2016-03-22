@@ -61,14 +61,17 @@ public class LogicTest {
 		
 		Logic logic = new Logic();
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
-		logic.executeCommand("dev guide" + today.get(Calendar.DATE));
+		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
 		List<Task> taskList = logic.getTaskList();
 		assertEquals(2,taskList.size());
 		
-		logic.executeCommand("e 1 1/2 3:27pm 5d 12/7");
+		logic.executeCommand("e 1 1/2");
 		
-		Task task = taskList.get(1);
+		taskList = logic.getTaskList();
+		Task task = taskList.get(0);
 		Calendar date = task.getDate();
-		//assertEquals("1/2/2017",dateFormat.format(date.getTime()));
+		assertEquals("1/2/2017",dateFormat.format(date.getTime()));
+		
+		
 	}
 }
