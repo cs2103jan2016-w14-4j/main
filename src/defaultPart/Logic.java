@@ -264,14 +264,26 @@ public class Logic {
 		String timeRegex = "\\d((:|\\.)\\d{2})?(am|pm)?";
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
+	
+	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
+		Calendar currentDate = new GregorianCalendar();
+		if (currentDate.compareTo(date) > 0) {
+			switch (numOfDateFieldsSet) {
+				case 1:
+					date.add(Calendar.MONTH, 1);
+					break;
+					
+				case 2:
+					date.add(Calendar.YEAR, 1);
+					break;
+			}
+		}
+	}
 
 	public Calendar getDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
 		Calendar currentDate = new GregorianCalendar();
 		Calendar newDate = (Calendar) currentDate.clone();
-		int currYear = currentDate.get(Calendar.YEAR);
-		int currMonth = currentDate.get(Calendar.MONTH);
-		int currDay = currentDate.get(Calendar.DATE);
 
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
@@ -282,55 +294,24 @@ public class Logic {
 				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
 				newDate.set(Calendar.YEAR,
 						currentYear / factor * factor + Integer.parseInt(dayAndMonthAndYear[2]));
-				if (currYear == newDate.get(Calendar.YEAR)
-						&& currMonth == Integer.parseInt(dayAndMonthAndYear[1]) - 1
-						&& currDay == Integer.parseInt(dayAndMonthAndYear[0])) {
-					return currentDate;
-				}
 				// fallthrough
 
 			case 2 :
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-
-				if (currYear == newDate.get(Calendar.YEAR)
-						&& currMonth == Integer.parseInt(dayAndMonthAndYear[1]) - 1
-						&& currDay == Integer.parseInt(dayAndMonthAndYear[0])) {
-					return currentDate;
-				}
-
 				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
-
-				if (currentDate.compareTo(newDate) >= 0) {
-					newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
-				}
-
-				if (currYear == newDate.get(Calendar.YEAR)
-						&& currMonth == Integer.parseInt(dayAndMonthAndYear[1]) - 1
-						&& currDay == Integer.parseInt(dayAndMonthAndYear[0])) {
-					return currentDate;
-				}
 				// fallthrough
 
 			case 1 :
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
-
-				if (currYear == newDate.get(Calendar.YEAR) && currMonth == newDate.get(Calendar.MONTH)
-						&& currDay == Integer.parseInt(dayAndMonthAndYear[0])) {
-					return currentDate;
-				}
-
 				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
-
-				if (currentDate.compareTo(newDate) > 0) {
-					newDate.set(Calendar.MONTH, newDate.get(Calendar.MONTH) + 1);
-				}
-				// fallthrough
+				break;
 		}
-
+		
+		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
 
