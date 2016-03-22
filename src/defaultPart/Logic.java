@@ -37,7 +37,6 @@ public class Logic {
 
 	private static final int ERROR_INDEX = -1;
 
-
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
 		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
@@ -75,7 +74,7 @@ public class Logic {
 		}
 	}
 
-	public Logic(Controller ui){
+	public Logic(Controller ui) {
 		this._ui = ui;
 		_storage = new Storage();
 		try {
@@ -268,8 +267,13 @@ public class Logic {
 
 	public Calendar getDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
-		Calendar newDate = new GregorianCalendar();
-		Calendar currentDate = (Calendar) newDate.clone();
+		Calendar currentDate = new GregorianCalendar();
+		Calendar newDate = (Calendar) currentDate.clone();
+
+		// DAY is only set in case 1 block, hence set it to 1 first
+		// otherwise case 2 block wont wrap around if same month
+		newDate.set(Calendar.DAY_OF_MONTH, 1);
+
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
@@ -287,7 +291,6 @@ public class Logic {
 				}
 
 				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
-
 				if (currentDate.compareTo(newDate) > 0) {
 					newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
 				}
@@ -319,9 +322,9 @@ public class Logic {
 				_newCommandType = CommandType.EDIT_SHOW_TASK;
 				_indexesFound = new ArrayList<Integer>();
 				_indexesFound.add(taskIndex);
-				if(task.getDate() != null){
+				if (task.getDate() != null) {
 					_ui.editEventDescriptionById(taskIndex + 1);
-				}else{
+				} else {
 					_ui.editFloatingTaskDescriptionById(taskIndex + 1);
 				}
 				break;
@@ -490,7 +493,7 @@ public class Logic {
 	public void saveTasksToFile(File file) {
 		_storage.saveTasksToFile(file);
 	}
-	
+
 	public List<Task> getTaskList() {
 		return _storage.getTaskList();
 	}
