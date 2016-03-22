@@ -58,6 +58,7 @@ public class LogicTest {
 		
 		Calendar today = new GregorianCalendar();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 		
 		Logic logic = new Logic();
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
@@ -88,9 +89,13 @@ public class LogicTest {
 		taskList = logic.getTaskList();
 		task = taskList.get(1);
 		date = task.getStartTime();
-		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 		assertEquals("03:27",timeFormat.format(date.getTime()));
 		
+		logic.executeCommand("e 2 3:27pm");
 		
+		taskList = logic.getTaskList();
+		task = taskList.get(1);
+		date = task.getStartTime();
+		assertEquals("15:27",timeFormat.format(date.getTime()));
 	}
 }
