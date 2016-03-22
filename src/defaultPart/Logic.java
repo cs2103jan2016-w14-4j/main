@@ -264,17 +264,17 @@ public class Logic {
 		String timeRegex = "\\d((:|\\.)\\d{2})?(am|pm)?";
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
-	
+
 	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
 		Calendar currentDate = new GregorianCalendar();
-		
+
 		if (currentDate.compareTo(date) > 0) {
 			switch (numOfDateFieldsSet) {
-				case 1:
+				case 1 :
 					date.add(Calendar.MONTH, 1);
 					break;
-					
-				case 2:
+
+				case 2 :
 					date.add(Calendar.YEAR, 1);
 					break;
 			}
@@ -311,7 +311,10 @@ public class Logic {
 				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
 				break;
 		}
-		
+
+		// force Calendar to calculate its time value after set() so that compareTo() is accurate
+		newDate.getTimeInMillis();
+
 		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
