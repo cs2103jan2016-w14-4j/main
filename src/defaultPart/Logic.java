@@ -37,7 +37,6 @@ public class Logic {
 
 	private static final int ERROR_INDEX = -1;
 
-
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
 		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
@@ -75,7 +74,7 @@ public class Logic {
 		}
 	}
 
-	public Logic(Controller ui){
+	public Logic(Controller ui) {
 		this._ui = ui;
 		_storage = new Storage();
 		try {
@@ -253,10 +252,10 @@ public class Logic {
 		task.setStartTime(getTimeFromString(startAndEndTime[0]));
 		if (startAndEndTime.length == 2) {
 			task.setEndTime(getTimeFromString(startAndEndTime[1]));
+		} else {
+			task.setEndTime(null);
 		}
 	}
-	
-
 
 	private void setTaskDateIfExists(Task task, List<String> args) {
 		int lastIndex = args.size() - 1;
@@ -360,9 +359,12 @@ public class Logic {
 			case 4 :
 				// todo: allows changing recur
 		}
+		_storage.removeTask(taskIndex);
+		_storage.addToTaskList(task); // re-add so that it's sorted by date/time
 		_feedback = String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET);
 	}
 
+	// todo: 7-11 default to am, 12-6 default to pm, if am/pm not specified
 	private Calendar getTimeFromString(String timeString) {
 		String minuteFormat = "";
 		if (timeString.contains(":")) {
@@ -497,7 +499,7 @@ public class Logic {
 	public void saveTasksToFile(File file) {
 		_storage.saveTasksToFile(file);
 	}
-	
+
 	public List<Task> getTaskList() {
 		return _storage.getTaskList();
 	}
