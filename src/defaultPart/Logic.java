@@ -267,6 +267,7 @@ public class Logic {
 	
 	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
 		Calendar currentDate = new GregorianCalendar();
+		
 		if (currentDate.compareTo(date) > 0) {
 			switch (numOfDateFieldsSet) {
 				case 1:
