@@ -50,15 +50,25 @@ public class LogicTest {
 		assertEquals("dev guide", task.getDescription());
 		date = task.getDate();
 		assertTrue(date != null);
-		// todo: cant hardcode the date used for testing!
 		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 	}
 	
 	@Test
 	public void testEdit(){
+		
+		Calendar today = new GregorianCalendar();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
+		
 		Logic logic = new Logic();
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
-		logic.executeCommand("dev guide 13");
+		logic.executeCommand("dev guide" + today.get(Calendar.DATE));
+		List<Task> taskList = logic.getTaskList();
+		assertEquals(2,taskList.size());
 		
+		logic.executeCommand("e 1 1/2 3:27pm 5d 12/7");
+		
+		Task task = taskList.get(1);
+		Calendar date = task.getDate();
+		//assertEquals("1/2/2017",dateFormat.format(date.getTime()));
 	}
 }
