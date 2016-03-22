@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.GregorianCalendar;
 
 import org.junit.Test;
 import defaultPart.*;
@@ -39,8 +40,10 @@ public class LogicTest {
 		assertTrue(date != null);
 		dateFormat = new SimpleDateFormat("d/M/yyyy");
 		assertEquals("13/8/2016", dateFormat.format(date.getTime()));
-
-		logic.executeCommand("dev guide 13");
+		
+		Calendar today= new GregorianCalendar();
+		
+		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
 		taskList = logic.getTaskList();
 		assertEquals(2, taskList.size());
 		task = taskList.get(0);
@@ -48,6 +51,14 @@ public class LogicTest {
 		date = task.getDate();
 		assertTrue(date != null);
 		// todo: cant hardcode the date used for testing!
-		assertEquals("13/4/2016", dateFormat.format(date.getTime()));
+		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
+	}
+	
+	@Test
+	public void testEdit(){
+		Logic logic = new Logic();
+		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
+		logic.executeCommand("dev guide 13");
+		
 	}
 }
