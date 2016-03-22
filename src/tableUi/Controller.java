@@ -135,9 +135,10 @@ public class Controller implements Initializable {
 			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
 		});
 
-		logic = new Logic();
+		logic = new Logic(this);
 		inputBox.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if(e.getCode().equals(KeyCode.ENTER)){
+				e.consume();
 				sendToLogicAndUpdatePrompt(inputBox.getText());
 				inputBox.clear();
 			}

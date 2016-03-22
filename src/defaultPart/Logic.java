@@ -1,5 +1,7 @@
 package defaultPart;
 
+import tableUi.Controller;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,6 +37,7 @@ public class Logic {
 
 	private static final int ERROR_INDEX = -1;
 
+
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
 		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
@@ -47,6 +50,7 @@ public class Logic {
 	private CommandType _oldCommandType;
 	private CommandType _newCommandType;
 	private Storage _storage;
+	private Controller _ui;
 
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
@@ -57,6 +61,22 @@ public class Logic {
 	private List<Integer> _indexesFound;
 
 	public Logic() {
+		_storage = new Storage();
+		try {
+			Handler handler = new FileHandler("logs/log.txt");
+			handler.setFormatter(new SimpleFormatter());
+			logger.addHandler(handler);
+
+		} catch (SecurityException e) {
+			logger.log(Level.SEVERE, "Security exception: {0}", e.getMessage());
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "IOexception: {0}", e.getMessage());
+
+		}
+	}
+
+	public Logic(Controller ui){
+		this._ui = ui;
 		_storage = new Storage();
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
@@ -299,6 +319,11 @@ public class Logic {
 				_newCommandType = CommandType.EDIT_SHOW_TASK;
 				_indexesFound = new ArrayList<Integer>();
 				_indexesFound.add(taskIndex);
+				if(task.getDate() != null){
+					_ui.editEventDescriptionById(taskIndex + 1);
+				}else{
+					_ui.editFloatingTaskDescriptionById(taskIndex + 1);
+				}
 				break;
 
 			case 2 :
