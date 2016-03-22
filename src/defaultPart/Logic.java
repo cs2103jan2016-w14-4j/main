@@ -37,7 +37,6 @@ public class Logic {
 
 	private static final int ERROR_INDEX = -1;
 
-
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
 		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
@@ -75,7 +74,7 @@ public class Logic {
 		}
 	}
 
-	public Logic(Controller ui){
+	public Logic(Controller ui) {
 		this._ui = ui;
 		_storage = new Storage();
 		try {
@@ -273,6 +272,7 @@ public class Logic {
 		int currYear = currentDate.get(Calendar.YEAR);
 		int currMonth = currentDate.get(Calendar.MONTH);
 		int currDay = currentDate.get(Calendar.DATE);
+
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
@@ -339,9 +339,9 @@ public class Logic {
 				_newCommandType = CommandType.EDIT_SHOW_TASK;
 				_indexesFound = new ArrayList<Integer>();
 				_indexesFound.add(taskIndex);
-				if(task.getDate() != null){
+				if (task.getDate() != null) {
 					_ui.editEventDescriptionById(taskIndex + 1);
-				}else{
+				} else {
 					_ui.editFloatingTaskDescriptionById(taskIndex + 1);
 				}
 				break;
@@ -510,7 +510,7 @@ public class Logic {
 	public void saveTasksToFile(File file) {
 		_storage.saveTasksToFile(file);
 	}
-	
+
 	public List<Task> getTaskList() {
 		return _storage.getTaskList();
 	}
