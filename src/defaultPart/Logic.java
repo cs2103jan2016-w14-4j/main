@@ -240,17 +240,23 @@ public class Logic {
 			Calendar date = getDateFromString(secondLastString);
 			boolean isDigit = lastString.matches("\\d");
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
-				logger.log(Level.FINER, "Setting task time using \"{0}\"", lastString);
-				String[] startAndEndTime = lastString.split("-", 2);
-				assert startAndEndTime.length > 0;
-				task.setStartTime(getTimeFromString(startAndEndTime[0]));
-				if (startAndEndTime.length == 2) {
-					task.setEndTime(getTimeFromString(startAndEndTime[1]));
-				}
+				setTaskTime(task, lastString);
 				args.remove(lastIndex);
 			}
 		}
 	}
+
+	private void setTaskTime(Task task, String timeString) {
+		logger.log(Level.FINER, "Setting task time using \"{0}\"", timeString);
+		String[] startAndEndTime = timeString.split("-", 2);
+		assert startAndEndTime.length > 0;
+		task.setStartTime(getTimeFromString(startAndEndTime[0]));
+		if (startAndEndTime.length == 2) {
+			task.setEndTime(getTimeFromString(startAndEndTime[1]));
+		}
+	}
+	
+
 
 	private void setTaskDateIfExists(Task task, List<String> args) {
 		int lastIndex = args.size() - 1;
@@ -332,7 +338,7 @@ public class Logic {
 				if (date != null) {
 					task.setDate(date);
 				} else if (isTime(args[1])) {
-					task.setStartTime(getTimeFromString(args[1]));
+					setTaskTime(task, args[1]);
 				} else {
 					task.setDescription(args[1]);
 				}
@@ -345,7 +351,7 @@ public class Logic {
 					task.setDate(date);
 				}
 				try {
-					task.setStartTime(getTimeFromString(args[2]));
+					setTaskTime(task, args[2]);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -464,7 +470,7 @@ public class Logic {
 		assert _argument.length() > 0;
 		String taskIndex = _argument.split(" ", 2)[0];
 		logger.log(Level.FINE, "Task index string is \"{0}\"", taskIndex);
-		if (taskIndex.matches("\\D")) {
+		if (!taskIndex.matches("\\d")) {
 			throw new IOException(String.format(MESSAGE_INVALID_INDEX, taskIndex));
 		}
 		return Integer.parseInt(taskIndex) - LIST_NUMBERING_OFFSET;
