@@ -20,7 +20,7 @@ import java.util.logging.SimpleFormatter;
 import org.xml.sax.SAXException;
 
 public class Logic {
-
+	//some comments
 	private static final Logger logger = Logger.getLogger(Logic.class.getName());
 
 	private static final int LIST_NUMBERING_OFFSET = 1;
