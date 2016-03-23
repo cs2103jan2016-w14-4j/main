@@ -30,20 +30,20 @@ public class CalendarTest {
     
     @Test
     public void testParse(){
-    	Calendar parseResult = logic.getDateFromString("03/04/16");
+    	Calendar parseResult = logic.getWrappedDateFromString("03/04/16");
     	Assert.assertEquals("03/04/16", FORMAT.format(parseResult.getTime()));
     }
     
     @Test
     public void testParseWithoutPadding(){
-    	Calendar parseResult = logic.getDateFromString("3/4/16");
+    	Calendar parseResult = logic.getWrappedDateFromString("3/4/16");
     	Assert.assertEquals("03/04/16", FORMAT.format(parseResult.getTime()));
     }
     
     @Test
     public void testParseDotFormat(){
     	try{
-	    	Calendar parseResult = logic.getDateFromString("3.4.16");
+	    	Calendar parseResult = logic.getWrappedDateFromString("3.4.16");
 	    	Assert.assertEquals("03/04/16", FORMAT.format(parseResult.getTime()));
     	}catch(Exception e){
     		Assert.assertTrue(false);
@@ -53,7 +53,7 @@ public class CalendarTest {
     @Test
     public void testParseWrongDate(){
     	try{
-	    	logic.getDateFromString("30/2/16");
+	    	logic.getWrappedDateFromString("30/2/16");
 	    	Assert.assertTrue(false);
     	}catch(Exception e){
     		Assert.assertTrue(true);
@@ -63,7 +63,7 @@ public class CalendarTest {
     @Test
     public void testParsePastDate(){
     	try{
-	    	Calendar parseResult = logic.getDateFromString("19/2/05");
+	    	Calendar parseResult = logic.getWrappedDateFromString("19/2/05");
 	    	Assert.assertEquals("19/02/05", FORMAT.format(parseResult.getTime()));
     	}catch(Exception e){
     		Assert.assertTrue(false);
@@ -73,7 +73,7 @@ public class CalendarTest {
     @Test
     public void testParseInvalidString(){
     	try{
-	    	Calendar parseResult = logic.getDateFromString("this is a string");
+	    	Calendar parseResult = logic.getWrappedDateFromString("this is a string");
 	    	Assert.assertTrue(false);
     	}catch(Exception e){
     		Assert.assertTrue(true);

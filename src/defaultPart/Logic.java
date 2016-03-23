@@ -223,7 +223,7 @@ public class Logic {
 					recur.setFrequency(Character.getNumericValue(frequency));
 				}
 				// todo: endCondition support for number of times
-				recur.setEndDate(getDateFromString(endCondition));
+				recur.setEndDate(getWrappedDateFromString(endCondition));
 				logger.log(Level.FINER, "Setting recur: {0}", recur);
 				task.setRecur(recur);
 				removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
@@ -236,7 +236,7 @@ public class Logic {
 			int lastIndex = args.size() - 1;
 			String lastString = args.get(args.size() - 1);
 			String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
-			Calendar date = getDateFromString(secondLastString);
+			Calendar date = getWrappedDateFromString(secondLastString);
 			boolean isDigit = lastString.matches("\\d");
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
 				setTaskTime(task, lastString);
@@ -262,7 +262,7 @@ public class Logic {
 		if (lastIndex == 0) {
 			return;
 		}
-		Calendar date = getDateFromString(args.get(lastIndex));
+		Calendar date = getWrappedDateFromString(args.get(lastIndex));
 		if (date == null) {
 			return;
 		}
@@ -292,8 +292,15 @@ public class Logic {
 		}
 	}
 
-	public Calendar getDateFromString(String dateString) {
+	public Calendar getWrappedDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
+		Calendar newDate = getDateFromString(dayAndMonthAndYear);
+
+		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
+		return newDate;
+	}
+
+	private Calendar getDateFromString(String[] dayAndMonthAndYear) {
 		Calendar currentDate = new GregorianCalendar();
 		Calendar newDate = (Calendar) currentDate.clone();
 
@@ -325,8 +332,6 @@ public class Logic {
 
 		// force Calendar to calculate its time value after set() so that compareTo() is accurate
 		newDate.getTimeInMillis();
-
-		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
 
@@ -346,7 +351,7 @@ public class Logic {
 				break;
 
 			case 2 :
-				Calendar date = getDateFromString(args[1]);
+				Calendar date = getWrappedDateFromString(args[1]);
 				if (date != null) {
 					task.setDate(date);
 				} else if (isTime(args[1])) {
@@ -358,7 +363,7 @@ public class Logic {
 
 			case 3 :
 				// have not handled time yet
-				date = getDateFromString(args[1]);
+				date = getWrappedDateFromString(args[1]);
 				if (date != null) {
 					task.setDate(date);
 				}

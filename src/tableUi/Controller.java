@@ -102,7 +102,7 @@ public class Controller implements Initializable {
 			TaskModel taskModel = e.getTableView().getItems().get(e.getTablePosition().getRow());
 			int id = taskModel.getTaskId();
 			try{
-				Calendar newDate = logic.getDateFromString(e.getNewValue());
+				Calendar newDate = logic.getWrappedDateFromString(e.getNewValue());
 				String dateString = DATE_FORMAT.format(newDate.getTime());
 				sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, dateString));
 			}catch(Exception exception){
