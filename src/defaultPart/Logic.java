@@ -31,6 +31,7 @@ public class Logic {
 	private static final String MESSAGE_TASK_DELETED = "Deleted task %1$s";
 	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords %1$s";
 	private static final String MESSAGE_TASK_FOUND = "Found %1$s tasks";
+	private static final String MESSAGE_STORAGE_PATH_SET = "Storage path set to: %1$s";
 
 	private static final String MESSAGE_INVALID_INDEX = "Invalid index %1$s";
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s";
@@ -289,7 +290,7 @@ public class Logic {
 	public Calendar getWrappedDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
 		Calendar newDate = getDateFromString(dayAndMonthAndYear);
-		
+
 		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
@@ -493,11 +494,19 @@ public class Logic {
 		_storage.setPreviousListAsCurrent();
 		_feedback = String.format(MESSAGE_UNDO, _oldCommandType);
 	}
-	
 
 	private void setStoragePath() {
 		Settings settings = Settings.getInstance();
 		settings.setTaskFilePath(_argument);
+
+		try {
+			String taskFilePathAndName = settings.getTaskFilePathAndName();
+			_storage.loadTasksFromFile(taskFilePathAndName);
+			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, taskFilePathAndName);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/* Getters for UI */

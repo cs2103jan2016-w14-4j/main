@@ -25,6 +25,13 @@ public class Settings {
 	}
 
 	public void setTaskFilePath(String taskFilePath) {
-		_taskFilePath = taskFilePath;
+		if (taskFilePath.charAt(taskFilePath.length() - 1) != '/') {
+			taskFilePath += "/";
+		}
+		if (taskFilePath.equals("/")) {
+			_taskFilePath = "";
+		} else {
+			_taskFilePath = taskFilePath;
+		}
 	}
 }

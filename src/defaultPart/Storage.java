@@ -62,9 +62,7 @@ public class Storage {
 	 */
 	public Storage(String taskFilePathAndName) throws SAXException {
 		setupLogger();
-
-		_file = new File(taskFilePathAndName);
-		loadTasksFromFile();
+		loadTasksFromFile(taskFilePathAndName);
 	}
 
 	private void setupLogger() {
@@ -209,11 +207,13 @@ public class Storage {
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
-	public void loadTasksFromFile() throws SAXException {
+	public void loadTasksFromFile(String taskFilePathAndName) throws SAXException {
+		_file = new File(taskFilePathAndName);
 		// First check if the file exists and is not a directory but an actual file
 		if (_file.isFile() && _file.canRead()) {
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(_file);
+			_currentTaskList.clear();
 			// Iterates through the list of tasks extracted
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				{

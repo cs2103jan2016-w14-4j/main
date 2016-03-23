@@ -141,11 +141,9 @@ public class Controller implements Initializable {
 			}
 		});
 
-		inputBox.requestFocus();
-
 		try {
 			logic = new Logic();
-			showAllTasks();
+			showAllTasks();	
 		} catch (SAXException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
