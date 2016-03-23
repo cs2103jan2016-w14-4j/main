@@ -61,7 +61,8 @@ public class Logic {
 	private List<Integer> _indexesFound;
 
 	public Logic() throws SAXException {
-		_storage = new Storage();
+		Settings settings = Settings.getInstance();
+		_storage = new Storage(settings.getTaskFilePathAndName());
 		setupLogger();
 	}
 
@@ -512,8 +513,8 @@ public class Logic {
 		return _indexesFound;
 	}
 
-	public void saveTasksToFile(File file) {
-		_storage.saveTasksToFile(file);
+	public void saveTasksToFile() {
+		_storage.saveTasksToFile();
 	}
 
 	public List<Task> getTaskList() {

@@ -21,7 +21,7 @@ public class Settings {
 	}
 
 	public String getTaskFilePathAndName() {
-		return _taskFilePath + SETTINGS_FILE_NAME;
+		return _taskFilePath + TASK_FILE_NAME;
 	}
 
 	public void setTaskFilePath(String taskFilePath) {

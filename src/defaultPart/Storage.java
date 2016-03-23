@@ -53,12 +53,16 @@ public class Storage {
 	/* Used for CommandType.UNDO */
 	private List<Task> _prevTaskList = new LinkedList<Task>();
 
+	private File _file;
+	
 	/**
 	 * Constructor for Storage Also handles and formats log file for logging purposes
 	 * @throws SAXException 
 	 */
-	public Storage() throws SAXException {
+	public Storage(String taskFilePathAndName) throws SAXException {
 		setupLogger();
+		
+		_file = new File(taskFilePathAndName);
 		loadTasksFromFile();
 	}
 
@@ -173,13 +177,13 @@ public class Storage {
 	/**
 	 * Save the tasks in current task list into an XML file
 	 * 
-	 * @param file
+	 * @param _file
 	 *            File to be saved
 	 */
-	public void saveTasksToFile(File file) {
+	public void saveTasksToFile() {
 
 		// Assert that file are not null
-		assert (file != null);
+		assert (_file != null);
 
 		Document doc = initializeDocBuilder();
 
@@ -192,26 +196,24 @@ public class Storage {
 		}
 
 		// Save the XML file in a "pretty" format
-		transformAndSaveXML(doc, file);
+		transformAndSaveXML(doc, _file);
 	}
 
 	/**
 	 * Load tasks from an XML file into current task list, if file does not exists, function will not attempt
 	 * to load tasks ( usually the case when user starts WURI for the first time )
 	 * 
-	 * @param file
+	 * @param _file
 	 *            File to load from
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
 	public void loadTasksFromFile() throws SAXException {
-		Settings settings = Settings.getInstance();
-		File file = new File(settings.getTaskFilePathAndName());
 		// First check if the file exists and is not a directory but an actual file
-		if (file.isFile() && file.canRead()) {
+		if (_file.isFile() && _file.canRead()) {
 
 			// Extracts out the list of task nodes
-			NodeList nList = extractListFromDocument(file);
+			NodeList nList = extractListFromDocument(_file);
 
 			// Iterates through the list of tasks extracted
 			for (int temp = 0; temp < nList.getLength(); temp++) {

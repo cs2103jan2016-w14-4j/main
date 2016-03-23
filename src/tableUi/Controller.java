@@ -326,6 +326,7 @@ public class Controller implements Initializable {
 				showAllTasks();
 		}
 		setUserPrompt(logic.getFeedback());
+		logic.saveTasksToFile();
 	}
 
 	private void displayFoundTask() {
