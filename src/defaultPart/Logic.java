@@ -276,10 +276,27 @@ public class Logic {
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
+	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
+		Calendar currentDate = new GregorianCalendar();
+
+		if (currentDate.compareTo(date) > 0) {
+			switch (numOfDateFieldsSet) {
+				case 1 :
+					date.add(Calendar.MONTH, 1);
+					break;
+
+				case 2 :
+					date.add(Calendar.YEAR, 1);
+					break;
+			}
+		}
+	}
+
 	public Calendar getDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
-		Calendar newDate = new GregorianCalendar();
-		Calendar currentDate = (Calendar) newDate.clone();
+		Calendar currentDate = new GregorianCalendar();
+		Calendar newDate = (Calendar) currentDate.clone();
+
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
@@ -295,12 +312,7 @@ public class Logic {
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-
 				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
-
-				if (currentDate.compareTo(newDate) > 0) {
-					newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
-				}
 				// fallthrough
 
 			case 1 :
@@ -308,12 +320,13 @@ public class Logic {
 					return null;
 				}
 				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
-
-				if (currentDate.compareTo(newDate) > 0) {
-					newDate.set(Calendar.MONTH, newDate.get(Calendar.MONTH) + 1);
-				}
-				// fallthrough
+				break;
 		}
+
+		// force Calendar to calculate its time value after set() so that compareTo() is accurate
+		newDate.getTimeInMillis();
+
+		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
 
