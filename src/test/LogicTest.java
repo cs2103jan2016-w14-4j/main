@@ -65,6 +65,7 @@ public class LogicTest {
 		assertEquals(3, taskList.size());
 		task = taskList.get(0);
 		assertEquals("lalala", task.getDescription());
+		
 	}
 
 	@Test

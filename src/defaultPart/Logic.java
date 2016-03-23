@@ -20,11 +20,15 @@ import java.util.logging.SimpleFormatter;
 import org.xml.sax.SAXException;
 
 public class Logic {
+<<<<<<< HEAD
 	//some comments
+=======
+	//another comments
+>>>>>>> abda56f39102ae34dee6715a61f1399a2106baf0
 	private static final Logger logger = Logger.getLogger(Logic.class.getName());
 
 	private static final int LIST_NUMBERING_OFFSET = 1;
-
+	//some other places
 	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
 	private static final String MESSAGE_TASK_EDITED = "Edited task %1$s";
 	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as %2$scomplete";
