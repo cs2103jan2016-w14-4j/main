@@ -6,22 +6,18 @@ public class Settings {
 	private static String filepath;
 	private final static String defaultPath = "tasklist.xml";
 	private final static String settingsPath = "config.xml";
-	private Settings settingsObject;
+	private Settings settingsObject = new Settings();
 
 	private Settings() {
 		File configFile = new File(settingsPath);
 		if (configFile.isFile() && configFile.canRead()) {
-			// TODO get settings path from config file 
-		}else
-		{
+			// TODO get settings path from config file
+		} else {
 			filepath = defaultPath;
 		}
 	}
-	
+
 	public Settings getInstance() {
-		if (settingsObject == null) {
-			settingsObject = new Settings();
-		}
 		return settingsObject;
 	}
 
