@@ -132,12 +132,6 @@ public class Controller implements Initializable {
 			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
 		});
 
-		try {
-			logic = new Logic();
-		} catch (SAXException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		inputBox.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if (e.getCode().equals(KeyCode.ENTER)) {
 				String text = inputBox.getText();
@@ -148,6 +142,14 @@ public class Controller implements Initializable {
 		});
 
 		inputBox.requestFocus();
+
+		try {
+			logic = new Logic();
+			showAllTasks();
+		} catch (SAXException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	public void debug() {
@@ -322,7 +324,7 @@ public class Controller implements Initializable {
 				System.exit(0);
 			case FIND :
 				displayFoundTask();
-			default:
+			default :
 				showAllTasks();
 		}
 		setUserPrompt(logic.getFeedback());

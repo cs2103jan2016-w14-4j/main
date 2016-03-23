@@ -54,14 +54,15 @@ public class Storage {
 	private List<Task> _prevTaskList = new LinkedList<Task>();
 
 	private File _file;
-	
+
 	/**
 	 * Constructor for Storage Also handles and formats log file for logging purposes
-	 * @throws SAXException 
+	 * 
+	 * @throws SAXException
 	 */
 	public Storage(String taskFilePathAndName) throws SAXException {
 		setupLogger();
-		
+
 		_file = new File(taskFilePathAndName);
 		loadTasksFromFile();
 	}
@@ -211,10 +212,8 @@ public class Storage {
 	public void loadTasksFromFile() throws SAXException {
 		// First check if the file exists and is not a directory but an actual file
 		if (_file.isFile() && _file.canRead()) {
-
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(_file);
-
 			// Iterates through the list of tasks extracted
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				{
