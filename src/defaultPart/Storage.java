@@ -55,8 +55,14 @@ public class Storage {
 
 	/**
 	 * Constructor for Storage Also handles and formats log file for logging purposes
+	 * @throws SAXException 
 	 */
-	public Storage() {
+	public Storage() throws SAXException {
+		setupLogger();
+		loadTasksFromFile();
+	}
+
+	private void setupLogger() {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
 			handler.setFormatter(new SimpleFormatter());
@@ -198,11 +204,9 @@ public class Storage {
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
-	public void loadTasksFromFile(File file) throws SAXException {
-
-		// Assert that file is not null
-		assert (file != null);
-
+	public void loadTasksFromFile() throws SAXException {
+		Settings settings = Settings.getInstance();
+		File file = new File(settings.getTaskFilePathAndName());
 		// First check if the file exists and is not a directory but an actual file
 		if (file.isFile() && file.canRead()) {
 
