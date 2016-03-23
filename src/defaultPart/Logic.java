@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import org.xml.sax.SAXException;
+
 public class Logic {
 
 	private static final Logger logger = Logger.getLogger(Logic.class.getName());
@@ -39,7 +41,7 @@ public class Logic {
 
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
-		EDIT, DELETE, FIND, QUIT, STORE, TOGGLE_COMPLETE, UNDO,
+		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, TOGGLE_COMPLETE, UNDO,
 
 		// for internal use
 		EDIT_SHOW_TASK, ADD, ERROR, NULL
@@ -49,7 +51,6 @@ public class Logic {
 	private CommandType _oldCommandType;
 	private CommandType _newCommandType;
 	private Storage _storage;
-	private Controller _ui;
 
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
@@ -59,34 +60,23 @@ public class Logic {
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
-	public Logic() {
+	public Logic() throws SAXException {
 		_storage = new Storage();
-		try {
-			Handler handler = new FileHandler("logs/log.txt");
-			handler.setFormatter(new SimpleFormatter());
-			logger.addHandler(handler);
-
-		} catch (SecurityException e) {
-			logger.log(Level.SEVERE, "Security exception: {0}", e.getMessage());
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, "IOexception: {0}", e.getMessage());
-
-		}
+		setupLogger();
 	}
 
-	public Logic(Controller ui) {
-		this._ui = ui;
-		_storage = new Storage();
+	private void setupLogger() {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
 			handler.setFormatter(new SimpleFormatter());
 			logger.addHandler(handler);
 
 		} catch (SecurityException e) {
-			logger.log(Level.SEVERE, "Security exception: {0}", e.getMessage());
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "IOexception: {0}", e.getMessage());
-
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
 		}
 	}
 
@@ -119,8 +109,8 @@ public class Logic {
 					undoLastCommand();
 					break;
 
-				case STORE :
-					// todo
+				case SET_STORAGE_PATH :
+					setStoragePath();
 					break;
 
 				/*
@@ -277,6 +267,9 @@ public class Logic {
 	}
 
 	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
+		if (date == null) {
+			return;
+		}
 		Calendar currentDate = new GregorianCalendar();
 
 		if (currentDate.compareTo(date) > 0) {
@@ -295,7 +288,7 @@ public class Logic {
 	public Calendar getWrappedDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
 		Calendar newDate = getDateFromString(dayAndMonthAndYear);
-
+		
 		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
@@ -347,7 +340,6 @@ public class Logic {
 				_newCommandType = CommandType.EDIT_SHOW_TASK;
 				_indexesFound = new ArrayList<Integer>();
 				_indexesFound.add(taskIndex);
-				_ui.debug();
 				break;
 
 			case 2 :
@@ -499,6 +491,12 @@ public class Logic {
 	private void undoLastCommand() {
 		_storage.setPreviousListAsCurrent();
 		_feedback = String.format(MESSAGE_UNDO, _oldCommandType);
+	}
+	
+
+	private void setStoragePath() {
+		Settings settings = Settings.getInstance();
+		settings.setTaskFilePath(_argument);
 	}
 
 	/* Getters for UI */
