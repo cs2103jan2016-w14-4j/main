@@ -268,7 +268,7 @@ public class Logic {
 	}
 
 	private boolean isTime(String timeString) {
-		String timeRegex = "\\d((:|\\.)\\d{2})?(am|pm)?";
+		String timeRegex = "\\d{1,2}((:|\\.)\\d{2})?(am|pm)?";
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
@@ -389,7 +389,7 @@ public class Logic {
 			minuteFormat = ".mm";
 		}
 		String amOrPmMarker = (timeString.toLowerCase().contains("m")) ? "a" : "";
-		SimpleDateFormat timeFormat = new SimpleDateFormat("h" + minuteFormat + amOrPmMarker);
+		SimpleDateFormat timeFormat = new SimpleDateFormat("hh" + minuteFormat + amOrPmMarker);
 		Calendar time = new GregorianCalendar();
 		try {
 			time.setTime(timeFormat.parse(timeString));

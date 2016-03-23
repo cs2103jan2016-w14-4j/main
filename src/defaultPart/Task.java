@@ -71,7 +71,7 @@ public class Task {
 		}
 		String timeString = "";
 		if (_startTime != null) {
-			SimpleDateFormat timeFormat = new SimpleDateFormat("K.mma");
+			SimpleDateFormat timeFormat = new SimpleDateFormat("h.mma");
 			timeString = " | " + timeFormat.format(_startTime.getTime());
 			if (_endTime != null) {
 				timeString += "-" + timeFormat.format(_endTime.getTime());

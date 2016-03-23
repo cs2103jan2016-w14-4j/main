@@ -53,7 +53,7 @@ public class Controller implements Initializable {
 	public static final String TOGGLE_COMMAND = "t %d";
 	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
-	public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("K.mma");
+	public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("h.mma");
 	public static final String INVALID_EDIT_DATE_PROMPT = "edit date action could not be done on id %d";
 	public static final String INVALID_EDIT_DESCRIPTION_PROMPT = "edit date action could not be done on id %d";
 
