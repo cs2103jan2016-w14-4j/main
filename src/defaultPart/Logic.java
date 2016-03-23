@@ -485,7 +485,7 @@ public class Logic {
 		assert _argument.length() > 0;
 		String taskIndex = _argument.split(" ", 2)[0];
 		logger.log(Level.FINE, "Task index string is \"{0}\"", taskIndex);
-		if (!taskIndex.matches("\\d")) {
+		if (!taskIndex.matches("\\d+")) {
 			throw new IOException(String.format(MESSAGE_INVALID_INDEX, taskIndex));
 		}
 		return Integer.parseInt(taskIndex) - LIST_NUMBERING_OFFSET;
