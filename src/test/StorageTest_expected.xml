@@ -18,10 +18,10 @@
       <Description>Event Test case</Description>
       <Date>20-6-2016 00:00:00</Date>
       <StartTime>20-6-2016 10:00:00</StartTime>
-	  <EndTime>20-6-2016 12:00:00</EndTime>
+      <EndTime>20-6-2016 12:00:00</EndTime>
       <Completed>no</Completed>
    </Task>
-    <Task>
+   <Task>
       <Description>Floating Test case</Description>
       <Date/>
       <StartTime/>
@@ -39,9 +39,9 @@
       <Description>Event Recur Test case</Description>
       <Date>20-6-2016 00:00:00</Date>
       <StartTime>20-6-2016 10:00:00</StartTime>
-	  <EndTime>20-6-2016 12:00:00</EndTime>
+      <EndTime>20-6-2016 12:00:00</EndTime>
       <Completed>no</Completed>
-	  <recur>
+      <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>3</frequency>
          <endOfRecurr>20-8-2016 12:00:00</endOfRecurr>

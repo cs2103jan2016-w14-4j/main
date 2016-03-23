@@ -60,9 +60,8 @@ public class Storage {
 	 * 
 	 * @throws SAXException
 	 */
-	public Storage(String taskFilePathAndName) throws SAXException {
+	public Storage() {
 		setupLogger();
-		loadTasksFromFile(taskFilePathAndName);
 	}
 
 	private void setupLogger() {

@@ -61,10 +61,14 @@ public class Logic {
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
-	public Logic() throws SAXException {
-		Settings settings = Settings.getInstance();
-		_storage = new Storage(settings.getTaskFilePathAndName());
+	public Logic() {
 		setupLogger();
+		_storage = new Storage();
+	}
+	
+	public void loadTasksFromFile() throws SAXException {
+		Settings settings = Settings.getInstance();
+		_storage.loadTasksFromFile(settings.getTaskFilePathAndName());
 	}
 
 	private void setupLogger() {

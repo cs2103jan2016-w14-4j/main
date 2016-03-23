@@ -12,6 +12,7 @@ import java.util.Calendar;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import defaultPart.Logic;
 import tableUi.Controller;
@@ -25,7 +26,7 @@ public class CalendarTest {
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yy");
     @Before
     public void createLogic(){
-    	logic = new Logic();
+		logic = new Logic();
     }
     
     @Test
@@ -41,23 +42,9 @@ public class CalendarTest {
     }
     
     @Test
-    public void testParseDotFormat(){
-    	try{
-	    	Calendar parseResult = logic.getWrappedDateFromString("3.4.16");
-	    	Assert.assertEquals("03/04/16", FORMAT.format(parseResult.getTime()));
-    	}catch(Exception e){
-    		Assert.assertTrue(false);
-    	}
-    }
-    
-    @Test
     public void testParseWrongDate(){
-    	try{
-	    	logic.getWrappedDateFromString("30/2/16");
-	    	Assert.assertTrue(false);
-    	}catch(Exception e){
-    		Assert.assertTrue(true);
-    	}
+	    Calendar date = logic.getWrappedDateFromString("30/2/16");
+	    Assert.assertTrue(date == null);
     }
     
     @Test
@@ -72,11 +59,7 @@ public class CalendarTest {
     
     @Test
     public void testParseInvalidString(){
-    	try{
-	    	Calendar parseResult = logic.getWrappedDateFromString("this is a string");
-	    	Assert.assertTrue(false);
-    	}catch(Exception e){
-    		Assert.assertTrue(true);
-    	}
+    	Calendar parseResult = logic.getWrappedDateFromString("this is a string");
+    	Assert.assertTrue(parseResult == null);
     }
 }

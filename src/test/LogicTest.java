@@ -63,7 +63,7 @@ public class LogicTest {
 		logic.executeCommand("lalala " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
 		taskList = logic.getTaskList();
 		assertEquals(3, taskList.size());
-		task = taskList.get(1);
+		task = taskList.get(0);
 		assertEquals("lalala", task.getDescription());
 	}
 
@@ -96,11 +96,12 @@ public class LogicTest {
 		logic.executeCommand("e 1 1/2");
 
 		taskList = logic.getTaskList();
-		Task task = taskList.get(0);
+		Task task = taskList.get(1);
 		Calendar date = task.getDate();
 		assertEquals("1/2/2017", dateFormat.format(date.getTime()));
 
-		task = taskList.get(1);
+		logic.executeCommand("e 1 1/1");
+		task = taskList.get(0);
 		date = task.getDate();
 		assertEquals("1/1/2017", dateFormat.format(date.getTime()));
 
@@ -116,7 +117,7 @@ public class LogicTest {
 		logic.executeCommand("e 2 " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
 
 		taskList = logic.getTaskList();
-		task = taskList.get(1);
+		task = taskList.get(0);
 		date = task.getDate();
 		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 

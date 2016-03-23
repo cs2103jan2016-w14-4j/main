@@ -253,11 +253,13 @@ public class StorageTest {
 	public void testSaveTasks() throws SAXException, IOException {
 
 		// Load & Save the tasks from the file to see if it saves correctly
-		File inputFile = new File(TASK_FILE_NAME);
-		File outputFile = new File("test/StorageTest_actual.xml");
+		File file = new File(TASK_FILE_NAME);
+		FileReader fr1 = new FileReader(file);
+
 		Storage storage = new Storage();
-		storage.loadTasksFromFile(inputFile);
-		storage.saveTasksToFile(outputFile);
+		storage.loadTasksFromFile(TASK_FILE_NAME);
+		storage.saveTasksToFile();
+		FileReader fr2 = new FileReader(file);
 
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
@@ -265,8 +267,6 @@ public class StorageTest {
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
 		XMLUnit.setNormalizeWhitespace(true);
 
-		FileReader fr1 = new FileReader(inputFile);
-		FileReader fr2 = new FileReader(outputFile);
 
 		// This is to test the expected behavior of this function
 		XMLAssert.assertXMLEqual(fr1, fr2);
@@ -287,9 +287,8 @@ public class StorageTest {
 		expectedTaskList.add(newTaskRecurEvent);
 
 		// Setting up the actual storage behavior
-		File file = new File(TASK_FILE_NAME);
 		Storage storage = new Storage();
-		storage.loadTasksFromFile(file);
+		storage.loadTasksFromFile(TASK_FILE_NAME);
 
 		// This is to test the expected behavior of this function
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
