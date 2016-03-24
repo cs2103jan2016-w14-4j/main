@@ -153,7 +153,7 @@ public class Controller implements Initializable {
 
 	public void debug() {
 		List<Integer> indexesFound = logic.getIndexesFound();
-		editEventDescriptionById(indexesFound.get(0));
+		editEventDescriptionById(indexesFound.get(0) + 1);
 	}
 
 	/**
@@ -319,10 +319,16 @@ public class Controller implements Initializable {
 		switch (logic.getCommandType()) {
 			case EDIT_SHOW_TASK :
 				debug();
+				break;
+				
 			case QUIT :
 				System.exit(0);
+				break;
+				
 			case FIND :
 				displayFoundTask();
+				break;
+				
 			default :
 				showAllTasks();
 		}
