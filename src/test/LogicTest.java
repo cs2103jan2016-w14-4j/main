@@ -15,6 +15,7 @@ public class LogicTest {
 
 	@Test
 	public void testAdd() {
+		
 		// adding a task with date,time, and recurrence
 		Logic logic = new Logic();
 		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");

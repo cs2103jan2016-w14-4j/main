@@ -1,6 +1,8 @@
 package defaultPart;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 
 public class Settings {
 	private static final String SETTINGS_FILE_NAME = "config.xml";
@@ -9,15 +11,12 @@ public class Settings {
 
 	private String _taskFilePath = "";
 
-	private Settings() {
+	public Settings() {
 		File configFile = new File(SETTINGS_FILE_NAME);
 		if (configFile.isFile() && configFile.canRead()) {
 			// TODO get settings path from config file
-		}
-	}
 
-	public static Settings getInstance() {
-		return instance;
+		}
 	}
 
 	public String getTaskFilePathAndName() {
@@ -30,8 +29,29 @@ public class Settings {
 		}
 		if (taskFilePath.equals("/")) {
 			_taskFilePath = "";
+			;
 		} else {
 			_taskFilePath = taskFilePath;
 		}
 	}
+
+	/**
+	 * Check if the file path specified is valid
+	 * 
+	 * @param filePath
+	 *            file path to check if valid
+	 * @return validity of file path (true or false)
+	 */
+	public static boolean isValidPath(String filePath) {
+
+		try {
+			Paths.get(filePath);
+		} catch (InvalidPathException | NullPointerException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
 }

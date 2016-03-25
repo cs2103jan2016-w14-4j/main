@@ -267,7 +267,6 @@ public class StorageTest {
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
 		XMLUnit.setNormalizeWhitespace(true);
 
-
 		// This is to test the expected behavior of this function
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
