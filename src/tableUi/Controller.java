@@ -321,10 +321,6 @@ public class Controller implements Initializable {
 				debug();
 				break;
 				
-			case QUIT :
-				System.exit(0);
-				break;
-				
 			case FIND :
 				displayFoundTask();
 				break;

@@ -116,11 +116,12 @@ public class Logic {
 					setStoragePath();
 					break;
 
-				/*
-				 * Additional functions to be implemented later case HELP : // todo break;
-				 * 
-				 * case EXIT : // todo break;
-				 */
+				case QUIT :
+					System.exit(0);
+					break;
+
+				// case HELP :
+				// //todo
 			}
 		} catch (IOException e) {
 			_newCommandType = CommandType.ERROR;
