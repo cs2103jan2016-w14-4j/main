@@ -64,6 +64,9 @@ public class Storage {
 		setupLogger();
 	}
 
+	/**
+	 * Setup logger for logging
+	 */
 	private void setupLogger() {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
@@ -532,7 +535,7 @@ public class Storage {
 	 */
 	private String extractStringFromNode(Element taskElement, String tag) {
 
-		// Assert than taskElement & tag are not null
+		// Assert that taskElement & tag are not null
 		assert (taskElement != null);
 		assert (tag != null || tag != "");
 

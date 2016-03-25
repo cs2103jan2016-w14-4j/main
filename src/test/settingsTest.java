@@ -1,9 +1,16 @@
+/**
+ * 
+ */
 package test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * @author Shaun Lee
+ *
+ */
 public class settingsTest {
 
 	@Test
@@ -12,12 +19,22 @@ public class settingsTest {
 	}
 
 	@Test
-	public final void testGetTaskFilePathAndName() {
+	public final void testGetTimeDefault() {
 		fail("Not yet implemented"); // TODO
 	}
 
 	@Test
-	public final void testSetTaskFilePath() {
+	public final void testSetTimeDefault() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	@Test
+	public final void testGetSavePathAndName() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	@Test
+	public final void testSetSavePath() {
 		fail("Not yet implemented"); // TODO
 	}
 

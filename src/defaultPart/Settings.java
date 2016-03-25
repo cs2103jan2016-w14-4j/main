@@ -23,6 +23,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 public class Settings {
 
@@ -34,15 +36,29 @@ public class Settings {
 	private static final String SETTINGS_FILE_NAME = "config.xml";
 	private static final String SETTINGS_FILE_PATH = "data/";
 
-	private String _taskFilePath = "data/";
+	/* For accessing the different Tags for the XML */
+	private static final String TAG_SETTINGS = "Settings";
+	private static final String TAG_SAVE_PATH = "SavePath";
+	private static final String TAG_TIME_DEFAULT = "TimeDefault";
+
+	private String _savePath = "data/";
 	private String _timeDefault = "PM";
 
-	public Settings() {
+	/**
+	 * Constructor for settings, attempts to load from configuration file if it exists, or else creates one
+	 * with default settings. Also sets up logging for settings class
+	 * 
+	 * @throws SAXException
+	 */
+	public Settings() throws SAXException {
 		setupLogger();
 		File configFile = new File(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME);
 		initializeSettings(configFile);
 	}
 
+	/**
+	 * Setup logger for logging
+	 */
 	private void setupLogger() {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
@@ -58,20 +74,52 @@ public class Settings {
 		}
 	}
 
-	public String getTaskFilePathAndName() {
-		return _taskFilePath + TASK_FILE_NAME;
+	/**
+	 * Gets the time default settings
+	 * 
+	 * @return time default settings
+	 */
+	public String getTimeDefault() {
+		return _timeDefault;
 	}
 
-	public void setTaskFilePath(String taskFilePath) {
+	/**
+	 * Sets the time default settings
+	 * 
+	 * @param timeDefault
+	 *            time default settings
+	 */
+	public void setTimeDefault(String timeDefault) {
+		_timeDefault = timeDefault;
+		saveSettings();
+	}
+
+	/**
+	 * Gets the full save path including file name
+	 * 
+	 * @return Combined file path with file name
+	 */
+	public String getSavePathAndName() {
+		return _savePath + TASK_FILE_NAME;
+	}
+
+	/**
+	 * Sets the save file path
+	 * 
+	 * @param taskFilePath
+	 *            file path to set
+	 */
+	public void setSavePath(String taskFilePath) {
 		if (taskFilePath.charAt(taskFilePath.length() - 1) != '/') {
 			taskFilePath += "/";
 		}
 		if (taskFilePath.equals("/")) {
-			_taskFilePath = "";
+			_savePath = "";
 			;
 		} else {
-			_taskFilePath = taskFilePath;
+			_savePath = taskFilePath;
 		}
+		saveSettings();
 	}
 
 	/**
@@ -98,30 +146,40 @@ public class Settings {
 	 * Initialize settings, load from settings if file exists, or else create new settings file with default
 	 * 
 	 * @param configFile
+	 *            Configuration file to load/save settings from/to
+	 * @throws SAXException
+	 *             Configuration file is not in proper XML format
 	 */
-	public void initializeSettings(File configFile) {
+	private void initializeSettings(File configFile) throws SAXException {
 		if (configFile.isFile() && configFile.canRead()) {
-
+			loadSettings(configFile);
 		} else {
-			saveSettings(configFile);
+			saveSettings();
 		}
 	}
 
-	private void saveSettings(File configFile) {
+	/**
+	 * Save settings to a configuration file
+	 * 
+	 * @param configFile
+	 *            Configuration file to save settings to
+	 */
+	private void saveSettings() {
 
+		File configFile = new File(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME);
 		Document doc = initializeDocBuilder();
 
 		// root element
 		Element rootElement = doc.createElement("wuriSettings");
 
 		// child elements
-		Element settingsElement = doc.createElement("Settings");
+		Element settingsElement = doc.createElement(TAG_SETTINGS);
 
-		Element savePathElement = doc.createElement("Save Path");
-		savePathElement.appendChild(doc.createTextNode(_taskFilePath));
+		Element savePathElement = doc.createElement(TAG_SAVE_PATH);
+		savePathElement.appendChild(doc.createTextNode(_savePath));
 
-		Element timeDefaultElement = doc.createElement("Time Default");
-		savePathElement.appendChild(doc.createTextNode(_timeDefault));
+		Element timeDefaultElement = doc.createElement(TAG_TIME_DEFAULT);
+		timeDefaultElement.appendChild(doc.createTextNode(getTimeDefault()));
 
 		settingsElement.appendChild(savePathElement);
 		settingsElement.appendChild(timeDefaultElement);
@@ -131,7 +189,48 @@ public class Settings {
 	}
 
 	/**
-	 * Instantiate document builder, a commonly used function in Storage component
+	 * Load settings from a configuration file
+	 * 
+	 * @param configFile
+	 *            Configuration file to load settings from
+	 * @throws SAXException
+	 *             Configuration file is not in proper XML format
+	 */
+	private void loadSettings(File configFile) throws SAXException {
+
+		// Assert that the file is not null
+		assert (configFile != null);
+
+		// Reading the XML file
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(configFile);
+		} catch (ParserConfigurationException | IOException e) {
+			e.printStackTrace();
+			logger.log(Level.FINE, e.toString(), e);
+		}
+
+		doc.getDocumentElement().normalize();
+		Node savePathNode = doc.getElementsByTagName(TAG_SAVE_PATH).item(0);
+		Node timeDefaultNode = doc.getElementsByTagName(TAG_TIME_DEFAULT).item(0);
+
+		// Extract settings
+		if (savePathNode.getNodeType() == Node.ELEMENT_NODE) {
+			Element savePathElement = (Element) savePathNode;
+			setSavePath(extractStringFromNode(savePathElement, TAG_SAVE_PATH));
+		}
+		if (timeDefaultNode.getNodeType() == Node.ELEMENT_NODE) {
+			Element timeDefaultElement = (Element) timeDefaultNode;
+			setSavePath(extractStringFromNode(timeDefaultElement, TAG_TIME_DEFAULT));
+		}
+
+	}
+
+	/**
+	 * Instantiate document builder, a commonly used function in Settings component
 	 * 
 	 * @return Instantiated new Document class
 	 */
@@ -191,4 +290,24 @@ public class Settings {
 			logger.log(Level.SEVERE, e.toString(), e);
 		}
 	}
+
+	/**
+	 * Extract a string from node with specified tag
+	 * 
+	 * @param element
+	 *            Element object containing information to extract
+	 * @param tag
+	 *            Tag to specify which attribute, e.g. "description"
+	 * @return String inside Element with specified tag
+	 */
+	private String extractStringFromNode(Element element, String tag) {
+
+		// Assert that Element & tag are not null
+		assert (element != null);
+		assert (tag != null || tag != "");
+
+		Node node = element.getElementsByTagName(tag).item(0);
+		return (node == null) ? "" : node.getTextContent();
+	}
+
 }
