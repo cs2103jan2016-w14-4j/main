@@ -64,8 +64,8 @@ public class Logic {
 	}
 
 	public void loadTasksFromFile() throws SAXException {
-		Settings settings = Settings.getInstance();
-		_storage.loadTasksFromFile(settings.getTaskFilePathAndName());
+		Settings settings = new Settings();
+		_storage.loadTasksFromFile(settings.getSavePathAndName());
 	}
 
 	private void setupLogger() {
@@ -139,6 +139,8 @@ public class Logic {
 			_argument = input;
 		} else if (commandTypeAndArguments.length >= 2) {
 			_argument = commandTypeAndArguments[1];
+		} else {
+			_argument = null;
 		}
 	}
 
@@ -497,11 +499,10 @@ public class Logic {
 	}
 
 	private void setStoragePath() {
-		Settings settings = Settings.getInstance();
-		settings.setTaskFilePath(_argument);
-
 		try {
-			String taskFilePathAndName = settings.getTaskFilePathAndName();
+			Settings settings = new Settings();
+			settings.setSavePath(_argument);
+			String taskFilePathAndName = settings.getSavePathAndName();
 			_storage.loadTasksFromFile(taskFilePathAndName);
 			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, taskFilePathAndName);
 		} catch (SAXException e) {

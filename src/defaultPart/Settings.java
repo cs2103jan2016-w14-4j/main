@@ -122,13 +122,17 @@ public class Settings {
 	 *            file path to set
 	 */
 	public void setSavePath(String savePath) {
-		/*
-		 * if (taskFilePath.charAt(taskFilePath.length() - 1) != '/') { taskFilePath += "/"; } if
-		 * (taskFilePath.equals("/")) { _savePath = ""; ; } else { _savePath = taskFilePath; }
-		 */
-		if (isValidPath(savePath)) {
+
+		if (_savePath.charAt(_savePath.length() - 1) != '/') {
+			_savePath += "/";
+		}
+		if (_savePath.equals("/")) {
+			_savePath = "";
+		} else if (isValidPath(savePath)) {
 			_savePath = savePath;
 		}
+
+
 		saveSettings();
 	}
 
