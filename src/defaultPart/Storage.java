@@ -53,6 +53,7 @@ public class Storage {
 	/* Used for CommandType.UNDO */
 	private List<Task> _prevTaskList = new LinkedList<Task>();
 
+	/* Location of the task list file*/
 	private File _file;
 
 	/**
