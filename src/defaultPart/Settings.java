@@ -46,7 +46,7 @@ public class Settings {
 
 	/**
 	 * Constructor for settings, attempts to load from configuration file if it exists, or else creates one
-	 * with default settings. Also sets up logging for settings class
+	 * with default settings. Also handles and formats log file for logging purposes
 	 * 
 	 * @throws SAXException
 	 */
@@ -109,16 +109,12 @@ public class Settings {
 	 * @param taskFilePath
 	 *            file path to set
 	 */
-	public void setSavePath(String taskFilePath) {
-		if (taskFilePath.charAt(taskFilePath.length() - 1) != '/') {
-			taskFilePath += "/";
-		}
-		if (taskFilePath.equals("/")) {
-			_savePath = "";
-			;
-		} else {
-			_savePath = taskFilePath;
-		}
+	public void setSavePath(String savePath) {
+		/*
+		 * if (taskFilePath.charAt(taskFilePath.length() - 1) != '/') { taskFilePath += "/"; } if
+		 * (taskFilePath.equals("/")) { _savePath = ""; ; } else { _savePath = taskFilePath; }
+		 */
+		_savePath = savePath;
 		saveSettings();
 	}
 
@@ -220,13 +216,14 @@ public class Settings {
 		// Extract settings
 		if (savePathNode.getNodeType() == Node.ELEMENT_NODE) {
 			Element savePathElement = (Element) savePathNode;
-			setSavePath(extractStringFromNode(savePathElement, TAG_SAVE_PATH));
+			_savePath = extractStringFromNode(savePathElement, TAG_SAVE_PATH);
+
 		}
 		if (timeDefaultNode.getNodeType() == Node.ELEMENT_NODE) {
 			Element timeDefaultElement = (Element) timeDefaultNode;
-			setSavePath(extractStringFromNode(timeDefaultElement, TAG_TIME_DEFAULT));
-		}
+			_timeDefault = extractStringFromNode(timeDefaultElement, TAG_TIME_DEFAULT);
 
+		}
 	}
 
 	/**

@@ -56,7 +56,7 @@ public class Storage {
 	private File _file;
 
 	/**
-	 * Constructor for Storage Also handles and formats log file for logging purposes
+	 * Constructor for Storage, also handles and formats log file for logging purposes
 	 * 
 	 * @throws SAXException
 	 */
