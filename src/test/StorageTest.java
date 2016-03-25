@@ -30,7 +30,7 @@ public class StorageTest {
 	public static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	/**
-	 * Function to create a sample task for testing"
+	 * Helper function to create a sample task for testing"
 	 * 
 	 * @param type
 	 *            1-Floating 2-Deadline 3-Event 4-Recurring Event
@@ -87,7 +87,7 @@ public class StorageTest {
 	}
 
 	/**
-	 * Testing method to check if two task lists are equal (contain same tasks)
+	 * Helper function to check if two task lists are equal (contain same tasks)
 	 * 
 	 * @param expectedTask
 	 *            Task to compare
@@ -103,7 +103,7 @@ public class StorageTest {
 	}
 
 	/**
-	 * Testing method to check if two tasks are equal
+	 * Helper function to check if two tasks are equal
 	 * 
 	 * @param expectedTask
 	 *            Task to compare

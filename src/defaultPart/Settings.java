@@ -45,14 +45,26 @@ public class Settings {
 	private String _timeDefault = "PM";
 
 	/**
-	 * Constructor for settings, attempts to load from configuration file if it exists, or else creates one
-	 * with default settings. Also handles and formats log file for logging purposes
+	 * Main Constructor for settings, attempts to load from configuration file if it exists, or else creates
+	 * one with default settings. Also handles and formats log file for logging purposes
 	 * 
 	 * @throws SAXException
 	 */
 	public Settings() throws SAXException {
 		setupLogger();
 		File configFile = new File(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME);
+		initializeSettings(configFile);
+	}
+
+	/**
+	 * Overloaded Constructor for unit testing for Settings class to prevent interference with actual
+	 * configurations file
+	 * 
+	 * @param configFile
+	 * @throws SAXException
+	 */
+	public Settings(File configFile) throws SAXException {
+		setupLogger();
 		initializeSettings(configFile);
 	}
 
@@ -114,7 +126,9 @@ public class Settings {
 		 * if (taskFilePath.charAt(taskFilePath.length() - 1) != '/') { taskFilePath += "/"; } if
 		 * (taskFilePath.equals("/")) { _savePath = ""; ; } else { _savePath = taskFilePath; }
 		 */
-		_savePath = savePath;
+		if (isValidPath(savePath)) {
+			_savePath = savePath;
+		}
 		saveSettings();
 	}
 
