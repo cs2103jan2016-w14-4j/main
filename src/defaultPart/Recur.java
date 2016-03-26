@@ -3,7 +3,6 @@ package defaultPart;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Date;
 
 public class Recur {
 
@@ -14,7 +13,12 @@ public class Recur {
 	private TimeUnit _timeUnit;
 	private int _frequency = 1;
 	private Calendar _endDate;
-
+	private Calendar _startDate;
+	
+	public Recur(){
+		_startDate = new GregorianCalendar();
+	}
+	
 	public TimeUnit getTimeUnit() {
 		return _timeUnit;
 	}
