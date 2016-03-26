@@ -52,12 +52,16 @@ public class Recur {
 	}
 
 	public Calendar getNextRecur() {
-		// todo
 		Calendar nextDate = (GregorianCalendar) getStartDate().clone();
+		//initialize "today" to 00:00am of tomorrow
 		Calendar today = new GregorianCalendar();
-		// need find some way to handle strictly after today
-		// consider initialize "today" to 00:00am of tomorrow?
-		while (nextDate.compareTo(today) < 0) {
+		today.set(Calendar.DATE, today.get(Calendar.DATE)+1);
+		today.set(Calendar.HOUR_OF_DAY, 0);
+		today.set(Calendar.MINUTE,0);
+		today.set(Calendar.SECOND,0);
+		today.set(Calendar.MILLISECOND,0);
+		today.getTimeInMillis();
+		while (nextDate.compareTo(today) <= 0) {
 			switch (_timeUnit) {
 				case DAY :
 					nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency);
