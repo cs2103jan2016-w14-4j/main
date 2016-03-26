@@ -78,6 +78,7 @@ public class StorageTest {
 				Recur newRecur = new Recur();
 				newRecur.setTimeUnit(Recur.TimeUnit.DAY);
 				newRecur.setFrequency(3);
+				newRecur.setStartDate(calStart);
 				newRecur.setEndDate(calRecEnd);
 				newTask.setRecur(newRecur);
 				break;
