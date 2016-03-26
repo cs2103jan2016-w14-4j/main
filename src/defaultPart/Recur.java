@@ -14,11 +14,11 @@ public class Recur {
 	private int _frequency = 1;
 	private Calendar _endDate;
 	private Calendar _startDate;
-	
-	public Recur(){
+
+	public Recur() {
 		_startDate = new GregorianCalendar();
 	}
-	
+
 	public TimeUnit getTimeUnit() {
 		return _timeUnit;
 	}
@@ -53,24 +53,27 @@ public class Recur {
 
 	public Calendar getNextRecur() {
 		// todo
-		Calendar nextDate = new GregorianCalendar();
-		switch (_timeUnit) {
-			case DAY :
-				nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency);
-				break;
-			case WEEK :
-				nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency * 7);
-				break;
-			case MONTH :
-				nextDate.set(Calendar.MONTH, nextDate.get(Calendar.MONTH) + this._frequency);
-				break;
-			case YEAR :
-				nextDate.set(Calendar.YEAR, nextDate.get(Calendar.YEAR) + this._frequency);
-				break;
+		Calendar nextDate = (GregorianCalendar) _startDate.clone();
+		Calendar today = new GregorianCalendar();
+		// need find some way to handle strictly after today
+		// consider initialize "today" to 00:00am of tomorrow?
+		while (nextDate.compareTo(today) < 0) {
+			switch (_timeUnit) {
+				case DAY :
+					nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency);
+					break;
+				case WEEK :
+					nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency * 7);
+					break;
+				case MONTH :
+					nextDate.set(Calendar.MONTH, nextDate.get(Calendar.MONTH) + this._frequency);
+					break;
+				case YEAR :
+					nextDate.set(Calendar.YEAR, nextDate.get(Calendar.YEAR) + this._frequency);
+					break;
+			}
+			nextDate.getTimeInMillis();
 		}
-
-		// updates date for compareTo()
-		nextDate.getTimeInMillis();
 
 		if (nextDate.compareTo(_endDate) > 0) {
 			return null;
