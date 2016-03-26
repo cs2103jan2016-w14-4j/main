@@ -3,6 +3,7 @@ package defaultPart;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Date;
 
 public class Recur {
 
@@ -40,7 +41,7 @@ public class Recur {
 
 	public boolean willRecur() {
 		// todo
-		if(this.getNextRecur()!=null){
+		if (this.getNextRecur() != null) {
 			return true;
 		}
 		return false;
@@ -49,21 +50,28 @@ public class Recur {
 	public Calendar getNextRecur() {
 		// todo
 		Calendar nextDate = new GregorianCalendar();
-		switch(_timeUnit){
-			case DAY:
+		switch (_timeUnit) {
+			case DAY :
 				nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency);
 				break;
-			case WEEK:
-				nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency*7);
+			case WEEK :
+				nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency * 7);
 				break;
-			case MONTH:
+			case MONTH :
 				nextDate.set(Calendar.MONTH, nextDate.get(Calendar.MONTH) + this._frequency);
 				break;
-			case YEAR:
+			case YEAR :
 				nextDate.set(Calendar.YEAR, nextDate.get(Calendar.YEAR) + this._frequency);
 				break;
 		}
-		return null;
+
+		// updates date for compareTo()
+		nextDate.getTimeInMillis();
+
+		if (nextDate.compareTo(_endDate) > 0) {
+			return null;
+		}
+		return nextDate;
 	}
 
 	@Override
