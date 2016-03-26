@@ -44,6 +44,7 @@
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>3</frequency>
+         <startOfRecurr>20-6-2016 12:00:00</startOfRecurr>
          <endOfRecurr>20-8-2016 12:00:00</endOfRecurr>
       </recur>
    </Task>

@@ -131,8 +131,6 @@ public class Settings {
 		} else if (isValidPath(savePath)) {
 			_savePath = savePath;
 		}
-
-
 		saveSettings();
 	}
 
@@ -152,7 +150,6 @@ public class Settings {
 			logger.log(Level.FINE, e.toString(), e);
 			return false;
 		}
-
 		return true;
 	}
 
@@ -165,11 +162,17 @@ public class Settings {
 	 *             Configuration file is not in proper XML format
 	 */
 	private void initializeSettings(File configFile) throws SAXException {
+		 
+		// If configuration file exists, load settings from it, else save new configuration file with default settings
 		if (configFile.isFile() && configFile.canRead()) {
 			loadSettings(configFile);
 		} else {
 			saveSettings();
 		}
+		
+		// Ensure that after saving/loading the configuration file has been created
+		assert(configFile.isFile());
+		assert(configFile.canRead());
 	}
 
 	/**
@@ -250,6 +253,7 @@ public class Settings {
 	 * @return Instantiated new Document class
 	 */
 	private Document initializeDocBuilder() {
+		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		Document doc = null;
 		try {

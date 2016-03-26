@@ -39,7 +39,8 @@ public class Storage {
 	private static final String TAG_TASK_RECUR = "recur";
 	private static final String TAG_TASK_TIMEUNIT = "timeUnit";
 	private static final String TAG_TASK_FREQUENCY = "frequency";
-	private static final String TAG_TASK_ENDOFRECURR = "endOfRecurr";
+	private static final String TAG_TASK_START_OF_RECURR = "startOfRecurr";
+	private static final String TAG_TASK_END_OF_RECURR = "endOfRecurr";
 
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
@@ -53,7 +54,7 @@ public class Storage {
 	/* Used for CommandType.UNDO */
 	private List<Task> _prevTaskList = new LinkedList<Task>();
 
-	/* Location of the task list file*/
+	/* Location of the task list file */
 	private File _file;
 
 	/**
@@ -325,13 +326,17 @@ public class Storage {
 		Element recurrElement = doc.createElement(TAG_TASK_RECUR);
 		Element recurTimeUnitElement = doc.createElement(TAG_TASK_TIMEUNIT);
 		Element recurFrequencyElement = doc.createElement(TAG_TASK_FREQUENCY);
-		Element recurEndOfRecurrElement = doc.createElement(TAG_TASK_ENDOFRECURR);
+		Element recurStartOfRecurrElement = doc.createElement(TAG_TASK_START_OF_RECURR);
+		Element recurEndOfRecurrElement = doc.createElement(TAG_TASK_END_OF_RECURR);
 		recurTimeUnitElement.appendChild(doc.createTextNode(recur.getTimeUnit().toString()));
 		recurFrequencyElement.appendChild(doc.createTextNode(Integer.toString(recur.getFrequency())));
+		recurStartOfRecurrElement
+				.appendChild(doc.createTextNode(formatter.format(recur.getStartDate().getTime())));
 		recurEndOfRecurrElement
 				.appendChild(doc.createTextNode(formatter.format(recur.getEndDate().getTime())));
 		recurrElement.appendChild(recurTimeUnitElement);
 		recurrElement.appendChild(recurFrequencyElement);
+		recurrElement.appendChild(recurStartOfRecurrElement);
 		recurrElement.appendChild(recurEndOfRecurrElement);
 		parentElement.appendChild(recurrElement);
 	}
@@ -491,10 +496,12 @@ public class Storage {
 
 		String timeUnit = extractStringFromNode(taskElement, TAG_TASK_TIMEUNIT);
 		int frequency = Integer.parseInt(extractStringFromNode(taskElement, TAG_TASK_FREQUENCY));
-		Calendar endOfRecurr = extractDateFromNode(taskElement, TAG_TASK_ENDOFRECURR);
+		Calendar startOfRecurr = extractDateFromNode(taskElement, TAG_TASK_START_OF_RECURR);
+		Calendar endOfRecurr = extractDateFromNode(taskElement, TAG_TASK_END_OF_RECURR);
 		Recur taskRecurr = new Recur();
 		taskRecurr.setTimeUnit(TimeUnit.valueOf(timeUnit));
 		taskRecurr.setFrequency(frequency);
+		taskRecurr.setStartDate(startOfRecurr);
 		taskRecurr.setEndDate(endOfRecurr);
 		return taskRecurr;
 	}
