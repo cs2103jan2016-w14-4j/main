@@ -53,15 +53,21 @@ public class Recur {
 
 	public Calendar getNextRecur() {
 		Calendar nextDate = (GregorianCalendar) getStartDate().clone();
-		//initialize "today" to 00:00am of tomorrow
-		Calendar today = new GregorianCalendar();
-		today.set(Calendar.DATE, today.get(Calendar.DATE)+1);
-		today.set(Calendar.HOUR_OF_DAY, 0);
-		today.set(Calendar.MINUTE,0);
-		today.set(Calendar.SECOND,0);
-		today.set(Calendar.MILLISECOND,0);
-		today.getTimeInMillis();
-		while (nextDate.compareTo(today) <= 0) {
+		Calendar today = initializeToday();
+		getNextRecurAfterToday(nextDate, today);
+
+		if (nextDateAfterEndDate(nextDate)) {
+			return null;
+		}
+		return nextDate;
+	}
+
+	private boolean nextDateAfterEndDate(Calendar nextDate) {
+		return nextDate.compareTo(_endDate) > 0;
+	}
+
+	private void getNextRecurAfterToday(Calendar nextDate, Calendar today) {
+		while (nextDateBeforeToday(nextDate, today)) {
 			switch (_timeUnit) {
 				case DAY :
 					nextDate.set(Calendar.DATE, nextDate.get(Calendar.DATE) + this._frequency);
@@ -78,11 +84,22 @@ public class Recur {
 			}
 			nextDate.getTimeInMillis();
 		}
+	}
 
-		if (nextDate.compareTo(_endDate) > 0) {
-			return null;
-		}
-		return nextDate;
+	private boolean nextDateBeforeToday(Calendar nextDate, Calendar today) {
+		return nextDate.compareTo(today) < 0;
+	}
+
+	private Calendar initializeToday() {
+		// initialize "today" to 00:00am of tomorrow
+		Calendar today = new GregorianCalendar();
+		today.set(Calendar.DATE, today.get(Calendar.DATE) + 1);
+		today.set(Calendar.HOUR_OF_DAY, 0);
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
+		today.set(Calendar.MILLISECOND, 0);
+		today.getTimeInMillis();
+		return today;
 	}
 
 	@Override
