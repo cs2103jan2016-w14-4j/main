@@ -16,7 +16,7 @@ public class Recur {
 	private Calendar _startDate;
 
 	public Recur() {
-		_startDate = new GregorianCalendar();
+
 	}
 
 	public TimeUnit getTimeUnit() {
@@ -53,7 +53,7 @@ public class Recur {
 
 	public Calendar getNextRecur() {
 		// todo
-		Calendar nextDate = (GregorianCalendar) _startDate.clone();
+		Calendar nextDate = (GregorianCalendar) getStartDate().clone();
 		Calendar today = new GregorianCalendar();
 		// need find some way to handle strictly after today
 		// consider initialize "today" to 00:00am of tomorrow?
@@ -87,5 +87,13 @@ public class Recur {
 		String formattedDate = dateFormat.format(_endDate.getTime());
 		return "Recur [timeUnit=" + _timeUnit + ", frequency=" + _frequency + ", endDate=" + formattedDate
 				+ "]";
+	}
+
+	public Calendar getStartDate() {
+		return _startDate;
+	}
+
+	public void setStartDate(Calendar startDate) {
+		_startDate = startDate;
 	}
 }
