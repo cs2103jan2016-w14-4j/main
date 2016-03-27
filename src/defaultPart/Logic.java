@@ -340,6 +340,8 @@ public class Logic {
 		assert (task != null);
 
 		String[] args = _argument.split(" ");
+		List<String> listArgs = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
+
 		switch (args.length) {
 			case 1 :
 				// copy task to input box for editing
@@ -349,6 +351,7 @@ public class Logic {
 				break;
 
 			case 2 :
+				// changes time XOR date of task
 				Calendar date = getWrappedDateFromString(args[1]);
 				if (date != null) {
 					task.setDate(date);
@@ -360,20 +363,24 @@ public class Logic {
 				break;
 
 			case 3 :
-				// have not handled time yet
+				// changes time AND date of task
 				date = getWrappedDateFromString(args[1]);
 				if (date != null) {
 					task.setDate(date);
 				}
-				try {
-					setTaskTime(task, args[2]);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				setTaskTime(task, args[2]);
 				break;
 
-			case 4 :
-				// todo: allows changing recur
+			case 5 :
+				// allows changing of recur
+				date = getWrappedDateFromString(args[1]);
+				if (date != null) {
+					task.setDate(date);
+				}
+				setTaskTime(task, args[2]);
+				setRecurIfExists(task, listArgs);
+				break;
+
 		}
 		_storage.removeTask(taskIndex);
 		_storage.addToTaskList(task); // re-add so that it's sorted by date/time
