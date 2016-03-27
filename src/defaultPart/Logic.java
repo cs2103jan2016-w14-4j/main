@@ -345,46 +345,67 @@ public class Logic {
 		switch (args.length) {
 			case 1 :
 				// copy task to input box for editing
-				_newCommandType = CommandType.EDIT_SHOW_TASK;
-				_indexesFound = new ArrayList<Integer>();
-				_indexesFound.add(taskIndex);
+				copyTaskToInputForEditting(taskIndex);
 				break;
 
 			case 2 :
-				// changes time XOR date of task
+				// changes time XOR date of task XOR description
 				Calendar date = getWrappedDateFromString(args[1]);
-				if (date != null) {
-					task.setDate(date);
-				} else if (isTime(args[1])) {
-					setTaskTime(task, args[1]);
-				} else {
-					task.setDescription(args[1]);
-				}
+				changeTimeDateOrDesc(task, args, date);
 				break;
 
 			case 3 :
 				// changes time AND date of task
 				date = getWrappedDateFromString(args[1]);
-				if (date != null) {
-					task.setDate(date);
-				}
-				setTaskTime(task, args[2]);
+				changeTimeAndDate(task, args, date);
 				break;
 
 			case 5 :
 				// allows changing of recur
 				date = getWrappedDateFromString(args[1]);
-				if (date != null) {
-					task.setDate(date);
-				}
-				setTaskTime(task, args[2]);
-				setRecurIfExists(task, listArgs);
+				changeDateTimeAndRecur(task, args, listArgs, date);
 				break;
 
 		}
+		putEdittedTaskInStorage(taskIndex, task);
+		returnEditFeedback(taskIndex);
+	}
+
+	private void returnEditFeedback(int taskIndex) {
+		_feedback = String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET);
+	}
+
+	private void putEdittedTaskInStorage(int taskIndex, Task task) {
 		_storage.removeTask(taskIndex);
 		_storage.addToTaskList(task); // re-add so that it's sorted by date/time
-		_feedback = String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET);
+	}
+
+	private void copyTaskToInputForEditting(int taskIndex) {
+		_newCommandType = CommandType.EDIT_SHOW_TASK;
+		_indexesFound = new ArrayList<Integer>();
+		_indexesFound.add(taskIndex);
+	}
+
+	private void changeDateTimeAndRecur(Task task, String[] args, List<String> listArgs, Calendar date) {
+		changeTimeAndDate(task, args, date);
+		setRecurIfExists(task, listArgs);
+	}
+
+	private void changeTimeAndDate(Task task, String[] args, Calendar date) {
+		if (date != null) {
+			task.setDate(date);
+		}
+		setTaskTime(task, args[2]);
+	}
+
+	private void changeTimeDateOrDesc(Task task, String[] args, Calendar date) {
+		if (date != null) {
+			task.setDate(date);
+		} else if (isTime(args[1])) {
+			setTaskTime(task, args[1]);
+		} else {
+			task.setDescription(args[1]);
+		}
 	}
 
 	// todo: 7-11 default to am, 12-6 default to pm, if am/pm not specified
