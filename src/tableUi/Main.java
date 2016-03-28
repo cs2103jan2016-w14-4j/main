@@ -7,27 +7,27 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    private static Controller controller;
+	private static Controller controller;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader();
-        Parent root = loader.load(getClass().getResource("layout1.fxml"));
-        loader.setController(new Controller());
-        primaryStage.setTitle("WURI");
-        Scene scene = new Scene(root, 800, 450);
-       //  scene.getStylesheets().add(getClass().getResource("layout1.css").toExternalForm());
-        primaryStage.setScene(scene);
-        controller = loader.getController();
-        controller.stage = primaryStage;
-        primaryStage.show();
-    }
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		FXMLLoader loader = new FXMLLoader();
+		Parent root = loader.load(getClass().getResource("layout1.fxml"));
+		loader.setController(new Controller());
+		primaryStage.setTitle("WURI");
+		Scene scene = new Scene(root, 800, 450);
+		// scene.getStylesheets().add(getClass().getResource("layout1.css").toExternalForm());
+		primaryStage.setScene(scene);
+		controller = loader.getController();
+		controller.stage = primaryStage;
+		primaryStage.show();
+	}
 
-    public static Controller getController(){
-        return controller;
-    }
+	public static Controller getController() {
+		return controller;
+	}
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+	public static void main(String[] args) {
+		launch(args);
+	}
 }

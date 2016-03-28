@@ -152,7 +152,7 @@ public class Controller implements Initializable {
 		logic = new Logic();
 		try {
 			logic.loadTasksFromFile();
-			showAllTasks();	
+			showAllTasks();
 		} catch (SAXException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -180,10 +180,10 @@ public class Controller implements Initializable {
 		userPrompt.setText(prompt);
 	}
 
-	public void editDescriptionById(int id){
-		if(taskList.get(id).getDate() != null){
+	public void editDescriptionById(int id) {
+		if (taskList.get(id).getDate() != null) {
 			editEventDescriptionById(id);
-		}else{
+		} else {
 			editFloatingTaskDescriptionById(id);
 		}
 	}
@@ -336,11 +336,11 @@ public class Controller implements Initializable {
 			case EDIT_SHOW_TASK :
 				debug();
 				break;
-				
+
 			case FIND :
 				displayFoundTask();
 				break;
-				
+
 			default :
 				showAllTasks();
 		}
