@@ -153,7 +153,7 @@ public class Controller implements Initializable {
 
 	public void debug() {
 		List<Integer> indexesFound = logic.getIndexesFound();
-		editEventDescriptionById(indexesFound.get(0) + 1);
+		editDescriptionById(indexesFound.get(0) + 1);
 	}
 
 	/**
@@ -170,6 +170,14 @@ public class Controller implements Initializable {
 		if (DEVELOPER_MODE)
 			System.out.println("Sent back to user: " + prompt);
 		userPrompt.setText(prompt);
+	}
+
+	public void editDescriptionById(int id){
+		if(taskList.get(id).getDate() != null){
+			editEventDescriptionById(id);
+		}else{
+			editFloatingTaskDescriptionById(id);
+		}
 	}
 
 	/**
