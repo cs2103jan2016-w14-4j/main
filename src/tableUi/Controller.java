@@ -11,6 +11,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -26,6 +27,7 @@ import org.xml.sax.SAXException;
  */
 public class Controller implements Initializable {
 	@FXML
+	public VBox root;
 	public TableView<TaskModel> floatingTaskTable;
 	public TableView<TaskModel> eventsTable;
 	public TableColumn<TaskModel, Number> floatingTaskId;
@@ -138,6 +140,12 @@ public class Controller implements Initializable {
 				inputBox.clear();
 				e.consume();
 				sendToLogicAndUpdatePrompt(text);
+			}
+		});
+
+		root.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+			if (e.getCode().equals(KeyCode.F1)) {
+				HelpWindow.show();
 			}
 		});
 
