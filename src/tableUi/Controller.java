@@ -65,8 +65,7 @@ public class Controller implements Initializable {
 	private ObservableList<TaskModel> eventList;
 	private ArrayList<TaskModel> taskModels;
 
-	private int lastId;
-
+	private int tablePosition;
 	private Logic logic;
 
 	/**
@@ -80,7 +79,7 @@ public class Controller implements Initializable {
 		floatingTaskList = FXCollections.observableArrayList();
 		eventList = FXCollections.observableArrayList();
 		taskModels = new ArrayList<>();
-		lastId = 0;
+		tablePosition = 0;
 
 		floatingTaskTable.setItems(floatingTaskList);
 		eventsTable.setItems(eventList);
@@ -140,6 +139,10 @@ public class Controller implements Initializable {
 				inputBox.clear();
 				e.consume();
 				sendToLogicAndUpdatePrompt(text);
+			} else if (e.getCode().equals(KeyCode.DOWN)) {
+				scrollDown();
+			} else if (e.getCode().equals(KeyCode.UP)) {
+				scrollUp();
 			}
 		});
 
@@ -295,7 +298,6 @@ public class Controller implements Initializable {
 	 * refresh the tasks shown on UI based on the current storage (by default all tasks are shown)
 	 */
 	private void retrieveTaskFromStorage() {
-		lastId = 0;
 		taskList = logic.getTaskList();
 
 		for (int i = 0; i < taskList.size(); i++) {
@@ -307,6 +309,27 @@ public class Controller implements Initializable {
 		eventList.clear();
 		floatingTaskList.clear();
 		taskModels.clear();
+		tablePosition = 0;
+		scrollTo(tablePosition);
+	}
+	
+	private void scrollDown(){
+		tablePosition += 5;
+		if(tablePosition > Math.max(eventList.size(), floatingTaskList.size()))
+			tablePosition = Math.max(eventList.size(), floatingTaskList.size());
+		scrollTo(tablePosition);
+	}
+	
+	private void scrollUp(){
+		tablePosition -= 5;
+		if(tablePosition < 0)
+			tablePosition = 0;
+		scrollTo(tablePosition);
+	}
+	
+	private void scrollTo(int tablePosition){
+		eventsTable.scrollTo(tablePosition);
+		floatingTaskTable.scrollTo(tablePosition);
 	}
 
 	private void addToTaskModels(int i) {
@@ -318,7 +341,6 @@ public class Controller implements Initializable {
 			eventList.add(newModel);
 		}
 		taskModels.add(newModel);
-		lastId++;
 	}
 
 	/**
