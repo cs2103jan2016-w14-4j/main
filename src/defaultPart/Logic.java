@@ -39,7 +39,7 @@ public class Logic {
 
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
-		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, TOGGLE_COMPLETE, UNDO,
+		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, TOGGLE_COMPLETE, UNDO, HELP,
 
 		// for internal use
 		EDIT_SHOW_TASK, ADD, ERROR, NULL
@@ -116,12 +116,14 @@ public class Logic {
 					setStoragePath();
 					break;
 
+				case HELP :
+					helpFunction();
+					break;
+
 				case QUIT :
 					System.exit(0);
 					break;
 
-				// case HELP :
-				// //todo
 			}
 		} catch (IOException e) {
 			_newCommandType = CommandType.ERROR;
@@ -538,6 +540,10 @@ public class Logic {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void helpFunction() {
+
 	}
 
 	/* Getters for UI */

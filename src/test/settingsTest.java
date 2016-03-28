@@ -76,8 +76,8 @@ public class settingsTest {
 	public final void testIsValidPath() {
 
 		// Testing the different boundaries for this function
-		assertTrue( Settings.isValidPath(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME));
-		//TODO - add more boundaries
+		assertTrue(Settings.isValidPath(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME));
+		// TODO - add more boundaries
 	}
 
 }

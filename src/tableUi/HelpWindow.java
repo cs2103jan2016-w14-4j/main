@@ -30,9 +30,11 @@ public class HelpWindow{
     public VBox root;
     public ImageView image;
 
-    public static HelpWindow getInstance() {
-        return ourInstance;
-    }
+
+	public static HelpWindow getInstance() {
+		return ourInstance;
+	}
+
 
     private HelpWindow() {
         window = new Stage();
@@ -67,4 +69,5 @@ public class HelpWindow{
         window.showAndWait();
         root.requestFocus();
     }
+
 }
