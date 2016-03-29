@@ -260,17 +260,17 @@ public class Logic {
 		if (lastIndex == 0) {
 			return;
 		}
-		
+
 		Calendar date;
-		
-		if(args.size()>1 && args.get(1).equals("next")){
+
+		if (args.size() > 1 && args.get(1).equals("next")) {
 			String[] arrayArgs = new String[args.size()];
 			args.toArray(arrayArgs);
 			date = getNextDate(arrayArgs);
-		}else{
+		} else {
 			date = getWrappedDateFromString(args.get(lastIndex));
 		}
-		
+
 		if (date == null) {
 			return;
 		}
@@ -367,7 +367,7 @@ public class Logic {
 				break;
 
 			case 3 :
-				
+
 				if (isNextType(args)) {
 					date = getNextDate(args);
 					task.setDate(date);
@@ -403,17 +403,22 @@ public class Logic {
 		newDate.set(Calendar.SECOND, 0);
 		newDate.set(Calendar.MILLISECOND, 0);
 		newDate.getTimeInMillis();
-		
+
 		if (increment.equals("day")) {
 			newDate.set(Calendar.DATE, newDate.get(Calendar.DATE) + 1);
+		} else if (increment.equals("week")) {
+			newDate.set(Calendar.DATE, newDate.get(Calendar.DATE) + 7);
 		} else if (increment.equals("month")) {
 			newDate.set(Calendar.MONTH, newDate.get(Calendar.MONTH) + 1);
 		} else if (increment.equals("year")) {
 			newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
+		} else if (increment.equals("mon")) {
+			newDate.set(Calendar.DATE, newDate.get(Calendar.DATE) + (9-newDate.get(Calendar.DAY_OF_WEEK)));
 		}
+		newDate.getTimeInMillis();
 		return newDate;
-		//need include case for invalid 2nd input, i.e., next hi
-		//need include day mon tues wed thurs
+		// need include case for invalid 2nd input, i.e., next hi
+		// need include day mon tues wed thurs
 	}
 
 	private void returnEditFeedback(int taskIndex) {
