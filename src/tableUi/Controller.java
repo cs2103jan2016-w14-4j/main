@@ -152,8 +152,8 @@ public class Controller implements Initializable {
 			}
 		});
 
+		logic = new Logic();
 		try {
-			logic = new Logic();
 			logic.loadTasksFromFile();
 			showAllTasks();
 		} catch (SAXException e1) {

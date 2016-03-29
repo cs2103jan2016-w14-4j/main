@@ -67,6 +67,7 @@ public class Storage {
 	public Storage() throws SAXException {
 		setupLogger();
 		_settings = new Settings();
+		_file = new File(_settings.getSavePathAndName());
 	}
 
 	/**
