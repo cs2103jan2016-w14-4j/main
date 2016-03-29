@@ -260,6 +260,9 @@ public class Logic {
 		if (lastIndex == 0) {
 			return;
 		}
+		/*if(args.get(0).equals("next")){
+			getNextDate(task, ((String[])args.toArray()));
+		}else{*/
 		Calendar date = getWrappedDateFromString(args.get(lastIndex));
 		if (date == null) {
 			return;
@@ -357,9 +360,10 @@ public class Logic {
 				break;
 
 			case 3 :
-
-				if (args[1].equals("next")) {
-					getNextDate(task, args);
+				
+				if (isNextType(args)) {
+					date = getNextDate(args);
+					task.setDate(date);
 				} else {
 					// changes time AND date of task
 					date = getWrappedDateFromString(args[1]);
@@ -379,7 +383,11 @@ public class Logic {
 		returnEditFeedback(taskIndex);
 	}
 
-	private void getNextDate(Task task, String[] args) {
+	private boolean isNextType(String[] args) {
+		return args[1].equals("next");
+	}
+
+	private Calendar getNextDate(String[] args) {
 		String increment = args[2];
 		Calendar newDate = new GregorianCalendar();
 
@@ -396,8 +404,9 @@ public class Logic {
 		} else if (increment.equals("year")) {
 			newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
 		}
-		task.setDate(newDate);
+		return newDate;
 		//need include case for invalid 2nd input, i.e., next hi
+		//need include day mon tues wed thurs
 	}
 
 	private void returnEditFeedback(int taskIndex) {
