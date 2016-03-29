@@ -263,7 +263,7 @@ public class Logic {
 
 		Calendar date;
 
-		if (args.size() > 2 && args.get(lastIndex-1).equals("next")) {
+		if (args.size() > 2 && args.get(lastIndex - 1).equals("next")) {
 			String[] arrayArgs = new String[args.size()];
 			args.toArray(arrayArgs);
 			date = getNextDate(arrayArgs);
@@ -397,7 +397,7 @@ public class Logic {
 	}
 
 	private Calendar getNextDate(String[] args) {
-		String increment = args[args.length-1].toLowerCase();
+		String increment = args[args.length - 1].toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
 		newDate.set(Calendar.HOUR_OF_DAY, 0);
@@ -415,74 +415,34 @@ public class Logic {
 		} else if (increment.equals("year")) {
 			newDate.add(Calendar.YEAR, 1);
 		} else if (increment.equals("sun") || increment.equals("sunday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
+			wrapDateToNextDayOfWeek(newDate, 1);
 		} else if (increment.equals("mon") || increment.equals("monday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
+			wrapDateToNextDayOfWeek(newDate, 2);
 		} else if (increment.equals("tue") || increment.equals("tuesday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.TUESDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
-		}else if (increment.equals("wed") || increment.equals("wednesday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.WEDNESDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
-		}else if (increment.equals("thu") || increment.equals("thursday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.THURSDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
-		}else if (increment.equals("fri") || increment.equals("friday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
-		}else if (increment.equals("sat") || increment.equals("saturday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
-		}else if (increment.equals("sun") || increment.equals("sunday")) {
-			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-				newDate.add(Calendar.DATE, 7);
-			} else {
-				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-					newDate.add(Calendar.DATE, 1);
-				}
-			}
+			wrapDateToNextDayOfWeek(newDate, 3);
+		} else if (increment.equals("wed") || increment.equals("wednesday")) {
+			wrapDateToNextDayOfWeek(newDate, 4);
+		} else if (increment.equals("thu") || increment.equals("thursday")) {
+			wrapDateToNextDayOfWeek(newDate, 5);
+		} else if (increment.equals("fri") || increment.equals("friday")) {
+			wrapDateToNextDayOfWeek(newDate, 6);
+		} else if (increment.equals("sat") || increment.equals("saturday")) {
+			wrapDateToNextDayOfWeek(newDate, 7);
 		}
-		
+
 		newDate.getTimeInMillis();
 		return newDate;
 		// need include case for invalid 2nd input, i.e., next hi
+	}
+
+	private void wrapDateToNextDayOfWeek(Calendar newDate, int dayToWrapTo) {
+		if (newDate.get(Calendar.DAY_OF_WEEK) == dayToWrapTo) {
+			newDate.add(Calendar.DATE, 7);
+		} else {
+			while (newDate.get(Calendar.DAY_OF_WEEK) != dayToWrapTo) {
+				newDate.add(Calendar.DATE, 1);
+			}
+		}
 	}
 
 	private void returnEditFeedback(int taskIndex) {
