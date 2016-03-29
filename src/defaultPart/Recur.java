@@ -106,8 +106,7 @@ public class Recur {
 	public String toString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		String formattedDate = dateFormat.format(_endDate.getTime());
-		return "Recur [timeUnit=" + _timeUnit + ", frequency=" + _frequency + ", endDate=" + formattedDate
-				+ "]";
+		return _frequency + "" + _timeUnit.name().toLowerCase().charAt(0) + " " + formattedDate;
 	}
 
 	public Calendar getStartDate() {

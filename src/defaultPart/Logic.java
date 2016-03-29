@@ -17,7 +17,7 @@ import java.util.logging.SimpleFormatter;
 import org.xml.sax.SAXException;
 
 public class Logic {
-	// comment
+
 	private static final Logger logger = Logger.getLogger(Logic.class.getName());
 
 	private static final int LIST_NUMBERING_OFFSET = 1;
@@ -177,7 +177,19 @@ public class Logic {
 		setRecurIfExists(newTask, args);
 		setTaskTimeIfExists(newTask, args);
 		setTaskDateIfExists(newTask, args);
-		newTask.setDescription(String.join(" ", args));
+		
+		//very ugly codes, to be refactored
+		Calendar date = newTask.getDate();
+		if (date!=null) {
+			Recur recur = newTask.getRecur();
+			recur.setStartDate(newTask.getDate());
+			newTask.setDescription(String.join(" ", args));
+		} else {
+			logger.log(Level.FINE, "Task has no date");
+			newTask.setDescription(_argument);
+			newTask.setStartTime(null);
+			newTask.setRecur(null);
+		}
 
 		_storage.setCurrentListAsPrevious();
 
