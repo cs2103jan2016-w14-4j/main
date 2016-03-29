@@ -70,8 +70,7 @@ public class Logic {
 	}
 
 	/**
-	 * Overloaded Constructor for integration testing to prevent interference with actual storage
-	 * file
+	 * Overloaded Constructor for integration testing to prevent interference with actual storage file
 	 * 
 	 * @throws SAXException
 	 */
@@ -79,7 +78,7 @@ public class Logic {
 		setupLogger();
 		_storage = new Storage(testFile);
 	}
-	
+
 	public void loadTasksFromFile() throws SAXException {
 		_storage.loadTasksFromFile();
 	}
@@ -194,16 +193,16 @@ public class Logic {
 		setTaskTimeIfExists(newTask, args);
 		setTaskDateIfExists(newTask, args);
 
-		//very ugly codes, to be refactored
+		// very ugly codes, to be refactored
 		Recur recur = newTask.getRecur();
 		Calendar date = newTask.getDate();
-		if ((recur != null || newTask.getStartTime()!=null) && date==null){
+		if ((recur != null || newTask.getStartTime() != null) && date == null) {
 			logger.log(Level.FINE, "Setting date to today");
 			newTask.setDate(new GregorianCalendar());
 			date = newTask.getDate();
 		}
-		boolean floating = _argument.charAt(_argument.length()-1) == '.';
-		if (date!=null && !floating) {
+		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
+		if (date != null && !floating) {
 			if (recur != null) {
 				recur.setStartDate(date);
 			}
@@ -211,7 +210,7 @@ public class Logic {
 		} else {
 			logger.log(Level.FINE, "Task has no date");
 			if (floating) {
-				newTask.setDescription(_argument.substring(0, _argument.length()-1));
+				newTask.setDescription(_argument.substring(0, _argument.length() - 1));
 			} else {
 				newTask.setDescription(_argument);
 			}
@@ -605,10 +604,10 @@ public class Logic {
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		}
 	}
-	
+
 	private void deleteMultiple() {
-	//	String[] dayAndMonthAndYear = dateString.split("/", 3);
-	//	Calendar newDate = getDateFromString(dayAndMonthAndYear);
+		// String[] dayAndMonthAndYear = dateString.split("/", 3);
+		// Calendar newDate = getDateFromString(dayAndMonthAndYear);
 	}
 
 	/**
@@ -649,7 +648,7 @@ public class Logic {
 
 	private void setStoragePath() {
 		try {
-			
+
 			_storage.setSavePath(_argument);
 			String taskFilePathAndName = _storage.getSavePath();
 			_storage.loadTasksFromFile();

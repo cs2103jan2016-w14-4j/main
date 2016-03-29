@@ -57,7 +57,7 @@ public class Storage {
 
 	/* Location of the task list file */
 	private File _file;
-	
+
 	private Settings _settings;
 
 	/**
@@ -72,26 +72,24 @@ public class Storage {
 	}
 
 	/**
-	 * Overloaded Constructor for integration testing to prevent interference with actual storage
-	 * file
+	 * Overloaded Constructor for integration testing to prevent interference with actual storage file
 	 * 
 	 * @throws SAXException
 	 */
 	public Storage(File storageFile) throws SAXException {
 		setupLogger();
 		_file = storageFile;
-		//_settings = new Settings();
+		// _settings = new Settings();
 	}
 
-	public void setSavePath(String filePath)
-	{
+	public void setSavePath(String filePath) {
 		_settings.setSavePath(filePath);
 	}
-	
-	public String getSavePath()
-	{
+
+	public String getSavePath() {
 		return _settings.getSavePathAndName();
 	}
+
 	/**
 	 * Setup logger for logging
 	 */
@@ -556,6 +554,7 @@ public class Storage {
 		calendar.setTime(formatter.parse(calendarString));
 		return calendar;
 	}
+
 	/**
 	 * Extract a date from node with specified tag and returns as Calendar object
 	 * 
@@ -581,9 +580,7 @@ public class Storage {
 		calendar.setTime(formatter.parse(calendarString));
 		return calendar;
 	}
-	
-	
-	
+
 	/**
 	 * Extract a string from node with specified tag
 	 * 
