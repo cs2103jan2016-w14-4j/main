@@ -395,7 +395,7 @@ public class Logic {
 	}
 
 	private Calendar getNextDate(String[] args) {
-		String increment = args[2];
+		String increment = args[2].toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
 		newDate.set(Calendar.HOUR_OF_DAY, 0);
@@ -405,20 +405,82 @@ public class Logic {
 		newDate.getTimeInMillis();
 
 		if (increment.equals("day")) {
-			newDate.set(Calendar.DATE, newDate.get(Calendar.DATE) + 1);
+			newDate.add(Calendar.DATE, 1);
 		} else if (increment.equals("week")) {
-			newDate.set(Calendar.DATE, newDate.get(Calendar.DATE) + 7);
+			newDate.add(Calendar.DATE, 7);
 		} else if (increment.equals("month")) {
-			newDate.set(Calendar.MONTH, newDate.get(Calendar.MONTH) + 1);
+			newDate.add(Calendar.MONTH, 1);
 		} else if (increment.equals("year")) {
-			newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
-		} else if (increment.equals("mon")) {
-			newDate.set(Calendar.DATE, newDate.get(Calendar.DATE) + (9-newDate.get(Calendar.DAY_OF_WEEK)));
+			newDate.add(Calendar.YEAR, 1);
+		} else if (increment.equals("sun") || increment.equals("sunday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
+		} else if (increment.equals("mon") || increment.equals("monday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
+		} else if (increment.equals("tue") || increment.equals("tuesday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.TUESDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
+		}else if (increment.equals("wed") || increment.equals("wednesday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.WEDNESDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
+		}else if (increment.equals("thu") || increment.equals("thursday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.THURSDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
+		}else if (increment.equals("fri") || increment.equals("friday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
+		}else if (increment.equals("sat") || increment.equals("saturday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
+		}else if (increment.equals("sun") || increment.equals("sunday")) {
+			if (newDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+				newDate.add(Calendar.DATE, 7);
+			} else {
+				while (newDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+					newDate.add(Calendar.DATE, 1);
+				}
+			}
 		}
+		
 		newDate.getTimeInMillis();
 		return newDate;
 		// need include case for invalid 2nd input, i.e., next hi
-		// need include day mon tues wed thurs
 	}
 
 	private void returnEditFeedback(int taskIndex) {
