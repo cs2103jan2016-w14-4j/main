@@ -140,7 +140,7 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testGetTaskList() {
+	public void testGetTaskList() throws SAXException {
 
 		// Setting up expected Task List for comparison
 		Task newTaskFloating = instantiateTestTask(1);
@@ -148,7 +148,7 @@ public class StorageTest {
 		Task newTaskEvent = instantiateTestTask(3);
 		Task newTaskRecurEvent = instantiateTestTask(4);
 		List<Task> expectedTaskList = new LinkedList<Task>();
-		Storage storage = new Storage();
+		Storage storage = new Storage(new File(TASK_FILE_NAME));
 
 		// This is to test the expected behavior of this function
 		expectedTaskList.add(newTaskFloating);
@@ -170,7 +170,7 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testGetTask() throws IOException {
+	public void testGetTask() throws IOException, SAXException {
 
 		// Setting up expected Task for comparison
 		Task expectedTask = new Task();
@@ -184,7 +184,7 @@ public class StorageTest {
 		assertEquals(expectedTask, storage.getTask(0));
 	}
 
-	public void testIsTaskIndexValid() {
+	public void testIsTaskIndexValid() throws SAXException {
 
 		// Setting up actual storage behavior
 		Storage storage = new Storage();
@@ -210,7 +210,7 @@ public class StorageTest {
 		expectedTaskList.add(newTaskEvent);
 
 		// Setting up the actual storage behavior
-		Storage storage = new Storage();
+		Storage storage = new Storage(new File(TASK_FILE_NAME));
 		storage.addToTaskList(newTaskFloating);
 		storage.addToTaskList(newTaskDeadline);
 		storage.addToTaskList(newTaskEvent);
@@ -221,7 +221,7 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testAddToTaskList() {
+	public void testAddToTaskList() throws SAXException {
 
 		// Setting up expected Task List for comparison
 		Task newTaskFloating = instantiateTestTask(1);
@@ -229,7 +229,7 @@ public class StorageTest {
 		Task newTaskEvent = instantiateTestTask(3);
 		Task newTaskRecurEvent = instantiateTestTask(4);
 		List<Task> expectedTaskList = new LinkedList<Task>();
-		Storage storage = new Storage();
+		Storage storage = new Storage(new File(TASK_FILE_NAME));
 
 		// This is to test the expected behavior of this function
 		expectedTaskList.add(newTaskFloating);
@@ -257,8 +257,8 @@ public class StorageTest {
 		File file = new File(TASK_FILE_NAME);
 		FileReader fr1 = new FileReader(file);
 
-		Storage storage = new Storage();
-		storage.loadTasksFromFile(TASK_FILE_NAME);
+		Storage storage = new Storage(file);
+		storage.loadTasksFromFile();
 		storage.saveTasksToFile();
 		FileReader fr2 = new FileReader(file);
 
@@ -287,8 +287,8 @@ public class StorageTest {
 		expectedTaskList.add(newTaskRecurEvent);
 
 		// Setting up the actual storage behavior
-		Storage storage = new Storage();
-		storage.loadTasksFromFile(TASK_FILE_NAME);
+		Storage storage = new Storage(new File(TASK_FILE_NAME));
+		storage.loadTasksFromFile();
 
 		// This is to test the expected behavior of this function
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));
