@@ -56,16 +56,40 @@ public class Storage {
 
 	/* Location of the task list file */
 	private File _file;
+	
+	private Settings _settings;
 
 	/**
 	 * Constructor for Storage, also handles and formats log file for logging purposes
 	 * 
 	 * @throws SAXException
 	 */
-	public Storage() {
+	public Storage() throws SAXException {
 		setupLogger();
+		_settings = new Settings();
 	}
 
+	/**
+	 * Overloaded Constructor for unit testing for Storage class to prevent interference with actual storage
+	 * file
+	 * 
+	 * @throws SAXException
+	 */
+	public Storage(File storageFile) throws SAXException {
+		setupLogger();
+		_file = storageFile;
+		_settings = new Settings();
+	}
+
+	public void setSavePath(String filePath)
+	{
+		_settings.setSavePath(filePath);
+	}
+	
+	public String getSavePath()
+	{
+		return _settings.getSavePathAndName()
+	}
 	/**
 	 * Setup logger for logging
 	 */
@@ -211,8 +235,7 @@ public class Storage {
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
-	public void loadTasksFromFile(String taskFilePathAndName) throws SAXException {
-		_file = new File(taskFilePathAndName);
+	public void loadTasksFromFile() throws SAXException {
 		// First check if the file exists and is not a directory but an actual file
 		if (_file.isFile() && _file.canRead()) {
 			// Extracts out the list of task nodes

@@ -58,14 +58,13 @@ public class Logic {
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
-	public Logic() {
+	public Logic() throws SAXException {
 		setupLogger();
 		_storage = new Storage();
 	}
 
 	public void loadTasksFromFile() throws SAXException {
-		Settings settings = new Settings();
-		_storage.loadTasksFromFile(settings.getSavePathAndName());
+		_storage.loadTasksFromFile();
 	}
 
 	private void setupLogger() {
@@ -615,10 +614,10 @@ public class Logic {
 
 	private void setStoragePath() {
 		try {
-			Settings settings = new Settings();
-			settings.setSavePath(_argument);
-			String taskFilePathAndName = settings.getSavePathAndName();
-			_storage.loadTasksFromFile(taskFilePathAndName);
+			
+			_storage.setSavePath(_argument);
+			String taskFilePathAndName = _storage.getSavePath();
+			_storage.loadTasksFromFile();
 			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, taskFilePathAndName);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block

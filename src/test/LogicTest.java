@@ -8,13 +8,15 @@ import java.util.List;
 import java.util.GregorianCalendar;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
+
 import defaultPart.*;
 import defaultPart.Recur.TimeUnit;
 
 public class LogicTest {
 
 	@Test
-	public void testAdd() {
+	public void testAdd() throws SAXException {
 		
 		// adding a task with date,time, and recurrence
 		Logic logic = new Logic();
@@ -70,7 +72,7 @@ public class LogicTest {
 	}
 
 	@Test
-	public void testAddEvent() {
+	public void testAddEvent() throws SAXException {
 		Logic logic = new Logic();
 		logic.executeCommand("Wake up at midnight to watch the stars 1am-3");
 		List<Task> taskList = logic.getTaskList();
@@ -81,7 +83,7 @@ public class LogicTest {
 	}
 	
 	@Test
-	public void testEdit() {
+	public void testEdit() throws SAXException {
 
 		Calendar today = new GregorianCalendar();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
@@ -141,7 +143,7 @@ public class LogicTest {
 	}
 
 	@Test
-	public void testDelete() {
+	public void testDelete() throws SAXException {
 		Calendar today = new GregorianCalendar();
 
 		// adding 2 tasks and checking tasklist size
