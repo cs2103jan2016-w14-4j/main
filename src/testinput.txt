@@ -4,15 +4,15 @@
 4) CS2103T Reading
 5) Plan Jap Trip 30/1/2016 11am
 6) Social Work 2106 1/4 12pm
-7) Date with imaginary girlfriend 12:00
-8) Go church next sat 1:30pm 1w
+7) Date with imaginary girlfriend 12:00 (buggy, became a floating task)
+8) Go church next sat 1:30pm 1w (buggy, became a floating task)
 9) Go out with girlfriend 1/4 3d 15
-10) Go out with other girlfriend 2/4 1w 2
+10) Go out with other girlfriend 2/4 1w 2 (Buggy!Recur doesn't appear.)
 11) Get found out 16/4
 12) Cry 16/4 1d 1/1/2026
 13) Become a wizard 1/1/2026 00:00
 14) Meet the one
-15) HIMYM 1/1/2027 12:00 1d 50
+15) HIMYM 1/1/2027 12:00 1d 50 (buggy, 12:00 supposed to be 12pm but is 12AM)
 16) Get married 1/1/2030
 17) Have kid
 18) Have another kid
