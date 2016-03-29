@@ -260,10 +260,17 @@ public class Logic {
 		if (lastIndex == 0) {
 			return;
 		}
-		/*if(args.get(0).equals("next")){
-			getNextDate(task, ((String[])args.toArray()));
-		}else{*/
-		Calendar date = getWrappedDateFromString(args.get(lastIndex));
+		
+		Calendar date;
+		
+		if(args.size()>1 && args.get(1).equals("next")){
+			String[] arrayArgs = new String[args.size()];
+			args.toArray(arrayArgs);
+			date = getNextDate(arrayArgs);
+		}else{
+			date = getWrappedDateFromString(args.get(lastIndex));
+		}
+		
 		if (date == null) {
 			return;
 		}
