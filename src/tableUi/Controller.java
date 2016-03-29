@@ -54,8 +54,6 @@ public class Controller implements Initializable {
 	public static final String DELETE_COMMAND = "d %d";
 	public static final String TOGGLE_COMMAND = "t %d";
 	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
-	public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("h.mma");
 	public static final String INVALID_EDIT_DATE_PROMPT = "edit date action could not be done on id %d";
 	public static final String INVALID_EDIT_DESCRIPTION_PROMPT = "edit date action could not be done on id %d";
 
@@ -107,7 +105,7 @@ public class Controller implements Initializable {
 			int id = taskModel.getTaskId();
 			try {
 				Calendar newDate = logic.getWrappedDateFromString(e.getNewValue());
-				String dateString = DATE_FORMAT.format(newDate.getTime());
+				String dateString = newDate.toString();
 				sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, dateString));
 			} catch (Exception exception) {
 				// if the date format is invalid

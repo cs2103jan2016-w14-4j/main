@@ -16,9 +16,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -44,10 +41,6 @@ public class Storage {
 
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
-
-	/* Date format used to save/load from XML */
-	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
-	private SimpleDateFormat formatterDateOnly = new SimpleDateFormat("dd-M-yyyy");
 
 	/* Stores current list of tasks in the program */
 	private List<Task> _currentTaskList = new LinkedList<Task>();
@@ -190,9 +183,9 @@ public class Storage {
 		// Assert that the new task is not null
 		assert (newTask != null);
 
-		Calendar newTaskDate = newTask.getDate();
+		TaskDate newTaskDate = newTask.getDate();
 		for (int i = 0; i < _currentTaskList.size(); i++) {
-			Calendar taskDate = _currentTaskList.get(i).getDate();
+			TaskDate taskDate = _currentTaskList.get(i).getDate();
 			if (taskDate == null || (newTaskDate != null && newTaskDate.compareTo(taskDate) <= 0)) {
 				_currentTaskList.add(i, newTask);
 				return;
@@ -353,10 +346,8 @@ public class Storage {
 		Element recurEndOfRecurrElement = doc.createElement(TAG_TASK_END_OF_RECURR);
 		recurTimeUnitElement.appendChild(doc.createTextNode(recur.getTimeUnit().toString()));
 		recurFrequencyElement.appendChild(doc.createTextNode(Integer.toString(recur.getFrequency())));
-		recurStartOfRecurrElement
-				.appendChild(doc.createTextNode(formatter.format(recur.getStartDate().getTime())));
-		recurEndOfRecurrElement
-				.appendChild(doc.createTextNode(formatter.format(recur.getEndDate().getTime())));
+		recurStartOfRecurrElement.appendChild(doc.createTextNode(recur.getStartDate().toString()));
+		recurEndOfRecurrElement.appendChild(doc.createTextNode(recur.getEndDate().toString()));
 		recurrElement.appendChild(recurTimeUnitElement);
 		recurrElement.appendChild(recurFrequencyElement);
 		recurrElement.appendChild(recurStartOfRecurrElement);
@@ -390,9 +381,13 @@ public class Storage {
 		Element completedElement = doc.createElement(TAG_TASK_COMPLETED);
 
 		descriptionElement.appendChild(doc.createTextNode(taskItem.getDescription()));
-		dateElement.appendChild(doc.createTextNode(getCalendarString(taskItem.getDate())));
-		startTimeElement.appendChild(doc.createTextNode(getCalendarString(taskItem.getStartTime())));
-		endTimeElement.appendChild(doc.createTextNode(getCalendarString(taskItem.getEndTime())));
+		TaskDate taskDate = taskItem.getDate();
+		dateElement.appendChild(doc.createTextNode(taskDate == null ? "" : taskDate.toString()));
+		TaskTime taskStartTime = taskItem.getStartTime();
+		startTimeElement
+				.appendChild(doc.createTextNode(taskStartTime == null ? "" : taskStartTime.toString()));
+		TaskTime taskEndTime = taskItem.getEndTime();
+		endTimeElement.appendChild(doc.createTextNode(taskEndTime == null ? "" : taskEndTime.toString()));
 		completedElement.appendChild(doc.createTextNode(taskItem.isCompleted() ? "yes" : "no"));
 		taskElement.appendChild(descriptionElement);
 		taskElement.appendChild(dateElement);
@@ -403,21 +398,6 @@ public class Storage {
 		// Handles the recurrence section
 		extractRecurrFromTask(doc, taskItem, taskElement);
 		rootElement.appendChild(taskElement);
-	}
-
-	/**
-	 * Get a formatted date string from a calendar object
-	 * 
-	 * @param calendar
-	 *            Calendar object to extract string from
-	 * @return Formatted string containing date/time
-	 */
-	private String getCalendarString(Calendar calendar) {
-
-		// Assert that the calendar is not null
-		assert (calendar != null);
-
-		return (calendar == null) ? "" : formatter.format(calendar.getTime());
 	}
 
 	/**
@@ -480,8 +460,8 @@ public class Storage {
 		Task newTask = new Task();
 		newTask.setDescription(extractStringFromNode(taskElement, TAG_TASK_DESCRIPTION));
 		newTask.setDate(extractDateFromNode(taskElement, TAG_TASK_DATE));
-		newTask.setStartTime(extractDateTimeFromNode(taskElement, TAG_TASK_STARTTIME));
-		newTask.setEndTime(extractDateTimeFromNode(taskElement, TAG_TASK_ENDTIME));
+		newTask.setStartTime(extractTimeFromNode(taskElement, TAG_TASK_STARTTIME));
+		newTask.setEndTime(extractTimeFromNode(taskElement, TAG_TASK_ENDTIME));
 		if (extractStringFromNode(taskElement, TAG_TASK_COMPLETED).equals("yes")) {
 			newTask.toggleCompleted();
 		}
@@ -519,8 +499,8 @@ public class Storage {
 
 		String timeUnit = extractStringFromNode(taskElement, TAG_TASK_TIMEUNIT);
 		int frequency = Integer.parseInt(extractStringFromNode(taskElement, TAG_TASK_FREQUENCY));
-		Calendar startOfRecurr = extractDateTimeFromNode(taskElement, TAG_TASK_START_OF_RECURR);
-		Calendar endOfRecurr = extractDateTimeFromNode(taskElement, TAG_TASK_END_OF_RECURR);
+		TaskDate startOfRecurr = extractDateFromNode(taskElement, TAG_TASK_START_OF_RECURR);
+		TaskDate endOfRecurr = extractDateFromNode(taskElement, TAG_TASK_END_OF_RECURR);
 		Recur taskRecurr = new Recur();
 		taskRecurr.setTimeUnit(TimeUnit.valueOf(timeUnit));
 		taskRecurr.setFrequency(frequency);
@@ -540,7 +520,7 @@ public class Storage {
 	 * @throws ParseException
 	 *             Error in formatting the date
 	 */
-	private Calendar extractDateTimeFromNode(Element taskElement, String tag) throws ParseException {
+	private TaskTime extractTimeFromNode(Element taskElement, String tag) throws ParseException {
 
 		// Assert than taskElement & tag are not null
 		assert (taskElement != null);
@@ -550,8 +530,8 @@ public class Storage {
 		if (calendarString == "") {
 			return null;
 		}
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(formatter.parse(calendarString));
+		TaskTime calendar = new TaskTime();
+		calendar.setTimeFromString(calendarString);
 		return calendar;
 	}
 
@@ -566,7 +546,7 @@ public class Storage {
 	 * @throws ParseException
 	 *             Error in formatting the date
 	 */
-	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
+	private TaskDate extractDateFromNode(Element taskElement, String tag) throws ParseException {
 
 		// Assert than taskElement & tag are not null
 		assert (taskElement != null);
@@ -576,8 +556,8 @@ public class Storage {
 		if (calendarString == "") {
 			return null;
 		}
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(formatter.parse(calendarString));
+		TaskDate calendar = new TaskDate();
+		calendar.setDateFromString(calendarString);
 		return calendar;
 	}
 

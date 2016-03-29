@@ -39,14 +39,14 @@ public class TaskModel {
 		String dateTimeString = "";
 		Calendar date = task.getDate();
 		if (date != null) {
-			dateTimeString = Controller.DATE_FORMAT.format(date.getTime()) + " ";
+			dateTimeString = date.toString() + " ";
 		}
 		Calendar startTime = task.getStartTime();
 		if (startTime != null) {
-			dateTimeString += Controller.TIME_FORMAT.format(startTime.getTime());
+			dateTimeString += startTime.toString();
 			Calendar endTime = task.getEndTime();
 			if (endTime != null) {
-				dateTimeString += "-" + Controller.TIME_FORMAT.format(endTime.getTime());
+				dateTimeString += "-" + endTime.toString();
 			}
 		}
 		dateTime = new SimpleStringProperty(dateTimeString);
@@ -71,7 +71,7 @@ public class TaskModel {
 		isComplete.setValue(task.isCompleted());
 		if (task.getDate() != null) {
 			isEvent.setValue(true);
-			dateTime.setValue(controller.DATE_FORMAT.format(task.getDate().getTime()));
+			dateTime.setValue(task.getDate().toString());
 		} else {
 			isEvent.setValue(false);
 			dateTime.setValue("");

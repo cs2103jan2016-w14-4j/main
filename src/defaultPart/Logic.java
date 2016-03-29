@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -194,7 +193,7 @@ public class Logic {
 
 		// very ugly codes, to be refactored
 		Recur recur = newTask.getRecur();
-		Calendar date = newTask.getDate();
+		TaskDate date = newTask.getDate();
 		if ((recur != null || newTask.getStartTime() != null) && date == null) {
 			logger.log(Level.FINE, "Setting date to today");
 			newTask.setDate(new TaskDate());
@@ -272,7 +271,7 @@ public class Logic {
 			int lastIndex = args.size() - 1;
 			String lastString = args.get(args.size() - 1);
 			String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
-			Calendar date = getWrappedDateFromString(secondLastString);
+			TaskDate date = getWrappedDateFromString(secondLastString);
 			boolean isDigit = lastString.matches("\\d");
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
 				setTaskTime(task, lastString);
@@ -299,7 +298,7 @@ public class Logic {
 			return;
 		}
 
-		Calendar date;
+		TaskDate date;
 
 		if (args.size() > 2 && args.get(lastIndex - 1).equals("next")) {
 			String[] arrayArgs = new String[args.size()];
@@ -324,45 +323,45 @@ public class Logic {
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
-	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
+	private void wrapDateToTodayOrLater(TaskDate date, int numOfDateFieldsSet) {
 		if (date == null) {
 			return;
 		}
-		Calendar currentDate = new TaskDate();
+		TaskDate currentDate = new TaskDate();
 
 		if (currentDate.compareTo(date) > 0) {
 			switch (numOfDateFieldsSet) {
 				case 1 :
-					date.add(Calendar.MONTH, 1);
+					date.add(TaskDate.MONTH, 1);
 					break;
 
 				case 2 :
-					date.add(Calendar.YEAR, 1);
+					date.add(TaskDate.YEAR, 1);
 					break;
 			}
 		}
 	}
 
-	public Calendar getWrappedDateFromString(String dateString) {
+	public TaskDate getWrappedDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
-		Calendar newDate = getDateFromString(dayAndMonthAndYear);
+		TaskDate newDate = getDateFromString(dayAndMonthAndYear);
 
 		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
 
-	private Calendar getDateFromString(String[] dayAndMonthAndYear) {
-		Calendar currentDate = new TaskDate();
-		Calendar newDate = (Calendar) currentDate.clone();
+	private TaskDate getDateFromString(String[] dayAndMonthAndYear) {
+		TaskDate currentDate = new TaskDate();
+		TaskDate newDate = (TaskDate) currentDate.clone();
 
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
 					return null;
 				}
-				int currentYear = newDate.get(Calendar.YEAR);
+				int currentYear = newDate.get(TaskDate.YEAR);
 				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
-				newDate.set(Calendar.YEAR,
+				newDate.set(TaskDate.YEAR,
 						currentYear / factor * factor + Integer.parseInt(dayAndMonthAndYear[2]));
 				// fallthrough
 
@@ -370,14 +369,14 @@ public class Logic {
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
+				newDate.set(TaskDate.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
 				// fallthrough
 
 			case 1 :
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
 					return null;
 				}
-				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
+				newDate.set(TaskDate.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
 				break;
 		}
 
@@ -402,7 +401,7 @@ public class Logic {
 
 			case 2 :
 				// changes time XOR date of task XOR description
-				Calendar date = getWrappedDateFromString(args[1]);
+				TaskDate date = getWrappedDateFromString(args[1]);
 				changeTimeDateOrDesc(task, args, date);
 				break;
 
@@ -434,24 +433,18 @@ public class Logic {
 		return args[1].equals("next");
 	}
 
-	private Calendar getNextDate(String[] args) {
+	private TaskDate getNextDate(String[] args) {
 		String increment = args[args.length - 1].toLowerCase();
-		Calendar newDate = new TaskDate();
-
-		newDate.set(Calendar.HOUR_OF_DAY, 0);
-		newDate.set(Calendar.MINUTE, 0);
-		newDate.set(Calendar.SECOND, 0);
-		newDate.set(Calendar.MILLISECOND, 0);
-		newDate.getTimeInMillis();
+		TaskDate newDate = new TaskDate();
 
 		if (increment.equals("day")) {
-			newDate.add(Calendar.DATE, 1);
+			newDate.add(TaskDate.DATE, 1);
 		} else if (increment.equals("week")) {
-			newDate.add(Calendar.DATE, 7);
+			newDate.add(TaskDate.DATE, 7);
 		} else if (increment.equals("month")) {
-			newDate.add(Calendar.MONTH, 1);
+			newDate.add(TaskDate.MONTH, 1);
 		} else if (increment.equals("year")) {
-			newDate.add(Calendar.YEAR, 1);
+			newDate.add(TaskDate.YEAR, 1);
 		} else if (increment.equals("sun") || increment.equals("sunday")) {
 			wrapDateToNextDayOfWeek(newDate, 1);
 		} else if (increment.equals("mon") || increment.equals("monday")) {
@@ -473,12 +466,12 @@ public class Logic {
 		// need include case for invalid 2nd input, i.e., next hi
 	}
 
-	private void wrapDateToNextDayOfWeek(Calendar newDate, int dayToWrapTo) {
-		if (newDate.get(Calendar.DAY_OF_WEEK) == dayToWrapTo) {
-			newDate.add(Calendar.DATE, 7);
+	private void wrapDateToNextDayOfWeek(TaskDate newDate, int dayToWrapTo) {
+		if (newDate.get(TaskDate.DAY_OF_WEEK) == dayToWrapTo) {
+			newDate.add(TaskDate.DATE, 7);
 		} else {
-			while (newDate.get(Calendar.DAY_OF_WEEK) != dayToWrapTo) {
-				newDate.add(Calendar.DATE, 1);
+			while (newDate.get(TaskDate.DAY_OF_WEEK) != dayToWrapTo) {
+				newDate.add(TaskDate.DATE, 1);
 			}
 		}
 	}
@@ -498,19 +491,19 @@ public class Logic {
 		_indexesFound.add(taskIndex);
 	}
 
-	private void changeDateTimeAndRecur(Task task, String[] args, List<String> listArgs, Calendar date) {
+	private void changeDateTimeAndRecur(Task task, String[] args, List<String> listArgs, TaskDate date) {
 		changeTimeAndDate(task, args, date);
 		setRecurIfExists(task, listArgs);
 	}
 
-	private void changeTimeAndDate(Task task, String[] args, Calendar date) {
+	private void changeTimeAndDate(Task task, String[] args, TaskDate date) {
 		if (date != null) {
 			task.setDate(date);
 		}
 		setTaskTime(task, args[2]);
 	}
 
-	private void changeTimeDateOrDesc(Task task, String[] args, Calendar date) {
+	private void changeTimeDateOrDesc(Task task, String[] args, TaskDate date) {
 		if (date != null) {
 			task.setDate(date);
 		} else if (isTime(args[1])) {
@@ -521,7 +514,7 @@ public class Logic {
 	}
 
 	// todo: 7-11 default to am, 12-6 default to pm, if am/pm not specified
-	private Calendar getTimeFromString(String timeString) {
+	private TaskTime getTimeFromString(String timeString) {
 		String minuteFormat = "";
 		if (timeString.contains(":")) {
 			minuteFormat = ":mm";
@@ -530,7 +523,7 @@ public class Logic {
 		}
 		String amOrPmMarker = (timeString.toLowerCase().contains("m")) ? "a" : "";
 		SimpleDateFormat timeFormat = new SimpleDateFormat("hh" + minuteFormat + amOrPmMarker);
-		Calendar time = new TaskTime();
+		TaskTime time = new TaskTime();
 		try {
 			time.setTime(timeFormat.parse(timeString));
 		} catch (ParseException e) {
@@ -539,9 +532,9 @@ public class Logic {
 		return time;
 	}
 
-	private Calendar getTaskStartTime(String timeString) {
-		Calendar time = new TaskTime();
-		time.set(Calendar.MINUTE, 0);
+	private TaskTime getTaskStartTime(String timeString) {
+		TaskTime time = new TaskTime();
+		time.set(TaskTime.MINUTE, 0);
 		String timeDelimiterRegex = ":|\\.";
 		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
 		assert (hoursAndMinutes.length > 0);
@@ -556,7 +549,7 @@ public class Logic {
 				} else {
 					minutes = Integer.parseInt(minutesToChange);
 				}
-				time.set(Calendar.MINUTE, minutes);
+				time.set(TaskTime.MINUTE, minutes);
 				// fallthrough
 			case 1 :
 				String hoursToChange = hoursAndMinutes[0];
@@ -568,7 +561,7 @@ public class Logic {
 				} else {
 					hours = Integer.parseInt(hoursToChange);
 				}
-				time.set(Calendar.HOUR, hours);
+				time.set(TaskTime.HOUR, hours);
 				break;
 		}
 		return time;

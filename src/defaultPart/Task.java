@@ -1,15 +1,14 @@
 package defaultPart;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 public class Task {
 
 	private String _description;
 
-	private Calendar _date;
-	private Calendar _startTime;
-	private Calendar _endTime;
+	private TaskDate _date;
+	private TaskTime _startTime;
+	private TaskTime _endTime;
 
 	private Recur _recur;
 	private boolean _isCompleted;
@@ -18,27 +17,27 @@ public class Task {
 		_description = description;
 	}
 
-	public Calendar getDate() {
+	public TaskDate getDate() {
 		return _date;
 	}
 
-	public void setDate(Calendar date) {
+	public void setDate(TaskDate date) {
 		_date = date;
 	}
 
-	public Calendar getStartTime() {
+	public TaskTime getStartTime() {
 		return _startTime;
 	}
 
-	public void setStartTime(Calendar startTime) {
+	public void setStartTime(TaskTime startTime) {
 		_startTime = startTime;
 	}
 
-	public Calendar getEndTime() {
+	public TaskTime getEndTime() {
 		return _endTime;
 	}
 
-	public void setEndTime(Calendar endTime) {
+	public void setEndTime(TaskTime endTime) {
 		_endTime = endTime;
 	}
 

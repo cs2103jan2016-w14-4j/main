@@ -1,5 +1,6 @@
 package defaultPart;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -16,5 +17,9 @@ public class TaskTime extends GregorianCalendar {
 	@Override
 	public String toString() {
 		return timeFormat.format(this.getTime());
+	}
+	
+	public void setTimeFromString(String timeString) throws ParseException {
+		timeFormat.parse(timeString);
 	}
 }
