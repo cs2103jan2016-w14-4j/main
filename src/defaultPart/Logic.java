@@ -180,13 +180,18 @@ public class Logic {
 		
 		//very ugly codes, to be refactored
 		Calendar date = newTask.getDate();
-		if (date!=null) {
+		boolean floating = _argument.charAt(_argument.length()-1) == '.';
+		if (date!=null && !floating) {
 			Recur recur = newTask.getRecur();
 			recur.setStartDate(newTask.getDate());
 			newTask.setDescription(String.join(" ", args));
 		} else {
 			logger.log(Level.FINE, "Task has no date");
-			newTask.setDescription(_argument);
+			if (floating) {
+				newTask.setDescription(_argument.substring(0, _argument.length()-1));
+			} else {
+				newTask.setDescription(_argument);
+			}
 			newTask.setStartTime(null);
 			newTask.setRecur(null);
 		}
