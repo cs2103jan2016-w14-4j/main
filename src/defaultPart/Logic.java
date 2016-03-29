@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -70,8 +69,7 @@ public class Logic {
 	}
 
 	/**
-	 * Overloaded Constructor for integration testing to prevent interference with actual storage
-	 * file
+	 * Overloaded Constructor for integration testing to prevent interference with actual storage file
 	 * 
 	 * @throws SAXException
 	 */
@@ -79,7 +77,7 @@ public class Logic {
 		setupLogger();
 		_storage = new Storage(testFile);
 	}
-	
+
 	public void loadTasksFromFile() throws SAXException {
 		_storage.loadTasksFromFile();
 	}
@@ -194,16 +192,16 @@ public class Logic {
 		setTaskTimeIfExists(newTask, args);
 		setTaskDateIfExists(newTask, args);
 
-		//very ugly codes, to be refactored
+		// very ugly codes, to be refactored
 		Recur recur = newTask.getRecur();
 		Calendar date = newTask.getDate();
-		if ((recur != null || newTask.getStartTime()!=null) && date==null){
+		if ((recur != null || newTask.getStartTime() != null) && date == null) {
 			logger.log(Level.FINE, "Setting date to today");
-			newTask.setDate(new GregorianCalendar());
+			newTask.setDate(new TaskDate());
 			date = newTask.getDate();
 		}
-		boolean floating = _argument.charAt(_argument.length()-1) == '.';
-		if (date!=null && !floating) {
+		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
+		if (date != null && !floating) {
 			if (recur != null) {
 				recur.setStartDate(date);
 			}
@@ -211,7 +209,7 @@ public class Logic {
 		} else {
 			logger.log(Level.FINE, "Task has no date");
 			if (floating) {
-				newTask.setDescription(_argument.substring(0, _argument.length()-1));
+				newTask.setDescription(_argument.substring(0, _argument.length() - 1));
 			} else {
 				newTask.setDescription(_argument);
 			}
@@ -330,7 +328,7 @@ public class Logic {
 		if (date == null) {
 			return;
 		}
-		Calendar currentDate = new GregorianCalendar();
+		Calendar currentDate = new TaskDate();
 
 		if (currentDate.compareTo(date) > 0) {
 			switch (numOfDateFieldsSet) {
@@ -354,7 +352,7 @@ public class Logic {
 	}
 
 	private Calendar getDateFromString(String[] dayAndMonthAndYear) {
-		Calendar currentDate = new GregorianCalendar();
+		Calendar currentDate = new TaskDate();
 		Calendar newDate = (Calendar) currentDate.clone();
 
 		switch (dayAndMonthAndYear.length) {
@@ -438,7 +436,7 @@ public class Logic {
 
 	private Calendar getNextDate(String[] args) {
 		String increment = args[args.length - 1].toLowerCase();
-		Calendar newDate = new GregorianCalendar();
+		Calendar newDate = new TaskDate();
 
 		newDate.set(Calendar.HOUR_OF_DAY, 0);
 		newDate.set(Calendar.MINUTE, 0);
@@ -532,7 +530,7 @@ public class Logic {
 		}
 		String amOrPmMarker = (timeString.toLowerCase().contains("m")) ? "a" : "";
 		SimpleDateFormat timeFormat = new SimpleDateFormat("hh" + minuteFormat + amOrPmMarker);
-		Calendar time = new GregorianCalendar();
+		Calendar time = new TaskTime();
 		try {
 			time.setTime(timeFormat.parse(timeString));
 		} catch (ParseException e) {
@@ -542,7 +540,7 @@ public class Logic {
 	}
 
 	private Calendar getTaskStartTime(String timeString) {
-		Calendar time = new GregorianCalendar();
+		Calendar time = new TaskTime();
 		time.set(Calendar.MINUTE, 0);
 		String timeDelimiterRegex = ":|\\.";
 		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
@@ -605,10 +603,10 @@ public class Logic {
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		}
 	}
-	
+
 	private void deleteMultiple() {
-	//	String[] dayAndMonthAndYear = dateString.split("/", 3);
-	//	Calendar newDate = getDateFromString(dayAndMonthAndYear);
+		// String[] dayAndMonthAndYear = dateString.split("/", 3);
+		// Calendar newDate = getDateFromString(dayAndMonthAndYear);
 	}
 
 	/**
@@ -649,7 +647,7 @@ public class Logic {
 
 	private void setStoragePath() {
 		try {
-			
+
 			_storage.setSavePath(_argument);
 			String taskFilePathAndName = _storage.getSavePath();
 			_storage.loadTasksFromFile();
