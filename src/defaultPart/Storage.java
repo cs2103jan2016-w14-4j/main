@@ -347,7 +347,8 @@ public class Storage {
 		recurTimeUnitElement.appendChild(doc.createTextNode(recur.getTimeUnit().toString()));
 		recurFrequencyElement.appendChild(doc.createTextNode(Integer.toString(recur.getFrequency())));
 		recurStartOfRecurrElement.appendChild(doc.createTextNode(recur.getStartDate().toString()));
-		recurEndOfRecurrElement.appendChild(doc.createTextNode(recur.getEndDate().toString()));
+		TaskDate endDate = recur.getEndDate();
+		recurEndOfRecurrElement.appendChild(doc.createTextNode(endDate == null ? "" : endDate.toString()));
 		recurrElement.appendChild(recurTimeUnitElement);
 		recurrElement.appendChild(recurFrequencyElement);
 		recurrElement.appendChild(recurStartOfRecurrElement);

@@ -232,8 +232,12 @@ public class Logic {
 
 			int endConditionIndex = args.size() - 1;
 			String endCondition = args.get(endConditionIndex);
-
-			if (frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*")) {
+			boolean endConditionSpecified = ! endCondition.matches("\\d*[dwmy]");
+			if ((frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*"))
+					|| !endConditionSpecified) {
+				if (!endConditionSpecified) {
+					frequencyAndUnit = args.get(endConditionIndex);
+				}
 				Recur recur = new Recur();
 				switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
 					case 'd' :
@@ -258,10 +262,16 @@ public class Logic {
 					recur.setFrequency(Character.getNumericValue(frequency));
 				}
 				// todo: endCondition support for number of times
-				recur.setEndDate(getWrappedDateFromString(endCondition));
+				if (endConditionSpecified) {
+					recur.setEndDate(getWrappedDateFromString(endCondition));
+				}
 				logger.log(Level.FINER, "Setting recur: {0}", recur);
 				task.setRecur(recur);
-				removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
+				if (!endConditionSpecified) {
+					args.remove(endConditionIndex);
+				} else {
+					removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
+				}
 			}
 		}
 	}

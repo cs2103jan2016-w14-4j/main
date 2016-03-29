@@ -59,7 +59,7 @@ public class Recur {
 	}
 
 	private boolean nextDateAfterEndDate(TaskDate nextDate) {
-		return nextDate.compareTo(_endDate) > 0;
+		return _endDate != null && nextDate.compareTo(_endDate) > 0;
 	}
 
 	private void getNextRecurAfterToday(TaskDate nextDate, TaskDate today) {
@@ -100,7 +100,7 @@ public class Recur {
 
 	@Override
 	public String toString() {
-		String formattedDate = _endDate.toString();
+		String formattedDate = _endDate == null ? "" : _endDate.toString();
 		return _frequency + "" + _timeUnit.name().toLowerCase().charAt(0) + " " + formattedDate;
 	}
 
