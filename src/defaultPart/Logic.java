@@ -263,10 +263,11 @@ public class Logic {
 
 		Calendar date;
 
-		if (args.size() > 1 && args.get(1).equals("next")) {
+		if (args.size() > 2 && args.get(lastIndex-1).equals("next")) {
 			String[] arrayArgs = new String[args.size()];
 			args.toArray(arrayArgs);
 			date = getNextDate(arrayArgs);
+			args.remove(lastIndex--);
 		} else {
 			date = getWrappedDateFromString(args.get(lastIndex));
 		}
@@ -275,6 +276,7 @@ public class Logic {
 			return;
 		}
 		logger.log(Level.FINER, "Setting task date using \"{0}\"", args.get(lastIndex));
+		date.getTimeInMillis();
 		task.setDate(date);
 		args.remove(lastIndex);
 	}
@@ -395,7 +397,7 @@ public class Logic {
 	}
 
 	private Calendar getNextDate(String[] args) {
-		String increment = args[2].toLowerCase();
+		String increment = args[args.length-1].toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
 		newDate.set(Calendar.HOUR_OF_DAY, 0);
