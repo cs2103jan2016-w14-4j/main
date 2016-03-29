@@ -199,10 +199,15 @@ public class Logic {
 			newTask.setDate(new TaskDate());
 			date = newTask.getDate();
 		}
+		boolean warn = false;
 		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
 		if (date != null && !floating) {
 			if (recur != null) {
 				recur.setStartDate(date);
+				TaskDate endDate = recur.getEndDate();
+				if (endDate!=null && recur.getStartDate().compareTo(endDate) >= 0) {
+					warn = true;  
+				}
 			}
 			newTask.setDescription(String.join(" ", args));
 		} else {
@@ -221,6 +226,10 @@ public class Logic {
 		_storage.addToTaskList(newTask);
 
 		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
+
+		if (warn) {
+			_feedback = "Recur end date <= start date!";
+		}
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
