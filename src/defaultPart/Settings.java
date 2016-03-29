@@ -103,7 +103,6 @@ public class Settings {
 	 */
 	public void setTimeDefault(String timeDefault) {
 		_timeDefault = timeDefault;
-		saveSettings();
 	}
 
 	/**
@@ -131,7 +130,6 @@ public class Settings {
 		} else if (isValidPath(savePath)) {
 			_savePath = savePath;
 		}
-		saveSettings();
 	}
 
 	/**
@@ -182,7 +180,7 @@ public class Settings {
 	 * @param configFile
 	 *            Configuration file to save settings to
 	 */
-	private void saveSettings() {
+	public void saveSettings() {
 
 		File configFile = new File(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME);
 		Document doc = initializeDocBuilder();
