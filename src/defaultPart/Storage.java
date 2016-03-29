@@ -88,7 +88,7 @@ public class Storage {
 	
 	public String getSavePath()
 	{
-		return _settings.getSavePathAndName()
+		return _settings.getSavePathAndName();
 	}
 	/**
 	 * Setup logger for logging
