@@ -183,7 +183,9 @@ public class Logic {
 		boolean floating = _argument.charAt(_argument.length()-1) == '.';
 		if (date!=null && !floating) {
 			Recur recur = newTask.getRecur();
-			recur.setStartDate(newTask.getDate());
+			if (recur != null) {
+				recur.setStartDate(date);
+			}
 			newTask.setDescription(String.join(" ", args));
 		} else {
 			logger.log(Level.FINE, "Task has no date");
