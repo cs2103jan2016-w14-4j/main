@@ -304,7 +304,7 @@ public class Logic {
 	private Calendar getDateFromString(String[] dayAndMonthAndYear) {
 		Calendar currentDate = new GregorianCalendar();
 		Calendar newDate = (Calendar) currentDate.clone();
-		
+
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
@@ -357,30 +357,15 @@ public class Logic {
 				break;
 
 			case 3 :
-				// changes time AND date of task
-				date = getWrappedDateFromString(args[1]);
-				changeTimeAndDate(task, args, date);
-				/*if(args[1].equals("next"))
-					if(dayAndMonthAndYear.length==2 && dayAndMonthAndYear[0].equals("next")){
-						String increment = dayAndMonthAndYear[1];
-						Calendar today = new GregorianCalendar();
-						today.set(Calendar.HOUR_OF_DAY, 0);
-						today.set(Calendar.MINUTE, 0);
-						today.set(Calendar.SECOND, 0);
-						today.set(Calendar.MILLISECOND, 0);
-						today.getTimeInMillis();
-						
-						if(increment.equals("day")){
-							today.set(Calendar.DATE,today.get(Calendar.DATE)+1);
-						}else if(increment.equals("month")){
-							today.set(Calendar.MONTH,today.get(Calendar.MONTH)+1);
-						}else if(increment.equals("year")){
-							today.set(Calendar.YEAR,today.get(Calendar.YEAR)+1);
-						}
-						//need include case for invalid 2nd input, i.e., next hi
-						return today;
-					}
-				*/
+
+				if (args[1].equals("next")) {
+					getNextDate(task, args);
+				} else {
+					// changes time AND date of task
+					date = getWrappedDateFromString(args[1]);
+					changeTimeAndDate(task, args, date);
+				}
+
 				break;
 
 			case 5 :
@@ -392,6 +377,27 @@ public class Logic {
 		}
 		putEdittedTaskInStorage(taskIndex, task);
 		returnEditFeedback(taskIndex);
+	}
+
+	private void getNextDate(Task task, String[] args) {
+		String increment = args[2];
+		Calendar newDate = new GregorianCalendar();
+
+		newDate.set(Calendar.HOUR_OF_DAY, 0);
+		newDate.set(Calendar.MINUTE, 0);
+		newDate.set(Calendar.SECOND, 0);
+		newDate.set(Calendar.MILLISECOND, 0);
+		newDate.getTimeInMillis();
+		
+		if (increment.equals("day")) {
+			newDate.set(Calendar.DATE, newDate.get(Calendar.DATE) + 1);
+		} else if (increment.equals("month")) {
+			newDate.set(Calendar.MONTH, newDate.get(Calendar.MONTH) + 1);
+		} else if (increment.equals("year")) {
+			newDate.set(Calendar.YEAR, newDate.get(Calendar.YEAR) + 1);
+		}
+		task.setDate(newDate);
+		//need include case for invalid 2nd input, i.e., next hi
 	}
 
 	private void returnEditFeedback(int taskIndex) {
