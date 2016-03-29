@@ -166,7 +166,7 @@ public class Settings {
 		if (configFile.isFile() && configFile.canRead()) {
 			loadSettings(configFile);
 		} else {
-			saveSettings();
+			saveConfigToFile();
 		}
 
 		// Ensure that after saving/loading the configuration file has been created
@@ -180,7 +180,7 @@ public class Settings {
 	 * @param configFile
 	 *            Configuration file to save settings to
 	 */
-	public void saveSettings() {
+	public void saveConfigToFile() {
 
 		File configFile = new File(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME);
 		Document doc = initializeDocBuilder();
