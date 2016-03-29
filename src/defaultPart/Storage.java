@@ -47,6 +47,7 @@ public class Storage {
 
 	/* Date format used to save/load from XML */
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
+	private SimpleDateFormat formatterDateOnly = new SimpleDateFormat("dd-M-yyyy");
 
 	/* Stores current list of tasks in the program */
 	private List<Task> _currentTaskList = new LinkedList<Task>();
@@ -481,8 +482,8 @@ public class Storage {
 		Task newTask = new Task();
 		newTask.setDescription(extractStringFromNode(taskElement, TAG_TASK_DESCRIPTION));
 		newTask.setDate(extractDateFromNode(taskElement, TAG_TASK_DATE));
-		newTask.setStartTime(extractDateFromNode(taskElement, TAG_TASK_STARTTIME));
-		newTask.setEndTime(extractDateFromNode(taskElement, TAG_TASK_ENDTIME));
+		newTask.setStartTime(extractDateTimeFromNode(taskElement, TAG_TASK_STARTTIME));
+		newTask.setEndTime(extractDateTimeFromNode(taskElement, TAG_TASK_ENDTIME));
 		if (extractStringFromNode(taskElement, TAG_TASK_COMPLETED).equals("yes")) {
 			newTask.toggleCompleted();
 		}
@@ -520,8 +521,8 @@ public class Storage {
 
 		String timeUnit = extractStringFromNode(taskElement, TAG_TASK_TIMEUNIT);
 		int frequency = Integer.parseInt(extractStringFromNode(taskElement, TAG_TASK_FREQUENCY));
-		Calendar startOfRecurr = extractDateFromNode(taskElement, TAG_TASK_START_OF_RECURR);
-		Calendar endOfRecurr = extractDateFromNode(taskElement, TAG_TASK_END_OF_RECURR);
+		Calendar startOfRecurr = extractDateTimeFromNode(taskElement, TAG_TASK_START_OF_RECURR);
+		Calendar endOfRecurr = extractDateTimeFromNode(taskElement, TAG_TASK_END_OF_RECURR);
 		Recur taskRecurr = new Recur();
 		taskRecurr.setTimeUnit(TimeUnit.valueOf(timeUnit));
 		taskRecurr.setFrequency(frequency);
@@ -530,6 +531,31 @@ public class Storage {
 		return taskRecurr;
 	}
 
+	/**
+	 * Extract a date from node with specified tag and returns as Calendar object
+	 * 
+	 * @param taskElement
+	 *            Element object containing the task details
+	 * @param tag
+	 *            Tag to specify which date, e.g. "start", "end'
+	 * @return Calendar class object converted from the date
+	 * @throws ParseException
+	 *             Error in formatting the date
+	 */
+	private Calendar extractDateTimeFromNode(Element taskElement, String tag) throws ParseException {
+
+		// Assert than taskElement & tag are not null
+		assert (taskElement != null);
+		assert (tag != null || tag != "");
+
+		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
+		if (calendarString == "") {
+			return null;
+		}
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(formatter.parse(calendarString));
+		return calendar;
+	}
 	/**
 	 * Extract a date from node with specified tag and returns as Calendar object
 	 * 
@@ -555,7 +581,9 @@ public class Storage {
 		calendar.setTime(formatter.parse(calendarString));
 		return calendar;
 	}
-
+	
+	
+	
 	/**
 	 * Extract a string from node with specified tag
 	 * 

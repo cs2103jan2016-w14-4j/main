@@ -30,7 +30,7 @@ public class SystemTest {
 	public static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
 
 	@Test
-	public final void testCase0() throws SAXException, IOException, ParseException {
+	public final void testCase1() throws SAXException, IOException, ParseException {
 
 		File testFile = new File(TEST_FILE_NAME);
 	
@@ -61,17 +61,26 @@ public class SystemTest {
 	}
 
 	@Test
-	public final void testCase1() throws SAXException, IOException {
+	public final void testCase2() throws SAXException, IOException, ParseException {
 
-		File testFile = new File("test\\SystemTest.xml");
-		FileReader fr1 = new FileReader(testFile);
-		File expectedFile = new File("test\\SystemTest\\SystemTest1.xml");
-		FileReader fr2 = new FileReader(expectedFile);
+		File testFile = new File(TEST_FILE_NAME);
+	
 		Logic logic = new Logic(testFile);
-
-		logic.executeCommand("500 words CFG1010 8/4");
+		logic.executeCommand("CS2103T Post Lect Quiz 30/4");
 		logic.saveTasksToFile();
 
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage expStorage = new Storage(expectedFile);
+		Task newTask = new Task();
+		newTask.setDescription("CS2103T Post Lect Quiz ");
+		Calendar calDate = new GregorianCalendar();
+		calDate.setTime(formatter.parse("30-4-2016 00:00:00"));
+		newTask.setDate(calDate);
+		expStorage.addToTaskList(newTask);
+		expStorage.saveTasksToFile();
+		FileReader fr1 = new FileReader(testFile);
+		FileReader fr2 = new FileReader(expectedFile);
+		
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
@@ -81,5 +90,6 @@ public class SystemTest {
 		// This is to test the expected behavior of this function
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
+
 
 }
