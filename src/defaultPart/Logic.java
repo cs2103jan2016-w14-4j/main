@@ -193,12 +193,17 @@ public class Logic {
 		setRecurIfExists(newTask, args);
 		setTaskTimeIfExists(newTask, args);
 		setTaskDateIfExists(newTask, args);
-		
+
 		//very ugly codes, to be refactored
+		Recur recur = newTask.getRecur();
 		Calendar date = newTask.getDate();
+		if ((recur != null || newTask.getStartTime()!=null) && date==null){
+			logger.log(Level.FINE, "Setting date to today");
+			newTask.setDate(new GregorianCalendar());
+			date = newTask.getDate();
+		}
 		boolean floating = _argument.charAt(_argument.length()-1) == '.';
 		if (date!=null && !floating) {
-			Recur recur = newTask.getRecur();
 			if (recur != null) {
 				recur.setStartDate(date);
 			}
@@ -586,6 +591,7 @@ public class Logic {
 	}
 
 	private void deleteTask() throws IOException {
+		deleteMultiple();
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
 		Recur recur = task.getRecur();
@@ -598,6 +604,11 @@ public class Logic {
 			task.setDate(recur.getNextRecur());
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		}
+	}
+	
+	private void deleteMultiple() {
+	//	String[] dayAndMonthAndYear = dateString.split("/", 3);
+	//	Calendar newDate = getDateFromString(dayAndMonthAndYear);
 	}
 
 	/**
