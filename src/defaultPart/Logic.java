@@ -1,5 +1,6 @@
 package defaultPart;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,6 +69,17 @@ public class Logic {
 		}
 	}
 
+	/**
+	 * Overloaded Constructor for integration testing to prevent interference with actual storage
+	 * file
+	 * 
+	 * @throws SAXException
+	 */
+	public Logic(File testFile) throws SAXException {
+		setupLogger();
+		_storage = new Storage(testFile);
+	}
+	
 	public void loadTasksFromFile() throws SAXException {
 		_storage.loadTasksFromFile();
 	}

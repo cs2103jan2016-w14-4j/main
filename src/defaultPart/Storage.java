@@ -71,7 +71,7 @@ public class Storage {
 	}
 
 	/**
-	 * Overloaded Constructor for unit testing for Storage class to prevent interference with actual storage
+	 * Overloaded Constructor for integration testing to prevent interference with actual storage
 	 * file
 	 * 
 	 * @throws SAXException
@@ -79,7 +79,7 @@ public class Storage {
 	public Storage(File storageFile) throws SAXException {
 		setupLogger();
 		_file = storageFile;
-		_settings = new Settings();
+		//_settings = new Settings();
 	}
 
 	public void setSavePath(String filePath)
