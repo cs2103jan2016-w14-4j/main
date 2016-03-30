@@ -657,6 +657,7 @@ public class Logic {
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
 			task.setDate(recur.getNextRecur());
+			recur.setStartDate(task.getDate());
 			_feedback = String.format(
 					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getDate());
 		}
