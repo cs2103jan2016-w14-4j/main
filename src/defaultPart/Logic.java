@@ -679,8 +679,7 @@ public class Logic {
 		}
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(_argument);
-		match.find();
-		if (match.start() == 0) {
+		if (match.find() && match.start() == 0) {
 			String[] dayAndMonthAndYear = _argument.substring(match.end()).split("/", 3);
 			System.out.println(Arrays.toString(dayAndMonthAndYear));
 			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
