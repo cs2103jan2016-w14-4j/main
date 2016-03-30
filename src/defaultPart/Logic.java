@@ -15,6 +15,8 @@ import java.util.logging.SimpleFormatter;
 
 import org.xml.sax.SAXException;
 
+import defaultPart.Recur.TimeUnit;
+
 public class Logic {
 
 	private static final Logger logger = Logger.getLogger(Logic.class.getName());
@@ -205,8 +207,8 @@ public class Logic {
 			if (recur != null) {
 				recur.setStartDate(date);
 				TaskDate endDate = recur.getEndDate();
-				if (endDate!=null && recur.getStartDate().compareTo(endDate) >= 0) {
-					warn = true;  
+				if (endDate != null && recur.getStartDate().compareTo(endDate) >= 0) {
+					warn = true;
 				}
 			}
 			newTask.setDescription(String.join(" ", args));
@@ -241,7 +243,7 @@ public class Logic {
 
 			int endConditionIndex = args.size() - 1;
 			String endCondition = args.get(endConditionIndex);
-			boolean endConditionSpecified = ! endCondition.matches("\\d*[dwmy]");
+			boolean endConditionSpecified = !endCondition.matches("\\d*[dwmy]");
 			if ((frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*"))
 					|| !endConditionSpecified) {
 				if (!endConditionSpecified) {
@@ -270,9 +272,12 @@ public class Logic {
 				if (Character.isDigit(frequency)) {
 					recur.setFrequency(Character.getNumericValue(frequency));
 				}
-				// todo: endCondition support for number of times
 				if (endConditionSpecified) {
-					recur.setEndDate(getWrappedDateFromString(endCondition));
+					if (endCondition.matches("\\d+")) {
+						recur.setEndDate(getRecurEndDate(recur, endCondition));
+					} else {
+						recur.setEndDate(getWrappedDateFromString(endCondition));
+					}
 				}
 				logger.log(Level.FINER, "Setting recur: {0}", recur);
 				task.setRecur(recur);
@@ -283,6 +288,29 @@ public class Logic {
 				}
 			}
 		}
+	}
+
+	private TaskDate getRecurEndDate(Recur recur, String numOfTimesString) {
+		TaskDate endDate = new TaskDate();
+		int numOfTimes = Integer.parseInt(numOfTimesString);
+		int unit = -1;
+		switch (recur.getTimeUnit()) {
+			case DAY :
+				unit = TaskDate.DAY_OF_MONTH;
+				break;
+			case WEEK :
+				unit = TaskDate.WEEK_OF_YEAR;
+				break;
+			case MONTH :
+				unit = TaskDate.MONTH;
+				break;
+			case YEAR :
+				unit = TaskDate.YEAR;
+				break;
+		}
+		assert unit > -1;
+		endDate.add(unit, numOfTimes);
+		return endDate;
 	}
 
 	private void setTaskTimeIfExists(Task task, List<String> args) {
