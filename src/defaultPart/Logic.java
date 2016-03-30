@@ -436,12 +436,14 @@ public class Logic {
 	}
 
 	private void editTask() throws IOException {
+		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
 		int taskIndex = getTaskIndex();
+		args.remove(0);
 		Task task = _storage.getTask(taskIndex);
 		assert (task != null);
-
-		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
+		
 		boolean isRecurEdited = setRecurIfExists(task, args);
+		
 		if (isRecurEdited) {
 			Recur recur = task.getRecur();
 			TaskDate date = task.getDate();
@@ -453,41 +455,46 @@ public class Logic {
 				recur.setStartDate(date);
 			}
 		}
-
-		switch (args.size()) {
-			case 1 :
-				// copy task to input box for editing
-				if (!isRecurEdited) {
-					copyTaskToInputForEditting(taskIndex);
-				}
-				break;
-
-			case 2 :
-				// changes time XOR date of task XOR description
-				TaskDate date = getWrappedDateFromString(args.get(1));
-				changeTimeDateOrDesc(task, args, date);
-				break;
-
-			case 3 :
-
-				if (isNextType(args)) {
-					date = getNextDate(args);
-					task.setDate(date);
-				} else {
-					// changes time AND date of task
-					date = getWrappedDateFromString(args.get(1));
-					changeTimeAndDate(task, args, date);
-				}
-
-				break;
-
-			// case 5 :
-			// // allows changing of recur
-			// date = getWrappedDateFromString(args[1]);
-			// changeDateTimeAndRecur(task, args, listArgs, date);
-			// break;
-
-		}
+		
+		setTaskTimeIfExists(task, args);
+		setTaskDateIfExists(task, args);
+		task.setDescription(String.join(" ", args));
+		
+		// switch (args.size()) {
+		// case 1 :
+		// // copy task to input box for editing
+		// if (!isRecurEdited) {
+		// copyTaskToInputForEditting(taskIndex);
+		// }
+		// break;
+		//
+		// case 2 :
+		// // changes time XOR date of task XOR description
+		// TaskDate date = getWrappedDateFromString(args.get(1));
+		// changeTimeDateOrDesc(task, args, date);
+		// break;
+		//
+		// case 3 :
+		//
+		// if (isNextType(args)) {
+		// date = getNextDate(args);
+		// task.setDate(date);
+		// } else {
+		// // changes time AND date of task
+		// date = getWrappedDateFromString(args.get(1));
+		// changeTimeAndDate(task, args, date);
+		// }
+		//
+		// break;
+		//
+		//
+		// // case 5 :
+		// // // allows changing of recur
+		// // date = getWrappedDateFromString(args[1]);
+		// // changeDateTimeAndRecur(task, args, listArgs, date);
+		// // break;
+		//
+		// }
 		putEdittedTaskInStorage(taskIndex, task);
 		returnEditFeedback(taskIndex);
 	}
@@ -724,10 +731,10 @@ public class Logic {
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
-		String keywords = _argument;
+		String keywords = _argument.toLowerCase();
 		List<Task> taskList = _storage.getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
-			if (taskList.get(i).getDescription().contains(keywords)) {
+			if (taskList.get(i).getDescription().toLowerCase().contains(keywords)) {
 				_indexesFound.add(i);
 			}
 		}
