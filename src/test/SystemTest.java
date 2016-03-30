@@ -1,9 +1,15 @@
 package test;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -502,7 +508,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testEditRecurEndOfRecur() throws SAXException, IOException, ParseException {
 
@@ -527,5 +533,92 @@ public class SystemTest {
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testEditInvalidIndex() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1/1/2016");
+		logicExecuteCommand(logic, "e 2 Buy Tomatoes Instead");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
+				createRecur("DAY", 1, "1-5-2016", "1-1-2016"));
+
+		// Settings for XML formatting
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testFindWord() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "f Trip");
+		List<Integer> actualIndexList = logic.getIndexesFound();
+
+		// Setting up expected Task List for comparison
+		List<Integer> expectedList = new ArrayList<Integer>();
+		expectedList.add(0);
+		expectedList.add(2);
+
+		// This is to test the expected behavior of this function
+		assertEquals(expectedList, actualIndexList);
+	}
+	
+	@Test
+	public final void testFindCapitalizedWord() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "f TRIP");
+		List<Integer> actualIndexList = logic.getIndexesFound();
+
+		// Setting up expected Task List for comparison
+		List<Integer> expectedList = new ArrayList<Integer>();
+		expectedList.add(0);
+		expectedList.add(2);
+
+		// This is to test the expected behavior of this function
+		assertEquals(expectedList, actualIndexList);
+	}
+
+	@Test 
+	public final void testFindUnorderedWords() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "f trip plan");
+		List<Integer> actualIndexList = logic.getIndexesFound();
+
+		// Setting up expected Task List for comparison
+		List<Integer> expectedList = new ArrayList<Integer>();
+		expectedList.add(0);
+		expectedList.add(2);
+
+		// This is to test the expected behavior of this function
+		assertEquals(expectedList, actualIndexList);
+
 	}
 }
