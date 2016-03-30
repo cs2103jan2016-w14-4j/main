@@ -684,19 +684,31 @@ public class Logic {
 			String[] dayAndMonthAndYear = _argument.substring(match.end()).split("/", 3);
 			System.out.println(Arrays.toString(dayAndMonthAndYear));
 			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
-			
+
 			List<Task> taskList = _storage.getTaskList();
 			int count = 0;
 			switch (match.group()) {
 				case "<" :
-					for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
+					for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
+																	 // works
 						TaskDate date = taskList.get(i).getDate();
 						if (date != null && date.compareTo(newDate) < 0) {
 							_storage.removeTask(i);
 							count++;
 						}
-					}					
+					}
+					break;
 
+				case "<=" :
+					for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
+																	 // works
+						TaskDate date = taskList.get(i).getDate();
+						if (date != null && date.compareTo(newDate) <= 0) {
+							_storage.removeTask(i);
+							count++;
+						}
+					}
+					break;
 			}
 
 			_feedback = "Removed " + count + " tasks before " + newDate;
