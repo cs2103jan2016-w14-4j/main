@@ -235,8 +235,8 @@ public class Logic {
 	}
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
-	private void setRecurIfExists(Task task, List<String> args) {
-		if (args.size() >= 3) {
+	private boolean setRecurIfExists(Task task, List<String> args) {
+		if (args.size() >= 2) {
 
 			int frequencyAndUnitIndex = args.size() - 2;
 			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
@@ -286,8 +286,10 @@ public class Logic {
 				} else {
 					removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
 				}
+				return true;
 			}
 		}
+		return false;
 	}
 
 	private TaskDate getRecurEndDate(Recur recur, String numOfTimesString) {
@@ -348,9 +350,7 @@ public class Logic {
 		TaskDate date;
 
 		if (args.size() > 2 && args.get(lastIndex - 1).equals("next")) {
-			String[] arrayArgs = new String[args.size()];
-			args.toArray(arrayArgs);
-			date = getNextDate(arrayArgs);
+			date = getNextDate(args);
 			args.remove(lastIndex--);
 		} else {
 			date = getWrappedDateFromString(args.get(lastIndex));
@@ -437,18 +437,31 @@ public class Logic {
 		Task task = _storage.getTask(taskIndex);
 		assert (task != null);
 
-		String[] args = _argument.split(" ");
-		List<String> listArgs = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
-
-		switch (args.length) {
+		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
+		boolean isRecurEdited = setRecurIfExists(task, args);	
+		if (isRecurEdited) {
+			Recur recur = task.getRecur();
+			TaskDate date = task.getDate();
+			if (date==null){
+				TaskDate today = new TaskDate();
+				recur.setStartDate(today);
+				task.setDate(today);
+			} else {
+				recur.setStartDate(date);
+			}
+		}
+		
+		switch (args.size()) {
 			case 1 :
 				// copy task to input box for editing
-				copyTaskToInputForEditting(taskIndex);
+				if (!isRecurEdited) {
+					copyTaskToInputForEditting(taskIndex);
+				}
 				break;
 
 			case 2 :
 				// changes time XOR date of task XOR description
-				TaskDate date = getWrappedDateFromString(args[1]);
+				TaskDate date = getWrappedDateFromString(args.get(1));
 				changeTimeDateOrDesc(task, args, date);
 				break;
 
@@ -459,29 +472,29 @@ public class Logic {
 					task.setDate(date);
 				} else {
 					// changes time AND date of task
-					date = getWrappedDateFromString(args[1]);
+					date = getWrappedDateFromString(args.get(1));
 					changeTimeAndDate(task, args, date);
 				}
 
 				break;
 
-			case 5 :
-				// allows changing of recur
-				date = getWrappedDateFromString(args[1]);
-				changeDateTimeAndRecur(task, args, listArgs, date);
-				break;
+//			case 5 :
+//				// allows changing of recur
+//				date = getWrappedDateFromString(args[1]);
+//				changeDateTimeAndRecur(task, args, listArgs, date);
+//				break;
 
 		}
 		putEdittedTaskInStorage(taskIndex, task);
 		returnEditFeedback(taskIndex);
 	}
 
-	private boolean isNextType(String[] args) {
-		return args[1].equals("next");
+	private boolean isNextType(List<String> args) {
+		return args.get(1).equals("next");
 	}
 
-	private TaskDate getNextDate(String[] args) {
-		String increment = args[args.length - 1].toLowerCase();
+	private TaskDate getNextDate(List<String> args) {
+		String increment = args.get(args.size() - 1).toLowerCase();
 		TaskDate newDate = new TaskDate();
 
 		if (increment.equals("day")) {
@@ -538,25 +551,25 @@ public class Logic {
 		_indexesFound.add(taskIndex);
 	}
 
-	private void changeDateTimeAndRecur(Task task, String[] args, List<String> listArgs, TaskDate date) {
+	private void changeDateTimeAndRecur(Task task, List<String> args, List<String> listArgs, TaskDate date) {
 		changeTimeAndDate(task, args, date);
 		setRecurIfExists(task, listArgs);
 	}
 
-	private void changeTimeAndDate(Task task, String[] args, TaskDate date) {
+	private void changeTimeAndDate(Task task, List<String> args, TaskDate date) {
 		if (date != null) {
 			task.setDate(date);
 		}
-		setTaskTime(task, args[2]);
+		setTaskTime(task, args.get(2));
 	}
 
-	private void changeTimeDateOrDesc(Task task, String[] args, TaskDate date) {
+	private void changeTimeDateOrDesc(Task task, List<String> args, TaskDate date) {
 		if (date != null) {
 			task.setDate(date);
-		} else if (isTime(args[1])) {
-			setTaskTime(task, args[1]);
+		} else if (isTime(args.get(1))) {
+			setTaskTime(task, args.get(1));
 		} else {
-			task.setDescription(args[1]);
+			task.setDescription(args.get(1));
 		}
 	}
 
