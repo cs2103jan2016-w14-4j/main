@@ -2,15 +2,15 @@
 <wuriTasks>
    <Task>
       <Description>Go out with girlfriend</Description>
-      <Date>01-1-2016 00:04:00</Date>
+      <Date>01-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
-         <frequency>1</frequency>
-         <startOfRecurr>01-1-2016 00:04:00</startOfRecurr>
-         <endOfRecurr>15-1-0201 00:04:00</endOfRecurr>
+         <frequency>3</frequency>
+         <startOfRecurr>01-04-16</startOfRecurr>
+         <endOfRecurr>14-04-16</endOfRecurr>
       </recur>
    </Task>
 </wuriTasks>

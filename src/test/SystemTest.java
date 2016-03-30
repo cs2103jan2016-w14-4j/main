@@ -20,6 +20,8 @@ import defaultPart.Recur;
 import defaultPart.Recur.TimeUnit;
 import defaultPart.Storage;
 import defaultPart.Task;
+import defaultPart.TaskDate;
+import defaultPart.TaskTime;
 
 public class SystemTest {
 
@@ -28,8 +30,8 @@ public class SystemTest {
 	private static final String TEST_FILE_NAME = "test\\SystemTest_actual.xml";
 
 	/* Date format used to save/load from XML */
-	public static SimpleDateFormat formatterDate = new SimpleDateFormat("dd-mm-yyyy");
-	public static SimpleDateFormat formatterDateTime = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
+	public static SimpleDateFormat formatterDate = new SimpleDateFormat("dd-M-yyyy");
+	public static SimpleDateFormat formatterTime = new SimpleDateFormat("HH:mm:ss");
 
 	@Test
 	public final void testCase1() throws SAXException, IOException, ParseException {
@@ -44,8 +46,8 @@ public class SystemTest {
 		Storage expStorage = new Storage(expectedFile);
 		Task newTask = new Task();
 		newTask.setDescription("500 words CFG1010");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("8-4-2016"));
+		TaskDate calDate = new TaskDate();
+		calDate.setDateFromString("8-4-2016");
 		newTask.setDate(calDate);
 		expStorage.addToTaskList(newTask);
 		expStorage.saveTasksToFile();
@@ -74,8 +76,8 @@ public class SystemTest {
 		Storage expStorage = new Storage(expectedFile);
 		Task newTask = new Task();
 		newTask.setDescription("CS2103T Post Lect Quiz ");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("30-4-2016"));
+		TaskDate calDate = new TaskDate();
+		calDate.setDateFromString("30-4-2016");
 		newTask.setDate(calDate);
 		expStorage.addToTaskList(newTask);
 		expStorage.saveTasksToFile();
@@ -104,8 +106,8 @@ public class SystemTest {
 		Storage expStorage = new Storage(expectedFile);
 		Task newTask = new Task();
 		newTask.setDescription("MA1101R Lab Quiz");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("15-4-2016"));
+		TaskDate calDate = new TaskDate();
+		calDate.setDateFromString("15-4-2016");
 		newTask.setDate(calDate);
 		expStorage.addToTaskList(newTask);
 		expStorage.saveTasksToFile();
@@ -161,11 +163,11 @@ public class SystemTest {
 		Storage expStorage = new Storage(expectedFile);
 		Task newTask = new Task();
 		newTask.setDescription("Plan Jap Trip");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("15-4-2016"));
+		TaskDate calDate = new TaskDate();
+		calDate.setDateFromString("30-1-2016");
 		newTask.setDate(calDate);
-		Calendar calStartTime = new GregorianCalendar();
-		calStartTime.setTime(formatterDate.parse("01-1-1970 11:00:00"));
+		TaskTime calStartTime = new TaskTime();
+		calStartTime.setTimeFromString("11:00AM"); 
 		newTask.setStartTime(calStartTime);
 		expStorage.addToTaskList(newTask);
 		expStorage.saveTasksToFile();
@@ -194,11 +196,11 @@ public class SystemTest {
 		Storage expStorage = new Storage(expectedFile);
 		Task newTask = new Task();
 		newTask.setDescription("Social Work 2106");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("1-4-2016"));
+		TaskDate calDate = new TaskDate();
+		calDate.setDateFromString("1-4-2016");
 		newTask.setDate(calDate);
-		Calendar calStartTime = new GregorianCalendar();
-		calStartTime.setTime(formatterDate.parse("01-1-1970 12:00:00"));
+		TaskTime calStartTime = new TaskTime();
+		calStartTime.setTimeFromString("12:00PM");
 		newTask.setStartTime(calStartTime);
 		expStorage.addToTaskList(newTask);
 		expStorage.saveTasksToFile();
@@ -217,73 +219,42 @@ public class SystemTest {
 
 	// TODO
 	/*
-	@Test
-	public final void testCase7() throws SAXException, IOException, ParseException {
+	 * @Test public final void testCase7() throws SAXException, IOException, ParseException {
+	 * 
+	 * File testFile = new File(TEST_FILE_NAME); Logic logic = new Logic(testFile); logic.executeCommand(
+	 * "Date with imaginary girlfriend 12:00"); logic.saveTasksToFile();
+	 * 
+	 * File expectedFile = new File(EXPECTED_FILE_NAME); Storage expStorage = new Storage(expectedFile); Task
+	 * newTask = new Task(); newTask.setDescription("Date with imaginary girlfriend"); Calendar calDate = new
+	 * GregorianCalendar(); calDate.setTime(formatterDate.parse("15-4-2016")); newTask.setDate(calDate);
+	 * Calendar calStartTime = new GregorianCalendar(); calStartTime.setTime(formatterDate.parse(
+	 * "01-1-1970 11:00:00")); newTask.setStartTime(calStartTime); expStorage.addToTaskList(newTask);
+	 * expStorage.saveTasksToFile(); FileReader fr1 = new FileReader(testFile); FileReader fr2 = new
+	 * FileReader(expectedFile);
+	 * 
+	 * // Settings for XML formatting XMLUnit.setIgnoreWhitespace(true); XMLUnit.setIgnoreComments(true);
+	 * XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true); XMLUnit.setNormalizeWhitespace(true);
+	 * 
+	 * // This is to test the expected behavior of this function XMLAssert.assertXMLEqual(fr1, fr2); }
+	 * 
+	 * @Test public final void testCase8() throws SAXException, IOException, ParseException {
+	 * 
+	 * File testFile = new File(TEST_FILE_NAME); Logic logic = new Logic(testFile); logic.executeCommand(
+	 * "Go church next sat 1:30pm 1w"); logic.saveTasksToFile();
+	 * 
+	 * File expectedFile = new File(EXPECTED_FILE_NAME); Storage expStorage = new Storage(expectedFile); Task
+	 * newTask = new Task(); newTask.setDescription("Go church"); Calendar calDate = new GregorianCalendar();
+	 * calDate.setTime(formatterDate.parse("15-4-2016")); newTask.setDate(calDate); Calendar calStartTime =
+	 * new GregorianCalendar(); calStartTime.setTime(formatterDate.parse("01-1-1970 11:00:00"));
+	 * newTask.setStartTime(calStartTime); expStorage.addToTaskList(newTask); expStorage.saveTasksToFile();
+	 * FileReader fr1 = new FileReader(testFile); FileReader fr2 = new FileReader(expectedFile);
+	 * 
+	 * // Settings for XML formatting XMLUnit.setIgnoreWhitespace(true); XMLUnit.setIgnoreComments(true);
+	 * XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true); XMLUnit.setNormalizeWhitespace(true);
+	 * 
+	 * // This is to test the expected behavior of this function XMLAssert.assertXMLEqual(fr1, fr2); }
+	 */
 
-		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
-		logic.executeCommand("Date with imaginary girlfriend 12:00");
-		logic.saveTasksToFile();
-
-		File expectedFile = new File(EXPECTED_FILE_NAME);
-		Storage expStorage = new Storage(expectedFile);
-		Task newTask = new Task();
-		newTask.setDescription("Date with imaginary girlfriend");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("15-4-2016"));
-		newTask.setDate(calDate);
-		Calendar calStartTime = new GregorianCalendar();
-		calStartTime.setTime(formatterDate.parse("01-1-1970 11:00:00"));
-		newTask.setStartTime(calStartTime);
-		expStorage.addToTaskList(newTask);
-		expStorage.saveTasksToFile();
-		FileReader fr1 = new FileReader(testFile);
-		FileReader fr2 = new FileReader(expectedFile);
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
-		// This is to test the expected behavior of this function
-		XMLAssert.assertXMLEqual(fr1, fr2);
-	}
-
-	@Test
-	public final void testCase8() throws SAXException, IOException, ParseException {
-
-		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
-		logic.executeCommand("Go church next sat 1:30pm 1w");
-		logic.saveTasksToFile();
-
-		File expectedFile = new File(EXPECTED_FILE_NAME);
-		Storage expStorage = new Storage(expectedFile);
-		Task newTask = new Task();
-		newTask.setDescription("Go church");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("15-4-2016"));
-		newTask.setDate(calDate);
-		Calendar calStartTime = new GregorianCalendar();
-		calStartTime.setTime(formatterDate.parse("01-1-1970 11:00:00"));
-		newTask.setStartTime(calStartTime);
-		expStorage.addToTaskList(newTask);
-		expStorage.saveTasksToFile();
-		FileReader fr1 = new FileReader(testFile);
-		FileReader fr2 = new FileReader(expectedFile);
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
-		// This is to test the expected behavior of this function
-		XMLAssert.assertXMLEqual(fr1, fr2);
-	}
-*/
-	
 	@Test
 	public final void testCase9() throws SAXException, IOException, ParseException {
 
@@ -296,20 +267,20 @@ public class SystemTest {
 		Storage expStorage = new Storage(expectedFile);
 		Task newTask = new Task();
 		newTask.setDescription("Go out with girlfriend");
-		Calendar calDate = new GregorianCalendar();
-		calDate.setTime(formatterDate.parse("1-4-2016"));
+		TaskDate calDate = new TaskDate();
+		calDate.setDateFromString("1-4-2016");
 		newTask.setDate(calDate);
-		
+
 		Recur newRecur = new Recur();
 		newRecur.setTimeUnit(TimeUnit.DAY);
-		Calendar calStartRecur = new GregorianCalendar();
-		calStartRecur.setTime(formatterDate.parse("01-4-2016"));
-		Calendar calEndRecur = new GregorianCalendar();
-		calEndRecur.setTime(formatterDate.parse("15-4-201"));
+		TaskDate calStartRecur = new TaskDate();
+		calStartRecur.setDateFromString("01-4-2016");
+		TaskDate calEndRecur = new TaskDate();
+		calEndRecur.setDateFromString("14-4-2016");
+		newRecur.setFrequency(3);
 		newRecur.setStartDate(calStartRecur);
 		newRecur.setEndDate(calEndRecur);
 		newTask.setRecur(newRecur);
-		
 
 		expStorage.addToTaskList(newTask);
 		expStorage.saveTasksToFile();
@@ -326,5 +297,4 @@ public class SystemTest {
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
-	
 }

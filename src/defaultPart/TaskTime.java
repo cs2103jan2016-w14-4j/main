@@ -20,6 +20,6 @@ public class TaskTime extends GregorianCalendar {
 	}
 	
 	public void setTimeFromString(String timeString) throws ParseException {
-		timeFormat.parse(timeString);
+		this.setTime(timeFormat.parse(timeString));
 	}
 }

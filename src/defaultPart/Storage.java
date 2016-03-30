@@ -16,6 +16,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import java.io.*;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -38,7 +39,11 @@ public class Storage {
 	private static final String TAG_TASK_FREQUENCY = "frequency";
 	private static final String TAG_TASK_START_OF_RECURR = "startOfRecurr";
 	private static final String TAG_TASK_END_OF_RECURR = "endOfRecurr";
-
+	
+	/* Date format used to save/load from XML */
+	public static SimpleDateFormat formatterDate = new SimpleDateFormat("dd-M-yyyy");
+	public static SimpleDateFormat formatterTime = new SimpleDateFormat("HH:mm:ss");
+	
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
 
@@ -511,7 +516,7 @@ public class Storage {
 	}
 
 	/**
-	 * Extract a date from node with specified tag and returns as Calendar object
+	 * Extract a TaskTime from node with specified tag and returns as Calendar object
 	 * 
 	 * @param taskElement
 	 *            Element object containing the task details
@@ -537,7 +542,7 @@ public class Storage {
 	}
 
 	/**
-	 * Extract a date from node with specified tag and returns as Calendar object
+	 * Extract a TaskDate from node with specified tag and returns as Calendar object
 	 * 
 	 * @param taskElement
 	 *            Element object containing the task details

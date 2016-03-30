@@ -20,6 +20,8 @@ import org.xml.sax.SAXException;
 import defaultPart.Recur;
 import defaultPart.Storage;
 import defaultPart.Task;
+import defaultPart.TaskDate;
+import defaultPart.TaskTime;
 
 public class StorageTest {
 
@@ -39,10 +41,10 @@ public class StorageTest {
 	 */
 	public static Task instantiateTestTask(int type) {
 
-		Calendar calDate = new GregorianCalendar();
-		Calendar calStart = new GregorianCalendar();
-		Calendar calEnd = new GregorianCalendar();
-		Calendar calRecEnd = new GregorianCalendar();
+		TaskDate calDate = new TaskDate();
+		TaskTime calStart = new TaskTime();
+		TaskTime calEnd = new TaskTime();
+		TaskDate calRecEnd = new TaskDate();
 		try {
 			calDate.setTime(formatter.parse("20-6-2016 00:00:00"));
 			calStart.setTime(formatter.parse("20-6-2016 10:00:00"));
@@ -78,7 +80,7 @@ public class StorageTest {
 				Recur newRecur = new Recur();
 				newRecur.setTimeUnit(Recur.TimeUnit.DAY);
 				newRecur.setFrequency(3);
-				newRecur.setStartDate(calStart);
+				newRecur.setStartDate(calDate);
 				newRecur.setEndDate(calRecEnd);
 				newTask.setRecur(newRecur);
 				break;
