@@ -154,6 +154,9 @@ public class Controller implements Initializable {
 			}
 		});
 		
+		pane.lookupAll(".split-pane-divider").stream()
+        .forEach(div ->  div.setMouseTransparent(true) );
+		
 		// delayed setter (set only after the loading of the software is done)
 		new Thread(() -> {
 			try {
@@ -175,6 +178,7 @@ public class Controller implements Initializable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 	}
 
 	public void debug() {
@@ -202,7 +206,7 @@ public class Controller implements Initializable {
 		floatingTaskTable.setPrefWidth(floatingTableWidth);
 		pane.setDividerPositions(dividerPosition);
 		
-		final double eventsTableWidth = paneWidth * dividerPosition;
+		final double eventsTableWidth = paneWidth * dividerPosition - 5; // 5 for padding
 		final double idWidth = 20;
 		final double checkBoxWidth = 20;
 		final double recurWidth = Math.min(eventsTableWidth * 0.2, 100);
@@ -349,8 +353,8 @@ public class Controller implements Initializable {
 	 * refresh the tasks shown on UI based on the current storage (by default all tasks are shown)
 	 */
 	private void retrieveTaskFromStorage() {
+		clearInterface();
 		taskList = logic.getTaskList();
-
 		for (int i = 0; i < taskList.size(); i++) {
 			addToTaskModels(i);
 		}
