@@ -121,11 +121,10 @@ public class Settings {
 	 *            file path to set
 	 */
 	public void setSavePath(String savePath) {
-
-		if (_savePath.charAt(_savePath.length() - 1) != '/') {
-			_savePath += "/";
+		if (savePath.charAt(savePath.length() - 1) != '/') {
+			_savePath = savePath + "/";
 		}
-		if (_savePath.equals("/")) {
+		if (savePath.equals("/")) {
 			_savePath = "";
 		} else if (isValidPath(savePath)) {
 			_savePath = savePath;
