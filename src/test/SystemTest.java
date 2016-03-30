@@ -323,7 +323,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testEditDate() throws SAXException, IOException, ParseException {
 
@@ -348,7 +348,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testEditStartTime() throws SAXException, IOException, ParseException {
 
@@ -360,7 +360,7 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Tomato Reading", "11-4-2016", "3:00PM" , null, false, null);
+		storageCreateExpectedTask(expectedFile, "Tomato Reading", "11-4-2016", "3:00PM", null, false, null);
 
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
@@ -373,7 +373,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testEditStartTimeFromEvent() throws SAXException, IOException, ParseException {
 
@@ -385,7 +385,7 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Cabbage Reading", "11-4-2016", "3:00PM" , null, false, null);
+		storageCreateExpectedTask(expectedFile, "Cabbage Reading", "11-4-2016", "3:00PM", null, false, null);
 
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
@@ -398,7 +398,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testEditEndTime() throws SAXException, IOException, ParseException {
 
@@ -410,7 +410,8 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Cucumber Reading", "11-4-2016", "2:00PM" , "5:00PM", false, null);
+		storageCreateExpectedTask(expectedFile, "Cucumber Reading", "11-4-2016", "2:00PM", "5:00PM", false,
+				null);
 
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
@@ -423,7 +424,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testEditRecurTimeUnit() throws SAXException, IOException, ParseException {
 
@@ -449,7 +450,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testEditRecurFrequency() throws SAXException, IOException, ParseException {
 
@@ -463,6 +464,58 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
 				createRecur("DAY", 3, "1-5-2016", "4-5-2016"));
+
+		// Settings for XML formatting
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testEditRecurTimesToRecur() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1");
+		logicExecuteCommand(logic, "e 1 1d 5");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
+				createRecur("DAY", 1, "1-5-2016", "6-5-2016"));
+
+		// Settings for XML formatting
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+	@Test
+	public final void testEditRecurEndOfRecur() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1/1/2016");
+		logicExecuteCommand(logic, "e 1 1d 10/1/2016");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
+				createRecur("DAY", 1, "1-5-2016", "10-1-2016"));
 
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
