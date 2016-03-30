@@ -656,10 +656,9 @@ public class Logic {
 			_storage.removeTask(taskIndex);
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
-			System.out.println(recur.getNextRecur());
 			task.setDate(recur.getNextRecur());
 			_feedback = String.format(
-					"Task " + taskIndex + LIST_NUMBERING_OFFSET + "rescheduled to " + task.getStartTime());
+					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getDate());
 		}
 	}
 
