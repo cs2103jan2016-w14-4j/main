@@ -18,8 +18,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import javax.net.ssl.SSLException;
-
 import org.xml.sax.SAXException;
 
 /**
@@ -153,19 +151,6 @@ public class Controller implements Initializable {
 				HelpWindow.show();
 			}
 		});
-		
-		// delayed setter (set only after the loading of the software is done)
-		new Thread(() -> {
-			try {
-				Thread.sleep(100);
-				root.widthProperty().addListener(e -> {
-					resizeColumns();
-				});
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}).start();
 
 		logic = new Logic();
 		try {
@@ -178,8 +163,7 @@ public class Controller implements Initializable {
 	}
 
 	public void debug() {
-		toggleRightPane();
-		resizeColumns();
+		toggleRightPane();	
 	}
 	
 	public void toggleRightPane() {
@@ -191,30 +175,6 @@ public class Controller implements Initializable {
 			pane.setDividerPosition(0, 0.619);
 		}
 		
-	}
-	
-	public void resizeColumns(){
-		final double paneWidth = pane.getWidth();
-		
-		final double floatingTableWidth = rightPane.isVisible() ? 304.8 : 0;
-		final double dividerPosition = 1.0 - (floatingTableWidth / paneWidth);
-		
-		floatingTaskTable.setPrefWidth(floatingTableWidth);
-		pane.setDividerPositions(dividerPosition);
-		
-		final double eventsTableWidth = paneWidth * dividerPosition;
-		final double idWidth = 20;
-		final double checkBoxWidth = 20;
-		final double recurWidth = Math.min(eventsTableWidth * 0.2, 100);
-		final double dateWidth = Math.min(eventsTableWidth * 0.2, 200);
-		final double descWidth = eventsTableWidth - idWidth - checkBoxWidth - recurWidth - dateWidth;
-		
-		eventsTable.setPrefWidth(eventsTableWidth);
-		eventsId.setPrefWidth(idWidth);
-		eventsCheckbox.setPrefWidth(checkBoxWidth);
-		eventsRecur.setPrefWidth(recurWidth);
-		eventsDate.setPrefWidth(dateWidth);
-		eventsDescription.setPrefWidth(descWidth);
 	}
 
 	/**
