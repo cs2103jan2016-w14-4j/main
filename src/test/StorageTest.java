@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Calendar;
@@ -25,7 +24,8 @@ import defaultPart.TaskTime;
 public class StorageTest {
 
 	/* Location to load/save the expected test results */
-	private static final String TASK_FILE_NAME = "test/StorageTest_expected.xml";
+	private static final String EXPECTED_FILE_NAME = "test/StorageTest_expected.xml";
+	private static final String TEST_FILE_NAME = "test/StorageTest_expected.xml";
 
 	/**
 	 * Helper function to create a sample task for testing"
@@ -146,7 +146,7 @@ public class StorageTest {
 		Task newTaskEvent = instantiateTestTask(3);
 		Task newTaskRecurEvent = instantiateTestTask(4);
 		List<Task> expectedTaskList = new LinkedList<Task>();
-		Storage storage = new Storage(new File(TASK_FILE_NAME));
+		Storage storage = new Storage(new File(TEST_FILE_NAME));
 
 		// This is to test the expected behavior of this function
 		expectedTaskList.add(newTaskFloating);
@@ -208,7 +208,7 @@ public class StorageTest {
 		expectedTaskList.add(newTaskEvent);
 
 		// Setting up the actual storage behavior
-		Storage storage = new Storage(new File(TASK_FILE_NAME));
+		Storage storage = new Storage(new File(TEST_FILE_NAME));
 		storage.addToTaskList(newTaskFloating);
 		storage.addToTaskList(newTaskDeadline);
 		storage.addToTaskList(newTaskEvent);
@@ -227,7 +227,7 @@ public class StorageTest {
 		Task newTaskEvent = instantiateTestTask(3);
 		Task newTaskRecurEvent = instantiateTestTask(4);
 		List<Task> expectedTaskList = new LinkedList<Task>();
-		Storage storage = new Storage(new File(TASK_FILE_NAME));
+		Storage storage = new Storage(new File(TEST_FILE_NAME));
 
 		// This is to test the expected behavior of this function
 		expectedTaskList.add(newTaskFloating);
@@ -252,13 +252,11 @@ public class StorageTest {
 	public void testSaveTasks() throws SAXException, IOException {
 
 		// Load & Save the tasks from the file to see if it saves correctly
-		File file = new File(TASK_FILE_NAME);
-		FileReader fr1 = new FileReader(file);
-
-		Storage storage = new Storage(file);
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		File actualFile = new File(TEST_FILE_NAME);
+		Storage storage = new Storage(actualFile);
 		storage.loadTasksFromFile();
 		storage.saveTasksToFile();
-		FileReader fr2 = new FileReader(file);
 
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
@@ -267,6 +265,8 @@ public class StorageTest {
 		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(actualFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
@@ -285,7 +285,7 @@ public class StorageTest {
 		expectedTaskList.add(newTaskRecurEvent);
 
 		// Setting up the actual storage behavior
-		Storage storage = new Storage(new File(TASK_FILE_NAME));
+		Storage storage = new Storage(new File(EXPECTED_FILE_NAME));
 		storage.loadTasksFromFile();
 
 		// This is to test the expected behavior of this function

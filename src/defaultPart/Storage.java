@@ -38,7 +38,7 @@ public class Storage {
 	private static final String TAG_TASK_FREQUENCY = "frequency";
 	private static final String TAG_TASK_START_OF_RECURR = "startOfRecurr";
 	private static final String TAG_TASK_END_OF_RECURR = "endOfRecurr";
-	
+
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
 
@@ -212,7 +212,9 @@ public class Storage {
 		doc.appendChild(rootElement);
 
 		for (Task taskItem : _currentTaskList) {
-			createTasksXML(doc, taskItem, rootElement);
+			if (taskItem != null) {
+				createTasksXML(doc, taskItem, rootElement);
+			}
 		}
 
 		// Save the XML file in a "pretty" format
