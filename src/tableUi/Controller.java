@@ -28,6 +28,8 @@ import org.xml.sax.SAXException;
 public class Controller implements Initializable {
 	@FXML
 	public VBox root;
+	public SplitPane pane;
+	public VBox rightPane;
 	public TableView<TaskModel> floatingTaskTable;
 	public TableView<TaskModel> eventsTable;
 	public TableColumn<TaskModel, Number> floatingTaskId;
@@ -161,8 +163,18 @@ public class Controller implements Initializable {
 	}
 
 	public void debug() {
-		List<Integer> indexesFound = logic.getIndexesFound();
-		editDescriptionById(indexesFound.get(0) + 1);
+		toggleRightPane();	
+	}
+	
+	public void toggleRightPane() {
+		if (rightPane.isVisible()) {
+			rightPane.setVisible(false);
+			pane.setDividerPosition(0, 1);
+		} else {
+			rightPane.setVisible(true);
+			pane.setDividerPosition(0, 0.619);
+		}
+		
 	}
 
 	/**
@@ -354,7 +366,8 @@ public class Controller implements Initializable {
 		}
 		switch (logic.getCommandType()) {
 			case EDIT_SHOW_TASK :
-				debug();
+				List<Integer> indexesFound = logic.getIndexesFound();
+				editDescriptionById(indexesFound.get(0) + 1);
 				break;
 
 			case FIND :
