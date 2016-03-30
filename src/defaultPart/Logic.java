@@ -204,11 +204,12 @@ public class Logic {
 			date = newTask.getDate();
 		}
 		boolean warn = false;
+		TaskDate endDate = null;
 		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
 		if (date != null && !floating) {
 			if (recur != null) {
 				recur.setStartDate(date);
-				TaskDate endDate = recur.getEndDate();
+				endDate = recur.getEndDate();
 				if (endDate != null && recur.getStartDate().compareTo(endDate) >= 0) {
 					warn = true;
 				}
@@ -232,7 +233,7 @@ public class Logic {
 		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 
 		if (warn) {
-			_feedback = "Recur end date <= start date!";
+			_feedback = "Recur end date " + endDate + " <= start date!";
 		}
 	}
 
