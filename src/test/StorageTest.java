@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -28,9 +27,6 @@ public class StorageTest {
 	/* Location to load/save the expected test results */
 	private static final String TASK_FILE_NAME = "test/StorageTest_expected.xml";
 
-	/* Date format used to save/load from XML */
-	public static SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy HH:mm:ss");
-
 	/**
 	 * Helper function to create a sample task for testing"
 	 * 
@@ -46,10 +42,10 @@ public class StorageTest {
 		TaskTime calEnd = new TaskTime();
 		TaskDate calRecEnd = new TaskDate();
 		try {
-			calDate.setTime(formatter.parse("20-6-2016 00:00:00"));
-			calStart.setTime(formatter.parse("20-6-2016 10:00:00"));
-			calEnd.setTime(formatter.parse("20-6-2016 12:00:00"));
-			calRecEnd.setTime(formatter.parse("20-8-2016 12:00:00"));
+			calDate.setDateFromString("20-6-2016");
+			calStart.setTimeFromString("10:00AM");
+			calEnd.setTimeFromString("12:00PM");
+			calRecEnd.setDateFromString("20-8-2016");
 
 		} catch (ParseException e) {
 

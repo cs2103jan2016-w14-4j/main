@@ -9,16 +9,16 @@
    </Task>
    <Task>
       <Description>Deadline Test case</Description>
-      <Date>20-6-2016 00:00:00</Date>
+      <Date>20-6-2016</Date>
       <StartTime/>
-      <EndTime>20-6-2016 12:00:00</EndTime>
+      <EndTime>12:00PM</EndTime>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Event Test case</Description>
-      <Date>20-6-2016 00:00:00</Date>
-      <StartTime>20-6-2016 10:00:00</StartTime>
-      <EndTime>20-6-2016 12:00:00</EndTime>
+      <Date>20-6-2016</Date>
+      <StartTime>10:00AM</StartTime>
+      <EndTime>12:00PM</EndTime>
       <Completed>no</Completed>
    </Task>
    <Task>
@@ -30,22 +30,21 @@
    </Task>
    <Task>
       <Description>Deadline Test case</Description>
-      <Date>20-6-2016 00:00:00</Date>
+      <Date>20-6-2016</Date>
       <StartTime/>
-      <EndTime>20-6-2016 12:00:00</EndTime>
+      <EndTime>12:00PM</EndTime>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Event Recur Test case</Description>
-      <Date>20-6-2016 00:00:00</Date>
-      <StartTime>20-6-2016 10:00:00</StartTime>
-      <EndTime>20-6-2016 12:00:00</EndTime>
+      <Date>20-6-2016</Date>
+      <StartTime>12=0:00PM</StartTime>
+      <EndTime>12:00PM</EndTime>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>3</frequency>
-         <startOfRecurr>20-6-2016 12:00:00</startOfRecurr>
-         <endOfRecurr>20-8-2016 12:00:00</endOfRecurr>
+         <endOfRecurr>20-8-2016</endOfRecurr>
       </recur>
    </Task>
 </wuriTasks>

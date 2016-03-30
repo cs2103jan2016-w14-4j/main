@@ -1,14 +1,9 @@
 package test;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -29,9 +24,6 @@ public class SystemTest {
 	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
 	private static final String TEST_FILE_NAME = "test\\SystemTest_actual.xml";
 
-	/* Date format used to save/load from XML */
-	public static SimpleDateFormat formatterDate = new SimpleDateFormat("dd-M-yyyy");
-	public static SimpleDateFormat formatterTime = new SimpleDateFormat("HH:mm:ss");
 
 	@Test
 	public final void testCase1() throws SAXException, IOException, ParseException {
