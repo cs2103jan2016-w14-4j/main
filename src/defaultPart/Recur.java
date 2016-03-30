@@ -45,9 +45,6 @@ public class Recur {
 
 	public TaskDate getNextRecur() {
 		TaskDate nextDate = (TaskDate) getStartDate().clone();
-		/*
-		 * TaskDate today = initializeToday(); getNextRecurAfterToday(nextDate, today);
-		 */
 
 		incrementNextDate(nextDate);
 
@@ -79,10 +76,22 @@ public class Recur {
 		return _endDate != null && nextDate.compareTo(_endDate) > 0;
 	}
 
-	private void getNextRecurAfterToday(TaskDate nextDate, TaskDate today) {
+	private TaskDate getNextRecurAfterToday() {
+		TaskDate nextDate = (TaskDate) getStartDate().clone();
+		TaskDate today = initializeToday();
+
+		/*
+		 * if want to always recur at least 1ce, add: if(!nextDateBeforeToday(nextDate,today)){
+		 * incrementNextDate(nextDate); }
+		 */
 		while (nextDateBeforeToday(nextDate, today)) {
 			incrementNextDate(nextDate);
 		}
+
+		if (nextDateAfterEndDate(nextDate)) {
+			return null;
+		}
+		return nextDate;
 	}
 
 	private boolean nextDateBeforeToday(TaskDate nextDate, TaskDate today) {
