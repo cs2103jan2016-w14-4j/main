@@ -224,6 +224,7 @@ public class Controller implements Initializable {
 	 *            The prompt String, length should be less than 100
 	 */
 	public void setUserPrompt(String prompt) {
+		assert (prompt != null);
 		// the length of feedback should not be longer than 100 characters
 		if (prompt.length() > 100) {
 			prompt = prompt.substring(0, 97) + "...";

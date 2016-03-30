@@ -12,6 +12,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.xml.sax.SAXException;
 
@@ -438,11 +440,11 @@ public class Logic {
 		assert (task != null);
 
 		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
-		boolean isRecurEdited = setRecurIfExists(task, args);	
+		boolean isRecurEdited = setRecurIfExists(task, args);
 		if (isRecurEdited) {
 			Recur recur = task.getRecur();
 			TaskDate date = task.getDate();
-			if (date==null){
+			if (date == null) {
 				TaskDate today = new TaskDate();
 				recur.setStartDate(today);
 				task.setDate(today);
@@ -450,7 +452,7 @@ public class Logic {
 				recur.setStartDate(date);
 			}
 		}
-		
+
 		switch (args.size()) {
 			case 1 :
 				// copy task to input box for editing
@@ -478,11 +480,11 @@ public class Logic {
 
 				break;
 
-//			case 5 :
-//				// allows changing of recur
-//				date = getWrappedDateFromString(args[1]);
-//				changeDateTimeAndRecur(task, args, listArgs, date);
-//				break;
+			// case 5 :
+			// // allows changing of recur
+			// date = getWrappedDateFromString(args[1]);
+			// changeDateTimeAndRecur(task, args, listArgs, date);
+			// break;
 
 		}
 		putEdittedTaskInStorage(taskIndex, task);
@@ -642,7 +644,9 @@ public class Logic {
 	}
 
 	private void deleteTask() throws IOException {
-		deleteMultiple();
+		if (deleteMultiple()) {
+			return;
+		}
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
 		Recur recur = task.getRecur();
@@ -652,14 +656,40 @@ public class Logic {
 			_storage.removeTask(taskIndex);
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
+			System.out.println(recur.getNextRecur());
 			task.setDate(recur.getNextRecur());
-			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
+			_feedback = String.format(
+					"Task " + taskIndex + LIST_NUMBERING_OFFSET + "rescheduled to " + task.getStartTime());
 		}
 	}
 
-	private void deleteMultiple() {
+	private boolean deleteMultiple() {
+		if (_argument.equals("-")) {
+			logger.log(Level.FINE, "Deleting all tasks without deadline");
+			List<Task> taskList = _storage.getTaskList();
+			int count = 0;
+			for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
+				if (taskList.get(i).getDate() == null) {
+					_storage.removeTask(i);
+					count++;
+				}
+			}
+			_feedback = "Removed " + count + " tasks without deadline";
+			return true;
+		}
+		Pattern equalitySigns = Pattern.compile("(>|<)=?");
+		Matcher match = equalitySigns.matcher(_argument);
+//		if (match!=null && match.start() == 0) {
+//			System.out.println(match.toString());
+//		}
+		match.usePattern(equalitySigns);
+		System.out.println(match.find());
+		System.out.println(match.toString());
+		System.out.println(match.group());
 		// String[] dayAndMonthAndYear = dateString.split("/", 3);
 		// Calendar newDate = getDateFromString(dayAndMonthAndYear);
+		_feedback = "Removed";
+		return true;
 	}
 
 	/**
