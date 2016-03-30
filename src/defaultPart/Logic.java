@@ -56,6 +56,8 @@ public class Logic {
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
 
+	private String _numOfTimesString;
+
 	/* Used for CommandType.FIND */
 	// todo: clear it before inserting, or get rid of it by putting found task in currentTaskList?
 	// and restore from prev task list if _oldCommandType == FIND
@@ -209,6 +211,7 @@ public class Logic {
 		if (date != null && !floating) {
 			if (recur != null) {
 				recur.setStartDate(date);
+				recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
 				endDate = recur.getEndDate();
 				if (endDate != null && recur.getStartDate().compareTo(endDate) >= 0) {
 					warn = true;
@@ -277,7 +280,7 @@ public class Logic {
 				}
 				if (endConditionSpecified) {
 					if (endCondition.matches("\\d+")) {
-						recur.setEndDate(getRecurEndDate(recur, endCondition));
+						_numOfTimesString = endCondition;
 					} else {
 						recur.setEndDate(getWrappedDateFromString(endCondition));
 					}
@@ -297,6 +300,7 @@ public class Logic {
 
 	private TaskDate getRecurEndDate(Recur recur, String numOfTimesString) {
 		TaskDate endDate = new TaskDate();
+		endDate.setTime(recur.getStartDate().getTime());
 		int numOfTimes = Integer.parseInt(numOfTimesString);
 		int unit = -1;
 		switch (recur.getTimeUnit()) {
@@ -314,7 +318,7 @@ public class Logic {
 				break;
 		}
 		assert unit > -1;
-		endDate.add(unit, numOfTimes);
+		endDate.add(unit, numOfTimes * recur.getFrequency());
 		return endDate;
 	}
 
