@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>500 words CFG1010</Description>
-      <Date>08-04-16</Date>
-      <StartTime/>
+      <Description>HIMYM</Description>
+      <Date>01-01-27</Date>
+      <StartTime>12:00PM</StartTime>
       <EndTime/>
       <Completed>no</Completed>
+      <recur>
+         <timeUnit>DAY</timeUnit>
+         <frequency>1</frequency>
+         <startOfRecurr>01-01-27</startOfRecurr>
+         <endOfRecurr>20-02-27</endOfRecurr>
+      </recur>
    </Task>
 </wuriTasks>

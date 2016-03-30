@@ -77,8 +77,8 @@ public class SystemTest {
 		}
 		if (endTime != null) {
 			TaskTime calEndTime = new TaskTime();
-			calEndTime.setTimeFromString(startTime);
-			newTask.setStartTime(calEndTime);
+			calEndTime.setTimeFromString(endTime);
+			newTask.setEndTime(calEndTime);
 		}
 		if (completed) {
 			newTask.toggleCompleted();
@@ -124,8 +124,8 @@ public class SystemTest {
 		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
-		FileReader fr1 = new FileReader(testFile);
-		FileReader fr2 = new FileReader(expectedFile);
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
@@ -147,8 +147,8 @@ public class SystemTest {
 		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
-		FileReader fr1 = new FileReader(testFile);
-		FileReader fr2 = new FileReader(expectedFile);
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
@@ -169,62 +169,22 @@ public class SystemTest {
 		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
-		FileReader fr1 = new FileReader(testFile);
-		FileReader fr2 = new FileReader(expectedFile);
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
-	// TODO
-	/*
-	 * @Test public final void testCase7() throws SAXException, IOException, ParseException {
-	 * 
-	 * File testFile = new File(TEST_FILE_NAME); Logic logic = new Logic(testFile); logic.executeCommand(
-	 * "Date with imaginary girlfriend 12:00"); logic.saveTasksToFile();
-	 * 
-	 * File expectedFile = new File(EXPECTED_FILE_NAME); Storage expStorage = new Storage(expectedFile); Task
-	 * newTask = new Task(); newTask.setDescription("Date with imaginary girlfriend"); Calendar calDate = new
-	 * GregorianCalendar(); calDate.setTime(formatterDate.parse("15-4-2016")); newTask.setDate(calDate);
-	 * Calendar calStartTime = new GregorianCalendar(); calStartTime.setTime(formatterDate.parse(
-	 * "01-1-1970 11:00:00")); newTask.setStartTime(calStartTime); expStorage.addToTaskList(newTask);
-	 * expStorage.saveTasksToFile(); FileReader fr1 = new FileReader(testFile); FileReader fr2 = new
-	 * FileReader(expectedFile);
-	 * 
-	 * // Settings for XML formatting XMLUnit.setIgnoreWhitespace(true); XMLUnit.setIgnoreComments(true);
-	 * XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true); XMLUnit.setNormalizeWhitespace(true);
-	 * 
-	 * // This is to test the expected behavior of this function XMLAssert.assertXMLEqual(fr1, fr2); }
-	 * 
-	 * @Test public final void testCase8() throws SAXException, IOException, ParseException {
-	 * 
-	 * File testFile = new File(TEST_FILE_NAME); Logic logic = new Logic(testFile); logic.executeCommand(
-	 * "Go church next sat 1:30pm 1w"); logic.saveTasksToFile();
-	 * 
-	 * File expectedFile = new File(EXPECTED_FILE_NAME); Storage expStorage = new Storage(expectedFile); Task
-	 * newTask = new Task(); newTask.setDescription("Go church"); Calendar calDate = new GregorianCalendar();
-	 * calDate.setTime(formatterDate.parse("15-4-2016")); newTask.setDate(calDate); Calendar calStartTime =
-	 * new GregorianCalendar(); calStartTime.setTime(formatterDate.parse("01-1-1970 11:00:00"));
-	 * newTask.setStartTime(calStartTime); expStorage.addToTaskList(newTask); expStorage.saveTasksToFile();
-	 * FileReader fr1 = new FileReader(testFile); FileReader fr2 = new FileReader(expectedFile);
-	 * 
-	 * // Settings for XML formatting XMLUnit.setIgnoreWhitespace(true); XMLUnit.setIgnoreComments(true);
-	 * XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true); XMLUnit.setNormalizeWhitespace(true);
-	 * 
-	 * // This is to test the expected behavior of this function XMLAssert.assertXMLEqual(fr1, fr2); }
-	 */
-
 	@Test
-	public final void testAddDeadlineRecurring() throws SAXException, IOException, ParseException {
+	public final void testAddEvent() throws SAXException, IOException, ParseException {
 
 		// Setting up actual Task List for comparison
-		File testFile = logicExecuteCommand("Go out with girlfriend 1/4 3d 15");
+		File testFile = logicExecuteCommand("Buy some potatoes 30/1/2016 11am-12pm");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		createRecur("DAY",3,"01-4-216","14-4-2016");
-		storageCreateExpectedTask(expectedFile, "Go out with girlfriend", "01-4-2016", null, null, false,
-				createRecur("DAY",3,"01-4-216","14-4-2016"));
+		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "30-1-2016", "11:00AM", "12:00PM", false,
+				null);
 
-		
 		// Settings for XML formatting
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
@@ -232,9 +192,101 @@ public class SystemTest {
 		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
-		FileReader fr1 = new FileReader(testFile);
-		FileReader fr2 = new FileReader(expectedFile);
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
+	@Test
+	public final void testAddDeadlineRecurringDay() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = logicExecuteCommand("Go out with girlfriend 1/4 3d 15");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		storageCreateExpectedTask(expectedFile, "Go out with girlfriend", "01-4-2016", null, null, false,
+				createRecur("DAY", 3, "01-4-216", "15-4-2016")); // TODO-change end date to correct behavior
+
+		// Settings for XML formatting
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testAddDeadlineRecurringWeek() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = logicExecuteCommand("Go out with jully 2/4 1w 2");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		storageCreateExpectedTask(expectedFile, "Go out with girlfriend", "02-4-2016", null, null, false,
+				createRecur("WEEK", 1, "02-4-216", "16-4-2016")); // TODO-change end date to correct behavior
+
+		// Settings for XML formatting
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testAddDeadlineRecurringEndWithNumber()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = logicExecuteCommand("HIMYM 1/1/2027 12:00 1d 50");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		storageCreateExpectedTask(expectedFile, "HIMYM", "1-1-2027", "12:00PM", null, false,
+				createRecur("DAY", 1, "1-1-2027", "20-2-2027")); // TODO-change end date to correct behavior
+
+		// Settings for XML formatting
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testAddEventRecurringDay() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = logicExecuteCommand("Buy some potatoes 1/5/2016 11am-12pm 1d 10");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
+				createRecur("DAY", 1, "1-5-2016", "11-5-2016"));
+
+		// Settings for XML formatting
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
 }
