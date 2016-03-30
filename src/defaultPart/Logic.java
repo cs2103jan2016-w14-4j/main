@@ -658,6 +658,8 @@ public class Logic {
 		} else {
 			task.setDate(recur.getNextRecur());
 			recur.setStartDate(task.getDate());
+			_storage.removeTask(taskIndex);
+			_storage.addToTaskList(task);
 			_feedback = String.format(
 					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getDate());
 		}

@@ -1,3 +1,14 @@
 .root{
     -fx-font-family: serif;
 }
+
+.split-pane:horizontal > .split-pane-divider {
+   -fx-background-color: transparent;
+	    -fx-border-color: null;
+    -fx-padding: 0px;
+}
+.split-pane:vertical > .split-pane-divider {
+   -fx-background-color: transparent;
+    -fx-border-color: null;
+    -fx-padding: 0px;
+}

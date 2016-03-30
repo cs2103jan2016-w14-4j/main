@@ -16,7 +16,7 @@ public class Main extends Application {
 		loader.setController(new Controller());
 		primaryStage.setTitle("WURI");
 		Scene scene = new Scene(root, 800, 450);
-		// scene.getStylesheets().add(getClass().getResource("layout1.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("layout1.css").toExternalForm());
 		primaryStage.setScene(scene);
 		controller = loader.getController();
 		controller.stage = primaryStage;
