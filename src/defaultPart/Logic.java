@@ -679,17 +679,23 @@ public class Logic {
 		}
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(_argument);
-//		if (match!=null && match.start() == 0) {
-//			System.out.println(match.toString());
-//		}
-		match.usePattern(equalitySigns);
-		System.out.println(match.find());
-		System.out.println(match.toString());
-		System.out.println(match.group());
-		// String[] dayAndMonthAndYear = dateString.split("/", 3);
-		// Calendar newDate = getDateFromString(dayAndMonthAndYear);
-		_feedback = "Removed";
-		return true;
+		match.find();
+		if (match.start() == 0) {
+			String[] dayAndMonthAndYear = _argument.substring(match.end()).split("/", 3);
+			System.out.println(Arrays.toString(dayAndMonthAndYear));
+			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
+			
+			//List<Task> taskList = 
+			switch (match.group()) {
+				case ">=" :
+					
+
+			}
+
+			_feedback = "Removed";
+			return true;
+		}
+		return false;
 	}
 
 	/**
