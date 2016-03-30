@@ -3,16 +3,15 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -30,6 +29,16 @@ public class SystemTest {
 	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
 	private static final String TEST_FILE_NAME = "test\\SystemTest_actual.xml";
 
+	
+	@Before
+	public void runBeforeEveryTest() {
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+		XMLUnit.setNormalizeWhitespace(true);
+	}
+	
+	
 	/**
 	 * Helper function to create the a recur item based on presence of parameters
 	 * 
@@ -118,12 +127,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "CS2103T Reading", null, null, null, false, null);
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -143,12 +146,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "500 words CFG1010", "8-4-2016", null, null, false, null);
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -167,11 +164,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Plan Jap Trip", "30-1-2016", "11:00AM", null, false, null);
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -192,12 +184,6 @@ public class SystemTest {
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "30-1-2016", "11:00AM", "12:00PM", false,
 				null);
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -217,12 +203,6 @@ public class SystemTest {
 		storageCreateExpectedTask(expectedFile, "Go out with girlfriend", "01-4-2016", null, null, false,
 				createRecur("DAY", 3, "01-4-216", "15-4-2016")); // TODO-change end date to correct behavior
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -241,12 +221,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Go out with jully", "02-4-2016", null, null, false,
 				createRecur("WEEK", 1, "02-4-216", "16-4-2016")); // TODO-change end date to correct behavior
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -268,12 +242,6 @@ public class SystemTest {
 		storageCreateExpectedTask(expectedFile, "HIMYM", "1-1-2027", "12:00PM", null, false,
 				createRecur("DAY", 1, "1-1-2027", "20-2-2027")); // TODO-change end date to correct behavior
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -293,11 +261,6 @@ public class SystemTest {
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
 				createRecur("DAY", 1, "1-5-2016", "11-5-2016"));
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -318,12 +281,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Potato Reading", null, null, null, false, null);
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -342,12 +299,6 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Tomato Reading", "20-4-2016", null, null, false, null);
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -368,12 +319,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Tomato Reading", "11-4-2016", "3:00PM", null, false, null);
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -392,12 +337,6 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Cabbage Reading", "11-4-2016", "3:00PM", null, false, null);
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -419,12 +358,6 @@ public class SystemTest {
 		storageCreateExpectedTask(expectedFile, "Cucumber Reading", "11-4-2016", "2:00PM", "5:00PM", false,
 				null);
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -444,12 +377,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
 				createRecur("WEEK", 1, "1-5-2016", "8-5-2016"));
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -471,12 +398,6 @@ public class SystemTest {
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
 				createRecur("DAY", 3, "1-5-2016", "4-5-2016"));
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -496,12 +417,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
 				createRecur("DAY", 1, "1-5-2016", "6-5-2016"));
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -523,12 +438,6 @@ public class SystemTest {
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
 				createRecur("DAY", 1, "1-5-2016", "10-1-2016"));
 
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
-
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -548,12 +457,6 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
 				createRecur("DAY", 1, "1-5-2016", "1-1-2016"));
-
-		// Settings for XML formatting
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-		XMLUnit.setNormalizeWhitespace(true);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
