@@ -2,128 +2,148 @@
 <wuriTasks>
    <Task>
       <Description>Plan Jap Trip</Description>
-      <Date>30-1-2016 22:30:30</Date>
-      <StartTime>01-1-1970 11:00:00</StartTime>
+      <Date>30-01-16</Date>
+      <StartTime>11:00AM</StartTime>
+      <EndTime/>
+      <Completed>no</Completed>
+   </Task>
+   <Task>
+      <Description>Date with imaginary girlfriend</Description>
+      <Date>30-03-16</Date>
+      <StartTime>12:00AM</StartTime>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Social Work 2106</Description>
-      <Date>01-4-2016 22:30:44</Date>
-      <StartTime>01-1-1970 12:00:00</StartTime>
+      <Date>01-04-16</Date>
+      <StartTime>12:00PM</StartTime>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Go out with girlfriend</Description>
-      <Date>01-4-2016 22:31:16</Date>
+      <Date>01-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>3</frequency>
-         <startOfRecurr>01-4-2016 22:31:16</startOfRecurr>
-         <endOfRecurr>15-4-2016 22:31:16</endOfRecurr>
+         <startOfRecurr>01-04-16</startOfRecurr>
+         <endOfRecurr>14-04-16</endOfRecurr>
+      </recur>
+   </Task>
+   <Task>
+      <Description>Go church</Description>
+      <Date>02-04-16</Date>
+      <StartTime>01:30PM</StartTime>
+      <EndTime/>
+      <Completed>no</Completed>
+      <recur>
+         <timeUnit>WEEK</timeUnit>
+         <frequency>1</frequency>
+         <startOfRecurr>02-04-16</startOfRecurr>
+         <endOfRecurr/>
       </recur>
    </Task>
    <Task>
       <Description>Go out with other girlfriend</Description>
-      <Date>02-4-2016 22:31:24</Date>
+      <Date>02-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>WEEK</timeUnit>
          <frequency>1</frequency>
-         <startOfRecurr>02-4-2016 22:31:24</startOfRecurr>
-         <endOfRecurr>02-4-2016 22:31:24</endOfRecurr>
+         <startOfRecurr>02-04-16</startOfRecurr>
+         <endOfRecurr>13-04-16</endOfRecurr>
       </recur>
    </Task>
    <Task>
       <Description>500 words CFG1010</Description>
-      <Date>08-4-2016 22:30:05</Date>
+      <Date>08-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>MA1101R Lab Quiz</Description>
-      <Date>15-4-2016 22:30:17</Date>
+      <Date>15-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Get found out</Description>
-      <Date>16-4-2016 22:31:40</Date>
+      <Date>16-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Cry</Description>
-      <Date>16-4-2016 22:32:09</Date>
+      <Date>16-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>1</frequency>
-         <startOfRecurr>16-4-2016 22:32:09</startOfRecurr>
-         <endOfRecurr>01-1-2026 22:32:09</endOfRecurr>
+         <startOfRecurr>16-04-16</startOfRecurr>
+         <endOfRecurr>01-01-26</endOfRecurr>
       </recur>
    </Task>
    <Task>
       <Description>CS2103T Post Lect Quiz</Description>
-      <Date>30-4-2016 22:30:12</Date>
+      <Date>30-04-16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Become a wizard</Description>
-      <Date>01-1-2026 22:32:20</Date>
-      <StartTime>01-1-1970 00:00:00</StartTime>
+      <Date>01-01-26</Date>
+      <StartTime>12:00AM</StartTime>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>HIMYM</Description>
-      <Date>01-1-2027 22:32:32</Date>
-      <StartTime>01-1-1970 00:00:00</StartTime>
+      <Date>01-01-27</Date>
+      <StartTime>12:00AM</StartTime>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>1</frequency>
-         <startOfRecurr>01-1-2027 22:32:32</startOfRecurr>
-         <endOfRecurr>19-4-2016 22:32:32</endOfRecurr>
+         <startOfRecurr>01-01-27</startOfRecurr>
+         <endOfRecurr>19-05-16</endOfRecurr>
       </recur>
    </Task>
    <Task>
       <Description>Get married</Description>
-      <Date>01-1-2030 22:32:40</Date>
+      <Date>01-01-30</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>Do whatever parents do</Description>
-      <Date>01-1-2035 22:32:58</Date>
+      <Date>01-01-35</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>YEAR</timeUnit>
          <frequency>1</frequency>
-         <startOfRecurr>01-1-2035 22:32:58</startOfRecurr>
-         <endOfRecurr>01-1-2047 22:32:58</endOfRecurr>
+         <startOfRecurr>01-01-35</startOfRecurr>
+         <endOfRecurr>01-01-47</endOfRecurr>
       </recur>
    </Task>
    <Task>
       <Description>Kids go college, pretend to be sad but secretly celebrate</Description>
-      <Date>01-1-2047 22:33:28</Date>
+      <Date>01-01-47</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
@@ -151,20 +171,6 @@
    </Task>
    <Task>
       <Description>Meet the one</Description>
-      <Date/>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
-      <Description>Go church next sat 1:30pm 1w</Description>
-      <Date/>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
-      <Description>Date with imaginary girlfriend 12:00</Description>
       <Date/>
       <StartTime/>
       <EndTime/>
