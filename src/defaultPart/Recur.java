@@ -40,22 +40,39 @@ public class Recur {
 	}
 
 	public boolean willRecur() {
-		// todo
-		if (this.getNextRecur() != null) {
-			return true;
-		}
-		return false;
+		return (this.getNextRecur() != null);
 	}
 
 	public TaskDate getNextRecur() {
 		TaskDate nextDate = (TaskDate) getStartDate().clone();
-		TaskDate today = initializeToday();
-		getNextRecurAfterToday(nextDate, today);
+		/*
+		 * TaskDate today = initializeToday(); getNextRecurAfterToday(nextDate, today);
+		 */
+
+		incrementNextDate(nextDate);
 
 		if (nextDateAfterEndDate(nextDate)) {
 			return null;
 		}
 		return nextDate;
+	}
+
+	private void incrementNextDate(TaskDate nextDate) {
+		switch (_timeUnit) {
+			case DAY :
+				nextDate.add(TaskDate.DATE, this._frequency);
+				break;
+			case WEEK :
+				nextDate.add(TaskDate.DATE, this._frequency * 7);
+				break;
+			case MONTH :
+				nextDate.add(TaskDate.MONTH, this._frequency);
+				break;
+			case YEAR :
+				nextDate.add(TaskDate.YEAR, this._frequency);
+				break;
+		}
+		nextDate.getTimeInMillis();
 	}
 
 	private boolean nextDateAfterEndDate(TaskDate nextDate) {
@@ -64,21 +81,7 @@ public class Recur {
 
 	private void getNextRecurAfterToday(TaskDate nextDate, TaskDate today) {
 		while (nextDateBeforeToday(nextDate, today)) {
-			switch (_timeUnit) {
-				case DAY :
-					nextDate.set(TaskDate.DATE, nextDate.get(TaskDate.DATE) + this._frequency);
-					break;
-				case WEEK :
-					nextDate.set(TaskDate.DATE, nextDate.get(TaskDate.DATE) + this._frequency * 7);
-					break;
-				case MONTH :
-					nextDate.set(TaskDate.MONTH, nextDate.get(TaskDate.MONTH) + this._frequency);
-					break;
-				case YEAR :
-					nextDate.set(TaskDate.YEAR, nextDate.get(TaskDate.YEAR) + this._frequency);
-					break;
-			}
-			nextDate.getTimeInMillis();
+			incrementNextDate(nextDate);
 		}
 	}
 
