@@ -145,12 +145,14 @@ public class Controller implements Initializable {
 				scrollDown();
 			} else if (e.getCode().equals(KeyCode.UP)) {
 				scrollUp();
+			} else if (e.getCode().equals(KeyCode.F1)) {
+				showHelp();
 			}
 		});
 
 		root.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if (e.getCode().equals(KeyCode.F1)) {
-				HelpWindow.show();
+				showHelp();
 			}
 		});
 		
@@ -164,10 +166,6 @@ public class Controller implements Initializable {
 				root.widthProperty().addListener(e -> {
 					resizeColumns();
 				});
-				Stage st = getStage();
-				st.setMinWidth(600);
-				st.setMinHeight(450);
-				st.setMaxHeight(470);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -183,6 +181,10 @@ public class Controller implements Initializable {
 			e1.printStackTrace();
 		}
 		
+	}
+	
+	public void showHelp(){
+		HelpWindow.show();
 	}
 	
 	public Stage getStage(){
