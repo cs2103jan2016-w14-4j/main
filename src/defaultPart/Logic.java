@@ -758,6 +758,18 @@ public class Logic {
 						Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
 
 				for (String word : keywords) {
+					// if (!isWordsInTask)
+					// break;
+					//
+					// int taskDescListSize = taskDescList.size();
+					// for (int j = 0; j < taskDescListSize; j++) {
+					// if (taskDescList.get(j).contains(word)) {
+					// taskDescList.remove(taskDescList.get(j));
+					// break;
+					// } else if (j == taskDescList.size() - 1) {
+					// isWordsInTask = false;
+					// }
+					// }
 					if (!taskDescList.contains(word)) {
 						isWordsInTask = false;
 						break;
