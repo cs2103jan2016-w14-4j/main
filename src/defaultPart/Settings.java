@@ -33,9 +33,9 @@ public class Settings {
 
 	/* File names & default paths */
 	private static final String TASK_FILE_NAME = "tasklist.xml";
-	private static final String TASK_FILE_DEFAULT_PATH = "data/";
+	private static final String TASK_FILE_DEFAULT_PATH = "";
 	private static final String SETTINGS_FILE_NAME = "config.xml";
-	private static final String SETTINGS_FILE_PATH = "data/";
+	private static final String SETTINGS_FILE_PATH = "";
 
 	/* For accessing the different Tags for the XML */
 	private static final String TAG_SETTINGS = "Settings";
