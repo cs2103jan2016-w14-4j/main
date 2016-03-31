@@ -695,10 +695,15 @@ public class Logic {
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(_argument);
 		if (match.find() && match.start() == 0) {
-			String[] dayAndMonthAndYear = _argument.substring(match.end()).split("/", 3);
+			String dateString = _argument.substring(match.end()).trim();
+			String[] dayAndMonthAndYear = dateString.split("/", 3);
 			System.out.println(Arrays.toString(dayAndMonthAndYear));
 			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
-
+			if (newDate == null) {
+				_newCommandType = CommandType.ERROR;
+				_feedback = "Failed to parse date: " + dateString;
+				return true;
+			}
 			List<Task> taskList = _storage.getTaskList();
 			int count = 0;
 			switch (match.group()) {
