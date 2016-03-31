@@ -77,6 +77,7 @@ public class Storage {
 
 	public void setSavePath(String filePath) {
 		_settings.setSavePath(filePath);
+		_file = new File(_settings.getSavePathAndName());
 	}
 
 	public String getSavePath() {
