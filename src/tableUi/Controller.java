@@ -358,6 +358,8 @@ public class Controller implements Initializable {
 		for (int i = 0; i < taskList.size(); i++) {
 			addToTaskModels(i);
 		}
+		tablePosition = 0;
+		scrollTo(tablePosition);
 	}
 
 	private void clearInterface() {
