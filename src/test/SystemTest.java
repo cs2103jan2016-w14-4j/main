@@ -678,7 +678,7 @@ public class SystemTest {
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/6/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/7/2016");
-		logicExecuteCommand(logic, "d < 1-6-2016");
+		logicExecuteCommand(logic, "d <1/6/2016");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
