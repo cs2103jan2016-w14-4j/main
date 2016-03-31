@@ -15,12 +15,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.net.ssl.SSLException;
 
 import org.xml.sax.SAXException;
+
+import com.sun.media.jfxmedia.logging.Logger;
 
 /**
  * Class for the main controller of the UI
@@ -155,17 +158,16 @@ public class Controller implements Initializable {
 				showHelp();
 			}
 		});
-		
-		pane.lookupAll(".split-pane-divider").stream()
-        .forEach(div ->  div.setMouseTransparent(true) );
-		
+
+		pane.lookupAll(".split-pane-divider").stream().forEach(div -> div.setMouseTransparent(true));
+
 		// delayed setter (set only after the loading of the software is done)
 		new Thread(() -> {
 			try {
-//				Thread.sleep(100);
-//				root.widthProperty().addListener(e -> {
-//					resizeColumns();
-//				});
+				// Thread.sleep(100);
+				// root.widthProperty().addListener(e -> {
+				// resizeColumns();
+				// });
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -176,18 +178,22 @@ public class Controller implements Initializable {
 		try {
 			logic.loadTasksFromFile();
 			showAllTasks();
-		} catch (SAXException e1) {
+		} catch (SAXException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			setUserPrompt("ERROR: " + e.getMessage());
+		} catch (ParseException e) {
+			setUserPrompt("Parse of tasklist failed: " + e.getMessage() + ". Overriding tasklist...");
+			logic.deleteTaskListFile();
+			// todo: override only if user agrees
 		}
-		
+
 	}
-	
-	public void showHelp(){
+
+	public void showHelp() {
 		HelpWindow.show();
 	}
-	
-	public Stage getStage(){
+
+	public Stage getStage() {
 		return stage;
 	}
 
@@ -195,7 +201,7 @@ public class Controller implements Initializable {
 		toggleRightPane();
 		resizeColumns();
 	}
-	
+
 	public void toggleRightPane() {
 		if (rightPane.isVisible()) {
 			rightPane.setVisible(false);
@@ -204,25 +210,25 @@ public class Controller implements Initializable {
 			rightPane.setVisible(true);
 			pane.setDividerPosition(0, 0.619);
 		}
-		
+
 	}
-	
-	public void resizeColumns(){
+
+	public void resizeColumns() {
 		final double paneWidth = pane.getWidth();
-		
+
 		final double floatingTableWidth = rightPane.isVisible() ? 304.8 : 0;
 		final double dividerPosition = 1.0 - (floatingTableWidth / paneWidth);
-		
+
 		floatingTaskTable.setPrefWidth(floatingTableWidth);
 		pane.setDividerPositions(dividerPosition);
-		
+
 		final double eventsTableWidth = paneWidth * dividerPosition - 5; // 5 for padding
 		final double idWidth = 20;
 		final double checkBoxWidth = 20;
 		final double recurWidth = Math.min(eventsTableWidth * 0.2, 100);
 		final double dateWidth = Math.min(eventsTableWidth * 0.2, 200);
 		final double descWidth = eventsTableWidth - idWidth - checkBoxWidth - recurWidth - dateWidth;
-		
+
 		eventsTable.setPrefWidth(eventsTableWidth);
 		eventsId.setPrefWidth(idWidth);
 		eventsCheckbox.setPrefWidth(checkBoxWidth);
@@ -379,22 +385,22 @@ public class Controller implements Initializable {
 		tablePosition = 0;
 		scrollTo(tablePosition);
 	}
-	
-	private void scrollDown(){
+
+	private void scrollDown() {
 		tablePosition += 5;
-		if(tablePosition > Math.max(eventList.size(), floatingTaskList.size()))
+		if (tablePosition > Math.max(eventList.size(), floatingTaskList.size()))
 			tablePosition = Math.max(eventList.size(), floatingTaskList.size());
 		scrollTo(tablePosition);
 	}
-	
-	private void scrollUp(){
+
+	private void scrollUp() {
 		tablePosition -= 5;
-		if(tablePosition < 0)
+		if (tablePosition < 0)
 			tablePosition = 0;
 		scrollTo(tablePosition);
 	}
-	
-	private void scrollTo(int tablePosition){
+
+	private void scrollTo(int tablePosition) {
 		eventsTable.scrollTo(tablePosition);
 		floatingTaskTable.scrollTo(tablePosition);
 	}

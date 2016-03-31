@@ -84,7 +84,7 @@ public class Logic {
 		_storage = new Storage(testFile);
 	}
 
-	public void loadTasksFromFile() throws SAXException {
+	public void loadTasksFromFile() throws SAXException, ParseException {
 		_storage.loadTasksFromFile();
 	}
 
@@ -790,11 +790,18 @@ public class Logic {
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 	private void helpFunction() {
 
+	}
+	
+	public void deleteTaskListFile() {
+		_storage.deleteTaskListFile();
 	}
 
 	/* Getters for UI */
