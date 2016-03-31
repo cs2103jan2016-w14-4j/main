@@ -77,16 +77,24 @@ public class Storage {
 		// _settings = new Settings();
 	}
 
-	public void setSavePath(String filePath) {
+	public void setSavePath(String filePath) throws SAXException, ParseException {
 
-		/*
-		 * // Deletes the previous taskList String oldPath = _settings.getSavePathAndName(); File oldFile =
-		 * new File(oldPath); try { Files.delete(oldFile.toPath()); } catch (IOException e) {
-		 * logger.log(Level.FINE, e.toString(), e); e.printStackTrace(); }
-		 */
+		// Deletes the previous taskList 
+		String oldPath = _settings.getSavePathAndName();
+		File oldFile = new File(oldPath);
+		try {
+			Files.delete(oldFile.toPath());
+		} catch (IOException e) {
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
+		}
+
 		_settings.setSavePath(filePath);
 		_settings.saveConfigToFile();
 		_file = new File(_settings.getSavePathAndName());
+		if (!loadTasksFromFile()) {
+			saveTasksToFile();
+		}
 	}
 
 	public String getSavePath() {
@@ -240,7 +248,7 @@ public class Storage {
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
-	public void loadTasksFromFile() throws SAXException, ParseException {
+	public boolean loadTasksFromFile() throws SAXException, ParseException {
 		// First check if the file exists and is not a directory but an actual file
 		if (_file.isFile() && _file.canRead()) {
 			// Extracts out the list of task nodes
@@ -258,7 +266,9 @@ public class Storage {
 					}
 				}
 			}
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -586,7 +596,7 @@ public class Storage {
 		Node node = taskElement.getElementsByTagName(tag).item(0);
 		return (node == null) ? "" : node.getTextContent();
 	}
-	
+
 	public void deleteTaskListFile() {
 		try {
 			Files.delete(Paths.get(_settings.getSavePathAndName()));

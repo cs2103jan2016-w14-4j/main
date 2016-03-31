@@ -787,11 +787,8 @@ public class Logic {
 
 	private void setStoragePath() {
 		try {
-
 			_storage.setSavePath(_argument);
-			String taskFilePathAndName = _storage.getSavePath();
-			_storage.loadTasksFromFile();
-			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, taskFilePathAndName);
+			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, _storage.getSavePath());
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
