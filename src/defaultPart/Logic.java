@@ -735,10 +735,16 @@ public class Logic {
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
-		String keywords = _argument.toLowerCase();
+		String[] keywords = _argument.toLowerCase().split(" ");
 		List<Task> taskList = _storage.getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
-			if (taskList.get(i).getDescription().toLowerCase().contains(keywords)) {
+			boolean isWordsInTask = true;
+			for(int j=0; j<keywords.length;j++){
+				if (!taskList.get(i).getDescription().toLowerCase().contains(keywords[j])) {
+					isWordsInTask = false;
+				}
+			}
+			if(isWordsInTask){
 				_indexesFound.add(i);
 			}
 		}
