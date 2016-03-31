@@ -743,22 +743,32 @@ public class Logic {
 		_indexesFound = new ArrayList<Integer>();
 		List<String> keywords = Arrays.asList(_argument.toLowerCase().split(" "));
 		List<Task> taskList = _storage.getTaskList();
-		for (int i = 0; i < taskList.size(); i++) {
-
-			boolean isWordsInTask = true;
-			List<String> taskDesc = new LinkedList<String>(Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
-
-			for (String word : keywords) {
-				if (!taskDesc.contains(word)) {
-					isWordsInTask = false;
-					break;
-				} else {
-					taskDesc.remove(word);
+		if (_argument.length() == 1) {
+			for (int i = 0; i < taskList.size(); i++) {
+				String taskDesc = taskList.get(i).getDescription();
+				if (taskDesc.startsWith(_argument.toLowerCase())) {
+					_indexesFound.add(i);
 				}
 			}
+		} else {
+			for (int i = 0; i < taskList.size(); i++) {
 
-			if (isWordsInTask) {
-				_indexesFound.add(i);
+				boolean isWordsInTask = true;
+				List<String> taskDescList = new LinkedList<String>(
+						Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
+
+				for (String word : keywords) {
+					if (!taskDescList.contains(word)) {
+						isWordsInTask = false;
+						break;
+					} else {
+						taskDescList.remove(word);
+					}
+				}
+
+				if (isWordsInTask) {
+					_indexesFound.add(i);
+				}
 			}
 		}
 		// Feedback directed back to UI depending on whether it is successful or not
@@ -795,13 +805,13 @@ public class Logic {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 	}
 
 	private void helpFunction() {
 
 	}
-	
+
 	public void deleteTaskListFile() {
 		_storage.deleteTaskListFile();
 	}

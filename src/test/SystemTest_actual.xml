@@ -2,15 +2,15 @@
 <wuriTasks>
    <Task>
       <Description>HIMYM</Description>
-      <Date>01-01-27</Date>
+      <Date>01/01/27</Date>
       <StartTime>12:00AM</StartTime>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>1</frequency>
-         <startOfRecurr>01-01-27</startOfRecurr>
-         <endOfRecurr>20-02-27</endOfRecurr>
+         <startOfRecurr>01/01/27</startOfRecurr>
+         <endOfRecurr>20/02/27</endOfRecurr>
       </recur>
    </Task>
 </wuriTasks>
