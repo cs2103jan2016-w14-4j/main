@@ -78,7 +78,18 @@ public class Storage {
 	}
 
 	public void setSavePath(String filePath) {
+
+		// Deletes the previous taskList
+		String oldPath = _settings.getSavePathAndName();
+		File oldFile = new File(oldPath);
+		try {
+			Files.delete(oldFile.toPath());
+		} catch (IOException e) {
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
+		}
 		_settings.setSavePath(filePath);
+		_settings.saveConfigToFile();
 		_file = new File(_settings.getSavePathAndName());
 	}
 
