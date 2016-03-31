@@ -15,6 +15,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +78,18 @@ public class Storage {
 	}
 
 	public void setSavePath(String filePath) {
+		
+		// Deletes the previous taskList
+		String oldPath = _settings.getSavePathAndName();
+		File oldFile = new File(oldPath);
+		try {
+			Files.delete(oldFile.toPath());
+		} catch (IOException e) {
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
+		}
 		_settings.setSavePath(filePath);
+		_settings.saveConfigToFile();
 		_file = new File(_settings.getSavePathAndName());
 	}
 

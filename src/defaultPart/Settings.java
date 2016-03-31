@@ -234,13 +234,10 @@ public class Settings {
 
 		// Extract settings
 		if (savePathNode.getNodeType() == Node.ELEMENT_NODE) {
-			Element savePathElement = (Element) savePathNode;
-			_savePath = extractStringFromNode(savePathElement, TAG_SAVE_PATH);
-
+			_savePath = savePathNode.getTextContent();
 		}
 		if (timeDefaultNode.getNodeType() == Node.ELEMENT_NODE) {
-			Element timeDefaultElement = (Element) timeDefaultNode;
-			_timeDefault = extractStringFromNode(timeDefaultElement, TAG_TIME_DEFAULT);
+			_timeDefault = timeDefaultNode.getTextContent();
 
 		}
 	}
@@ -306,25 +303,6 @@ public class Settings {
 			e.printStackTrace();
 			logger.log(Level.SEVERE, e.toString(), e);
 		}
-	}
-
-	/**
-	 * Extract a string from node with specified tag
-	 * 
-	 * @param element
-	 *            Element object containing information to extract
-	 * @param tag
-	 *            Tag to specify which attribute, e.g. "description"
-	 * @return String inside Element with specified tag
-	 */
-	private String extractStringFromNode(Element element, String tag) {
-
-		// Assert that Element & tag are not null
-		assert (element != null);
-		assert (tag != null || tag != "");
-
-		Node node = element.getElementsByTagName(tag).item(0);
-		return (node == null) ? "" : node.getTextContent();
 	}
 
 }
