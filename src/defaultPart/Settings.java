@@ -31,8 +31,9 @@ public class Settings {
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
 
-	/* File names */
+	/* File names & default paths */
 	private static final String TASK_FILE_NAME = "tasklist.xml";
+	private static final String TASK_FILE_DEFAULT_PATH = "data/";
 	private static final String SETTINGS_FILE_NAME = "config.xml";
 	private static final String SETTINGS_FILE_PATH = "data/";
 
@@ -125,7 +126,7 @@ public class Settings {
 			_savePath = savePath + "/";
 		}
 		if (savePath.equals("/")) {
-			_savePath = "";
+			_savePath = TASK_FILE_DEFAULT_PATH;
 		} else if (isValidPath(savePath)) {
 			_savePath = savePath;
 		}
