@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriSettings>
    <Settings>
-      <SavePath/>
-      <TimeDefault/>
+      <SavePath>data/</SavePath>
+      <TimeDefault>PM</TimeDefault>
    </Settings>
 </wuriSettings>
