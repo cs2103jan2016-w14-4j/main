@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.LinkedList;
 
 import org.xml.sax.SAXException;
 
@@ -445,9 +446,9 @@ public class Logic {
 		args.remove(0);
 		Task task = _storage.getTask(taskIndex);
 		assert (task != null);
-		
+
 		boolean isRecurEdited = setRecurIfExists(task, args);
-		
+
 		if (isRecurEdited) {
 			Recur recur = task.getRecur();
 			TaskDate date = task.getDate();
@@ -459,11 +460,11 @@ public class Logic {
 				recur.setStartDate(date);
 			}
 		}
-		
+
 		setTaskTimeIfExists(task, args);
 		setTaskDateIfExists(task, args);
 		task.setDescription(String.join(" ", args));
-		
+
 		// switch (args.size()) {
 		// case 1 :
 		// // copy task to input box for editing
@@ -735,16 +736,23 @@ public class Logic {
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
-		String[] keywords = _argument.toLowerCase().split(" ");
+		List<String> keywords = Arrays.asList(_argument.toLowerCase().split(" "));
 		List<Task> taskList = _storage.getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
+
 			boolean isWordsInTask = true;
-			for(int j=0; j<keywords.length;j++){
-				if (!taskList.get(i).getDescription().toLowerCase().contains(keywords[j])) {
+			List<String> taskDesc = new LinkedList<String>(Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
+
+			for (String word : keywords) {
+				if (!taskDesc.contains(word)) {
 					isWordsInTask = false;
+					break;
+				} else {
+					taskDesc.remove(word);
 				}
 			}
-			if(isWordsInTask){
+
+			if (isWordsInTask) {
 				_indexesFound.add(i);
 			}
 		}
