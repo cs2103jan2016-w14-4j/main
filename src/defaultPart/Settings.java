@@ -123,9 +123,9 @@ public class Settings {
 	 */
 	public void setSavePath(String savePath) {
 		if (savePath.charAt(savePath.length() - 1) != '/') {
-			_savePath = savePath + "/";
-		}
-		if (savePath.equals("/") || savePath.equals("\"")) {
+			savePath += "/";
+		}  
+		if (savePath.equals("/") || savePath.equals("\\")) {
 			_savePath = TASK_FILE_DEFAULT_PATH;
 		} else if (isValidPath(savePath)) {
 			_savePath = savePath;
