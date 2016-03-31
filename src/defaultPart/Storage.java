@@ -78,7 +78,7 @@ public class Storage {
 	}
 
 	public void setSavePath(String filePath) {
-		
+
 		// Deletes the previous taskList
 		String oldPath = _settings.getSavePathAndName();
 		File oldFile = new File(oldPath);
