@@ -63,8 +63,8 @@ public class Logic {
 	// todo: clear it before inserting, or get rid of it by putting found task in currentTaskList?
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
-	
-	/*for CommandType.FIND*/
+
+	/* for CommandType.FIND */
 	private List<List<String>> _keywordsPermutations = new LinkedList<List<String>>();
 
 	public Logic() {
@@ -746,28 +746,47 @@ public class Logic {
 		_indexesFound = new ArrayList<Integer>();
 		List<String> keywords = new LinkedList<String>(Arrays.asList(_argument.toLowerCase().split(" ")));
 		List<Task> taskList = _storage.getTaskList();
+
 		if (_argument.length() == 1) {
+
 			findAllWordsStartingWithArg(taskList);
+
 		} else {
-			
+
 			permute(keywords, 0);
-			
+
 			for (int i = 0; i < taskList.size(); i++) {
 
-				boolean isWordsInTask = true;
 				List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
 
-				for (String word : keywords) {
-					if (!taskDescWords.contains(word)) {
-						isWordsInTask = false;
-						break;
-					} else {
-						taskDescWords.remove(word);
-					}
-				}
+				for (List<String> permutation : _keywordsPermutations) {
 
-				if (isWordsInTask) {
-					_indexesFound.add(i);
+					boolean isWordsInTask = true;
+
+					for (String word : permutation) {
+						System.out.println(word);
+						if (!isWordsInTask) {
+							break;
+						}
+
+						int taskDescListSize = taskDescWords.size();
+						if (taskDescListSize == 0) {
+							isWordsInTask = false;
+							break;
+						}
+						for (int j = 0; j < taskDescListSize; j++) {
+							if (taskDescWords.get(j).contains(word)) {
+								taskDescWords.remove(taskDescWords.get(j));
+								break;
+							} else if (j == taskDescWords.size() - 1) {
+								isWordsInTask = false;
+							}
+						}
+					}
+
+					if (isWordsInTask && !_indexesFound.contains(i)) {
+						_indexesFound.add(i);
+					}
 				}
 			}
 		}
@@ -776,17 +795,17 @@ public class Logic {
 				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
 
 	}
-	
-	private void permute(List<String> list, int pointer){
-		if(pointer == list.size()){
+
+	private void permute(List<String> list, int pointer) {
+		if (pointer == list.size()) {
 			_keywordsPermutations.add(list);
-		}else{
-			for(int i=pointer; i<list.size();i++){
+		} else {
+			for (int i = pointer; i < list.size(); i++) {
 				LinkedList<String> permutation = new LinkedList<String>();
 				permutation.addAll(list);
 				permutation.set(pointer, list.get(i));
 				permutation.set(i, list.get(pointer));
-				permute(permutation, pointer+1);
+				permute(permutation, pointer + 1);
 			}
 		}
 	}
