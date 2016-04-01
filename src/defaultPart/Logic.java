@@ -744,8 +744,8 @@ public class Logic {
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
-		_keywordsPermutations  = new LinkedList<List<String>>();
-		List<String> keywords = new LinkedList<String>(Arrays.asList(_argument.toLowerCase().split(" ")));
+		_keywordsPermutations = new LinkedList<List<String>>();
+		List<String> keywords = splitKeywordsIntoLowercaseWords();
 		List<Task> taskList = _storage.getTaskList();
 
 		if (_argument.length() == 1) {
@@ -758,41 +758,63 @@ public class Logic {
 
 			for (int i = 0; i < taskList.size(); i++) {
 
-				for (List<String> permutation : _keywordsPermutations) {
-					
-					List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
-					boolean isWordsInTask = true;
-
-					for (String word : permutation) {
-						if (!isWordsInTask) {
-							break;
-						}
-
-						int taskDescListSize = taskDescWords.size();
-						if (taskDescListSize == 0) {
-							isWordsInTask = false;
-							break;
-						}
-						for (int j = 0; j < taskDescListSize; j++) {
-							if (taskDescWords.get(j).contains(word)) {
-								taskDescWords.remove(taskDescWords.get(j));
-								break;
-							} else if (j == taskDescWords.size() - 1) {
-								isWordsInTask = false;
-							}
-						}
-					}
-
-					if (isWordsInTask && !_indexesFound.contains(i)) {
-						_indexesFound.add(i);
-					}
-				}
+				determineIfTaskMatchesKeyword(taskList, i);
 			}
 		}
 		// Feedback directed back to UI depending on whether it is successful or not
 		_feedback = (_indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
 				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
 
+	}
+
+	private LinkedList<String> splitKeywordsIntoLowercaseWords() {
+		return new LinkedList<String>(Arrays.asList(_argument.toLowerCase().split(" ")));
+	}
+
+	private void determineIfTaskMatchesKeyword(List<Task> taskList, int i) {
+		for (List<String> permutation : _keywordsPermutations) {
+
+			List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
+			boolean isWordsInTask = true;
+
+			isWordsInTask = determineIfTaskMatchesPermutation(permutation, taskDescWords, isWordsInTask);
+
+			if (isWordsInTask && !_indexesFound.contains(i)) {
+				_indexesFound.add(i);
+			}
+		}
+	}
+
+	private boolean determineIfTaskMatchesPermutation(List<String> permutation, List<String> taskDescWords,
+			boolean isWordsInTask) {
+		for (String word : permutation) {
+			
+			if (!isWordsInTask) {
+				break;
+			}
+
+			int taskDescListSize = taskDescWords.size();
+			if (taskDescListSize == 0) {
+				isWordsInTask = false;
+				break;
+			}
+			isWordsInTask = determineIfWordIsSubstringOfTaskWord(taskDescWords, isWordsInTask, word,
+					taskDescListSize);
+		}
+		return isWordsInTask;
+	}
+
+	private boolean determineIfWordIsSubstringOfTaskWord(List<String> taskDescWords, boolean isWordsInTask,
+			String word, int taskDescListSize) {
+		for (int j = 0; j < taskDescListSize; j++) {
+			if (taskDescWords.get(j).contains(word)) {
+				taskDescWords.remove(taskDescWords.get(j));
+				break;
+			} else if (j == taskDescWords.size() - 1) {
+				isWordsInTask = false;
+			}
+		}
+		return isWordsInTask;
 	}
 
 	private void permute(List<String> list, int pointer) {
