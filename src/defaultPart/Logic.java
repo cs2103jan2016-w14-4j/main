@@ -65,7 +65,7 @@ public class Logic {
 	private List<Integer> _indexesFound;
 
 	/* for CommandType.FIND */
-	private List<List<String>> _keywordsPermutations = new LinkedList<List<String>>();
+	private List<List<String>> _keywordsPermutations;
 
 	public Logic() {
 		setupLogger();
@@ -744,6 +744,7 @@ public class Logic {
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
+		_keywordsPermutations  = new LinkedList<List<String>>();
 		List<String> keywords = new LinkedList<String>(Arrays.asList(_argument.toLowerCase().split(" ")));
 		List<Task> taskList = _storage.getTaskList();
 
