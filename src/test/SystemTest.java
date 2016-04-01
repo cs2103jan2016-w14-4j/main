@@ -698,17 +698,22 @@ public class SystemTest {
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
-	/*
-	 * Currently commented out because it wipes the current task list *
-	 * 
-	 * @Test public final void testChangeDirectory() throws SAXException, ParseException, IOException {
-	 * 
-	 * // Setting up actual Task List for comparison Logic logic = new Logic(); logicExecuteCommand(logic,
-	 * "Buy Potatoes"); logicExecuteCommand(logic, "s test");
-	 * 
-	 * // Setting up expected Task List for comparison File expectedFile = new File("test\\tasklist.xml");
-	 * assert (expectedFile.isFile()); assert (expectedFile.canRead());
-	 * 
-	 * logicExecuteCommand(logic, "s /"); }
-	 */
+	// Currently commented out because it wipes the current task list
+
+	// @Test
+	// public final void testChangeDirectory() throws SAXException, ParseException, IOException {
+	//
+	// // Setting up actual Task List for comparison
+	// Logic logic = new Logic();
+	// logicExecuteCommand(logic, "Buy Potatoes");
+	// logicExecuteCommand(logic, "s test");
+	//
+	// // Setting up expected Task List for comparison
+	// File expectedFile = new File("test\\tasklist.xml");
+	// assert (expectedFile.isFile());
+	// assert (expectedFile.canRead());
+	//
+	// logicExecuteCommand(logic, "s /");
+	// }
+
 }
