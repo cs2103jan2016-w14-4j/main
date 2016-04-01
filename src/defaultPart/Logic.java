@@ -63,6 +63,9 @@ public class Logic {
 	// todo: clear it before inserting, or get rid of it by putting found task in currentTaskList?
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
+	
+	/*for CommandType.FIND*/
+	private List<List<String>> _keywordsPermutations = new LinkedList<List<String>>();
 
 	public Logic() {
 		setupLogger();
@@ -741,40 +744,25 @@ public class Logic {
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
-		List<String> keywords = Arrays.asList(_argument.toLowerCase().split(" "));
+		List<String> keywords = new LinkedList<String>(Arrays.asList(_argument.toLowerCase().split(" ")));
 		List<Task> taskList = _storage.getTaskList();
 		if (_argument.length() == 1) {
-			for (int i = 0; i < taskList.size(); i++) {
-				String taskDesc = taskList.get(i).getDescription();
-				if (taskDesc.startsWith(_argument.toLowerCase())) {
-					_indexesFound.add(i);
-				}
-			}
+			findAllWordsStartingWithArg(taskList);
 		} else {
+			
+			permute(keywords, 0);
+			
 			for (int i = 0; i < taskList.size(); i++) {
 
 				boolean isWordsInTask = true;
-				List<String> taskDescList = new LinkedList<String>(
-						Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
+				List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
 
 				for (String word : keywords) {
-					// if (!isWordsInTask)
-					// break;
-					//
-					// int taskDescListSize = taskDescList.size();
-					// for (int j = 0; j < taskDescListSize; j++) {
-					// if (taskDescList.get(j).contains(word)) {
-					// taskDescList.remove(taskDescList.get(j));
-					// break;
-					// } else if (j == taskDescList.size() - 1) {
-					// isWordsInTask = false;
-					// }
-					// }
-					if (!taskDescList.contains(word)) {
+					if (!taskDescWords.contains(word)) {
 						isWordsInTask = false;
 						break;
 					} else {
-						taskDescList.remove(word);
+						taskDescWords.remove(word);
 					}
 				}
 
@@ -787,6 +775,34 @@ public class Logic {
 		_feedback = (_indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
 				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
 
+	}
+	
+	private void permute(List<String> list, int pointer){
+		if(pointer == list.size()){
+			_keywordsPermutations.add(list);
+		}else{
+			for(int i=pointer; i<list.size();i++){
+				LinkedList<String> permutation = new LinkedList<String>();
+				permutation.addAll(list);
+				permutation.set(pointer, list.get(i));
+				permutation.set(i, list.get(pointer));
+				permute(permutation, pointer+1);
+			}
+		}
+	}
+
+	private LinkedList<String> splitTaskDescIntoLowercaseWords(List<Task> taskList, int i) {
+		return new LinkedList<String>(
+				Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
+	}
+
+	private void findAllWordsStartingWithArg(List<Task> taskList) {
+		for (int i = 0; i < taskList.size(); i++) {
+			String taskDesc = taskList.get(i).getDescription();
+			if (taskDesc.startsWith(_argument.toLowerCase())) {
+				_indexesFound.add(i);
+			}
+		}
 	}
 
 	private int getTaskIndex() throws IOException {
