@@ -156,9 +156,6 @@ public class Controller implements Initializable {
 			}
 		});
 		
-		pane.lookupAll(".split-pane-divider").stream()
-        .forEach(div ->  div.setMouseTransparent(true) );
-		
 		// delayed setter (set only after the loading of the software is done)
 		new Thread(() -> {
 			try {
