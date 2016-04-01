@@ -46,7 +46,7 @@ public class HelpWindow{
             image = new ImageView(getClass().getResource("help.jpg").toExternalForm());
             root = new VBox();
             root.getChildren().add(image);
-            Scene scene = new Scene(root, 400, 400);
+            Scene scene = new Scene(root, 400, 600);
             window.setScene(scene);
             
             scene.addEventHandler(KeyEvent.KEY_PRESSED, e->{

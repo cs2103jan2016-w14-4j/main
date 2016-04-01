@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -171,7 +172,12 @@ public class Controller implements Initializable {
 
 		logic = new Logic();
 		try {
-			logic.loadTasksFromFile();
+			try {
+				logic.loadTasksFromFile();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			showAllTasks();
 		} catch (SAXException e1) {
 			// TODO Auto-generated catch block
