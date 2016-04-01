@@ -3,11 +3,14 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -29,7 +32,6 @@ public class SystemTest {
 	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
 	private static final String TEST_FILE_NAME = "test\\SystemTest_actual.xml";
 
-	
 	@Before
 	public void runBeforeEveryTest() {
 		XMLUnit.setIgnoreWhitespace(true);
@@ -37,8 +39,7 @@ public class SystemTest {
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
 		XMLUnit.setNormalizeWhitespace(true);
 	}
-	
-	
+
 	/**
 	 * Helper function to create the a recur item based on presence of parameters
 	 * 
@@ -70,10 +71,9 @@ public class SystemTest {
 	 * @throws SAXException
 	 * @throws ParseException
 	 */
-	private void storageCreateExpectedTask(File expectedFile, String description, String date,
-			String startTime, String endTime, Boolean completed, Recur recur)
+	private void storageCreateExpectedTask(Storage storage, File expectedFile, String description,
+			String date, String startTime, String endTime, Boolean completed, Recur recur)
 					throws SAXException, ParseException {
-		Storage expStorage = new Storage(expectedFile);
 		Task newTask = new Task();
 		newTask.setDescription(description);
 
@@ -98,8 +98,8 @@ public class SystemTest {
 		if (recur != null) {
 			newTask.setRecur(recur);
 		}
-		expStorage.addToTaskList(newTask);
-		expStorage.saveTasksToFile();
+		storage.addToTaskList(newTask);
+		storage.saveTasksToFile();
 	}
 
 	/**
@@ -125,7 +125,8 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "CS2103T Reading", null, null, null, false, null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "CS2103T Reading", null, null, null, false, null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -144,7 +145,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "500 words CFG1010", "8-4-2016", null, null, false, null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "500 words CFG1010", "8/4/2016", null, null, false,
+				null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -162,8 +165,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Plan Jap Trip", "30-1-2016", "11:00AM", null, false, null);
-
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Plan Jap Trip", "30/1/2016", "11:00AM", null, false,
+				null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -181,8 +185,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "30-1-2016", "11:00AM", "12:00PM", false,
-				null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "30/1/2016", "11:00AM",
+				"12:00PM", false, null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -200,8 +205,10 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Go out with girlfriend", "01-4-2016", null, null, false,
-				createRecur("DAY", 3, "01-4-216", "15-4-2016")); // TODO-change end date to correct behavior
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Go out with girlfriend", "01/4/2016", null, null,
+				false, createRecur("DAY", 3, "01/4/216", "15/4/2016")); // TODO/change end date to correct
+																		// behavior
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -219,8 +226,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Go out with jully", "02-4-2016", null, null, false,
-				createRecur("WEEK", 1, "02-4-216", "16-4-2016")); // TODO-change end date to correct behavior
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Go out with jully", "02/4/2016", null, null, false,
+				createRecur("WEEK", 1, "02/4/216", "16/4/2016")); // TODO/change end date to correct behavior
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -239,8 +247,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "HIMYM", "1-1-2027", "12:00PM", null, false,
-				createRecur("DAY", 1, "1-1-2027", "20-2-2027")); // TODO-change end date to correct behavior
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "HIMYM", "1/1/2027", "12:00PM", null, false,
+				createRecur("DAY", 1, "1/1/2027", "20/2/2027")); // TODO/change end date to correct behavior
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -258,9 +267,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
-				createRecur("DAY", 1, "1-5-2016", "11-5-2016"));
-
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
+				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "11/5/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -279,7 +288,8 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Potato Reading", null, null, null, false, null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Potato Reading", null, null, null, false, null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -298,7 +308,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Tomato Reading", "20-4-2016", null, null, false, null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Tomato Reading", "20/4/2016", null, null, false,
+				null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -317,7 +329,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Tomato Reading", "11-4-2016", "3:00PM", null, false, null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Tomato Reading", "11/4/2016", "3:00PM", null, false,
+				null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -336,7 +350,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Cabbage Reading", "11-4-2016", "3:00PM", null, false, null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Cabbage Reading", "11/4/2016", "3:00PM", null,
+				false, null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -355,8 +371,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Cucumber Reading", "11-4-2016", "2:00PM", "5:00PM", false,
-				null);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Cucumber Reading", "11/4/2016", "2:00PM", "5:00PM",
+				false, null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -375,8 +392,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
-				createRecur("WEEK", 1, "1-5-2016", "8-5-2016"));
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
+				"12:00PM", false, createRecur("WEEK", 1, "1/5/2016", "8/5/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -395,8 +413,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
-				createRecur("DAY", 3, "1-5-2016", "4-5-2016"));
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
+				"12:00PM", false, createRecur("DAY", 3, "1/5/2016", "4/5/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -415,8 +434,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
-				createRecur("DAY", 1, "1-5-2016", "6-5-2016"));
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
+				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "6/5/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -435,8 +455,9 @@ public class SystemTest {
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
-				createRecur("DAY", 1, "1-5-2016", "10-1-2016"));
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
+				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "10/1/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -450,13 +471,14 @@ public class SystemTest {
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
-		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1/1/2016");
+		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am/12pm 1d 1/1/2016");
 		logicExecuteCommand(logic, "e 2 Buy Tomatoes Instead");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
-		storageCreateExpectedTask(expectedFile, "Buy some potatoes", "1-5-2016", "11:00AM", "12:00PM", false,
-				createRecur("DAY", 1, "1-5-2016", "1-1-2016"));
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
+				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "1/1/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -483,7 +505,7 @@ public class SystemTest {
 		// This is to test the expected behavior of this function
 		assertEquals(expectedList, actualIndexList);
 	}
-	
+
 	@Test
 	public final void testFindCapitalizedWord() throws SAXException, ParseException, IOException {
 		// Setting up actual Task List for comparison
@@ -504,7 +526,7 @@ public class SystemTest {
 		assertEquals(expectedList, actualIndexList);
 	}
 
-	@Test 
+	@Test
 	public final void testFindUnorderedWords() throws SAXException, ParseException, IOException {
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
@@ -524,4 +546,174 @@ public class SystemTest {
 		assertEquals(expectedList, actualIndexList);
 
 	}
+
+	@Test
+	public final void testDeleteFirstIndex() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "d 1");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testDeleteMiddleIndex() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "d 2");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testDeleteLastIndex() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "d 3");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testDeleteInvalidIndex() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "d 4");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testDeleteFloatingTasks() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Buy Potatoes");
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Eat Potatoes");
+		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
+		logicExecuteCommand(logic, "Cook Potatoes");
+		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
+		logicExecuteCommand(logic, "Love Potatoes");
+		logicExecuteCommand(logic, "d /");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testDeleteByDate() throws SAXException, ParseException, IOException {
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Buy Potatoes");
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
+		logicExecuteCommand(logic, "Fly to Japan 1/6/2016");
+		logicExecuteCommand(logic, "Trip Japan Plan 1/7/2016");
+		logicExecuteCommand(logic, "d <1/6/2016");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Buy Potatoes", null, null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	// Currently commented out because it wipes the current task list
+
+	// @Test
+	// public final void testChangeDirectory() throws SAXException, ParseException, IOException {
+	//
+	// // Setting up actual Task List for comparison
+	// Logic logic = new Logic();
+	// logicExecuteCommand(logic, "Buy Potatoes");
+	// logicExecuteCommand(logic, "s test");
+	//
+	// // Setting up expected Task List for comparison
+	// File expectedFile = new File("test\\tasklist.xml");
+	// assert (expectedFile.isFile());
+	// assert (expectedFile.canRead());
+	//
+	// logicExecuteCommand(logic, "s /");
+	// }
+
 }

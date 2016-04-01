@@ -15,6 +15,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,11 +74,27 @@ public class Storage {
 	public Storage(File storageFile) throws SAXException {
 		setupLogger();
 		_file = storageFile;
-		// _settings = new Settings();
+		//_settings = new Settings();
 	}
 
-	public void setSavePath(String filePath) {
+	public void setSavePath(String filePath) throws SAXException, ParseException {
+
+		// Deletes the previous taskList 
+		String oldPath = _settings.getSavePathAndName();
+		File oldFile = new File(oldPath);
+		try {
+			Files.delete(oldFile.toPath());
+		} catch (IOException e) {
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
+		}
+
 		_settings.setSavePath(filePath);
+		_settings.saveConfigToFile();
+		_file = new File(_settings.getSavePathAndName());
+		if (!loadTasksFromFile()) {
+			saveTasksToFile();
+		}
 	}
 
 	public String getSavePath() {
@@ -230,7 +248,7 @@ public class Storage {
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
-	public void loadTasksFromFile() throws SAXException {
+	public boolean loadTasksFromFile() throws SAXException, ParseException {
 		// First check if the file exists and is not a directory but an actual file
 		if (_file.isFile() && _file.canRead()) {
 			// Extracts out the list of task nodes
@@ -243,18 +261,14 @@ public class Storage {
 					if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
 						Element taskElement = (Element) taskNode;
 						Task newTask = null;
-						try {
-							newTask = importTask(taskElement);
-						} catch (ParseException e) {
-							// Error in parser configuration
-							e.printStackTrace();
-							logger.log(Level.FINE, e.toString(), e);
-						}
+						newTask = importTask(taskElement);
 						_currentTaskList.add(newTask);
 					}
 				}
 			}
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -581,5 +595,14 @@ public class Storage {
 
 		Node node = taskElement.getElementsByTagName(tag).item(0);
 		return (node == null) ? "" : node.getTextContent();
+	}
+
+	public void deleteTaskListFile() {
+		try {
+			Files.delete(Paths.get(_settings.getSavePathAndName()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

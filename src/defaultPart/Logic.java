@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.LinkedList;
 
 import org.xml.sax.SAXException;
 
@@ -63,6 +64,9 @@ public class Logic {
 	// and restore from prev task list if _oldCommandType == FIND
 	private List<Integer> _indexesFound;
 
+	/* for CommandType.FIND */
+	private List<List<String>> _keywordsPermutations = new LinkedList<List<String>>();
+
 	public Logic() {
 		setupLogger();
 		try {
@@ -83,7 +87,7 @@ public class Logic {
 		_storage = new Storage(testFile);
 	}
 
-	public void loadTasksFromFile() throws SAXException {
+	public void loadTasksFromFile() throws SAXException, ParseException {
 		_storage.loadTasksFromFile();
 	}
 
@@ -445,9 +449,9 @@ public class Logic {
 		args.remove(0);
 		Task task = _storage.getTask(taskIndex);
 		assert (task != null);
-		
+
 		boolean isRecurEdited = setRecurIfExists(task, args);
-		
+
 		if (isRecurEdited) {
 			Recur recur = task.getRecur();
 			TaskDate date = task.getDate();
@@ -459,11 +463,11 @@ public class Logic {
 				recur.setStartDate(date);
 			}
 		}
-		
+
 		setTaskTimeIfExists(task, args);
 		setTaskDateIfExists(task, args);
 		task.setDescription(String.join(" ", args));
-		
+
 		// switch (args.size()) {
 		// case 1 :
 		// // copy task to input box for editing
@@ -694,10 +698,15 @@ public class Logic {
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(_argument);
 		if (match.find() && match.start() == 0) {
-			String[] dayAndMonthAndYear = _argument.substring(match.end()).split("/", 3);
+			String dateString = _argument.substring(match.end()).trim();
+			String[] dayAndMonthAndYear = dateString.split("/", 3);
 			System.out.println(Arrays.toString(dayAndMonthAndYear));
 			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
-
+			if (newDate == null) {
+				_newCommandType = CommandType.ERROR;
+				_feedback = "Failed to parse date: " + dateString;
+				return true;
+			}
 			List<Task> taskList = _storage.getTaskList();
 			int count = 0;
 			switch (match.group()) {
@@ -735,17 +744,82 @@ public class Logic {
 	 */
 	private void findTask() {
 		_indexesFound = new ArrayList<Integer>();
-		String keywords = _argument.toLowerCase();
+		List<String> keywords = new LinkedList<String>(Arrays.asList(_argument.toLowerCase().split(" ")));
 		List<Task> taskList = _storage.getTaskList();
-		for (int i = 0; i < taskList.size(); i++) {
-			if (taskList.get(i).getDescription().toLowerCase().contains(keywords)) {
-				_indexesFound.add(i);
+
+		if (_argument.length() == 1) {
+
+			findAllWordsStartingWithArg(taskList);
+
+		} else {
+
+			permute(keywords, 0);
+
+			for (int i = 0; i < taskList.size(); i++) {
+
+				for (List<String> permutation : _keywordsPermutations) {
+					
+					List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
+					boolean isWordsInTask = true;
+
+					for (String word : permutation) {
+						if (!isWordsInTask) {
+							break;
+						}
+
+						int taskDescListSize = taskDescWords.size();
+						if (taskDescListSize == 0) {
+							isWordsInTask = false;
+							break;
+						}
+						for (int j = 0; j < taskDescListSize; j++) {
+							if (taskDescWords.get(j).contains(word)) {
+								taskDescWords.remove(taskDescWords.get(j));
+								break;
+							} else if (j == taskDescWords.size() - 1) {
+								isWordsInTask = false;
+							}
+						}
+					}
+
+					if (isWordsInTask && !_indexesFound.contains(i)) {
+						_indexesFound.add(i);
+					}
+				}
 			}
 		}
 		// Feedback directed back to UI depending on whether it is successful or not
 		_feedback = (_indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
 				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
 
+	}
+
+	private void permute(List<String> list, int pointer) {
+		if (pointer == list.size()) {
+			_keywordsPermutations.add(list);
+		} else {
+			for (int i = pointer; i < list.size(); i++) {
+				LinkedList<String> permutation = new LinkedList<String>();
+				permutation.addAll(list);
+				permutation.set(pointer, list.get(i));
+				permutation.set(i, list.get(pointer));
+				permute(permutation, pointer + 1);
+			}
+		}
+	}
+
+	private LinkedList<String> splitTaskDescIntoLowercaseWords(List<Task> taskList, int i) {
+		return new LinkedList<String>(
+				Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
+	}
+
+	private void findAllWordsStartingWithArg(List<Task> taskList) {
+		for (int i = 0; i < taskList.size(); i++) {
+			String taskDesc = taskList.get(i).getDescription();
+			if (taskDesc.startsWith(_argument.toLowerCase())) {
+				_indexesFound.add(i);
+			}
+		}
 	}
 
 	private int getTaskIndex() throws IOException {
@@ -768,12 +842,12 @@ public class Logic {
 
 	private void setStoragePath() {
 		try {
-
 			_storage.setSavePath(_argument);
-			String taskFilePathAndName = _storage.getSavePath();
-			_storage.loadTasksFromFile();
-			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, taskFilePathAndName);
+			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, _storage.getSavePath());
 		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -781,6 +855,10 @@ public class Logic {
 
 	private void helpFunction() {
 
+	}
+
+	public void deleteTaskListFile() {
+		_storage.deleteTaskListFile();
 	}
 
 	/* Getters for UI */

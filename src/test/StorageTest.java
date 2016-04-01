@@ -249,7 +249,7 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testSaveTasks() throws SAXException, IOException {
+	public void testSaveTasks() throws SAXException, IOException, ParseException {
 
 		// Load & Save the tasks from the file to see if it saves correctly
 		File expectedFile = new File(EXPECTED_FILE_NAME);
@@ -271,7 +271,7 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testLoadTasks() throws SAXException, IOException {
+	public void testLoadTasks() throws SAXException, IOException, ParseException {
 
 		// Setting up expected Task List for comparison
 		Task newTaskFloating = instantiateTestTask(1);

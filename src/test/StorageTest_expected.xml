@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>Floating Test case</Description>
+      <Description>Buy some Potatoes</Description>
       <Date/>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
-      <Description>Deadline Test case</Description>
+      <Description>Cook Potatoes</Description>
       <Date>20-06-16</Date>
       <StartTime/>
       <EndTime>12:00PM</EndTime>

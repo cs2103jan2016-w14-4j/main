@@ -31,17 +31,18 @@ public class Settings {
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
 
-	/* File names */
+	/* File names & default paths */
 	private static final String TASK_FILE_NAME = "tasklist.xml";
+	private static final String TASK_FILE_DEFAULT_PATH = "";
 	private static final String SETTINGS_FILE_NAME = "config.xml";
-	private static final String SETTINGS_FILE_PATH = "data/";
+	private static final String SETTINGS_FILE_PATH = "";
 
 	/* For accessing the different Tags for the XML */
 	private static final String TAG_SETTINGS = "Settings";
 	private static final String TAG_SAVE_PATH = "SavePath";
 	private static final String TAG_TIME_DEFAULT = "TimeDefault";
 
-	private String _savePath = "data/";
+	private String _savePath = "";
 	private String _timeDefault = "PM";
 
 	/**
@@ -122,10 +123,10 @@ public class Settings {
 	 */
 	public void setSavePath(String savePath) {
 		if (savePath.charAt(savePath.length() - 1) != '/') {
-			_savePath = savePath + "/";
-		}
-		if (savePath.equals("/")) {
-			_savePath = "";
+			savePath += "/";
+		}  
+		if (savePath.equals("/") || savePath.equals("\\")) {
+			_savePath = TASK_FILE_DEFAULT_PATH;
 		} else if (isValidPath(savePath)) {
 			_savePath = savePath;
 		}
@@ -234,13 +235,10 @@ public class Settings {
 
 		// Extract settings
 		if (savePathNode.getNodeType() == Node.ELEMENT_NODE) {
-			Element savePathElement = (Element) savePathNode;
-			_savePath = extractStringFromNode(savePathElement, TAG_SAVE_PATH);
-
+			_savePath = savePathNode.getTextContent();
 		}
 		if (timeDefaultNode.getNodeType() == Node.ELEMENT_NODE) {
-			Element timeDefaultElement = (Element) timeDefaultNode;
-			_timeDefault = extractStringFromNode(timeDefaultElement, TAG_TIME_DEFAULT);
+			_timeDefault = timeDefaultNode.getTextContent();
 
 		}
 	}
@@ -306,25 +304,6 @@ public class Settings {
 			e.printStackTrace();
 			logger.log(Level.SEVERE, e.toString(), e);
 		}
-	}
-
-	/**
-	 * Extract a string from node with specified tag
-	 * 
-	 * @param element
-	 *            Element object containing information to extract
-	 * @param tag
-	 *            Tag to specify which attribute, e.g. "description"
-	 * @return String inside Element with specified tag
-	 */
-	private String extractStringFromNode(Element element, String tag) {
-
-		// Assert that Element & tag are not null
-		assert (element != null);
-		assert (tag != null || tag != "");
-
-		Node node = element.getElementsByTagName(tag).item(0);
-		return (node == null) ? "" : node.getTextContent();
 	}
 
 }
