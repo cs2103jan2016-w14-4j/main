@@ -74,7 +74,7 @@ public class Storage {
 	public Storage(File storageFile) throws SAXException {
 		setupLogger();
 		_file = storageFile;
-		// _settings = new Settings();
+		//_settings = new Settings();
 	}
 
 	public void setSavePath(String filePath) throws SAXException, ParseException {

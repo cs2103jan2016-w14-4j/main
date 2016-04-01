@@ -42,7 +42,7 @@ public class Settings {
 	private static final String TAG_SAVE_PATH = "SavePath";
 	private static final String TAG_TIME_DEFAULT = "TimeDefault";
 
-	private String _savePath = "data/";
+	private String _savePath = "";
 	private String _timeDefault = "PM";
 
 	/**
