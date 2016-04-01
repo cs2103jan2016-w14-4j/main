@@ -757,14 +757,12 @@ public class Logic {
 
 			for (int i = 0; i < taskList.size(); i++) {
 
-				List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
-
 				for (List<String> permutation : _keywordsPermutations) {
-
+					
+					List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
 					boolean isWordsInTask = true;
 
 					for (String word : permutation) {
-						System.out.println(word);
 						if (!isWordsInTask) {
 							break;
 						}
