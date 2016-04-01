@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -696,18 +698,17 @@ public class SystemTest {
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
-	@Test
-	public final void testChangeDirectory() throws SAXException, ParseException, IOException {
-		// Setting up actual Task List for comparison
-		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
-		logicExecuteCommand(logic, "s /test/test");
-		logicExecuteCommand(logic, "Buy Potatoes");
-
-		// Setting up expected Task List for comparison
-		File expectedFile = new File(EXPECTED_FILE_NAME);
-		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Buy Potatoes", null, null, null, false, null);
-
-	}
+	/*
+	 * Currently commented out because it wipes the current task list *
+	 * 
+	 * @Test public final void testChangeDirectory() throws SAXException, ParseException, IOException {
+	 * 
+	 * // Setting up actual Task List for comparison Logic logic = new Logic(); logicExecuteCommand(logic,
+	 * "Buy Potatoes"); logicExecuteCommand(logic, "s test");
+	 * 
+	 * // Setting up expected Task List for comparison File expectedFile = new File("test\\tasklist.xml");
+	 * assert (expectedFile.isFile()); assert (expectedFile.canRead());
+	 * 
+	 * logicExecuteCommand(logic, "s /"); }
+	 */
 }
