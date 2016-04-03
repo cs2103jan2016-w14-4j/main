@@ -154,6 +154,9 @@ public class Logic {
 		} catch (IOException e) {
 			_newCommandType = CommandType.ERROR;
 			_feedback = e.getMessage();
+		} catch (InputIndexOutOfBoundsException e) {
+			_newCommandType = CommandType.ERROR;
+			_feedback = String.format(MESSAGE_INVALID_INDEX, e.getIndex() + LIST_NUMBERING_OFFSET);
 		}
 		return true;
 	}
@@ -457,7 +460,7 @@ public class Logic {
 		return newDate;
 	}
 
-	private void editTask() throws IOException {
+	private void editTask() throws InputIndexOutOfBoundsException, IOException {
 		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
 		int taskIndex = getTaskIndex();
 		args.remove(0);
@@ -485,7 +488,6 @@ public class Logic {
 				copyTaskToInputForEditting(taskIndex);
 			}
 		}
-		
 
 		// switch (args.size()) {
 		// case 1 :
@@ -667,7 +669,7 @@ public class Logic {
 	/**
 	 * Toggles a task's isComplete between true and false
 	 */
-	private void toggleTaskComplete() throws IOException {
+	private void toggleTaskComplete() throws IOException, InputIndexOutOfBoundsException {
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
 
@@ -678,7 +680,7 @@ public class Logic {
 				task.isCompleted() ? "" : "in");
 	}
 
-	private void deleteTask() throws IOException {
+	private void deleteTask() throws IOException, InputIndexOutOfBoundsException {
 		if (deleteMultiple()) {
 			return;
 		}

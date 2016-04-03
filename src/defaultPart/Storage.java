@@ -136,10 +136,10 @@ public class Storage {
 	 *            Index of task to get
 	 * @return Task at specified index
 	 */
-	public Task getTask(int index) throws IOException {
+	public Task getTask(int index) throws InputIndexOutOfBoundsException {
 		if (!isTaskIndexValid(index)) {
 			logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
-			throw new IOException(String.valueOf(index)); // todo: create a new exception for index error?
+			throw new InputIndexOutOfBoundsException(index);
 		}
 		return _currentTaskList.get(index);
 	}

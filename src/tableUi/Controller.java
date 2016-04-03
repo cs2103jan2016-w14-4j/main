@@ -323,7 +323,7 @@ public class Controller implements Initializable {
 	 * @return
 	 */
 	private TaskModel getTaskModelFromId(int id) {
-		return taskModels.get(id - 1);
+		return taskModels.get(id);
 	}
 
 
@@ -402,7 +402,7 @@ public class Controller implements Initializable {
 		switch (logic.getCommandType()) {
 			case EDIT_SHOW_TASK :
 				List<Integer> indexesFound = logic.getIndexesFound();
-				editDescriptionById(indexesFound.get(0) + 1);
+				editDescriptionById(indexesFound.get(0));
 				break;
 
 			case FIND :
