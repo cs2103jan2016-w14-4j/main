@@ -226,10 +226,12 @@ public class Logic {
 		if (date != null && !floating) {
 			if (recur != null) {
 				recur.setStartDate(date);
-				recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
-				endDate = recur.getEndDate();
-				if (endDate != null && recur.getStartDate().compareTo(endDate) >= 0) {
-					warn = true;
+				if (_numOfTimesString != null) {
+					recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
+					endDate = recur.getEndDate();
+					if (endDate != null && recur.getStartDate().compareTo(endDate) >= 0) {
+						warn = true;
+					}
 				}
 			}
 			newTask.setDescription(String.join(" ", args));
