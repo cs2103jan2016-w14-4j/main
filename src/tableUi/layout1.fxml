@@ -11,7 +11,7 @@
         <items>
             <VBox>
                <children>
-                  <HBox alignment="BASELINE_CENTER" prefHeight="40.0" prefWidth="200.0">
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
                      <children>
                         <Label text="Events" />
                         <Region HBox.hgrow="ALWAYS" />
@@ -35,7 +35,7 @@
             </VBox>
             <VBox fx:id="rightPane" minWidth="0.0" prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <HBox alignment="BASELINE_CENTER" prefHeight="40.0">
+                  <HBox alignment="CENTER" prefHeight="50.0">
                      <children>
                         <Label text="Floating tasks" />
                         <Region HBox.hgrow="ALWAYS" />
