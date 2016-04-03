@@ -154,10 +154,10 @@ public class Controller implements Initializable {
 		// delayed setter (set only after the loading of the software is done)
 		new Thread(() -> {
 			try {
-				// Thread.sleep(100);
-				// root.widthProperty().addListener(e -> {
-				// resizeColumns();
-				// });
+				 Thread.sleep(1000);
+				 root.widthProperty().addListener(e -> {
+				 resizeColumns();
+				 });
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
