@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 
 import defaultPart.Logic;
 import tableUi.Controller;
-import tableUi.Main;
+import tableUi.TableUiMain;
 
 /**
  * Created by houruomu on 2016/3/22.
