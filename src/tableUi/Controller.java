@@ -14,9 +14,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.xml.sax.SAXException;
 
@@ -46,7 +52,6 @@ public class Controller implements Initializable {
 
 	public Stage stage;
 
-	public static final boolean DEVELOPER_MODE = true;
 	public static final String EDIT_COMMAND = "e %d %s";
 	public static final String DELETE_COMMAND = "d %d";
 	public static final String TOGGLE_COMMAND = "t %d";
@@ -62,6 +67,8 @@ public class Controller implements Initializable {
 
 	private int tablePosition;
 	private Logic logic;
+	
+	private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
 	/**
 	 * Initialize the controllers, define the listeners for each control
@@ -75,6 +82,8 @@ public class Controller implements Initializable {
 		eventList = FXCollections.observableArrayList();
 		taskModels = new ArrayList<>();
 		tablePosition = 0;
+		
+		setupLogger();
 
 		floatingTaskTable.setItems(floatingTaskList);
 		eventsTable.setItems(eventList);
@@ -104,6 +113,7 @@ public class Controller implements Initializable {
 				Calendar newDate = logic.getWrappedDateFromString(e.getNewValue());
 				String dateString = newDate.toString();
 				sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, dateString));
+				logger.fine("Edited date of task " + id + ". New date is " + dateString);
 			} catch (Exception exception) {
 				// if the date format is invalid
 				setUserPrompt(String.format(INVALID_DATE_PROMPT, e.getNewValue()));
@@ -111,6 +121,7 @@ public class Controller implements Initializable {
 				// refresh the column to undo the change
 				eventsDate.setVisible(false);
 				eventsDate.setVisible(true);
+				logger.fine("Bad Input for Date: " + e.getNewValue());
 			}
 		});
 
@@ -239,8 +250,7 @@ public class Controller implements Initializable {
 		if (prompt.length() > 100) {
 			prompt = prompt.substring(0, 97) + "...";
 		}
-		if (DEVELOPER_MODE)
-			System.out.println("Sent back to user: " + prompt);
+		logger.fine("Sent back to user: " + prompt);
 		userPrompt.setText(prompt);
 	}
 
@@ -386,9 +396,7 @@ public class Controller implements Initializable {
 	 */
 	public void sendToLogicAndUpdatePrompt(String command) {
 		logic.executeCommand(command);
-		if (DEVELOPER_MODE) {
-			System.out.println("Send to logic: " + command);
-		}
+		logger.fine("Sent to logic" + command);
 		switch (logic.getCommandType()) {
 			case EDIT_SHOW_TASK :
 				List<Integer> indexesFound = logic.getIndexesFound();
@@ -418,6 +426,20 @@ public class Controller implements Initializable {
 	public void close() {
 		if (stage != null) {
 			stage.close();
+		}
+	}
+	
+	private void setupLogger() {
+		try {
+			Handler handler = new FileHandler("logs/log.txt");
+			handler.setFormatter(new SimpleFormatter());
+			logger.addHandler(handler);
+		} catch (SecurityException e) {
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
 		}
 	}
 }
