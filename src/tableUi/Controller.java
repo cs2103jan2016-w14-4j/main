@@ -245,11 +245,11 @@ public class Controller implements Initializable {
 	 *            The prompt String, length should be less than 100
 	 */
 	public void setUserPrompt(String prompt) {
-		assert (prompt != null);
-		// the length of feedback should not be longer than 100 characters
-		if (prompt.length() > 100) {
-			prompt = prompt.substring(0, 97) + "...";
+		if (prompt == null) {
+			return;
 		}
+		// the length of feedback should not be longer than 100 characters
+		assert (prompt.length() <= 100);
 		logger.fine("Sent back to user: " + prompt);
 		userPrompt.setText(prompt);
 	}
@@ -395,7 +395,9 @@ public class Controller implements Initializable {
 	 *            The command that is going to be send to the parser
 	 */
 	public void sendToLogicAndUpdatePrompt(String command) {
-		logic.executeCommand(command);
+		if (!logic.executeCommand(command)) {
+			return;
+		}
 		logger.fine("Sent to logic" + command);
 		switch (logic.getCommandType()) {
 			case EDIT_SHOW_TASK :

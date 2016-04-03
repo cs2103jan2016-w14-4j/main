@@ -106,7 +106,10 @@ public class Logic {
 		}
 	}
 
-	public void executeCommand(String input) {
+	public boolean executeCommand(String input) {
+		if (isWhiteSpaces(input)) {
+			return false;
+		}
 		setCommandTypeAndArguments(input);
 		logger.log(Level.FINE, "Executing {0}", _newCommandType);
 		try {
@@ -152,6 +155,11 @@ public class Logic {
 			_newCommandType = CommandType.ERROR;
 			_feedback = e.getMessage();
 		}
+		return true;
+	}
+
+	private boolean isWhiteSpaces(String str) {
+		return str.matches("\\s*");
 	}
 
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
@@ -788,7 +796,7 @@ public class Logic {
 	private boolean determineIfTaskMatchesPermutation(List<String> permutation, List<String> taskDescWords,
 			boolean isWordsInTask) {
 		for (String word : permutation) {
-			
+
 			if (!isWordsInTask) {
 				break;
 			}
