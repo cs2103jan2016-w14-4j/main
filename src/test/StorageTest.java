@@ -42,10 +42,10 @@ public class StorageTest {
 		TaskTime calEnd = new TaskTime();
 		TaskDate calRecEnd = new TaskDate();
 		try {
-			calDate.setDateFromString("20-6-2016");
+			calDate.setDateFromString("20/6/2016");
 			calStart.setTimeFromString("10:00AM");
 			calEnd.setTimeFromString("12:00PM");
-			calRecEnd.setDateFromString("20-8-2016");
+			calRecEnd.setDateFromString("20/8/2016");
 
 		} catch (ParseException e) {
 

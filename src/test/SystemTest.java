@@ -201,14 +201,34 @@ public class SystemTest {
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Go out with girlfriend 1/9 3d 15");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Go out with girlfriend", "01/9/2016", null, null,
+				false, createRecur("DAY", 3, "01/9/216", "16/10/2016"));
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testAddDeadlineRecurringDayWithWraparoundYear()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
 		logicExecuteCommand(logic, "Go out with girlfriend 1/4 3d 15");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Go out with girlfriend", "01/4/2016", null, null,
-				false, createRecur("DAY", 3, "01/4/216", "15/4/2016")); // TODO/change end date to correct
-																		// behavior
+		storageCreateExpectedTask(storage, expectedFile, "Go out with girlfriend", "01/4/2017", null, null,
+				false, createRecur("DAY", 3, "01/4/2017", "16/5/2017"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -222,13 +242,13 @@ public class SystemTest {
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
-		logicExecuteCommand(logic, "Go out with jully 2/4 1w 2");
+		logicExecuteCommand(logic, "Go out with jully 2/7 1w 2");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Go out with jully", "02/4/2016", null, null, false,
-				createRecur("WEEK", 1, "02/4/216", "16/4/2016")); // TODO/change end date to correct behavior
+		storageCreateExpectedTask(storage, expectedFile, "Go out with jully", "02/7/2016", null, null, false,
+				createRecur("WEEK", 1, "02/7/216", "16/7/2016")); // TODO/change end date to correct behavior
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -654,7 +674,7 @@ public class SystemTest {
 		logicExecuteCommand(logic, "Cook Potatoes");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
 		logicExecuteCommand(logic, "Love Potatoes");
-		logicExecuteCommand(logic, "d /");
+		logicExecuteCommand(logic, "d -");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
@@ -680,15 +700,13 @@ public class SystemTest {
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/6/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/7/2016");
-		logicExecuteCommand(logic, "d <1/6/2016");
+		logicExecuteCommand(logic, "d < 1/6/2016");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
-				null);
-		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/6/2016", null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/7/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Buy Potatoes", null, null, null, false, null);
 

@@ -9,7 +9,7 @@
    </Task>
    <Task>
       <Description>Deadline Test case</Description>
-      <Date>20-6-2016</Date>
+      <Date>20/6/2016</Date>
       <StartTime/>
       <EndTime>12:00PM</EndTime>
       <Completed>no</Completed>
@@ -30,7 +30,7 @@
    </Task>
    <Task>
       <Description>Deadline Test case</Description>
-      <Date>20-6-2016</Date>
+      <Date>20/6/2016</Date>
       <StartTime/>
       <EndTime>12:00PM</EndTime>
       <Completed>no</Completed>
@@ -44,7 +44,7 @@
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>3</frequency>
-         <endOfRecurr>20-8-2016</endOfRecurr>
+         <endOfRecurr>20/8/2016</endOfRecurr>
       </recur>
    </Task>
 </wuriTasks>
