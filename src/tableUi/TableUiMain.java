@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class TableUiMain extends Application {
@@ -22,6 +23,7 @@ public class TableUiMain extends Application {
 		primaryStage.setMinHeight(480);
 		controller = loader.getController();
 		controller.stage = primaryStage;
+		Font.loadFont(getClass().getResource("fonts/Futura_LT_Book.ttf").toExternalForm(), 15.0);
 		primaryStage.show();
 	}
 

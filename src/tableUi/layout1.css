@@ -1,5 +1,5 @@
 .root{
-    -fx-font-family: serif;
+    -fx-font-family: "Futura LT Book";
 }
 
 .split-pane:horizontal > .split-pane-divider {

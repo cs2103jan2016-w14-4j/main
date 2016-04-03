@@ -16,10 +16,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import javax.net.ssl.SSLException;
 
 import org.xml.sax.SAXException;
 
@@ -45,6 +42,7 @@ public class Controller implements Initializable {
 	public TableColumn<TaskModel, Boolean> eventsCheckbox;
 	public TextField inputBox;
 	public Label userPrompt;
+	public Button toggleButton;
 
 	public Stage stage;
 
@@ -196,9 +194,11 @@ public class Controller implements Initializable {
 		if (rightPane.isVisible()) {
 			rightPane.setVisible(false);
 			pane.setDividerPosition(0, 1);
+			toggleButton.setText("<");
 		} else {
 			rightPane.setVisible(true);
 			pane.setDividerPosition(0, 0.619);
+			toggleButton.setText(">");
 		}
 
 	}
@@ -213,7 +213,7 @@ public class Controller implements Initializable {
 		pane.setDividerPositions(dividerPosition);
 
 		final double eventsTableWidth = paneWidth * dividerPosition - 5; // 5 for padding
-		final double idWidth = 20;
+		final double idWidth = 30;
 		final double checkBoxWidth = 20;
 		final double recurWidth = Math.min(eventsTableWidth * 0.2, 100);
 		final double dateWidth = Math.min(eventsTableWidth * 0.2, 200);

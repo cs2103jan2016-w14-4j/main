@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -13,10 +14,13 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
                      <children>
-                        <Label text="Events" />
+                        <Label text="Event | Deadline">
+                           <font>
+                              <Font size="20.0" />
+                           </font></Label>
                         <Region HBox.hgrow="ALWAYS" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#debug" text="Debug" />
+                        <Button fx:id="toggleButton" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#debug" text="&gt;" />
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -37,7 +41,10 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="50.0">
                      <children>
-                        <Label text="Floating tasks" />
+                        <Label text="Task">
+                           <font>
+                              <Font size="20.0" />
+                           </font></Label>
                         <Region HBox.hgrow="ALWAYS" />
                      </children>
                      <VBox.margin>
