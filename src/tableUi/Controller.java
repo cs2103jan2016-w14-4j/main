@@ -45,12 +45,6 @@ public class Controller implements Initializable {
 	public TableColumn<TaskModel, Boolean> eventsCheckbox;
 	public TextField inputBox;
 	public Label userPrompt;
-	public Button deleteFloatingTask;
-	public Button deleteEvent;
-	public Button showAllEvents;
-	public Button showIncompleteEvents;
-	public Button showOverdueEvents;
-	public Button showCompletedEvents;
 
 	public Stage stage;
 
@@ -322,35 +316,7 @@ public class Controller implements Initializable {
 		return taskModels.get(id - 1);
 	}
 
-	/**
-	 * Delete a floating task which has been selected in the tableView
-	 */
-	public void deleteFloatingTask() {
-		int selectedIndex = floatingTaskTable.getSelectionModel().getSelectedIndex();
-		if (selectedIndex >= 0) {
-			int id = floatingTaskTable.getItems().get(selectedIndex).getTaskId();
-			sendToLogicAndUpdatePrompt(String.format(DELETE_COMMAND, id));
-		} else {
-			// Nothing selected
-			setUserPrompt("No floating task is selected");
-		}
-		inputBox.requestFocus();
-	}
 
-	/**
-	 * Delete an event which has been selected in the tableView
-	 */
-	public void deleteEvent() {
-		int selectedIndex = eventsTable.getSelectionModel().getSelectedIndex();
-		if (selectedIndex >= 0) {
-			int id = eventsTable.getItems().get(selectedIndex).getTaskId();
-			sendToLogicAndUpdatePrompt(String.format(DELETE_COMMAND, id));
-		} else {
-			// Nothing selected
-			setUserPrompt("No event is selected");
-		}
-		inputBox.requestFocus();
-	}
 
 	/**
 	 * Let the tableView show all the tasks
@@ -447,34 +413,6 @@ public class Controller implements Initializable {
 			addToTaskModels(index);
 		}
 		inputBox.requestFocus();
-	}
-
-	/**
-	 * show all tasks that are incompleted
-	 */
-	public void showIncompleteEvents() {
-		retrieveTaskFromStorage();
-		eventList.removeIf(e -> e.getIsComplete());
-		floatingTaskList.removeIf(e -> e.getIsComplete());
-	}
-
-	/**
-	 * Show all the tasks which have end time before today
-	 */
-	public void showOverdueEvents() {
-		Calendar today = new GregorianCalendar();
-		retrieveTaskFromStorage();
-		eventList.removeIf(e -> e.getTask().getEndTime().compareTo(today) == 1);
-		floatingTaskList.removeIf(e -> e.getTask().getEndTime().compareTo(today) == 1);
-	}
-
-	/**
-	 * Show all the tasks that are completed
-	 */
-	public void setShowCompletedEvents() {
-		retrieveTaskFromStorage();
-		eventList.removeIf(e -> !e.getIsComplete());
-		floatingTaskList.removeIf(e -> !e.getIsComplete());
 	}
 
 	public void close() {

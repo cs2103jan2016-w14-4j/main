@@ -15,12 +15,7 @@
                      <children>
                         <Label text="Events" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button fx:id="showAllEvents" alignment="CENTER" mnemonicParsing="false" onAction="#showAllTasks" text="All Events" />
-                        <Button fx:id="showIncompleteEvents" alignment="CENTER" mnemonicParsing="false" onAction="#showIncompleteEvents" text="Incomplete" />
-                        <Button fx:id="showOverdueEvents" alignment="CENTER" mnemonicParsing="false" onAction="#showOverdueEvents" text="Overdue" />
-                        <Button fx:id="showCompletedEvents" alignment="CENTER" mnemonicParsing="false" onAction="#setShowCompletedEvents" text="Completed" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button fx:id="deleteEvent" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#deleteEvent" text="-" />
                         <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#debug" text="Debug" />
                      </children>
                      <padding>
@@ -44,7 +39,6 @@
                      <children>
                         <Label text="Floating tasks" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button fx:id="deleteFloatingTask" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#deleteFloatingTask" text="-" />
                      </children>
                      <VBox.margin>
                         <Insets />
