@@ -334,7 +334,7 @@ public class Logic {
 		return endDate;
 	}
 
-	private void setTaskTimeIfExists(Task task, List<String> args) {
+	private boolean setTaskTimeIfExists(Task task, List<String> args) {
 		if (args.size() >= 2) {
 			int lastIndex = args.size() - 1;
 			String lastString = args.get(args.size() - 1);
@@ -344,8 +344,10 @@ public class Logic {
 			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
 				setTaskTime(task, lastString);
 				args.remove(lastIndex);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	private void setTaskTime(Task task, String timeString) {
@@ -360,10 +362,13 @@ public class Logic {
 		}
 	}
 
-	private void setTaskDateIfExists(Task task, List<String> args) {
+	private boolean setTaskDateIfExists(Task task, List<String> args) {
+		if (args.size() == 0) {
+			return false;
+		}
 		int lastIndex = args.size() - 1;
 		if (lastIndex == 0) {
-			return;
+			return false;
 		}
 
 		TaskDate date;
@@ -376,12 +381,13 @@ public class Logic {
 		}
 
 		if (date == null) {
-			return;
+			return false;
 		}
 		logger.log(Level.FINER, "Setting task date using \"{0}\"", args.get(lastIndex));
 		date.getTimeInMillis();
 		task.setDate(date);
 		args.remove(lastIndex);
+		return true;
 	}
 
 	private boolean isTime(String timeString) {
@@ -472,9 +478,14 @@ public class Logic {
 			}
 		}
 
-		setTaskTimeIfExists(task, args);
-		setTaskDateIfExists(task, args);
-		task.setDescription(String.join(" ", args));
+		if (!setTaskTimeIfExists(task, args) && !setTaskDateIfExists(task, args)) {
+			if (args.size() > 0) {
+				task.setDescription(String.join(" ", args));
+			} else {
+				copyTaskToInputForEditting(taskIndex);
+			}
+		}
+		
 
 		// switch (args.size()) {
 		// case 1 :
