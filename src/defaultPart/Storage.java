@@ -74,12 +74,12 @@ public class Storage {
 	public Storage(File storageFile) throws SAXException {
 		setupLogger();
 		_file = storageFile;
-		//_settings = new Settings();
+		// _settings = new Settings();
 	}
 
 	public void setSavePath(String filePath) throws SAXException, ParseException {
 
-		// Deletes the previous taskList 
+		// Deletes the previous taskList
 		String oldPath = _settings.getSavePathAndName();
 		File oldFile = new File(oldPath);
 		try {
@@ -201,10 +201,8 @@ public class Storage {
 		// Assert that the new task is not null
 		assert (newTask != null);
 
-		TaskDate newTaskDate = newTask.getDate();
 		for (int i = 0; i < _currentTaskList.size(); i++) {
-			TaskDate taskDate = _currentTaskList.get(i).getDate();
-			if (taskDate == null || (newTaskDate != null && newTaskDate.compareTo(taskDate) <= 0)) {
+			if (!newTask.isDateTimeAfterTask(_currentTaskList.get(i))) {
 				_currentTaskList.add(i, newTask);
 				return;
 			}

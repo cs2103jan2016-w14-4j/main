@@ -18,7 +18,21 @@ public class TaskTime extends GregorianCalendar {
 	public String toString() {
 		return timeFormat.format(this.getTime());
 	}
-	
+
+	@Override
+	public int compareTo(Calendar taskTime) {
+		int[] units = { Calendar.HOUR_OF_DAY, Calendar.MINUTE };
+		for (int unit : units) {
+			if (this.get(unit) < taskTime.get(unit)) {
+				return -1;
+			}
+			if (this.get(unit) > taskTime.get(unit)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 	public void setTimeFromString(String timeString) throws ParseException {
 		this.setTime(timeFormat.parse(timeString));
 	}

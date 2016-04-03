@@ -61,6 +61,47 @@ public class Task {
 		_isCompleted = !_isCompleted;
 	}
 
+	private boolean hasDate() {
+		return _date != null;
+	}
+
+	private boolean hasStartTime() {
+		return _startTime != null;
+	}
+
+	private boolean hasEndTime() {
+		return _endTime != null;
+	}
+
+	private boolean hasRecur() {
+		return _recur != null;
+	}
+
+	public boolean isDateTimeAfterTask(Task task) {
+		if (!task.hasDate()) {
+			return false;
+		}
+		if (!this.hasDate()) {
+			return true;
+		}
+		if (this.getDate().compareTo(task.getDate()) < 0) {
+			return false;
+		}
+		if (this.getDate().compareTo(task.getDate()) > 0) {
+			return true;
+		}
+		if (!this.hasStartTime()) {
+			return false;
+		}
+		if (!task.hasStartTime()) {
+			return true;
+		}
+		if (this.getStartTime().compareTo(task.getStartTime()) <= 0) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");

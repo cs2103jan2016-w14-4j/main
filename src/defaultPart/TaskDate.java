@@ -14,26 +14,26 @@ public class TaskDate extends GregorianCalendar {
 				&& get(Calendar.MONTH) == ((Calendar) taskDate).get(Calendar.MONTH)
 				&& get(Calendar.YEAR) == ((Calendar) taskDate).get(Calendar.YEAR);
 	}
-	
+
 	@Override
 	public String toString() {
 		return dateFormat.format(this.getTime());
 	}
-	
+
 	@Override
 	public int compareTo(Calendar taskDate) {
-		int[] units = {Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH};
+		int[] units = { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH };
 		for (int unit : units) {
-    		if (get(unit) < taskDate.get(unit)) {
-    			return -1;
-    		}
-    		if (get(unit) > taskDate.get(unit)) {
-    			return 1;
-    		}
+			if (get(unit) < taskDate.get(unit)) {
+				return -1;
+			}
+			if (get(unit) > taskDate.get(unit)) {
+				return 1;
+			}
 		}
 		return 0;
 	}
-	
+
 	public void setDateFromString(String dateString) throws ParseException {
 		setTime(dateFormat.parse(dateString));
 	}
