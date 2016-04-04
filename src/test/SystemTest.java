@@ -815,9 +815,9 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
+
 	@Test
-	public final void testDeleteRecurClearWithEndDate() throws SAXException,ParseException,IOException
-	{
+	public final void testDeleteRecurClearWithEndDate() throws SAXException, ParseException, IOException {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
@@ -859,8 +859,6 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-
-	
 
 	// Currently commented out because it wipes the current task list
 
