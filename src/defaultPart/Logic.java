@@ -317,6 +317,36 @@ public class Logic {
 				}
 				return true;
 			}
+		} else if (args.size() == 1) {
+			int frequencyAndUnitIndex = args.size() - 1;
+			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+			if (frequencyAndUnit.matches("\\d*[dwmy]")) {
+				Recur recur = new Recur();
+				switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
+					case 'd' :
+						recur.setTimeUnit(Recur.TimeUnit.DAY);
+						break;
+
+					case 'w' :
+						recur.setTimeUnit(Recur.TimeUnit.WEEK);
+						break;
+
+					case 'm' :
+						recur.setTimeUnit(Recur.TimeUnit.MONTH);
+						break;
+
+					case 'y' :
+						recur.setTimeUnit(Recur.TimeUnit.YEAR);
+						break;
+				}
+				assert (recur.getTimeUnit() != null);
+				char frequency = frequencyAndUnit.charAt(0);
+				if (Character.isDigit(frequency)) {
+					recur.setFrequency(Character.getNumericValue(frequency));
+				}
+				args.remove(frequencyAndUnit);
+				return true;
+			}
 		}
 		return false;
 	}
