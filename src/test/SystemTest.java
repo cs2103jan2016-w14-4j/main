@@ -34,6 +34,7 @@ public class SystemTest {
 	 */
 	@Before
 	public void runBeforeEveryTest() {
+
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
@@ -47,6 +48,7 @@ public class SystemTest {
 	 */
 	private Recur createRecur(String timeUnit, int frequency, String startOfRecur, String endOfRecur)
 			throws ParseException {
+
 		Recur newRecur = new Recur();
 
 		newRecur.setTimeUnit(TimeUnit.valueOf(timeUnit));
@@ -74,6 +76,7 @@ public class SystemTest {
 	private void storageCreateExpectedTask(Storage storage, File expectedFile, String description,
 			String date, String startTime, String endTime, Boolean completed, Recur recur)
 					throws SAXException, ParseException {
+
 		Task newTask = new Task();
 		newTask.setDescription(description);
 
@@ -248,7 +251,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Go out with jully", "02/7/2016", null, null, false,
-				createRecur("WEEK", 1, "02/7/216", "16/7/2016")); // TODO/change end date to correct behavior
+				createRecur("WEEK", 1, "02/7/216", "16/7/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -269,7 +272,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "HIMYM", "1/1/2027", "12:00PM", null, false,
-				createRecur("DAY", 1, "1/1/2027", "20/2/2027")); // TODO/change end date to correct behavior
+				createRecur("DAY", 1, "1/1/2027", "20/2/2027"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -508,6 +511,7 @@ public class SystemTest {
 
 	@Test
 	public final void testFindWord() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -528,6 +532,7 @@ public class SystemTest {
 
 	@Test
 	public final void testFindCapitalizedWord() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -548,6 +553,7 @@ public class SystemTest {
 
 	@Test
 	public final void testFindUnorderedWords() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -569,6 +575,7 @@ public class SystemTest {
 
 	@Test
 	public final void testDeleteFirstIndex() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -592,6 +599,7 @@ public class SystemTest {
 
 	@Test
 	public final void testDeleteMiddleIndex() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -616,6 +624,7 @@ public class SystemTest {
 
 	@Test
 	public final void testDeleteLastIndex() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -639,6 +648,7 @@ public class SystemTest {
 
 	@Test
 	public final void testDeleteInvalidIndex() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -664,6 +674,7 @@ public class SystemTest {
 
 	@Test
 	public final void testDeleteFloatingTasks() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -693,6 +704,7 @@ public class SystemTest {
 
 	@Test
 	public final void testDeleteByDate() throws SAXException, ParseException, IOException {
+
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
@@ -715,6 +727,51 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
+
+	@Test
+	public final void testDeleteRecurTriggerWithIndex() throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 1");
+		logicExecuteCommand(logic, "d 1");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "4/5/2016", null, null, false,
+				createRecur("DAY", 3, "1/5/2016", "4/5/2016"));
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+	
+	@Test
+	public final void testDeleteRecurTriggerWithLessThanDate() throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 1");
+		logicExecuteCommand(logic, "d < 1/6/2016");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "4/5/2016", null, null, false,
+				createRecur("DAY", 3, "1/5/2016", "4/5/2016"));
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+	
 
 	// Currently commented out because it wipes the current task list
 
