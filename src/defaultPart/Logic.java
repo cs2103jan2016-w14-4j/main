@@ -210,7 +210,9 @@ public class Logic {
 		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
 		setRecurIfExists(newTask, args);
 		setTaskTimeIfExists(newTask, args);
-		setTaskDateIfExists(newTask, args);
+		if (args.size() >= 2) {
+			setTaskDateIfExists(newTask, args);
+		}
 
 		// very ugly codes, to be refactored
 		Recur recur = newTask.getRecur();
@@ -372,9 +374,6 @@ public class Logic {
 			return false;
 		}
 		int lastIndex = args.size() - 1;
-		if (lastIndex == 0) {
-			return false;
-		}
 
 		TaskDate date;
 
