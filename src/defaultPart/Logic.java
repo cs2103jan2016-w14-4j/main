@@ -208,7 +208,9 @@ public class Logic {
 	private void addTask() {
 		Task newTask = new Task();
 		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
-		setRecurIfExists(newTask, args);
+		if (args.size() >= 2) {
+			setRecurIfExists(newTask, args);
+		}
 		if (args.size() >= 2) {
 			setTaskTimeIfExists(newTask, args);
 		}
@@ -345,7 +347,7 @@ public class Logic {
 
 	private boolean setTaskTimeIfExists(Task task, List<String> args) {
 		int lastIndex = args.size() - 1;
-		if(args.size()==0){
+		if (args.size() == 0) {
 			return false;
 		}
 		String lastString = args.get(args.size() - 1);
@@ -453,10 +455,9 @@ public class Logic {
 
 			case 1 :
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
-					if(setDayIfExists(dayAndMonthAndYear[0],newDate)){
+					if (setDayIfExists(dayAndMonthAndYear[0], newDate)) {
 						break;
-					}
-					else{
+					} else {
 						return null;
 					}
 				}
@@ -559,8 +560,8 @@ public class Logic {
 		} else {
 			int currentDay = newDate.get(TaskDate.DAY_OF_WEEK);
 			setDayIfExists(increment, newDate);
-			if(newDate.get(TaskDate.DAY_OF_WEEK)>=currentDay){
-				newDate.add(TaskDate.DATE,7);
+			if (newDate.get(TaskDate.DAY_OF_WEEK) >= currentDay) {
+				newDate.add(TaskDate.DATE, 7);
 			}
 		}
 
