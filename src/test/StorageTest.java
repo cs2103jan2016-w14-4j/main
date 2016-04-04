@@ -15,6 +15,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import defaultPart.InputIndexOutOfBoundsException;
 import defaultPart.Recur;
 import defaultPart.Storage;
 import defaultPart.Task;
@@ -168,7 +169,7 @@ public class StorageTest {
 	}
 
 	@Test
-	public void testGetTask() throws IOException, SAXException {
+	public void testGetTask() throws IOException, SAXException, InputIndexOutOfBoundsException {
 
 		// Setting up expected Task for comparison
 		Task expectedTask = new Task();
