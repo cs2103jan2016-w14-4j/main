@@ -2,15 +2,15 @@
 <wuriTasks>
    <Task>
       <Description>Plan some trips</Description>
-      <Date>04/05/16</Date>
+      <Date>07/05/16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
          <frequency>3</frequency>
-         <startOfRecurr>04/05/16</startOfRecurr>
-         <endOfRecurr>04/05/16</endOfRecurr>
+         <startOfRecurr>07/05/16</startOfRecurr>
+         <endOfRecurr>07/05/16</endOfRecurr>
       </recur>
    </Task>
 </wuriTasks>

@@ -749,6 +749,27 @@ public class SystemTest {
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 	
+	@Test
+	public final void testDeleteRecurTriggerWithIndexTwice() throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 2");
+		logicExecuteCommand(logic, "d 1");
+		logicExecuteCommand(logic, "d 1");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "7/5/2016", null, null, false,
+				createRecur("DAY", 3, "1/5/2016", "7/5/2016"));
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
 	
 	@Test
 	public final void testDeleteRecurTriggerWithLessThanDate() throws SAXException, ParseException, IOException {
