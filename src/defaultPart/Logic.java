@@ -345,6 +345,9 @@ public class Logic {
 
 	private boolean setTaskTimeIfExists(Task task, List<String> args) {
 		int lastIndex = args.size() - 1;
+		if(args.size()==0){
+			return false;
+		}
 		String lastString = args.get(args.size() - 1);
 		String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
 		TaskDate date = getWrappedDateFromString(secondLastString);
