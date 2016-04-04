@@ -748,9 +748,10 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
-	public final void testDeleteRecurTriggerWithIndexTwice() throws SAXException, ParseException, IOException {
+	public final void testDeleteRecurTriggerWithIndexTwice()
+			throws SAXException, ParseException, IOException {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
@@ -770,9 +771,10 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
-	public final void testDeleteRecurTriggerWithLessThanDate() throws SAXException, ParseException, IOException {
+	public final void testDeleteRecurTriggerWithLessThanDate()
+			throws SAXException, ParseException, IOException {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
@@ -791,7 +793,73 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
+	@Test
+	public final void testDeleteRecurClear() throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 1");
+		logicExecuteCommand(logic, "Potato potato");
+		logicExecuteCommand(logic, "d 1");
+		logicExecuteCommand(logic, "d 1");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	@Test
+	public final void testDeleteRecurClearWithEndDate() throws SAXException,ParseException,IOException
+	{
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 4/5/2016");
+		logicExecuteCommand(logic, "Potato potato");
+		logicExecuteCommand(logic, "d 1");
+		logicExecuteCommand(logic, "d 1");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testDeleteRecurClearWithEndDateBeforeTriggerDate()
+			throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 3/5/2016");
+		logicExecuteCommand(logic, "Potato potato");
+		logicExecuteCommand(logic, "d 1");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
 	
 
 	// Currently commented out because it wipes the current task list
