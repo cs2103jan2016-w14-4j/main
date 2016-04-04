@@ -3,14 +3,11 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -32,6 +29,9 @@ public class SystemTest {
 	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
 	private static final String TEST_FILE_NAME = "test\\SystemTest_actual.xml";
 
+	/**
+	 * Settings for XML file comparison using XMLUnit
+	 */
 	@Before
 	public void runBeforeEveryTest() {
 		XMLUnit.setIgnoreWhitespace(true);
@@ -580,7 +580,7 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
 
@@ -603,9 +603,9 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
-				null);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
 
 		// This is to test the expected behavior of this function
@@ -628,7 +628,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
 
 		// This is to test the expected behavior of this function
@@ -650,10 +650,10 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
 
 		// This is to test the expected behavior of this function
@@ -679,10 +679,10 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
 
 		// This is to test the expected behavior of this function
@@ -706,7 +706,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/6/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/7/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/7/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Buy Potatoes", null, null, null, false, null);
 
