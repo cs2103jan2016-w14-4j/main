@@ -580,7 +580,7 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
 
@@ -603,9 +603,9 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
-				null);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
 
 		// This is to test the expected behavior of this function
@@ -628,9 +628,9 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
-
+		
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
 		FileReader fr2 = new FileReader(testFile);
@@ -650,10 +650,10 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
 
 		// This is to test the expected behavior of this function
@@ -679,10 +679,10 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
 				null);
 
 		// This is to test the expected behavior of this function
@@ -706,7 +706,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/6/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/7/2016", null, null, false,
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/7/2016", null, null, false,
 				null);
 		storageCreateExpectedTask(storage, expectedFile, "Buy Potatoes", null, null, null, false, null);
 
