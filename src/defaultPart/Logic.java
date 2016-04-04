@@ -209,7 +209,9 @@ public class Logic {
 		Task newTask = new Task();
 		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
 		setRecurIfExists(newTask, args);
-		setTaskTimeIfExists(newTask, args);
+		if (args.size() >= 2) {
+			setTaskTimeIfExists(newTask, args);
+		}
 		if (args.size() >= 2) {
 			setTaskDateIfExists(newTask, args);
 		}
@@ -342,17 +344,15 @@ public class Logic {
 	}
 
 	private boolean setTaskTimeIfExists(Task task, List<String> args) {
-		if (args.size() >= 2) {
-			int lastIndex = args.size() - 1;
-			String lastString = args.get(args.size() - 1);
-			String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
-			TaskDate date = getWrappedDateFromString(secondLastString);
-			boolean isDigit = lastString.matches("\\d");
-			if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
-				setTaskTime(task, lastString);
-				args.remove(lastIndex);
-				return true;
-			}
+		int lastIndex = args.size() - 1;
+		String lastString = args.get(args.size() - 1);
+		String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
+		TaskDate date = getWrappedDateFromString(secondLastString);
+		boolean isDigit = lastString.matches("\\d");
+		if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
+			setTaskTime(task, lastString);
+			args.remove(lastIndex);
+			return true;
 		}
 		return false;
 	}
