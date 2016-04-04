@@ -377,7 +377,7 @@ public class Logic {
 
 		TaskDate date;
 
-		if (args.size() > 2 && args.get(lastIndex - 1).equals("next")) {
+		if (args.size() >= 2 && args.get(lastIndex - 1).equals("next")) {
 			date = getNextDate(args);
 			args.remove(lastIndex--);
 		} else {
@@ -450,7 +450,12 @@ public class Logic {
 
 			case 1 :
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
-					return null;
+					if(setDayIfExists(dayAndMonthAndYear[0],newDate)){
+						break;
+					}
+					else{
+						return null;
+					}
 				}
 				newDate.set(TaskDate.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
 				break;
@@ -482,10 +487,13 @@ public class Logic {
 			}
 		}
 
-		if (!setTaskTimeIfExists(task, args) & !setTaskDateIfExists(task, args)) {
-			if (args.size() > 0) {
-				task.setDescription(String.join(" ", args));
-			} else {
+		boolean isTaskTimeEdited = setTaskTimeIfExists(task, args);
+		boolean isTaskDateEdited = setTaskDateIfExists(task, args);
+
+		if (args.size() > 0) {
+			task.setDescription(String.join(" ", args));
+		} else {
+			if (!isTaskTimeEdited & !isTaskDateEdited & !isRecurEdited) {
 				copyTaskToInputForEditting(taskIndex);
 			}
 		}
@@ -545,7 +553,21 @@ public class Logic {
 			newDate.add(TaskDate.MONTH, 1);
 		} else if (increment.equals("year")) {
 			newDate.add(TaskDate.YEAR, 1);
-		} else if (increment.equals("sun") || increment.equals("sunday")) {
+		} else {
+			int currentDay = newDate.get(TaskDate.DAY_OF_WEEK);
+			setDayIfExists(increment, newDate);
+			if(newDate.get(TaskDate.DAY_OF_WEEK)>=currentDay){
+				newDate.add(TaskDate.DATE,7);
+			}
+		}
+
+		newDate.getTimeInMillis();
+		return newDate;
+		// need include case for invalid 2nd input, i.e., next hi
+	}
+
+	private boolean setDayIfExists(String increment, TaskDate newDate) {
+		if (increment.equals("sun") || increment.equals("sunday")) {
 			wrapDateToNextDayOfWeek(newDate, 1);
 		} else if (increment.equals("mon") || increment.equals("monday")) {
 			wrapDateToNextDayOfWeek(newDate, 2);
@@ -559,11 +581,10 @@ public class Logic {
 			wrapDateToNextDayOfWeek(newDate, 6);
 		} else if (increment.equals("sat") || increment.equals("saturday")) {
 			wrapDateToNextDayOfWeek(newDate, 7);
+		} else {
+			return false;
 		}
-
-		newDate.getTimeInMillis();
-		return newDate;
-		// need include case for invalid 2nd input, i.e., next hi
+		return true;
 	}
 
 	private void wrapDateToNextDayOfWeek(TaskDate newDate, int dayToWrapTo) {
