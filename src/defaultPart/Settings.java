@@ -124,7 +124,7 @@ public class Settings {
 	public void setSavePath(String savePath) {
 		if (savePath.charAt(savePath.length() - 1) != '/') {
 			savePath += "/";
-		}  
+		}
 		if (savePath.equals("/") || savePath.equals("\\")) {
 			_savePath = TASK_FILE_DEFAULT_PATH;
 		} else if (isValidPath(savePath)) {
@@ -172,6 +172,7 @@ public class Settings {
 		// Ensure that after saving/loading the configuration file has been created
 		assert (configFile.isFile());
 		assert (configFile.canRead());
+		assert (configFile != null);
 	}
 
 	/**
