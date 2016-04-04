@@ -344,6 +344,7 @@ public class Logic {
 				if (Character.isDigit(frequency)) {
 					recur.setFrequency(Character.getNumericValue(frequency));
 				}
+				task.setRecur(recur);
 				args.remove(frequencyAndUnit);
 				return true;
 			}
