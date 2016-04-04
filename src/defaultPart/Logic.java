@@ -482,10 +482,13 @@ public class Logic {
 			}
 		}
 
-		if (!setTaskTimeIfExists(task, args) & !setTaskDateIfExists(task, args)) {
-			if (args.size() > 0) {
-				task.setDescription(String.join(" ", args));
-			} else {
+		boolean isTaskTimeEdited = setTaskTimeIfExists(task, args);
+		boolean isTaskDateEdited = setTaskDateIfExists(task, args);
+
+		if (args.size() > 0) {
+			task.setDescription(String.join(" ", args));
+		} else {
+			if (!isTaskTimeEdited & !isTaskDateEdited & !isRecurEdited) {
 				copyTaskToInputForEditting(taskIndex);
 			}
 		}
