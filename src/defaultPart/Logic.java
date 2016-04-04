@@ -450,7 +450,12 @@ public class Logic {
 
 			case 1 :
 				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
-					return null;
+					if(setDayIfExists(dayAndMonthAndYear[0],newDate)){
+						break;
+					}
+					else{
+						return null;
+					}
 				}
 				newDate.set(TaskDate.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
 				break;
@@ -548,7 +553,17 @@ public class Logic {
 			newDate.add(TaskDate.MONTH, 1);
 		} else if (increment.equals("year")) {
 			newDate.add(TaskDate.YEAR, 1);
-		} else if (increment.equals("sun") || increment.equals("sunday")) {
+		} else {
+			setDayIfExists(increment, newDate);
+		}
+
+		newDate.getTimeInMillis();
+		return newDate;
+		// need include case for invalid 2nd input, i.e., next hi
+	}
+
+	private boolean setDayIfExists(String increment, TaskDate newDate) {
+		if (increment.equals("sun") || increment.equals("sunday")) {
 			wrapDateToNextDayOfWeek(newDate, 1);
 		} else if (increment.equals("mon") || increment.equals("monday")) {
 			wrapDateToNextDayOfWeek(newDate, 2);
@@ -562,11 +577,10 @@ public class Logic {
 			wrapDateToNextDayOfWeek(newDate, 6);
 		} else if (increment.equals("sat") || increment.equals("saturday")) {
 			wrapDateToNextDayOfWeek(newDate, 7);
+		} else {
+			return false;
 		}
-
-		newDate.getTimeInMillis();
-		return newDate;
-		// need include case for invalid 2nd input, i.e., next hi
+		return true;
 	}
 
 	private void wrapDateToNextDayOfWeek(TaskDate newDate, int dayToWrapTo) {
