@@ -554,7 +554,11 @@ public class Logic {
 		} else if (increment.equals("year")) {
 			newDate.add(TaskDate.YEAR, 1);
 		} else {
+			int currentDay = newDate.get(TaskDate.DAY_OF_WEEK);
 			setDayIfExists(increment, newDate);
+			if(newDate.get(TaskDate.DAY_OF_WEEK)>=currentDay){
+				newDate.add(TaskDate.DATE,7);
+			}
 		}
 
 		newDate.getTimeInMillis();
