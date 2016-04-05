@@ -619,12 +619,16 @@ public class Logic {
 			wrapDateToNextDayOfWeek(newDate, 7);
 		} else if (increment.equals("today")) {
 			return true;
-		} else if (increment.equals("tomorrow")) {
+		} else if (isTomorrowCase(increment)) {
 			newDate.add(TaskDate.DATE, 1);
 		} else {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean isTomorrowCase(String increment) {
+		return increment.equals("tomorrow") || increment.equals("tmr") || increment.equals("tmrw");
 	}
 
 	private boolean isSaturdayCase(String increment) {
