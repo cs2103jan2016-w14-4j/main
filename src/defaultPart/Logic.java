@@ -43,7 +43,7 @@ public class Logic {
 
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
-		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, TOGGLE_COMPLETE, UNDO, HELP,
+		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, COMPLETE_MARKING, UNDO, HELP,
 
 		// for internal use
 		EDIT_SHOW_TASK, ADD, ERROR, NULL
@@ -122,7 +122,7 @@ public class Logic {
 					editTask();
 					break;
 
-				case TOGGLE_COMPLETE :
+				case COMPLETE_MARKING :
 					toggleTaskComplete();
 					break;
 
