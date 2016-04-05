@@ -12,6 +12,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -145,16 +146,41 @@ public class Controller implements Initializable {
 				logger.fine("Bad Input for Date: " + e.getNewValue());
 			}
 		});
+		
+		Callback<TableColumn<TaskModel, String>, TableCell<TaskModel, String>> descriptionCellFactory = e -> new TextFieldTableCell<TaskModel, String>(){
+			private Text text;
+			@Override
+			public void updateItem(String item, boolean empty){
+				super.updateItem(item, empty);
+				setText(null);
+				if (!isEmpty()) {
+					text = new Text(item.toString());
+					text.setWrappingWidth(200); // Setting the wrapping width to the Text
+					setGraphic(text);
+				}
+			}
 
+			@Override
+			public void commitEdit(String item){
+				super.commitEdit(item);
+				updateItem(item, false);
+			}
+
+			@Override
+			public void cancelEdit(){
+				updateItem(getItem(), false);
+			}
+		};
+		
 		floatingTaskDescription.setCellValueFactory(cellData -> cellData.getValue().taskDescription());
-		floatingTaskDescription.setCellFactory(TextFieldTableCell.forTableColumn());
+		floatingTaskDescription.setCellFactory(descriptionCellFactory);
 		floatingTaskDescription.setOnEditCommit(e -> {
 			int id = e.getTableView().getItems().get(e.getTablePosition().getRow()).getTaskId();
 			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
 		});
 
 		eventsDescription.setCellValueFactory(cellData -> cellData.getValue().taskDescription());
-		eventsDescription.setCellFactory(TextFieldTableCell.forTableColumn());
+		eventsDescription.setCellFactory(descriptionCellFactory);
 		eventsDescription.setOnEditCommit(e -> {
 			int id = e.getTableView().getItems().get(e.getTablePosition().getRow()).getTaskId();
 			sendToLogicAndUpdatePrompt(String.format(EDIT_COMMAND, id, e.getNewValue()));
