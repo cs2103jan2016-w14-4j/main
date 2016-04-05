@@ -750,10 +750,14 @@ public class Logic {
 			_storage.removeTask(taskIndex);
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
-			task.setDate(recur.getNextRecur());
-			recur.setStartDate(task.getDate());
-			_storage.removeTask(taskIndex);
-			_storage.addToTaskList(task);
+			if (recur.willRecur()) {
+				task.setDate(recur.getNextRecur());
+				recur.setStartDate(task.getDate());
+				_storage.removeTask(taskIndex);
+				_storage.addToTaskList(task);
+			} else {
+				_storage.removeTask(taskIndex);
+			}
 			_feedback = String.format(
 					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getDate());
 		}
@@ -829,10 +833,12 @@ public class Logic {
 
 						if (date != null && date.compareTo(newDate) < 0) {
 							if (recur != null) {
-								if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) <= 0) {
+								if (recur.getEndDate() != null
+										&& recur.getEndDate().compareTo(newDate) <= 0) {
 									_storage.removeTask(i);
 								} else {
-									while (recur.willRecur() && recur.getStartDate().compareTo(newDate) <= 0) {
+									while (recur.willRecur()
+											&& recur.getStartDate().compareTo(newDate) <= 0) {
 										recur.setStartDate(recur.getNextRecur());
 									}
 									if (recur.getStartDate().compareTo(newDate) <= 0) {

@@ -44,6 +44,10 @@ public class Recur {
 	}
 
 	public TaskDate getNextRecur() {
+		if (getStartDate() == null) {
+			return null;
+		}
+
 		TaskDate nextDate = (TaskDate) getStartDate().clone();
 
 		incrementNextDate(nextDate);
