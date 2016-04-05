@@ -5,8 +5,13 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.custommonkey.xmlunit.XMLAssert;
@@ -151,6 +156,46 @@ public class SystemTest {
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "500 words CFG1010", "8/4/2016", null, null, false,
 				null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingMonday()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "500 words Alpaca mon");
+		logicExecuteCommand(logic, "500 words Chewbacca monday");
+		logicExecuteCommand(logic, "500 words Papaya Mon");
+		logicExecuteCommand(logic, "500 words Coconut Monday");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar nextMonDate = new GregorianCalendar();
+		if (nextMonDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+			nextMonDate.add(Calendar.DATE, 7);
+		} else {
+			while (nextMonDate.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+				nextMonDate.add(Calendar.DATE, 1);
+			}
+		}
+
+		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
+				dateFormat.format(nextMonDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
+				dateFormat.format(nextMonDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(nextMonDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
+				dateFormat.format(nextMonDate.getTime()), null, null, false, null);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
