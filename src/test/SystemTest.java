@@ -246,6 +246,51 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
+	
+	@Test
+	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingWednesday()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "500 words Alpaca wed");
+		logicExecuteCommand(logic, "500 words Pohtaytoh WED");
+		logicExecuteCommand(logic, "500 words Chewbacca wednesday");
+		logicExecuteCommand(logic, "500 words Pohtaytoh WEDNESDAY");
+		logicExecuteCommand(logic, "500 words Papaya Wed");
+		logicExecuteCommand(logic, "500 words Coconut Wednesday");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar expectedDate = new GregorianCalendar();
+		if (expectedDate.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
+			expectedDate.add(Calendar.DATE, 7);
+		} else {
+			while (expectedDate.get(Calendar.DAY_OF_WEEK) != Calendar.WEDNESDAY) {
+				expectedDate.add(Calendar.DATE, 1);
+			}
+		}
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Crayfish",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
 
 	@Test
 	public final void testAddDeadlineWithTime() throws SAXException, IOException, ParseException {
