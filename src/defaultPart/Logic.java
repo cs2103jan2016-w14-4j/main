@@ -792,8 +792,25 @@ public class Logic {
 					for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
 																	 // works
 						TaskDate date = taskList.get(i).getDate();
+						Recur recur = taskList.get(i).getRecur();
+						Task task = taskList.get(i);
+
 						if (date != null && date.compareTo(newDate) < 0) {
-							_storage.removeTask(i);
+							if (recur != null) {
+								if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) < 0) {
+									_storage.removeTask(i);
+								} else {
+									while (recur.getStartDate().compareTo(newDate) < 0) {
+										recur.setStartDate(recur.getNextRecur());
+									}
+									task.setRecur(recur);
+									task.setDate(recur.getStartDate());
+									_storage.removeTask(i);
+									_storage.addToTaskList(task);
+								}
+							} else {
+								_storage.removeTask(i);
+							}
 							count++;
 						}
 					}
@@ -803,8 +820,25 @@ public class Logic {
 					for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
 																	 // works
 						TaskDate date = taskList.get(i).getDate();
+						Recur recur = taskList.get(i).getRecur();
+						Task task = taskList.get(i);
+
 						if (date != null && date.compareTo(newDate) <= 0) {
-							_storage.removeTask(i);
+							if (recur != null) {
+								if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) <= 0) {
+									_storage.removeTask(i);
+								} else {
+									while (recur.getStartDate().compareTo(newDate) <= 0) {
+										recur.setStartDate(recur.getNextRecur());
+									}
+									task.setRecur(recur);
+									task.setDate(recur.getStartDate());
+									_storage.removeTask(i);
+									_storage.addToTaskList(task);
+								}
+							} else {
+								_storage.removeTask(i);
+							}
 							count++;
 						}
 					}
