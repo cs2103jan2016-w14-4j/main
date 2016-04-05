@@ -18,6 +18,11 @@
     -fx-text-fill: #dddddd;
 }
 
+.completedTaskRow{
+    -fx-strikethrough: true;
+    -fx-text-fill: #dddddd;
+}
+
 .incompleteTaskRow{
 
 }

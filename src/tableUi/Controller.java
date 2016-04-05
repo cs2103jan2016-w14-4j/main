@@ -147,8 +147,8 @@ public class Controller implements Initializable {
 				logger.fine("Bad Input for Date: " + e.getNewValue());
 			}
 		});
-		StringConverter<String> stringConverter= new StringConverter() {
-
+		
+		StringConverter<String> simpleStringConverter= new StringConverter() {
 			@Override
 			public String toString(Object object) {
 				return object.toString();
@@ -158,19 +158,23 @@ public class Controller implements Initializable {
 			public Object fromString(String string) {
 				return string;
 			}
-			
 		};
-		Callback<TableColumn<TaskModel, String>, TableCell<TaskModel, String>> descriptionCellFactory = e -> new TextFieldTableCell<TaskModel, String>(stringConverter){
-			private Text text;
+		
+		Callback<TableColumn<TaskModel, String>, TableCell<TaskModel, String>> descriptionCellFactory = 
+				e -> new TextFieldTableCell<TaskModel, String>(simpleStringConverter){
+			private Text textDisplay;
 			@Override
 			public void updateItem(String item, boolean empty){
 				super.updateItem(item, empty);
 				setText(null);
 				if (!isEmpty()) {
-					text = new Text(item.toString());
-					text.setWrappingWidth(200); // Setting the wrapping width to the Text
-					setGraphic(text);
+					textDisplay = new Text(item.toString());
+					textDisplay.setWrappingWidth(this.getTableColumn().getWidth() - 5); // 5 is the padding
+					setGraphic(textDisplay);
+					textDisplay.getStyleClass().clear();
+					textDisplay.getStyleClass().add("text");
 				}
+				
 			}
 
 			@Override
