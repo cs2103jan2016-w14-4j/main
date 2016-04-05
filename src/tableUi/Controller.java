@@ -72,7 +72,7 @@ public class Controller implements Initializable {
 	private Logic logic;
 	
 	private static final Logger logger = Logger.getLogger(Controller.class.getName());
-
+	
 	/**
 	 * Initialize the controllers, define the listeners for each control
 	 * 
@@ -390,8 +390,6 @@ public class Controller implements Initializable {
 		return taskModels.get(id);
 	}
 
-
-
 	/**
 	 * Let the tableView show all the tasks
 	 */
@@ -507,5 +505,17 @@ public class Controller implements Initializable {
 			logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		}
+	}
+	
+	public void highlightTaskWithId(int id){
+		int row = getRowFromModel(getTaskModelFromId(id));
+		if (taskList.get(id).getDate() != null) {
+			eventsTable.getSelectionModel().select(row);
+			scrollTo(row);
+		} else {
+			floatingTaskTable.getSelectionModel().select(row);
+			scrollTo(row);
+		}
+		
 	}
 }
