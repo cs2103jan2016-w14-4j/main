@@ -2,27 +2,41 @@
 <wuriTasks>
    <Task>
       <Description>500 words Chewbacca</Description>
-      <Date>11/04/16</Date>
+      <Date>12/04/16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
       <Description>500 words Alpaca</Description>
-      <Date>11/04/16</Date>
+      <Date>12/04/16</Date>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
-      <Description>500 words Coconut Monday</Description>
+      <Description>500 words Coconut Tuesday</Description>
       <Date/>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
-      <Description>500 words Papaya Mon</Description>
+      <Description>500 words Crayfish Tues</Description>
+      <Date/>
+      <StartTime/>
+      <EndTime/>
+      <Completed>no</Completed>
+   </Task>
+   <Task>
+      <Description>500 words Papaya Tue</Description>
+      <Date/>
+      <StartTime/>
+      <EndTime/>
+      <Completed>no</Completed>
+   </Task>
+   <Task>
+      <Description>500 words Pohtaytoh tues</Description>
       <Date/>
       <StartTime/>
       <EndTime/>
