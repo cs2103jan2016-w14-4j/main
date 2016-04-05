@@ -12,3 +12,12 @@
     -fx-border-color: null;
     -fx-padding: 0px;
 }
+
+.completedTaskRow .text{
+    -fx-strikethrough: true;
+    -fx-text-fill: #dddddd;
+}
+
+.incompleteTaskRow{
+
+}

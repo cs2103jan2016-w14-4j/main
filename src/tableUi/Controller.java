@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -97,12 +98,32 @@ public class Controller implements Initializable {
 				return null;
 			}
 		});
+		
+		Callback<TableColumn<TaskModel, Boolean>, TableCell<TaskModel, Boolean>> checkBoxCellFactory =
+				e -> new CheckBoxTableCell<TaskModel, Boolean>(){
+			@Override
+			public void updateItem(final Boolean item, final boolean empty){
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if(item)
+						setText("something");
+					this.getTableRow().getStyleClass().remove("completedTaskRow");
+					this.getTableRow().getStyleClass().remove("incompleteTaskRow");
+					this.getTableRow().getStyleClass().add(item ? "completedTaskRow" : "incompleteTaskRow");
+				}
+
+
+			}
+		};
 
 		floatingTaskCheckbox.setCellValueFactory(cellData -> cellData.getValue().isComplete());
-		floatingTaskCheckbox.setCellFactory(e -> new CheckBoxTableCell());
+		floatingTaskCheckbox.setCellFactory(checkBoxCellFactory);
 
 		eventsCheckbox.setCellValueFactory(cellData -> cellData.getValue().isComplete());
-		eventsCheckbox.setCellFactory(e -> new CheckBoxTableCell());
+		eventsCheckbox.setCellFactory(checkBoxCellFactory);
 
 		eventsDate.setCellValueFactory(cellData -> cellData.getValue().dateTime());
 		eventsDate.setCellFactory(TextFieldTableCell.forTableColumn());
