@@ -617,6 +617,10 @@ public class Logic {
 			wrapDateToNextDayOfWeek(newDate, 6);
 		} else if (isSaturdayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 7);
+		} else if (increment.equals("today")) {
+			return true;
+		} else if (increment.equals("tomorrow")) {
+			newDate.add(TaskDate.DATE, 1);
 		} else {
 			return false;
 		}
