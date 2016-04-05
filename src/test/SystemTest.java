@@ -1148,7 +1148,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "4/5/2016", null, null, false,
-				createRecur("DAY", 3, "1/5/2016", "4/5/2016"));
+				createRecur("DAY", 3, "4/5/2016", "4/5/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1171,7 +1171,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "7/5/2016", null, null, false,
-				createRecur("DAY", 3, "1/5/2016", "7/5/2016"));
+				createRecur("DAY", 3, "7/5/2016", "7/5/2016"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1193,7 +1193,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "4/5/2017", null, null, false,
-				createRecur("DAY", 3, "1/5/2017", "4/5/2017"));
+				createRecur("DAY", 3, "4/5/2017", "4/5/2017"));
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
