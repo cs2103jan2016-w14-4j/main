@@ -290,6 +290,7 @@ public class SystemTest {
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
+	
 	@Test
 	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingThursday()
 			throws SAXException, IOException, ParseException {
@@ -310,10 +311,58 @@ public class SystemTest {
 		Storage storage = new Storage(expectedFile);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		GregorianCalendar expectedDate = new GregorianCalendar();
-		if (expectedDate.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
+		if (expectedDate.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
 			expectedDate.add(Calendar.DATE, 7);
 		} else {
-			while (expectedDate.get(Calendar.DAY_OF_WEEK) != Calendar.WEDNESDAY) {
+			while (expectedDate.get(Calendar.DAY_OF_WEEK) != Calendar.THURSDAY) {
+				expectedDate.add(Calendar.DATE, 1);
+			}
+		}
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alalabamba",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words JulianPotato",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+	@Test
+	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingFriday()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "500 words Alpaca fri");
+		logicExecuteCommand(logic, "500 words Pohtaytoh friday");
+		logicExecuteCommand(logic, "500 words Chewbacca Fri");
+		logicExecuteCommand(logic, "500 words Alalabamba Friday");
+		logicExecuteCommand(logic, "500 words Papaya FRIDAY");
+		logicExecuteCommand(logic, "500 words JulianPotato fridaY");
+		logicExecuteCommand(logic, "500 words Coconut FridaY");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar expectedDate = new GregorianCalendar();
+		if (expectedDate.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+			expectedDate.add(Calendar.DATE, 7);
+		} else {
+			while (expectedDate.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
 				expectedDate.add(Calendar.DATE, 1);
 			}
 		}
