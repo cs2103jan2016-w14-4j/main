@@ -603,24 +603,53 @@ public class Logic {
 
 	private boolean setDayIfExists(String increment, TaskDate newDate) {
 		increment = increment.toLowerCase();
-		if (increment.equals("sun") || increment.equals("sunday")) {
+		if (isSundayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 1);
-		} else if (increment.equals("mon") || increment.equals("monday")) {
+		} else if (isMondayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 2);
-		} else if (increment.equals("tue") || increment.equals("tuesday")) {
+		} else if (isTuesdayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 3);
-		} else if (increment.equals("wed") || increment.equals("wednesday")) {
+		} else if (isWednesdayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 4);
-		} else if (increment.equals("thu") || increment.equals("thursday")) {
+		} else if (isThursdayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 5);
-		} else if (increment.equals("fri") || increment.equals("friday")) {
+		} else if (isFridayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 6);
-		} else if (increment.equals("sat") || increment.equals("saturday")) {
+		} else if (isSaturdayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 7);
 		} else {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean isSaturdayCase(String increment) {
+		return increment.equals("sat") || increment.equals("saturday");
+	}
+
+	private boolean isFridayCase(String increment) {
+		return increment.equals("fri") || increment.equals("friday");
+	}
+
+	private boolean isThursdayCase(String increment) {
+		return increment.equals("thu") || increment.equals("thurs") || increment.equals("thur")
+				|| increment.equals("thursday");
+	}
+
+	private boolean isWednesdayCase(String increment) {
+		return increment.equals("wed") || increment.equals("wednesday");
+	}
+
+	private boolean isTuesdayCase(String increment) {
+		return increment.equals("tue") || increment.equals("tues") || increment.equals("tuesday");
+	}
+
+	private boolean isMondayCase(String increment) {
+		return increment.equals("mon") || increment.equals("monday");
+	}
+
+	private boolean isSundayCase(String increment) {
+		return increment.equals("sun") || increment.equals("sunday");
 	}
 
 	private void wrapDateToNextDayOfWeek(TaskDate newDate, int dayToWrapTo) {
