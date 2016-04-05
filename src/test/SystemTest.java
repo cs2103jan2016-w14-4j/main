@@ -425,6 +425,7 @@ public class SystemTest {
 		Logic logic = new Logic(testFile);
 		logicExecuteCommand(logic, "500 words Alpaca Today");
 		logicExecuteCommand(logic, "500 words Chewbacca today");
+		logicExecuteCommand(logic, "Read Next today");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
@@ -434,6 +435,8 @@ public class SystemTest {
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Read Next",
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
 
 		// This is to test the expected behavior of this function
@@ -453,6 +456,7 @@ public class SystemTest {
 		logicExecuteCommand(logic, "500 words Chewbacca Tomorrow");
 		logicExecuteCommand(logic, "500 words Dabao tmrw");
 		logicExecuteCommand(logic, "500 words LiangCha tmr");
+		logicExecuteCommand(logic, "Read Next tomorrow");
 		
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
@@ -467,6 +471,8 @@ public class SystemTest {
 		storageCreateExpectedTask(storage, expectedFile, "500 words Dabao",
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
 		storageCreateExpectedTask(storage, expectedFile, "500 words LiangCha",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Read Next",
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
 
 		// This is to test the expected behavior of this function
