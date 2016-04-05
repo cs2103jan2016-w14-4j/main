@@ -590,8 +590,8 @@ public class Logic {
 			newDate.add(TaskDate.YEAR, 1);
 		} else {
 			int currentDay = newDate.get(TaskDate.DAY_OF_WEEK);
-			setDayIfExists(increment, newDate);
-			if (newDate.get(TaskDate.DAY_OF_WEEK) >= currentDay) {
+			boolean isDayExists = setDayIfExists(increment, newDate);
+			if (isDayExists && newDate.get(TaskDate.DAY_OF_WEEK) >= currentDay) {
 				newDate.add(TaskDate.DATE, 7);
 			}
 		}
@@ -602,6 +602,7 @@ public class Logic {
 	}
 
 	private boolean setDayIfExists(String increment, TaskDate newDate) {
+		increment = increment.toLowerCase();
 		if (increment.equals("sun") || increment.equals("sunday")) {
 			wrapDateToNextDayOfWeek(newDate, 1);
 		} else if (increment.equals("mon") || increment.equals("monday")) {
