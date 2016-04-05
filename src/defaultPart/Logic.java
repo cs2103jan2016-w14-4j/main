@@ -800,13 +800,17 @@ public class Logic {
 								if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) < 0) {
 									_storage.removeTask(i);
 								} else {
-									while (recur.getStartDate().compareTo(newDate) < 0) {
+									while (recur.willRecur() && recur.getStartDate().compareTo(newDate) < 0) {
 										recur.setStartDate(recur.getNextRecur());
 									}
-									task.setRecur(recur);
-									task.setDate(recur.getStartDate());
-									_storage.removeTask(i);
-									_storage.addToTaskList(task);
+									if (recur.getStartDate().compareTo(newDate) < 0) {
+										_storage.removeTask(i);
+									} else {
+										task.setRecur(recur);
+										task.setDate(recur.getStartDate());
+										_storage.removeTask(i);
+										_storage.addToTaskList(task);
+									}
 								}
 							} else {
 								_storage.removeTask(i);
@@ -823,18 +827,22 @@ public class Logic {
 						Recur recur = taskList.get(i).getRecur();
 						Task task = taskList.get(i);
 
-						if (date != null && date.compareTo(newDate) <= 0) {
+						if (date != null && date.compareTo(newDate) < 0) {
 							if (recur != null) {
 								if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) <= 0) {
 									_storage.removeTask(i);
 								} else {
-									while (recur.getStartDate().compareTo(newDate) <= 0) {
+									while (recur.willRecur() && recur.getStartDate().compareTo(newDate) <= 0) {
 										recur.setStartDate(recur.getNextRecur());
 									}
-									task.setRecur(recur);
-									task.setDate(recur.getStartDate());
-									_storage.removeTask(i);
-									_storage.addToTaskList(task);
+									if (recur.getStartDate().compareTo(newDate) <= 0) {
+										_storage.removeTask(i);
+									} else {
+										task.setRecur(recur);
+										task.setDate(recur.getStartDate());
+										_storage.removeTask(i);
+										_storage.addToTaskList(task);
+									}
 								}
 							} else {
 								_storage.removeTask(i);
