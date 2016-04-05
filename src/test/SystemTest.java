@@ -417,6 +417,65 @@ public class SystemTest {
 	}
 
 	@Test
+	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingToday()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "500 words Alpaca Today");
+		logicExecuteCommand(logic, "500 words Chewbacca today");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar expectedDate = new GregorianCalendar();
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+	@Test
+	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingTomorrow()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "500 words Alpaca tomorrow");
+		logicExecuteCommand(logic, "500 words Chewbacca Tomorrow");
+		logicExecuteCommand(logic, "500 words Dabao tmrw");
+		logicExecuteCommand(logic, "500 words LiangCha tmr");
+		
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar expectedDate = new GregorianCalendar();
+		expectedDate.add(Calendar.DATE, 1);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Dabao",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words LiangCha",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+	@Test
 	public final void testAddDeadlineWithTime() throws SAXException, IOException, ParseException {
 
 		// Setting up actual Task List for comparison
