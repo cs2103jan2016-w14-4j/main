@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>500 words Coconut</Description>
-      <Date>12/04/16</Date>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
-      <Description>500 words Papaya</Description>
-      <Date>12/04/16</Date>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
-      <Description>500 words Chewbacca</Description>
-      <Date>12/04/16</Date>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
       <Description>500 words Alpaca</Description>
       <Date>12/04/16</Date>
       <StartTime/>
@@ -29,14 +8,14 @@
       <Completed>no</Completed>
    </Task>
    <Task>
-      <Description>500 words Crayfish Tues</Description>
+      <Description>500 words Coconut Next Week</Description>
       <Date/>
       <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
    </Task>
    <Task>
-      <Description>500 words Pohtaytoh tues</Description>
+      <Description>500 words Chewbacca NEXT WEEK</Description>
       <Date/>
       <StartTime/>
       <EndTime/>
