@@ -387,6 +387,90 @@ public class SystemTest {
 	}
 
 	@Test
+	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingSaturday()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "500 words Alpaca sat");
+		logicExecuteCommand(logic, "500 words Pohtaytoh Sat");
+		logicExecuteCommand(logic, "500 words Chewbacca Saturday");
+		logicExecuteCommand(logic, "500 words Alalabamba saturday");
+		logicExecuteCommand(logic, "500 words Papaya SATURDAY");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar expectedDate = new GregorianCalendar();
+		if (expectedDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+			expectedDate.add(Calendar.DATE, 7);
+		} else {
+			while (expectedDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
+				expectedDate.add(Calendar.DATE, 1);
+			}
+		}
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alalabamba",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingSunday()
+			throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile);
+		logicExecuteCommand(logic, "500 words Alpaca sun");
+		logicExecuteCommand(logic, "500 words Pohtaytoh Sun");
+		logicExecuteCommand(logic, "500 words Chewbacca Sunday");
+		logicExecuteCommand(logic, "500 words Alalabamba sunday");
+		logicExecuteCommand(logic, "500 words Papaya SUNDAY");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar expectedDate = new GregorianCalendar();
+		if (expectedDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+			expectedDate.add(Calendar.DATE, 7);
+		} else {
+			while (expectedDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+				expectedDate.add(Calendar.DATE, 1);
+			}
+		}
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Alalabamba",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
 	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingNextWeek()
 			throws SAXException, IOException, ParseException {
 
@@ -444,7 +528,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingTomorrow()
 			throws SAXException, IOException, ParseException {
@@ -457,7 +541,7 @@ public class SystemTest {
 		logicExecuteCommand(logic, "500 words Dabao tmrw");
 		logicExecuteCommand(logic, "500 words LiangCha tmr");
 		logicExecuteCommand(logic, "Read Next tomorrow");
-		
+
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
@@ -480,7 +564,7 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-	
+
 	@Test
 	public final void testAddDeadlineWithTime() throws SAXException, IOException, ParseException {
 
