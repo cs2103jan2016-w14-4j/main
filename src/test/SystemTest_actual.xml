@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>HIMYM</Description>
-      <Date>01/01/27</Date>
-      <StartTime>12:00AM</StartTime>
+      <Description>Plan some trips</Description>
+      <Date>04/05/17</Date>
+      <StartTime/>
       <EndTime/>
       <Completed>no</Completed>
       <recur>
          <timeUnit>DAY</timeUnit>
-         <frequency>1</frequency>
-         <startOfRecurr>01/01/27</startOfRecurr>
-         <endOfRecurr>20/02/27</endOfRecurr>
+         <frequency>3</frequency>
+         <startOfRecurr>04/05/17</startOfRecurr>
+         <endOfRecurr>04/05/17</endOfRecurr>
       </recur>
    </Task>
 </wuriTasks>

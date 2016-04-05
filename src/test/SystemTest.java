@@ -5,12 +5,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -962,7 +960,7 @@ public class SystemTest {
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017 3d 1");
-		logicExecuteCommand(logic, "d < 1/6/2017");
+		logicExecuteCommand(logic, "d < 2/5/2017");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
