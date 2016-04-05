@@ -413,7 +413,7 @@ public class Logic {
 
 		TaskDate date;
 
-		if (args.size() >= 2 && args.get(lastIndex - 1).equals("next")) {
+		if (args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next")) {
 			date = getNextDate(args);
 			args.remove(lastIndex--);
 		} else {
