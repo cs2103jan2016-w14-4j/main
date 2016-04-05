@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -146,8 +147,20 @@ public class Controller implements Initializable {
 				logger.fine("Bad Input for Date: " + e.getNewValue());
 			}
 		});
-		
-		Callback<TableColumn<TaskModel, String>, TableCell<TaskModel, String>> descriptionCellFactory = e -> new TextFieldTableCell<TaskModel, String>(){
+		StringConverter<String> stringConverter= new StringConverter() {
+
+			@Override
+			public String toString(Object object) {
+				return object.toString();
+			}
+
+			@Override
+			public Object fromString(String string) {
+				return string;
+			}
+			
+		};
+		Callback<TableColumn<TaskModel, String>, TableCell<TaskModel, String>> descriptionCellFactory = e -> new TextFieldTableCell<TaskModel, String>(stringConverter){
 			private Text text;
 			@Override
 			public void updateItem(String item, boolean empty){
