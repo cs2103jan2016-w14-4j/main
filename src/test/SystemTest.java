@@ -255,7 +255,7 @@ public class SystemTest {
 		logicExecuteCommand(logic, "500 words Alpaca wed");
 		logicExecuteCommand(logic, "500 words Pohtaytoh WED");
 		logicExecuteCommand(logic, "500 words Chewbacca wednesday");
-		logicExecuteCommand(logic, "500 words Pohtaytoh WEDNESDAY");
+		logicExecuteCommand(logic, "500 words Crayfish WEDNESDAY");
 		logicExecuteCommand(logic, "500 words Papaya Wed");
 		logicExecuteCommand(logic, "500 words Coconut Wednesday");
 
@@ -277,9 +277,9 @@ public class SystemTest {
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Crayfish",
+				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
 				dateFormat.format(expectedDate.getTime()), null, null, false, null);
