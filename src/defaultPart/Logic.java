@@ -791,6 +791,7 @@ public class Logic {
 	}
 
 	private void deleteTask() throws IOException, InputIndexOutOfBoundsException {
+		_storage.setCurrentListAsPrevious();
 		if (deleteMultiple()) {
 			return;
 		}

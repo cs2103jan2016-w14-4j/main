@@ -184,7 +184,16 @@ public class Storage {
 			taskClone.setDate(task.getDate());
 			taskClone.setStartTime(task.getStartTime());
 			taskClone.setEndTime(task.getEndTime());
-			taskClone.setRecur(task.getRecur());
+			Recur recur = task.getRecur();
+			if (recur != null) {
+				Recur newRecur = new Recur();
+				newRecur.setEndDate(recur.getEndDate());
+				newRecur.setFrequency(recur.getFrequency());
+				newRecur.setStartDate(recur.getStartDate());
+				newRecur.setTimeUnit(recur.getTimeUnit());
+				taskClone.setRecur(newRecur);
+			}
+				
 			_prevTaskList.add(taskClone);
 		}
 
