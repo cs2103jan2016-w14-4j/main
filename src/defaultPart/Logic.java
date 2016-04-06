@@ -230,6 +230,7 @@ public class Logic {
 				recur.setStartDate(date);
 				if (_numOfTimesString != null) {
 					recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
+					_numOfTimesString = null;
 					endDate = recur.getEndDate();
 					if (endDate != null && recur.getStartDate().compareTo(endDate) >= 0) {
 						warn = true;
@@ -498,6 +499,10 @@ public class Logic {
 	}
 
 	private void editTask() throws InputIndexOutOfBoundsException, IOException {
+		if (_argument == null) {
+			_feedback = MESSAGE_NO_ARGUMENTS;
+			return;
+		}
 		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
 		int taskIndex = getTaskIndex();
 		args.remove(0);
@@ -506,8 +511,8 @@ public class Logic {
 
 		boolean isRecurEdited = setRecurIfExists(task, args);
 
+		Recur recur = task.getRecur();
 		if (isRecurEdited) {
-			Recur recur = task.getRecur();
 			TaskDate date = task.getDate();
 			if (date == null) {
 				TaskDate today = new TaskDate();
@@ -527,6 +532,11 @@ public class Logic {
 			if (!isTaskTimeEdited & !isTaskDateEdited & !isRecurEdited) {
 				copyTaskToInputForEditting(taskIndex);
 			}
+		}
+		
+		if (_numOfTimesString != null) {
+			recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
+			_numOfTimesString = null;
 		}
 
 		// switch (args.size()) {
@@ -766,6 +776,10 @@ public class Logic {
 	 * Toggles a task's isComplete between true and false
 	 */
 	private void toggleTaskComplete() throws IOException, InputIndexOutOfBoundsException {
+		if (_argument == null) {
+			_feedback = MESSAGE_NO_ARGUMENTS;
+			return;
+		}
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
 
