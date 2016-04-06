@@ -715,8 +715,13 @@ public class Logic {
 		} else if (timeString.contains(".")) {
 			minuteFormat = ".mm";
 		}
-		String amOrPmMarker = (timeString.toLowerCase().contains("m")) ? "a" : "";
-		SimpleDateFormat timeFormat = new SimpleDateFormat("hh" + minuteFormat + amOrPmMarker);
+		String amOrPmMarker = "";
+		String hourMarker = "HH";
+		if (timeString.toLowerCase().contains("m")) {
+			amOrPmMarker = "a";
+			hourMarker = "hh";
+		}
+		SimpleDateFormat timeFormat = new SimpleDateFormat(hourMarker + minuteFormat + amOrPmMarker);
 		TaskTime time = new TaskTime();
 		try {
 			time.setTime(timeFormat.parse(timeString));

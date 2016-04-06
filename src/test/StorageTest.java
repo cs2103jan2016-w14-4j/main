@@ -44,8 +44,8 @@ public class StorageTest {
 		TaskDate calRecEnd = new TaskDate();
 		try {
 			calDate.setDateFromString("20/6/2016");
-			calStart.setTimeFromString("10:00AM");
-			calEnd.setTimeFromString("12:00PM");
+			calStart.parse("10:00AM");
+			calEnd.parse("12:00PM");
 			calRecEnd.setDateFromString("20/8/2016");
 
 		} catch (ParseException e) {

@@ -90,12 +90,12 @@ public class SystemTest {
 		}
 		if (startTime != null) {
 			TaskTime calStartTime = new TaskTime();
-			calStartTime.setTimeFromString(startTime);
+			calStartTime.parse(startTime);
 			newTask.setStartTime(calStartTime);
 		}
 		if (endTime != null) {
 			TaskTime calEndTime = new TaskTime();
-			calEndTime.setTimeFromString(endTime);
+			calEndTime.parse(endTime);
 			newTask.setEndTime(calEndTime);
 		}
 		if (completed) {

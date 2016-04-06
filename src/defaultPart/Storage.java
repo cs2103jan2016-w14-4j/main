@@ -546,7 +546,7 @@ public class Storage {
 			return null;
 		}
 		TaskTime calendar = new TaskTime();
-		calendar.setTimeFromString(calendarString);
+		calendar.parse(calendarString);
 		return calendar;
 	}
 

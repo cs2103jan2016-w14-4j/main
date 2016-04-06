@@ -32,8 +32,8 @@ public class TaskTime extends GregorianCalendar {
 		}
 		return 0;
 	}
-
-	public void setTimeFromString(String timeString) throws ParseException {
+	
+	public void parse(String timeString) throws ParseException {
 		this.setTime(timeFormat.parse(timeString));
 	}
 }
