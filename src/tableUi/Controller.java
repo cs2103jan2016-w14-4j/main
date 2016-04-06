@@ -470,6 +470,10 @@ public class Controller implements Initializable {
 			case FIND :
 				displayFoundTask();
 				break;
+			
+			case HELP :
+				showHelp();
+				break;
 
 			default :
 				showAllTasks();

@@ -142,10 +142,6 @@ public class Logic {
 					setStoragePath();
 					break;
 
-				case HELP :
-					helpFunction();
-					break;
-
 				case QUIT :
 					System.exit(0);
 					break;
@@ -912,6 +908,11 @@ public class Logic {
 	 * Find a task with a description which matches the keywords
 	 */
 	private void findTask() {
+		if (_argument == null) {
+			_newCommandType = CommandType.ADD; //temp, make new for this
+			_feedback = "Search result cleared";
+			return;
+		}
 		_indexesFound = new ArrayList<Integer>();
 		_keywordsPermutations = new LinkedList<List<String>>();
 		List<String> keywords = splitKeywordsIntoLowercaseWords();
@@ -1043,10 +1044,6 @@ public class Logic {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private void helpFunction() {
-
 	}
 
 	public void deleteTaskListFile() {
