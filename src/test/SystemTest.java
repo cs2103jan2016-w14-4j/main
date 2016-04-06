@@ -901,7 +901,7 @@ public class SystemTest {
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile);
-		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am/12pm 1d 1/1/2016");
+		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1/1/2016");
 		logicExecuteCommand(logic, "e 2 Buy Tomatoes Instead");
 
 		// Setting up expected Task List for comparison
