@@ -410,7 +410,7 @@ public class Logic {
 
 		TaskDate date;
 
-		if (args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next")) {
+		if (args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next") && !isTodayCase(args.get(lastIndex)) && !isTomorrowCase(args.get(lastIndex))) {
 			date = getNextDate(args);
 			args.remove(lastIndex--);
 		} else {
@@ -623,7 +623,7 @@ public class Logic {
 			wrapDateToNextDayOfWeek(newDate, 6);
 		} else if (isSaturdayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 7);
-		} else if (increment.equals("today")) {
+		} else if (isTodayCase(increment)) {
 			return true;
 		} else if (isTomorrowCase(increment)) {
 			newDate.add(TaskDate.DATE, 1);
@@ -631,6 +631,10 @@ public class Logic {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean isTodayCase(String increment) {
+		return increment.equals("today");
 	}
 
 	private boolean isTomorrowCase(String increment) {
