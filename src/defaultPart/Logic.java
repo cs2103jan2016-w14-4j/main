@@ -543,10 +543,6 @@ public class Logic {
 		returnEditFeedback(taskIndex);
 	}
 
-	private boolean isNextType(List<String> args) {
-		return args.get(1).equals("next");
-	}
-
 	private TaskDate getNextDate(List<String> args) {
 		String increment = args.get(args.size() - 1).toLowerCase();
 		TaskDate newDate = new TaskDate();
