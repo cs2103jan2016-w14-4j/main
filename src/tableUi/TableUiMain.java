@@ -19,7 +19,7 @@ public class TableUiMain extends Application {
 		scene.getStylesheets().add(getClass().getResource("layout1.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.setMinWidth(700);
-		primaryStage.setMaxHeight(480);
+		//primaryStage.setMaxHeight(480);
 		primaryStage.setMinHeight(480);
 		controller = loader.getController();
 		controller.stage = primaryStage;
