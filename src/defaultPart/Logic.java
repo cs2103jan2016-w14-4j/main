@@ -539,41 +539,6 @@ public class Logic {
 			_numOfTimesString = null;
 		}
 
-		// switch (args.size()) {
-		// case 1 :
-		// // copy task to input box for editing
-		// if (!isRecurEdited) {
-		// copyTaskToInputForEditting(taskIndex);
-		// }
-		// break;
-		//
-		// case 2 :
-		// // changes time XOR date of task XOR description
-		// TaskDate date = getWrappedDateFromString(args.get(1));
-		// changeTimeDateOrDesc(task, args, date);
-		// break;
-		//
-		// case 3 :
-		//
-		// if (isNextType(args)) {
-		// date = getNextDate(args);
-		// task.setDate(date);
-		// } else {
-		// // changes time AND date of task
-		// date = getWrappedDateFromString(args.get(1));
-		// changeTimeAndDate(task, args, date);
-		// }
-		//
-		// break;
-		//
-		//
-		// // case 5 :
-		// // // allows changing of recur
-		// // date = getWrappedDateFromString(args[1]);
-		// // changeDateTimeAndRecur(task, args, listArgs, date);
-		// // break;
-		//
-		// }
 		putEdittedTaskInStorage(taskIndex, task);
 		returnEditFeedback(taskIndex);
 	}
