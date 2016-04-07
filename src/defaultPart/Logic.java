@@ -410,7 +410,8 @@ public class Logic {
 
 		TaskDate date;
 
-		if (args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next") && !isTodayCase(args.get(lastIndex)) && !isTomorrowCase(args.get(lastIndex))) {
+		if (args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next")
+				&& !isTodayCase(args.get(lastIndex)) && !isTomorrowCase(args.get(lastIndex))) {
 			date = getNextDate(args);
 			args.remove(lastIndex--);
 		} else {
@@ -533,7 +534,7 @@ public class Logic {
 				copyTaskToInputForEditting(taskIndex);
 			}
 		}
-		
+
 		if (_numOfTimesString != null) {
 			recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
 			_numOfTimesString = null;
@@ -773,6 +774,18 @@ public class Logic {
 			}
 			_feedback = "Removed " + count + " tasks without deadline";
 			return true;
+		} else if (_argument.equals("c")) {
+			logger.log(Level.FINE, "Deleting all completed tasks");
+			List<Task> taskList = _storage.getTaskList();
+			int count = 0;
+			for (int i = taskList.size() - 1; i >= 0; i--) {
+				if (taskList.get(i).isCompleted()) {
+					_storage.removeTask(i);
+					count++;
+				}
+			}
+			_feedback = "Removed" + count + " completed tasks";
+			return true;
 		}
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(_argument);
@@ -867,7 +880,7 @@ public class Logic {
 	 */
 	private void findTask() {
 		if (_argument == null) {
-			_newCommandType = CommandType.ADD; //temp, make new for this
+			_newCommandType = CommandType.ADD; // temp, make new for this
 			_feedback = "Search result cleared";
 			return;
 		}
