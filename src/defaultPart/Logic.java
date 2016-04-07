@@ -765,17 +765,7 @@ public class Logic {
 		if (_argument.equals("-")) {
 			return deleteMultipleWithoutDeadline();
 		} else if (_argument.equals("c")) {
-			logger.log(Level.FINE, "Deleting all completed tasks");
-			List<Task> taskList = _storage.getTaskList();
-			int count = 0;
-			for (int i = taskList.size() - 1; i >= 0; i--) {
-				if (taskList.get(i).isCompleted()) {
-					_storage.removeTask(i);
-					count++;
-				}
-			}
-			_feedback = "Removed" + count + " completed tasks";
-			return true;
+			return deleteMultipleCompletedTasks();
 		}
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(_argument);
@@ -863,6 +853,20 @@ public class Logic {
 			return true;
 		}
 		return false;
+	}
+
+	private boolean deleteMultipleCompletedTasks() {
+		logger.log(Level.FINE, "Deleting all completed tasks");
+		List<Task> taskList = _storage.getTaskList();
+		int count = 0;
+		for (int i = taskList.size() - 1; i >= 0; i--) {
+			if (taskList.get(i).isCompleted()) {
+				_storage.removeTask(i);
+				count++;
+			}
+		}
+		_feedback = "Removed" + count + " completed tasks";
+		return true;
 	}
 
 	private boolean deleteMultipleWithoutDeadline() {
