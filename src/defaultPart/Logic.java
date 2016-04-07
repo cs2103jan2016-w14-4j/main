@@ -656,11 +656,6 @@ public class Logic {
 		_indexesFound.add(taskIndex);
 	}
 
-	private void changeDateTimeAndRecur(Task task, List<String> args, List<String> listArgs, TaskDate date) {
-		changeTimeAndDate(task, args, date);
-		setRecurIfExists(task, listArgs);
-	}
-
 	private void changeTimeAndDate(Task task, List<String> args, TaskDate date) {
 		if (date != null) {
 			task.setDate(date);
