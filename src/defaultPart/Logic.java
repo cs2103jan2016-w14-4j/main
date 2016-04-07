@@ -763,17 +763,7 @@ public class Logic {
 
 	private boolean deleteMultiple() {
 		if (_argument.equals("-")) {
-			logger.log(Level.FINE, "Deleting all tasks without deadline");
-			List<Task> taskList = _storage.getTaskList();
-			int count = 0;
-			for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
-				if (taskList.get(i).getDate() == null) {
-					_storage.removeTask(i);
-					count++;
-				}
-			}
-			_feedback = "Removed " + count + " tasks without deadline";
-			return true;
+			return deleteMultipleWithoutDeadline();
 		} else if (_argument.equals("c")) {
 			logger.log(Level.FINE, "Deleting all completed tasks");
 			List<Task> taskList = _storage.getTaskList();
@@ -873,6 +863,20 @@ public class Logic {
 			return true;
 		}
 		return false;
+	}
+
+	private boolean deleteMultipleWithoutDeadline() {
+		logger.log(Level.FINE, "Deleting all tasks without deadline");
+		List<Task> taskList = _storage.getTaskList();
+		int count = 0;
+		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
+			if (taskList.get(i).getDate() == null) {
+				_storage.removeTask(i);
+				count++;
+			}
+		}
+		_feedback = "Removed " + count + " tasks without deadline";
+		return true;
 	}
 
 	/**
