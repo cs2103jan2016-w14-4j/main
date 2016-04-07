@@ -656,13 +656,6 @@ public class Logic {
 		_indexesFound.add(taskIndex);
 	}
 
-	private void changeTimeAndDate(Task task, List<String> args, TaskDate date) {
-		if (date != null) {
-			task.setDate(date);
-		}
-		setTaskTime(task, args.get(2));
-	}
-
 	// todo: 7-11 default to am, 12-6 default to pm, if am/pm not specified
 	private TaskTime getTimeFromString(String timeString) {
 		String minuteFormat = "";
