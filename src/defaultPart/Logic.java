@@ -766,93 +766,106 @@ public class Logic {
 			return deleteMultipleWithoutDeadline();
 		} else if (_argument.equals("c")) {
 			return deleteMultipleCompletedTasks();
-		}
-		Pattern equalitySigns = Pattern.compile("(>|<)=?");
-		Matcher match = equalitySigns.matcher(_argument);
-		if (match.find() && match.start() == 0) {
-			String dateString = _argument.substring(match.end()).trim();
-			String[] dayAndMonthAndYear = dateString.split("/", 3);
-			System.out.println(Arrays.toString(dayAndMonthAndYear));
-			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
-			if (newDate == null) {
-				_newCommandType = CommandType.ERROR;
-				_feedback = "Failed to parse date: " + dateString;
+		} else {
+
+			Pattern equalitySigns = Pattern.compile("(>|<)=?");
+			Matcher match = equalitySigns.matcher(_argument);
+			if (isEqualityType(match)) {
+				String dateString = _argument.substring(match.end()).trim();
+				String[] dayAndMonthAndYear = dateString.split("/", 3);
+				System.out.println(Arrays.toString(dayAndMonthAndYear));
+				TaskDate newDate = getDateFromString(dayAndMonthAndYear);
+				if (newDate == null) {
+					_newCommandType = CommandType.ERROR;
+					_feedback = "Failed to parse date: " + dateString;
+					return true;
+				}
+				List<Task> taskList = _storage.getTaskList();
+				int count = 0;
+				switch (match.group()) {
+					case "<" :
+						count = deleteTasksBeforeDate(newDate, taskList, count);
+						break;
+
+					case "<=" :
+						for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
+																		 // works
+							TaskDate date = taskList.get(i).getDate();
+							Recur recur = taskList.get(i).getRecur();
+							Task task = taskList.get(i);
+
+							if (date != null && date.compareTo(newDate) < 0) {
+								if (recur != null) {
+									if (recur.getEndDate() != null
+											&& recur.getEndDate().compareTo(newDate) <= 0) {
+										_storage.removeTask(i);
+									} else {
+										while (recur.willRecur()
+												&& recur.getStartDate().compareTo(newDate) <= 0) {
+											recur.setStartDate(recur.getNextRecur());
+										}
+										if (recur.getStartDate().compareTo(newDate) <= 0) {
+											_storage.removeTask(i);
+										} else {
+											task.setRecur(recur);
+											task.setDate(recur.getStartDate());
+											_storage.removeTask(i);
+											_storage.addToTaskList(task);
+										}
+									}
+								} else {
+									_storage.removeTask(i);
+								}
+								count++;
+							}
+						}
+						break;
+				}
+
+				_feedback = "Removed " + count + " tasks before " + newDate;
 				return true;
 			}
-			List<Task> taskList = _storage.getTaskList();
-			int count = 0;
-			switch (match.group()) {
-				case "<" :
-					for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
-																	 // works
-						TaskDate date = taskList.get(i).getDate();
-						Recur recur = taskList.get(i).getRecur();
-						Task task = taskList.get(i);
-
-						if (date != null && date.compareTo(newDate) < 0) {
-							if (recur != null) {
-								if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) < 0) {
-									_storage.removeTask(i);
-								} else {
-									while (recur.willRecur() && recur.getStartDate().compareTo(newDate) < 0) {
-										recur.setStartDate(recur.getNextRecur());
-									}
-									if (recur.getStartDate().compareTo(newDate) < 0) {
-										_storage.removeTask(i);
-									} else {
-										task.setRecur(recur);
-										task.setDate(recur.getStartDate());
-										_storage.removeTask(i);
-										_storage.addToTaskList(task);
-									}
-								}
-							} else {
-								_storage.removeTask(i);
-							}
-							count++;
-						}
-					}
-					break;
-
-				case "<=" :
-					for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
-																	 // works
-						TaskDate date = taskList.get(i).getDate();
-						Recur recur = taskList.get(i).getRecur();
-						Task task = taskList.get(i);
-
-						if (date != null && date.compareTo(newDate) < 0) {
-							if (recur != null) {
-								if (recur.getEndDate() != null
-										&& recur.getEndDate().compareTo(newDate) <= 0) {
-									_storage.removeTask(i);
-								} else {
-									while (recur.willRecur()
-											&& recur.getStartDate().compareTo(newDate) <= 0) {
-										recur.setStartDate(recur.getNextRecur());
-									}
-									if (recur.getStartDate().compareTo(newDate) <= 0) {
-										_storage.removeTask(i);
-									} else {
-										task.setRecur(recur);
-										task.setDate(recur.getStartDate());
-										_storage.removeTask(i);
-										_storage.addToTaskList(task);
-									}
-								}
-							} else {
-								_storage.removeTask(i);
-							}
-							count++;
-						}
-					}
-					break;
-			}
-
-			_feedback = "Removed " + count + " tasks before " + newDate;
-			return true;
 		}
 		return false;
+	}
+
+	private int deleteTasksBeforeDate(TaskDate newDate, List<Task> taskList, int count) {
+		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
+														 // works
+			TaskDate date = taskList.get(i).getDate();
+			Recur recur = taskList.get(i).getRecur();
+			Task task = taskList.get(i);
+
+			if (date != null && date.compareTo(newDate) < 0) {
+				if (recur != null) {
+					if (recur.getEndDate() != null
+							&& recur.getEndDate().compareTo(newDate) < 0) {
+						_storage.removeTask(i);
+					} else {
+						while (recur.willRecur()
+								&& recur.getStartDate().compareTo(newDate) < 0) {
+							recur.setStartDate(recur.getNextRecur());
+						}
+						if (recur.getStartDate().compareTo(newDate) < 0) {
+							_storage.removeTask(i);
+						} else {
+							task.setRecur(recur);
+							task.setDate(recur.getStartDate());
+							_storage.removeTask(i);
+							_storage.addToTaskList(task);
+						}
+					}
+				} else {
+					_storage.removeTask(i);
+				}
+				count++;
+			}
+		}
+		return count;
+	}
+
+	private boolean isEqualityType(Matcher match) {
+		return match.find() && match.start() == 0;
 	}
 
 	private boolean deleteMultipleCompletedTasks() {
