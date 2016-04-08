@@ -727,7 +727,7 @@ public class Logic {
 			int count = 0;
 			switch (match.group()) {
 				case "<" :
-					count = deleteTasksBeforeDate(newDate, taskList, count);
+					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
 					break;
 
 				case "<=" :
@@ -744,14 +744,7 @@ public class Logic {
 				if (multIndexToDelete.length > 2) {
 					return false;
 				}
-<<<<<<< HEAD
-				List<Task> taskList = _storage.getTaskList();
-				int count = 0;
-				switch (match.group()) {
-					case "<" :
-						count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
-						break;
-=======
+
 				if (index.contains("-") && index.split("-").length != 2) {
 					return false;
 				}
@@ -763,7 +756,6 @@ public class Logic {
 					}
 				}
 			}
->>>>>>> e893cf0d0613d7c039d1613f8b438011163f727c
 
 			List<Integer> indexToDeleteList = new ArrayList<Integer>();
 
@@ -819,50 +811,10 @@ public class Logic {
 	private int deleteTasksBeforeEqualsToDate(TaskDate newDate, List<Task> taskList, int count) {
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
 														 // works
-<<<<<<< HEAD
-			
-=======
-			TaskDate date = taskList.get(i).getDate();
-			Recur recur = taskList.get(i).getRecur();
-			Task task = taskList.get(i);
-
-			if (date != null && date.compareTo(newDate) < 0) {
-				if (recur != null) {
-					if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) <= 0) {
-						_storage.removeTask(i);
-					} else {
-						while (recur.willRecur() && recur.getStartDate().compareTo(newDate) <= 0) {
-							recur.setStartDate(recur.getNextRecur());
-						}
-						if (recur.getStartDate().compareTo(newDate) <= 0) {
-							_storage.removeTask(i);
-						} else {
-							task.setRecur(recur);
-							task.setDate(recur.getStartDate());
-							_storage.removeTask(i);
-							_storage.addToTaskList(task);
-						}
-					}
-				} else {
-					_storage.removeTask(i);
-				}
-				count++;
-			}
-		}
-		return count;
-	}
-
-	private int deleteTasksBeforeDate(TaskDate newDate, List<Task> taskList, int count) {
-		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
-														 // works
-			TaskDate date = taskList.get(i).getDate();
-			Recur recur = taskList.get(i).getRecur();
->>>>>>> e893cf0d0613d7c039d1613f8b438011163f727c
 			Task task = taskList.get(i);
 			TaskDate date = task.getStartDate();
 
 			if (date != null && date.compareTo(newDate) < 0) {
-<<<<<<< HEAD
 				if (task.isRecurSet()) {
 					if (task.isEndDateSet()
 							&& task.getEndDate().compareTo(newDate) <= 0) {
@@ -871,14 +823,6 @@ public class Logic {
 						while (task.willRecur()
 								&& task.getStartDate().compareTo(newDate) <= 0) {
 							task.setStartDate(task.getNextRecur());
-=======
-				if (recur != null) {
-					if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) < 0) {
-						_storage.removeTask(i);
-					} else {
-						while (recur.willRecur() && recur.getStartDate().compareTo(newDate) < 0) {
-							recur.setStartDate(recur.getNextRecur());
->>>>>>> e893cf0d0613d7c039d1613f8b438011163f727c
 						}
 						if (task.getStartDate().compareTo(newDate) <= 0) {
 							_storage.removeTask(i);
