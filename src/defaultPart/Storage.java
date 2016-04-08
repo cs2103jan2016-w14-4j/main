@@ -433,37 +433,37 @@ public class Storage {
 		// Create new task with extracted description & extract other attributes
 		Task newTask = new Task();
 		newTask.setDescription(extractStringFromNode(taskElement, TAG_TASK_DESCRIPTION));
-		
+
 		if (extractStringFromNode(taskElement, TAG_TASK_COMPLETED) != null) {
 			newTask.toggleCompleted();
 		}
-		
+
 		String startDateString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
 		if (startDateString != null) {
 			newTask.setStartDateFromFormattedString(startDateString);
 		}
-		
+
 		String startTimeString = extractStringFromNode(taskElement, TAG_TASK_START_TIME);
 		if (startTimeString != null) {
 			newTask.setStartDateFromFormattedString(startTimeString);
 		}
-		
+
 		String endDateString = extractStringFromNode(taskElement, TAG_TASK_END_DATE);
 		if (endDateString != null) {
 			newTask.setStartDateFromFormattedString(endDateString);
 		}
-		
+
 		String endTimeString = extractStringFromNode(taskElement, TAG_TASK_END_TIME);
 		if (endTimeString != null) {
 			newTask.setStartDateFromFormattedString(endTimeString);
 		}
-		
+
 		String recurFrequencyString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
 		String recurFieldString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
 		if (recurFrequencyString != null && recurFieldString != null) {
-			newTask.setRecurFrequency(Integer.parseInt(recurFrequencyString)); 
-			newTask.setRecurField(Integer.parseInt(recurFieldString)); 
-		}		
+			newTask.setRecurFrequency(Integer.parseInt(recurFrequencyString));
+			newTask.setRecurField(Integer.parseInt(recurFieldString));
+		}
 
 		return newTask;
 	}
