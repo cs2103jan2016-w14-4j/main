@@ -18,8 +18,6 @@ import java.util.LinkedList;
 
 import org.xml.sax.SAXException;
 
-import defaultPart.Recur.TimeUnit;
-
 public class Logic {
 
 	private static final Logger logger = Logger.getLogger(Logic.class.getName());
@@ -215,26 +213,18 @@ public class Logic {
 		}
 
 		// very ugly codes, to be refactored
-		Recur recur = newTask.getRecur();
-		TaskDate date = newTask.getDate();
-		if ((recur != null || newTask.getStartTime() != null) && date == null) {
+		if ((newTask.isRecurSet() || newTask.isStartTimeSet()) && !newTask.isStartDateSet()) {
 			logger.log(Level.FINE, "Setting date to today");
-			newTask.setDate(new TaskDate());
-			date = newTask.getDate();
+			newTask.setStartDate(new TaskDate());
 		}
 		boolean warn = false;
 		TaskDate endDate = null;
 		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
-		if (date != null && !floating) {
-			if (recur != null) {
-				recur.setStartDate(date);
+		if (newTask.isStartDateSet() && !floating) {
+			if (newTask.isRecurSet()) {
 				if (_numOfTimesString != null) {
-					recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
+					newTask.setEndDate(getRecurEndDate(newTask, _numOfTimesString));
 					_numOfTimesString = null;
-					endDate = recur.getEndDate();
-					if (endDate != null && recur.getStartDate().compareTo(endDate) >= 0) {
-						warn = true;
-					}
 				}
 			}
 			newTask.setDescription(String.join(" ", args));
@@ -245,18 +235,16 @@ public class Logic {
 			} else {
 				newTask.setDescription(_argument);
 			}
-			newTask.setStartTime(null);
-			newTask.setRecur(null);
 		}
 
 		_storage.setCurrentListAsPrevious();
 
 		_storage.addToTaskList(newTask);
 
-		_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
-
-		if (warn) {
-			_feedback = "Recur end date " + endDate + " <= start date!";
+		if (newTask.isStartDateAfterEndDate()) {
+			_feedback = "End date " + endDate + " <= start date!";		
+		} else {
+			_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 		}
 	}
 
@@ -275,38 +263,18 @@ public class Logic {
 				if (!endConditionSpecified) {
 					frequencyAndUnit = args.get(endConditionIndex);
 				}
-				Recur recur = new Recur();
-				switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
-					case 'd' :
-						recur.setTimeUnit(Recur.TimeUnit.DAY);
-						break;
-
-					case 'w' :
-						recur.setTimeUnit(Recur.TimeUnit.WEEK);
-						break;
-
-					case 'm' :
-						recur.setTimeUnit(Recur.TimeUnit.MONTH);
-						break;
-
-					case 'y' :
-						recur.setTimeUnit(Recur.TimeUnit.YEAR);
-						break;
-				}
-				assert (recur.getTimeUnit() != null);
+				setTaskRecurField(task, frequencyAndUnit);
 				char frequency = frequencyAndUnit.charAt(0);
 				if (Character.isDigit(frequency)) {
-					recur.setFrequency(Character.getNumericValue(frequency));
+					task.setRecurFrequency(Character.getNumericValue(frequency));
 				}
 				if (endConditionSpecified) {
 					if (endCondition.matches("\\d+")) {
 						_numOfTimesString = endCondition;
 					} else {
-						recur.setEndDate(getWrappedDateFromString(endCondition));
+						task.setEndDate(getWrappedDateFromString(endCondition));
 					}
 				}
-				logger.log(Level.FINER, "Setting recur: {0}", recur);
-				task.setRecur(recur);
 				if (!endConditionSpecified) {
 					args.remove(endConditionIndex);
 				} else {
@@ -318,30 +286,11 @@ public class Logic {
 			int frequencyAndUnitIndex = args.size() - 1;
 			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
 			if (frequencyAndUnit.matches("\\d*[dwmy]")) {
-				Recur recur = new Recur();
-				switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
-					case 'd' :
-						recur.setTimeUnit(Recur.TimeUnit.DAY);
-						break;
-
-					case 'w' :
-						recur.setTimeUnit(Recur.TimeUnit.WEEK);
-						break;
-
-					case 'm' :
-						recur.setTimeUnit(Recur.TimeUnit.MONTH);
-						break;
-
-					case 'y' :
-						recur.setTimeUnit(Recur.TimeUnit.YEAR);
-						break;
-				}
-				assert (recur.getTimeUnit() != null);
+				setTaskRecurField(task, frequencyAndUnit);
 				char frequency = frequencyAndUnit.charAt(0);
 				if (Character.isDigit(frequency)) {
-					recur.setFrequency(Character.getNumericValue(frequency));
+					task.setRecurFrequency(Character.getNumericValue(frequency));
 				}
-				task.setRecur(recur);
 				args.remove(frequencyAndUnit);
 				return true;
 			}
@@ -349,27 +298,31 @@ public class Logic {
 		return false;
 	}
 
-	private TaskDate getRecurEndDate(Recur recur, String numOfTimesString) {
-		TaskDate endDate = new TaskDate();
-		endDate.setTime(recur.getStartDate().getTime());
-		int numOfTimes = Integer.parseInt(numOfTimesString);
-		int unit = -1;
-		switch (recur.getTimeUnit()) {
-			case DAY :
-				unit = TaskDate.DAY_OF_MONTH;
+	private void setTaskRecurField(Task task, String frequencyAndUnit) {
+		switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
+			case 'd' :
+				task.setRecurField(TaskDate.DAY_OF_YEAR);
 				break;
-			case WEEK :
-				unit = TaskDate.WEEK_OF_YEAR;
+
+			case 'w' :
+				task.setRecurField(TaskDate.WEEK_OF_YEAR);
 				break;
-			case MONTH :
-				unit = TaskDate.MONTH;
+
+			case 'm' :
+				task.setRecurField(TaskDate.MONTH);
 				break;
-			case YEAR :
-				unit = TaskDate.YEAR;
+
+			case 'y' :
+				task.setRecurField(TaskDate.YEAR);
 				break;
 		}
-		assert unit > -1;
-		endDate.add(unit, numOfTimes * recur.getFrequency());
+	}
+
+	private TaskDate getRecurEndDate(Task task, String numOfTimesString) {
+		TaskDate endDate = new TaskDate();
+		endDate.setTime(task.getStartDate().getTime());
+		int numOfTimes = Integer.parseInt(numOfTimesString);
+		endDate.add(task.getRecurField(), numOfTimes * task.getRecurFrequency());
 		return endDate;
 	}
 
@@ -423,7 +376,7 @@ public class Logic {
 		}
 		logger.log(Level.FINER, "Setting task date using \"{0}\"", args.get(lastIndex));
 		date.getTimeInMillis();
-		task.setDate(date);
+		task.setStartDate(date);
 		args.remove(lastIndex);
 		return true;
 	}
@@ -511,19 +464,6 @@ public class Logic {
 		assert (task != null);
 
 		boolean isRecurEdited = setRecurIfExists(task, args);
-
-		Recur recur = task.getRecur();
-		if (isRecurEdited) {
-			TaskDate date = task.getDate();
-			if (date == null) {
-				TaskDate today = new TaskDate();
-				recur.setStartDate(today);
-				task.setDate(today);
-			} else {
-				recur.setStartDate(date);
-			}
-		}
-
 		boolean isTaskTimeEdited = setTaskTimeIfExists(task, args);
 		boolean isTaskDateEdited = setTaskDateIfExists(task, args);
 
@@ -532,11 +472,16 @@ public class Logic {
 		} else {
 			if (!isTaskTimeEdited & !isTaskDateEdited & !isRecurEdited) {
 				copyTaskToInputForEditting(taskIndex);
+			} else {
+				if (!task.isStartDateSet()) {
+					TaskDate today = new TaskDate();
+					task.setStartDate(today);
+				}
 			}
 		}
 
 		if (_numOfTimesString != null) {
-			recur.setEndDate(getRecurEndDate(recur, _numOfTimesString));
+			task.setEndDate(getRecurEndDate(task, _numOfTimesString));
 			_numOfTimesString = null;
 		}
 
@@ -658,7 +603,7 @@ public class Logic {
 	}
 
 	// todo: 7-11 default to am, 12-6 default to pm, if am/pm not specified
-	private TaskTime getTimeFromString(String timeString) {
+	private TaskDate getTimeFromString(String timeString) {
 		String minuteFormat = "";
 		if (timeString.contains(":")) {
 			minuteFormat = ":mm";
@@ -672,7 +617,7 @@ public class Logic {
 			hourMarker = "hh";
 		}
 		SimpleDateFormat timeFormat = new SimpleDateFormat(hourMarker + minuteFormat + amOrPmMarker);
-		TaskTime time = new TaskTime();
+		TaskDate time = new TaskDate();
 		try {
 			time.setTime(timeFormat.parse(timeString));
 		} catch (ParseException e) {
@@ -741,23 +686,18 @@ public class Logic {
 		}
 		int taskIndex = getTaskIndex();
 		Task task = _storage.getTask(taskIndex);
-		Recur recur = task.getRecur();
 
-		if (recur == null || !recur.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
+		if (!task.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
 			_storage.setCurrentListAsPrevious();
 			_storage.removeTask(taskIndex);
 			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
 		} else {
-			if (recur.willRecur()) {
-				task.setDate(recur.getNextRecur());
-				recur.setStartDate(task.getDate());
-				_storage.removeTask(taskIndex);
-				_storage.addToTaskList(task);
-			} else {
-				_storage.removeTask(taskIndex);
-			}
+			task.setStartDate(task.getNextRecur());
+			_storage.removeTask(taskIndex);
+			_storage.addToTaskList(task);
+			
 			_feedback = String.format(
-					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getDate());
+					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getStartDate());
 		}
 	}
 
@@ -784,7 +724,7 @@ public class Logic {
 				int count = 0;
 				switch (match.group()) {
 					case "<" :
-						count = deleteTasksBeforeDate(newDate, taskList, count);
+						count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
 						break;
 
 					case "<=" :
@@ -802,60 +742,23 @@ public class Logic {
 	private int deleteTasksBeforeEqualsToDate(TaskDate newDate, List<Task> taskList, int count) {
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
 														 // works
-			TaskDate date = taskList.get(i).getDate();
-			Recur recur = taskList.get(i).getRecur();
+			
 			Task task = taskList.get(i);
+			TaskDate date = task.getStartDate();
 
 			if (date != null && date.compareTo(newDate) < 0) {
-				if (recur != null) {
-					if (recur.getEndDate() != null
-							&& recur.getEndDate().compareTo(newDate) <= 0) {
+				if (task.isRecurSet()) {
+					if (task.isEndDateSet()
+							&& task.getEndDate().compareTo(newDate) <= 0) {
 						_storage.removeTask(i);
 					} else {
-						while (recur.willRecur()
-								&& recur.getStartDate().compareTo(newDate) <= 0) {
-							recur.setStartDate(recur.getNextRecur());
+						while (task.willRecur()
+								&& task.getStartDate().compareTo(newDate) <= 0) {
+							task.setStartDate(task.getNextRecur());
 						}
-						if (recur.getStartDate().compareTo(newDate) <= 0) {
+						if (task.getStartDate().compareTo(newDate) <= 0) {
 							_storage.removeTask(i);
 						} else {
-							task.setRecur(recur);
-							task.setDate(recur.getStartDate());
-							_storage.removeTask(i);
-							_storage.addToTaskList(task);
-						}
-					}
-				} else {
-					_storage.removeTask(i);
-				}
-				count++;
-			}
-		}
-		return count;
-	}
-
-	private int deleteTasksBeforeDate(TaskDate newDate, List<Task> taskList, int count) {
-		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
-														 // works
-			TaskDate date = taskList.get(i).getDate();
-			Recur recur = taskList.get(i).getRecur();
-			Task task = taskList.get(i);
-
-			if (date != null && date.compareTo(newDate) < 0) {
-				if (recur != null) {
-					if (recur.getEndDate() != null
-							&& recur.getEndDate().compareTo(newDate) < 0) {
-						_storage.removeTask(i);
-					} else {
-						while (recur.willRecur()
-								&& recur.getStartDate().compareTo(newDate) < 0) {
-							recur.setStartDate(recur.getNextRecur());
-						}
-						if (recur.getStartDate().compareTo(newDate) < 0) {
-							_storage.removeTask(i);
-						} else {
-							task.setRecur(recur);
-							task.setDate(recur.getStartDate());
 							_storage.removeTask(i);
 							_storage.addToTaskList(task);
 						}
@@ -892,7 +795,7 @@ public class Logic {
 		List<Task> taskList = _storage.getTaskList();
 		int count = 0;
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
-			if (taskList.get(i).getDate() == null) {
+			if (taskList.get(i).getStartDate() == null) {
 				_storage.removeTask(i);
 				count++;
 			}

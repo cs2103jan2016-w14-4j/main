@@ -27,7 +27,7 @@ public class LogicTest {
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
 
 		// checking date
-		Calendar date = task.getDate();
+		Calendar date = task.getStartDate();
 		assertTrue(date != null);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
 		assertEquals("1/1/2017", dateFormat.format(date.getTime()));
@@ -58,7 +58,7 @@ public class LogicTest {
 		assertEquals("dev guide", task.getDescription());
 
 		// checking task date
-		date = task.getDate();
+		date = task.getStartDate();
 //		assertTrue(date != null);
 //		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 
@@ -101,12 +101,12 @@ public class LogicTest {
 
 		taskList = logic.getTaskList();
 		Task task = taskList.get(0);
-		Calendar date = task.getDate();
+		Calendar date = task.getStartDate();
 		assertEquals("1/2/2017", dateFormat.format(date.getTime()));
 
 		logic.executeCommand("e 1 1/1");
 		task = taskList.get(0);
-		date = task.getDate();
+		date = task.getStartDate();
 		assertEquals("1/1/2017", dateFormat.format(date.getTime()));
 
 		// change the date of another task
@@ -114,7 +114,7 @@ public class LogicTest {
 
 		taskList = logic.getTaskList();
 		task = taskList.get(1);
-		date = task.getDate();
+		date = task.getStartDate();
 		assertEquals("1/3/2017", dateFormat.format(date.getTime()));
 
 		// change date of task to today (month,day)
@@ -122,7 +122,7 @@ public class LogicTest {
 
 		taskList = logic.getTaskList();
 		task = taskList.get(0);
-		date = task.getDate();
+		date = task.getStartDate();
 		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 
 		// change the time of a task

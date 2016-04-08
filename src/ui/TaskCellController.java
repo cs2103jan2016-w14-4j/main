@@ -48,7 +48,7 @@ public class TaskCellController extends Region{
             if (recur != null)
                 recurText.setText("Recur: " + recur.getTimeUnit());
             
-            Calendar calendar = task.getDate();
+            Calendar calendar = task.getStartDate();
             if (calendar != null)
                 dueText.setText("Due: " + calendar.getTime());
 

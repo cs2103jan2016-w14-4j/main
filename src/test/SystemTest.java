@@ -86,7 +86,7 @@ public class SystemTest {
 		if (date != null) {
 			TaskDate calDate = new TaskDate();
 			calDate.setDateFromString(date);
-			newTask.setDate(calDate);
+			newTask.setStartDate(calDate);
 		}
 		if (startTime != null) {
 			TaskTime calStartTime = new TaskTime();

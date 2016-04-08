@@ -60,18 +60,18 @@ public class StorageTest {
 				break;
 			case 2 :
 				newTask.setDescription("Deadline Test case");
-				newTask.setDate(calDate);
+				newTask.setStartDate(calDate);
 				newTask.setEndTime(calEnd);
 				break;
 			case 3 :
 				newTask.setDescription("Event Test case");
-				newTask.setDate(calDate);
+				newTask.setStartDate(calDate);
 				newTask.setStartTime(calStart);
 				newTask.setEndTime(calEnd);
 				break;
 			case 4 :
 				newTask.setDescription("Event Recur Test case");
-				newTask.setDate(calDate);
+				newTask.setStartDate(calDate);
 				newTask.setStartTime(calStart);
 				newTask.setEndTime(calEnd);
 				Recur newRecur = new Recur();
@@ -121,8 +121,8 @@ public class StorageTest {
 		if (expectedTask.isCompleted() != actualTask.isCompleted()) {
 			return false;
 		}
-		Calendar date1 = expectedTask.getDate();
-		Calendar date2 = actualTask.getDate();
+		Calendar date1 = expectedTask.getStartDate();
+		Calendar date2 = actualTask.getStartDate();
 		if (date1 == null) {
 			return date2 == null;
 		} else if (!date1.equals(date2)) {

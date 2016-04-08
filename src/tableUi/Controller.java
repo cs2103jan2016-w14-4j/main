@@ -319,7 +319,7 @@ public class Controller implements Initializable {
 	}
 
 	public void editDescriptionById(int id) {
-		if (taskList.get(id).getDate() != null) {
+		if (taskList.get(id).getStartDate() != null) {
 			editEventDescriptionById(id);
 		} else {
 			editFloatingTaskDescriptionById(id);
@@ -442,7 +442,7 @@ public class Controller implements Initializable {
 	private void addToTaskModels(int i) {
 		Task task = taskList.get(i);
 		TaskModel newModel = new TaskModel(task, i + 1, this);
-		if (task.getDate() == null) {
+		if (task.getStartDate() == null) {
 			floatingTaskList.add(newModel);
 		} else {
 			eventList.add(newModel);
@@ -513,7 +513,7 @@ public class Controller implements Initializable {
 	
 	public void highlightTaskWithId(int id){
 		int row = getRowFromModel(getTaskModelFromId(id));
-		if (taskList.get(id).getDate() != null) {
+		if (taskList.get(id).getStartDate() != null) {
 			eventsTable.getSelectionModel().select(row);
 			scrollTo(row);
 		} else {

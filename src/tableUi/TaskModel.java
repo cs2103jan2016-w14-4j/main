@@ -37,24 +37,16 @@ public class TaskModel {
 		isComplete = new SimpleBooleanProperty(task.isCompleted());
 
 		String dateTimeString = "";
-		Calendar date = task.getDate();
+		Calendar date = task.getStartDate();
 		if (date != null) {
 			dateTimeString = date.toString() + " ";
-		}
-		Calendar startTime = task.getStartTime();
-		if (startTime != null) {
-			dateTimeString += startTime.toString();
-			Calendar endTime = task.getEndTime();
-			if (endTime != null) {
-				dateTimeString += "-" + endTime.toString();
-			}
 		}
 		dateTime = new SimpleStringProperty(dateTimeString);
 		isEvent = new SimpleBooleanProperty(date != null);
 
-		if (task.getRecur() != null && task.getRecur().willRecur()) {
+		if (task.willRecur()) {
 			isRecur = new SimpleBooleanProperty(true);
-			recur = new SimpleStringProperty(task.getRecur().toString());
+			recur = new SimpleStringProperty("todo");
 		} else {
 			isRecur = new SimpleBooleanProperty(false);
 			recur = new SimpleStringProperty("");
@@ -69,17 +61,17 @@ public class TaskModel {
 	public void update() {
 		taskDescription.setValue(task.getDescription());
 		isComplete.setValue(task.isCompleted());
-		if (task.getDate() != null) {
+		if (task.getStartDate() != null) {
 			isEvent.setValue(true);
-			dateTime.setValue(task.getDate().toString());
+			dateTime.setValue(task.getStartDate().toString());
 		} else {
 			isEvent.setValue(false);
 			dateTime.setValue("");
 		}
 
-		if (task.getRecur() != null && task.getRecur().willRecur()) {
+		if (task.willRecur()) {
 			isRecur.setValue(true);
-			recur.setValue(task.getRecur().toString());
+			recur.setValue("todo");
 		} else {
 			isRecur.setValue(false);
 			recur.setValue("");

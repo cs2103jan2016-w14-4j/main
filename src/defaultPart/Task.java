@@ -1,56 +1,32 @@
 package defaultPart;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Task {
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mma");
 
 	private String _description;
-
-	private TaskDate _date;
-	private TaskTime _startTime;
-	private TaskTime _endTime;
-
-	private Recur _recur;
 	private boolean _isCompleted;
 
-	public void setDescription(String description) {
-		_description = description;
-	}
-
-	public TaskDate getDate() {
-		return _date;
-	}
-
-	public void setDate(TaskDate date) {
-		_date = date;
-	}
-
-	public TaskTime getStartTime() {
-		return _startTime;
-	}
-
-	public void setStartTime(TaskTime startTime) {
-		_startTime = startTime;
-	}
-
-	public TaskTime getEndTime() {
-		return _endTime;
-	}
-
-	public void setEndTime(TaskTime endTime) {
-		_endTime = endTime;
-	}
+	private TaskDate _startDateAndTime;
+	private TaskDate _endDateAndTime;
+	
+	private boolean _isStartDateSet;
+	private boolean _isEndDateSet;
+	private boolean _isStartTimeSet;
+	private boolean _isEndTimeSet;
+	
+	private int _recurField;
+	private int _recurFrequency;
 
 	public String getDescription() {
 		return _description;
 	}
-
-	public Recur getRecur() {
-		return _recur;
-	}
-
-	public void setRecur(Recur recur) {
-		_recur = recur;
+	
+	public void setDescription(String description) {
+		_description = description;
 	}
 
 	public boolean isCompleted() {
@@ -60,67 +36,201 @@ public class Task {
 	public void toggleCompleted() {
 		_isCompleted = !_isCompleted;
 	}
-
-	private boolean hasDate() {
-		return _date != null;
+	
+	public String getStartDateString() {
+		assert _isStartDateSet;
+		return dateFormat.format(_startDateAndTime);
+	}
+	
+	public String getStartTimeString() {
+		assert _isStartTimeSet;
+		return timeFormat.format(_startDateAndTime);
+	}
+	
+	public TaskDate getStartDate() {
+		return _startDateAndTime;
 	}
 
-	private boolean hasStartTime() {
-		return _startTime != null;
+	public void setStartDate(TaskDate date) {
+		setDateOnly(_startDateAndTime, date);
+		_isStartDateSet = true;
+	}
+	
+	public void setDateOnly(TaskDate destination, TaskDate source) {
+		destination.set(Calendar.YEAR, source.get(Calendar.YEAR));
+		destination.set(Calendar.DAY_OF_YEAR, source.get(Calendar.DAY_OF_YEAR));
 	}
 
-	private boolean hasEndTime() {
-		return _endTime != null;
+	public boolean isStartDateSet() {
+		return _isStartDateSet;
 	}
 
-	private boolean hasRecur() {
-		return _recur != null;
+	public boolean isStartTimeSet() {
+		return _isStartTimeSet;
+	}
+
+	public boolean isEndTimeSet() {
+		return _isEndTimeSet;
+	}
+
+	public boolean isEndDateSet() {
+		return _isEndDateSet;
+	}
+
+	public void setEndDate(TaskDate date) {
+		setDateOnly(_endDateAndTime, date);
+		_isEndDateSet = true; 
+	}
+	
+	public TaskDate getEndDate() {
+		return _endDateAndTime;
+	}
+	
+	public void setStartTime(TaskDate date) {
+		setTimeOnly(_startDateAndTime, date);
+	}
+	
+	public void setEndTime(TaskDate date) {
+		setTimeOnly(_endDateAndTime, date);
+	}
+	
+	public void setTimeOnly(TaskDate destination, TaskDate source) {
+		destination.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
+		destination.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
+	}
+	
+	public int getRecurField() {
+		return _recurField;
+	}
+
+	public void setRecurField(int recurField) {
+		_recurField = recurField;
+	}
+
+	public int getRecurFrequency() {
+		return _recurFrequency;
+	}
+
+	public void setRecurFrequency(int recurFrequency) {
+		_recurFrequency = recurFrequency;
+	}
+
+	public boolean isRecurSet() {
+		return _recurFrequency > 0;
+	}
+	
+	public boolean isStartDateAfterEndDate() {
+		//todo
+		return false;
 	}
 
 	public boolean isDateTimeAfterTask(Task task) {
-		if (!task.hasDate()) {
+		if (!task.isStartDateSet()) {
 			return false;
 		}
-		if (!this.hasDate()) {
+		if (!this.isStartDateSet()) {
 			return true;
 		}
-		if (this.getDate().compareTo(task.getDate()) < 0) {
+		if (this.getStartDate().compareTo(task.getStartDate()) < 0) {
 			return false;
 		}
-		if (this.getDate().compareTo(task.getDate()) > 0) {
+		if (this.getStartDate().compareTo(task.getStartDate()) > 0) {
 			return true;
 		}
-		if (!this.hasStartTime()) {
+		if (!this.isStartTimeSet()) {
 			return false;
 		}
-		if (!task.hasStartTime()) {
+		if (!task.isStartTimeSet()) {
 			return true;
 		}
-		if (this.getStartTime().compareTo(task.getStartTime()) <= 0) {
+		if (this._startDateAndTime.compareTo(task.getStartDate()) <= 0) {
 			return false;
 		}
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		String formattedDate = "";
-		if (_date != null) {
-			formattedDate = " | " + dateFormat.format(_date.getTime());
+//	@Override
+//	public String toString() {
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+//		String formattedDate = "";
+//		if (_startDateAndTime != null) {
+//			formattedDate = " | " + dateFormat.format(_startDateAndTime.getTime());
+//		}
+//		String timeString = "";
+//		if (_startTime != null) {
+//			SimpleDateFormat timeFormat = new SimpleDateFormat("h.mma");
+//			timeString = " | " + timeFormat.format(_startTime.getTime());
+//			if (_endTime != null) {
+//				timeString += "-" + timeFormat.format(_endTime.getTime());
+//			}
+//		}
+//		String recurString = "";
+//		if (_recur != null) {
+//			recurString = " | recur=" + _recur;
+//		}
+//		return _description + formattedDate + timeString + recurString;
+//	}
+	
+	
+	
+	public boolean willRecur() {
+		return (this.getNextRecur() != null);
+	}
+
+	public TaskDate getNextRecur() {
+		if (!isStartDateSet() || !isRecurSet()) {
+			return null;
 		}
-		String timeString = "";
-		if (_startTime != null) {
-			SimpleDateFormat timeFormat = new SimpleDateFormat("h.mma");
-			timeString = " | " + timeFormat.format(_startTime.getTime());
-			if (_endTime != null) {
-				timeString += "-" + timeFormat.format(_endTime.getTime());
-			}
+
+		TaskDate nextDate = (TaskDate) getStartDate().clone();
+
+		incrementNextDate(nextDate);
+
+		if (nextDateAfterEndDate(nextDate)) {
+			return null;
 		}
-		String recurString = "";
-		if (_recur != null) {
-			recurString = " | recur=" + _recur;
+		return nextDate;
+	}
+
+	private void incrementNextDate(TaskDate nextDate) {
+		nextDate.add(_recurField, _recurFrequency);
+	}
+
+	private boolean nextDateAfterEndDate(TaskDate nextDate) {
+		return _endDateAndTime != null && nextDate.compareTo(_endDateAndTime) > 0;
+	}
+
+	private TaskDate getNextRecurAfterToday() {
+		TaskDate nextDate = (TaskDate) getStartDate().clone();
+		TaskDate today = initializeToday();
+
+		/*
+		 * if want to always recur at least 1ce, add: if(!nextDateBeforeToday(nextDate,today)){
+		 * incrementNextDate(nextDate); }
+		 */
+		while (nextDateBeforeToday(nextDate, today)) {
+			incrementNextDate(nextDate);
 		}
-		return _description + formattedDate + timeString + recurString;
+
+		if (nextDateAfterEndDate(nextDate)) {
+			return null;
+		}
+		return nextDate;
+	}
+
+	private boolean nextDateBeforeToday(TaskDate nextDate, TaskDate today) {
+		return nextDate.compareTo(today) < 0;
+	}
+
+	private TaskDate initializeToday() {
+		// initialize "today" to 00:00am of tomorrow
+		TaskDate today = new TaskDate();
+		today.set(TaskDate.DATE, today.get(TaskDate.DATE) + 1);
+		today.set(TaskDate.HOUR_OF_DAY, 0);
+		today.set(TaskDate.MINUTE, 0);
+		today.set(TaskDate.SECOND, 0);
+		today.set(TaskDate.MILLISECOND, 0);
+		today.getTimeInMillis();
+		return today;
 	}
 }
