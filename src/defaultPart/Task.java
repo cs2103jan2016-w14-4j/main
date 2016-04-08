@@ -38,26 +38,54 @@ public class Task {
 		_isCompleted = !_isCompleted;
 	}
 	
-	public String getStartDateString() {
+	public String getFormattedStartDate() {
 		assert _isStartDateSet;
 		return dateFormat.format(_startDateAndTime);
 	}
 	
-	public void setStartDateFromString(String dateString) throws ParseException {
-		TaskDate date = new TaskDate();
-		date.setTime(dateFormat.parse(dateString));
-		setStartDate(date);
-	}
-	
-	public String getEndDateString() {
+	public String getFormattedEndDate() {
 		assert _isEndDateSet;
 		return dateFormat.format(_endDateAndTime);
 	}	
-	
-	
-	public String getStartTimeString() {
+		
+	public String getFormattedStartTime() {
 		assert _isStartTimeSet;
 		return timeFormat.format(_startDateAndTime);
+	}
+	
+	public String getFormattedEndTime() {
+		assert _isEndTimeSet;
+		return timeFormat.format(_endDateAndTime);
+	}
+	
+	public void setStartDateFromFormattedString(String dateString) throws ParseException {
+		setStartDate(getDateFromFormattedString(dateString));
+	}	
+	
+	public void setEndDateFromFormattedString(String dateString) throws ParseException {
+		setEndDate(getDateFromFormattedString(dateString));
+	}	
+	
+	public TaskDate getDateFromFormattedString(String dateString) throws ParseException {
+		return getDateOrTimeFromFormattedString(dateString, dateFormat);
+	}
+	
+	public void setStartTimeFromFormattedString(String timeString) throws ParseException {
+		setStartTime(getTimeFromFormattedString(timeString));
+	}	
+	
+	public void setEndTimeFromFormattedString(String timeString) throws ParseException {
+		setEndTime(getTimeFromFormattedString(timeString));
+	}		
+	
+	public TaskDate getTimeFromFormattedString(String timeString) throws ParseException {
+		return getDateOrTimeFromFormattedString(timeString, timeFormat);
+	}
+
+	private TaskDate getDateOrTimeFromFormattedString(String timeString, SimpleDateFormat format) throws ParseException {
+		TaskDate date = new TaskDate();
+		date.setTime(format.parse(timeString));
+		return date;
 	}
 	
 	public TaskDate getStartDate() {

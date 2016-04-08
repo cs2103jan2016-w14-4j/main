@@ -27,17 +27,15 @@ import java.util.logging.SimpleFormatter;
 public class Storage {
 
 	/* For accessing the different Tags for the XML */
-	private static final String TAG_TASK_HEADING = "Task";
+	private static final String TAG_HEADING = "Task";
 	private static final String TAG_TASK_DESCRIPTION = "Description";
-	private static final String TAG_TASK_DATE = "Date";
-	private static final String TAG_TASK_STARTTIME = "StartTime";
-	private static final String TAG_TASK_ENDTIME = "EndTime";
 	private static final String TAG_TASK_COMPLETED = "Completed";
-	private static final String TAG_TASK_RECUR = "recur";
-	private static final String TAG_TASK_TIMEUNIT = "timeUnit";
-	private static final String TAG_TASK_FREQUENCY = "frequency";
-	private static final String TAG_TASK_START_OF_RECURR = "startOfRecurr";
-	private static final String TAG_TASK_END_OF_RECURR = "endOfRecurr";
+	private static final String TAG_TASK_START_DATE = "StartDate";
+	private static final String TAG_TASK_START_TIME = "StartTime";
+	private static final String TAG_TASK_END_DATE = "EndDate";
+	private static final String TAG_TASK_END_TIME = "EndTime";
+	private static final String TAG_TASK_RECUR_FIELD = "RecurField";
+	private static final String TAG_TASK_RECUR_FREQUENCY = "RecurFrequency";
 
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
@@ -174,7 +172,7 @@ public class Storage {
 	 * "Save-state" for future undo operations.
 	 */
 	public void setCurrentListAsPrevious() {
-		//todo: change to list for multiple undo
+		// todo: change to list for multiple undo
 		_prevTaskList = new LinkedList<Task>(_currentTaskList);
 	}
 
@@ -328,38 +326,52 @@ public class Storage {
 	 *            Document which contains the current XML structure
 	 * @param rootElement
 	 *            Root element of the XML structure
-	 * @param taskItem
+	 * @param task
 	 *            Task to extract out the task details from
 	 */
-	private void createTasksXML(Document doc, Task taskItem, Element rootElement) {
-
+	private void createTasksXML(Document doc, Task task, Element rootElement) {
 		// Assert that the parameters are not null
 		assert (doc != null);
-		assert (taskItem != null);
+		assert (task != null);
 		assert (rootElement != null);
 
-		Element taskElement = doc.createElement(TAG_TASK_HEADING);
-		Element descriptionElement = doc.createElement(TAG_TASK_DESCRIPTION);
-		Element startTimeElement = doc.createElement(TAG_TASK_STARTTIME);
-		Element endTimeElement = doc.createElement(TAG_TASK_ENDTIME);
-		Element completedElement = doc.createElement(TAG_TASK_COMPLETED);
+		Element taskElement = doc.createElement(TAG_HEADING);
 
-		taskElement.appendChild(descriptionElement);
+		appendElement(doc, taskElement, TAG_TASK_DESCRIPTION, task.getDescription());
 
-		descriptionElement.appendChild(doc.createTextNode(taskItem.getDescription()));
-		if (taskItem.isStartDateSet()) {
-			Element dateElement = doc.createElement(TAG_TASK_DATE);
-			dateElement.appendChild(doc.createTextNode(taskItem.getStartDateString()));
-			taskElement.appendChild(dateElement);
+		if (task.isCompleted()) {
+			appendElement(doc, taskElement, TAG_TASK_COMPLETED, String.valueOf(task.isCompleted()));
 		}
 
-		completedElement.appendChild(doc.createTextNode(taskItem.isCompleted() ? "yes" : "no"));
-		taskElement.appendChild(startTimeElement);
-		taskElement.appendChild(endTimeElement);
-		taskElement.appendChild(completedElement);
+		if (task.isStartDateSet()) {
+			appendElement(doc, taskElement, TAG_TASK_START_DATE, task.getFormattedStartDate());
+		}
 
-		// Handles the recurrence section
+		if (task.isStartTimeSet()) {
+			appendElement(doc, taskElement, TAG_TASK_START_TIME, task.getFormattedStartTime());
+		}
+
+		if (task.isEndDateSet()) {
+			appendElement(doc, taskElement, TAG_TASK_END_DATE, task.getFormattedEndDate());
+		}
+
+		if (task.isEndTimeSet()) {
+			appendElement(doc, taskElement, TAG_TASK_END_TIME, task.getFormattedEndTime());
+		}
+
+		if (task.isRecurSet()) {
+			appendElement(doc, taskElement, TAG_TASK_RECUR_FREQUENCY,
+					String.valueOf(task.getRecurFrequency()));
+			appendElement(doc, taskElement, TAG_TASK_RECUR_FIELD, String.valueOf(task.getRecurField()));
+		}
+
 		rootElement.appendChild(taskElement);
+	}
+
+	private void appendElement(Document doc, Element taskElement, String tagDescription, String nodeText) {
+		Element descriptionElement = doc.createElement(tagDescription);
+		descriptionElement.appendChild(doc.createTextNode(nodeText));
+		taskElement.appendChild(descriptionElement);
 	}
 
 	/**
@@ -388,7 +400,7 @@ public class Storage {
 			document.getDocumentElement().normalize();
 
 			// Getting all the tasks in the XML structure for this task type
-			nList = document.getElementsByTagName(TAG_TASK_HEADING);
+			nList = document.getElementsByTagName(TAG_HEADING);
 		} catch (ParserConfigurationException e) {
 			// Error in parser configuration
 			e.printStackTrace();
@@ -421,16 +433,40 @@ public class Storage {
 		// Create new task with extracted description & extract other attributes
 		Task newTask = new Task();
 		newTask.setDescription(extractStringFromNode(taskElement, TAG_TASK_DESCRIPTION));
-		newTask.setStartDate(extractDateFromNode(taskElement, TAG_TASK_DATE));
-		newTask.setStartTime(extractTimeFromNode(taskElement, TAG_TASK_STARTTIME));
-		newTask.setEndTime(extractTimeFromNode(taskElement, TAG_TASK_ENDTIME));
-		if (extractStringFromNode(taskElement, TAG_TASK_COMPLETED).equals("yes")) {
+		
+		if (extractStringFromNode(taskElement, TAG_TASK_COMPLETED) != null) {
 			newTask.toggleCompleted();
 		}
+		
+		String startDateString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
+		if (startDateString != null) {
+			newTask.setStartDateFromFormattedString(startDateString);
+		}
+		
+		String startTimeString = extractStringFromNode(taskElement, TAG_TASK_START_TIME);
+		if (startTimeString != null) {
+			newTask.setStartDateFromFormattedString(startTimeString);
+		}
+		
+		String endDateString = extractStringFromNode(taskElement, TAG_TASK_END_DATE);
+		if (endDateString != null) {
+			newTask.setStartDateFromFormattedString(endDateString);
+		}
+		
+		String endTimeString = extractStringFromNode(taskElement, TAG_TASK_END_TIME);
+		if (endTimeString != null) {
+			newTask.setStartDateFromFormattedString(endTimeString);
+		}
+		
+		String recurFrequencyString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
+		String recurFieldString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
+		if (recurFrequencyString != null && recurFieldString != null) {
+			newTask.setRecurFrequency(Integer.parseInt(recurFrequencyString)); 
+			newTask.setRecurField(Integer.parseInt(recurFieldString)); 
+		}		
 
 		return newTask;
 	}
-
 
 	/**
 	 * Extract a TaskTime from node with specified tag and returns as Calendar object
@@ -454,7 +490,7 @@ public class Storage {
 			return null;
 		}
 		TaskDate calendar = new TaskDate();
-//		calendar.parse(calendarString);
+		// calendar.parse(calendarString);
 		return calendar;
 	}
 
@@ -480,7 +516,7 @@ public class Storage {
 			return null;
 		}
 		TaskDate calendar = new TaskDate();
-		calendar.setDateFromString(calendarString);
+		// calendar.(calendarString);
 		return calendar;
 	}
 
@@ -500,7 +536,7 @@ public class Storage {
 		assert (tag != null || tag != "");
 
 		Node node = taskElement.getElementsByTagName(tag).item(0);
-		return (node == null) ? "" : node.getTextContent();
+		return (node == null) ? null : node.getTextContent();
 	}
 
 	public void deleteTaskListFile() {
