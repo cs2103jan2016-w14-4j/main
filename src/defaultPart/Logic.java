@@ -243,7 +243,7 @@ public class Logic {
 		_storage.addToTaskList(newTask);
 
 		if (newTask.isStartDateAfterEndDate()) {
-			_feedback = "End date " + endDate + " <= start date!";		
+			_feedback = "End date " + endDate + " <= start date!";
 		} else {
 			_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 		}
@@ -253,51 +253,66 @@ public class Logic {
 	private boolean setRecurIfExists(Task task, List<String> args) {
 		if (args.size() >= 2) {
 
-			int frequencyAndUnitIndex = args.size() - 2;
-			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+			return setRecurWithEndDate(task, args);
 
-			int endConditionIndex = args.size() - 1;
-			String endCondition = args.get(endConditionIndex);
-			boolean endConditionSpecified = !endCondition.matches("\\d*[dwmy]");
-			
-			if ((frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*"))
-					|| !endConditionSpecified) {
-				if (!endConditionSpecified) {
-					frequencyAndUnit = args.get(endConditionIndex);
-				}
-				setTaskRecurField(task, frequencyAndUnit);
-				char frequency = frequencyAndUnit.charAt(0);
-				if (Character.isDigit(frequency)) {
-					task.setRecurFrequency(Character.getNumericValue(frequency));
-				}
-				if (endConditionSpecified) {
-					if (endCondition.matches("\\d+")) {
-						_numOfTimesString = endCondition;
-					} else {
-						task.setEndDate(getWrappedDateFromString(endCondition));
-					}
-				}
-				if (!endConditionSpecified) {
-					args.remove(endConditionIndex);
-				} else {
-					removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
-				}
-				return true;
-			}
 		} else if (args.size() == 1) {
-			int frequencyAndUnitIndex = args.size() - 1;
-			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-			if (frequencyAndUnit.matches("\\d*[dwmy]")) {
-				setTaskRecurField(task, frequencyAndUnit);
-				char frequency = frequencyAndUnit.charAt(0);
-				if (Character.isDigit(frequency)) {
-					task.setRecurFrequency(Character.getNumericValue(frequency));
-				}
-				args.remove(frequencyAndUnit);
-				return true;
-			}
+
+			return setRecurWithNoEndDate(task, args);
+
 		}
 		return false;
+	}
+
+	private boolean setRecurWithNoEndDate(Task task, List<String> args) {
+		int frequencyAndUnitIndex = args.size() - 1;
+		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+		if (frequencyAndUnit.matches("\\d*[dwmy]")) {
+			setTaskRecurField(task, frequencyAndUnit);
+			char frequency = frequencyAndUnit.charAt(0);
+			if (Character.isDigit(frequency)) {
+				task.setRecurFrequency(Character.getNumericValue(frequency));
+			}
+			args.remove(frequencyAndUnit);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean setRecurWithEndDate(Task task, List<String> args) {
+		int frequencyAndUnitIndex = args.size() - 2;
+		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+
+		int endConditionIndex = args.size() - 1;
+		String endCondition = args.get(endConditionIndex);
+		boolean endConditionSpecified = !endCondition.matches("\\d*[dwmy]");
+
+		if ((frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*"))
+				|| !endConditionSpecified) {
+			if (!endConditionSpecified) {
+				frequencyAndUnit = args.get(endConditionIndex);
+			}
+			setTaskRecurField(task, frequencyAndUnit);
+			char frequency = frequencyAndUnit.charAt(0);
+			if (Character.isDigit(frequency)) {
+				task.setRecurFrequency(Character.getNumericValue(frequency));
+			}
+			if (endConditionSpecified) {
+				if (endCondition.matches("\\d+")) {
+					_numOfTimesString = endCondition;
+				} else {
+					task.setEndDate(getWrappedDateFromString(endCondition));
+				}
+			}
+			if (!endConditionSpecified) {
+				args.remove(endConditionIndex);
+			} else {
+				removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private void setTaskRecurField(Task task, String frequencyAndUnit) {
@@ -697,7 +712,7 @@ public class Logic {
 			task.setStartDate(task.getNextRecur());
 			_storage.removeTask(taskIndex);
 			_storage.addToTaskList(task);
-			
+
 			_feedback = String.format(
 					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getStartDate());
 		}
@@ -817,12 +832,10 @@ public class Logic {
 
 			if (date != null && date.compareTo(newDate) < 0) {
 				if (task.isRecurSet()) {
-					if (task.isEndDateSet()
-							&& task.getEndDate().compareTo(newDate) <= 0) {
+					if (task.isEndDateSet() && task.getEndDate().compareTo(newDate) <= 0) {
 						_storage.removeTask(i);
 					} else {
-						while (task.willRecur()
-								&& task.getStartDate().compareTo(newDate) <= 0) {
+						while (task.willRecur() && task.getStartDate().compareTo(newDate) <= 0) {
 							task.setStartDate(task.getNextRecur());
 						}
 						if (task.getStartDate().compareTo(newDate) <= 0) {
