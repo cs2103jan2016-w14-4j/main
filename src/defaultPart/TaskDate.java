@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class TaskDate extends GregorianCalendar {
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mma");
 
 	@Override
 	public boolean equals(Object taskDate) {
