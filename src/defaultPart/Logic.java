@@ -259,6 +259,7 @@ public class Logic {
 			int endConditionIndex = args.size() - 1;
 			String endCondition = args.get(endConditionIndex);
 			boolean endConditionSpecified = !endCondition.matches("\\d*[dwmy]");
+			
 			if ((frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*"))
 					|| !endConditionSpecified) {
 				if (!endConditionSpecified) {
