@@ -38,7 +38,7 @@ public class TaskModel {
 
 		isEvent = new SimpleBooleanProperty(task.isStartDateSet());
 		dateTime = new SimpleStringProperty(task.getDateTimeString());
-		
+
 		if (task.isRecurSet()) {
 			isRecur = new SimpleBooleanProperty(true);
 			recur = new SimpleStringProperty(task.getRecurString());

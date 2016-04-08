@@ -443,7 +443,7 @@ public class Storage {
 		String startDateString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
 		if (startDateString != null) {
 			newTask.setStartDateFromFormattedString(startDateString);
-			
+
 			String startTimeString = extractStringFromNode(taskElement, TAG_TASK_START_TIME);
 			if (startTimeString != null) {
 				newTask.setStartTimeFromFormattedString(startTimeString);
@@ -458,13 +458,13 @@ public class Storage {
 			if (endTimeString != null) {
 				newTask.setEndTimeFromFormattedString(endTimeString);
 			}
-			
+
 			String recurFrequencyString = extractStringFromNode(taskElement, TAG_TASK_RECUR_FREQUENCY);
 			String recurFieldString = extractStringFromNode(taskElement, TAG_TASK_RECUR_FIELD);
 			if (recurFrequencyString != null && recurFieldString != null) {
 				try {
-	    			newTask.setRecurFrequency(Integer.parseInt(recurFrequencyString));
-	    			newTask.setRecurField(Integer.parseInt(recurFieldString));
+					newTask.setRecurFrequency(Integer.parseInt(recurFrequencyString));
+					newTask.setRecurField(Integer.parseInt(recurFieldString));
 				} catch (NumberFormatException nfe) {
 					throw new ParseException(nfe.getMessage(), 0);
 				}

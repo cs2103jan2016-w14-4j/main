@@ -70,9 +70,9 @@ public class Controller implements Initializable {
 
 	private int tablePosition;
 	private Logic logic;
-	
+
 	private static final Logger logger = Logger.getLogger(Controller.class.getName());
-	
+
 	/**
 	 * Initialize the controllers, define the listeners for each control
 	 * 
@@ -85,7 +85,7 @@ public class Controller implements Initializable {
 		eventList = FXCollections.observableArrayList();
 		taskModels = new ArrayList<>();
 		tablePosition = 0;
-		
+
 		setupLogger();
 
 		floatingTaskTable.setItems(floatingTaskList);
@@ -100,23 +100,21 @@ public class Controller implements Initializable {
 				return null;
 			}
 		});
-		
-		Callback<TableColumn<TaskModel, Boolean>, TableCell<TaskModel, Boolean>> checkBoxCellFactory =
-				e -> new CheckBoxTableCell<TaskModel, Boolean>(){
+
+		Callback<TableColumn<TaskModel, Boolean>, TableCell<TaskModel, Boolean>> checkBoxCellFactory = e -> new CheckBoxTableCell<TaskModel, Boolean>() {
 			@Override
-			public void updateItem(final Boolean item, final boolean empty){
+			public void updateItem(final Boolean item, final boolean empty) {
 				super.updateItem(item, empty);
 				if (empty || item == null) {
 					setText(null);
 					setGraphic(null);
 				} else {
-					if(item)
+					if (item)
 						setText("something");
 					this.getTableRow().getStyleClass().remove("completedTaskRow");
 					this.getTableRow().getStyleClass().remove("incompleteTaskRow");
 					this.getTableRow().getStyleClass().add(item ? "completedTaskRow" : "incompleteTaskRow");
 				}
-
 
 			}
 		};
@@ -147,8 +145,8 @@ public class Controller implements Initializable {
 				logger.fine("Bad Input for Date: " + e.getNewValue());
 			}
 		});
-		
-		StringConverter<String> simpleStringConverter= new StringConverter() {
+
+		StringConverter<String> simpleStringConverter = new StringConverter() {
 			@Override
 			public String toString(Object object) {
 				return object.toString();
@@ -159,12 +157,13 @@ public class Controller implements Initializable {
 				return string;
 			}
 		};
-		
-		Callback<TableColumn<TaskModel, String>, TableCell<TaskModel, String>> descriptionCellFactory = 
-				e -> new TextFieldTableCell<TaskModel, String>(simpleStringConverter){
+
+		Callback<TableColumn<TaskModel, String>, TableCell<TaskModel, String>> descriptionCellFactory = e -> new TextFieldTableCell<TaskModel, String>(
+				simpleStringConverter) {
 			private Text textDisplay;
+
 			@Override
-			public void updateItem(String item, boolean empty){
+			public void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
 				setText(null);
 				if (!isEmpty()) {
@@ -174,21 +173,21 @@ public class Controller implements Initializable {
 					textDisplay.getStyleClass().clear();
 					textDisplay.getStyleClass().add("text");
 				}
-				
+
 			}
 
 			@Override
-			public void commitEdit(String item){
+			public void commitEdit(String item) {
 				super.commitEdit(item);
 				updateItem(item, false);
 			}
 
 			@Override
-			public void cancelEdit(){
+			public void cancelEdit() {
 				updateItem(getItem(), false);
 			}
 		};
-		
+
 		floatingTaskDescription.setCellValueFactory(cellData -> cellData.getValue().taskDescription());
 		floatingTaskDescription.setCellFactory(descriptionCellFactory);
 		floatingTaskDescription.setOnEditCommit(e -> {
@@ -227,10 +226,10 @@ public class Controller implements Initializable {
 		// delayed setter (set only after the loading of the software is done)
 		new Thread(() -> {
 			try {
-				 Thread.sleep(1000);
-				 root.widthProperty().addListener(e -> {
-				 resizeColumns();
-				 });
+				Thread.sleep(1000);
+				root.widthProperty().addListener(e -> {
+					resizeColumns();
+				});
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -461,7 +460,7 @@ public class Controller implements Initializable {
 			return;
 		}
 		logger.fine("Sent to logic" + command);
-		
+
 		switch (logic.getCommandType()) {
 			case EDIT_DESCRIPTION :
 				List<Integer> indexesFound = logic.getIndexesFound();
@@ -471,7 +470,7 @@ public class Controller implements Initializable {
 			case FIND :
 				displayFoundTask();
 				break;
-			
+
 			case HELP :
 				showHelp();
 				break;
@@ -479,7 +478,7 @@ public class Controller implements Initializable {
 			default :
 				showAllTasks();
 		}
-		
+
 		setUserPrompt(logic.getFeedback());
 		logic.saveTasksToFile();
 	}
@@ -498,7 +497,7 @@ public class Controller implements Initializable {
 			stage.close();
 		}
 	}
-	
+
 	private void setupLogger() {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
@@ -512,8 +511,8 @@ public class Controller implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
-	public void highlightTaskWithId(int id){
+
+	public void highlightTaskWithId(int id) {
 		int row = getRowFromModel(getTaskModelFromId(id));
 		if (taskList.get(id).getStartDate() != null) {
 			eventsTable.getSelectionModel().select(row);
@@ -522,6 +521,6 @@ public class Controller implements Initializable {
 			floatingTaskTable.getSelectionModel().select(row);
 			scrollTo(row);
 		}
-		
+
 	}
 }
