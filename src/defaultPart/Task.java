@@ -1,5 +1,6 @@
 package defaultPart;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -41,6 +42,18 @@ public class Task {
 		assert _isStartDateSet;
 		return dateFormat.format(_startDateAndTime);
 	}
+	
+	public void setStartDateFromString(String dateString) throws ParseException {
+		TaskDate date = new TaskDate();
+		date.setTime(dateFormat.parse(dateString));
+		setStartDate(date);
+	}
+	
+	public String getEndDateString() {
+		assert _isEndDateSet;
+		return dateFormat.format(_endDateAndTime);
+	}	
+	
 	
 	public String getStartTimeString() {
 		assert _isStartTimeSet;
