@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -762,41 +763,108 @@ public class Logic {
 	}
 
 	private boolean deleteMultiple() {
+
+		Pattern equalitySigns = Pattern.compile("(>|<)=?");
+		Matcher match = equalitySigns.matcher(_argument);
+
+		String[] indexToDelete = _argument.split(",");
+
 		if (_argument.equals("-")) {
 			return deleteMultipleWithoutDeadline();
 		} else if (_argument.equals("c")) {
 			return deleteMultipleCompletedTasks();
-		} else {
-
-			Pattern equalitySigns = Pattern.compile("(>|<)=?");
-			Matcher match = equalitySigns.matcher(_argument);
-			if (isEqualityType(match)) {
-				String dateString = _argument.substring(match.end()).trim();
-				String[] dayAndMonthAndYear = dateString.split("/", 3);
-				System.out.println(Arrays.toString(dayAndMonthAndYear));
-				TaskDate newDate = getDateFromString(dayAndMonthAndYear);
-				if (newDate == null) {
-					_newCommandType = CommandType.ERROR;
-					_feedback = "Failed to parse date: " + dateString;
-					return true;
-				}
-				List<Task> taskList = _storage.getTaskList();
-				int count = 0;
-				switch (match.group()) {
-					case "<" :
-						count = deleteTasksBeforeDate(newDate, taskList, count);
-						break;
-
-					case "<=" :
-						count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
-						break;
-				}
-
-				_feedback = "Removed " + count + " tasks before " + newDate;
+		} else if (isEqualityType(match)) {
+			String dateString = _argument.substring(match.end()).trim();
+			String[] dayAndMonthAndYear = dateString.split("/", 3);
+			System.out.println(Arrays.toString(dayAndMonthAndYear));
+			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
+			if (newDate == null) {
+				_newCommandType = CommandType.ERROR;
+				_feedback = "Failed to parse date: " + dateString;
 				return true;
 			}
+			List<Task> taskList = _storage.getTaskList();
+			int count = 0;
+			switch (match.group()) {
+				case "<" :
+					count = deleteTasksBeforeDate(newDate, taskList, count);
+					break;
+
+				case "<=" :
+					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
+					break;
+			}
+
+			_feedback = "Removed " + count + " tasks before " + newDate;
+			return true;
+		} else if (indexToDelete.length > 1 || _argument.split("-").length > 1) {
+			// first check if all numbers are valid
+			for (String index : indexToDelete) {
+				String[] multIndexToDelete = index.split("-");
+				if (multIndexToDelete.length > 2) {
+					return false;
+				}
+				if (index.contains("-") && index.split("-").length != 2) {
+					return false;
+				}
+				for (String multIndex : multIndexToDelete) {
+					if (isInteger(multIndex) && _storage.isTaskIndexValid(Integer.parseInt(multIndex) - 1)) {
+						continue;
+					} else {
+						return false;
+					}
+				}
+			}
+
+			List<Integer> indexToDeleteList = new ArrayList<Integer>();
+
+			for (String index : indexToDelete) {
+				if (index.contains("-")) {
+					String[] multIndexToDelete = index.split("-");
+					int start = Integer.parseInt(multIndexToDelete[0]);
+					int end = Integer.parseInt(multIndexToDelete[1]);
+					for (int i = start; i <= end; i++) {
+						indexToDeleteList.add(i);
+					}
+				} else {
+					indexToDeleteList.add(Integer.parseInt(index));
+				}
+			}
+
+			Collections.sort(indexToDeleteList);
+
+			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
+				_storage.removeTask(indexToDeleteList.get(i) - 1);
+			}
+
+			return true;
 		}
 		return false;
+	}
+
+	public static boolean isInteger(String str) {
+		// By Jonas K. on StackOverflow
+		if (str == null) {
+			return false;
+		}
+		int length = str.length();
+		if (length == 0) {
+			return false;
+		}
+		int i = 0;
+		if (str.charAt(0) == '-') {
+			if (length == 1) {
+				return false;
+			}
+			i = 1;
+		}
+		for (; i < length; i++) {
+			char c = str.charAt(i);
+			if (c < '0' || c > '9') {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private int deleteTasksBeforeEqualsToDate(TaskDate newDate, List<Task> taskList, int count) {
@@ -808,12 +876,10 @@ public class Logic {
 
 			if (date != null && date.compareTo(newDate) < 0) {
 				if (recur != null) {
-					if (recur.getEndDate() != null
-							&& recur.getEndDate().compareTo(newDate) <= 0) {
+					if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) <= 0) {
 						_storage.removeTask(i);
 					} else {
-						while (recur.willRecur()
-								&& recur.getStartDate().compareTo(newDate) <= 0) {
+						while (recur.willRecur() && recur.getStartDate().compareTo(newDate) <= 0) {
 							recur.setStartDate(recur.getNextRecur());
 						}
 						if (recur.getStartDate().compareTo(newDate) <= 0) {
@@ -843,12 +909,10 @@ public class Logic {
 
 			if (date != null && date.compareTo(newDate) < 0) {
 				if (recur != null) {
-					if (recur.getEndDate() != null
-							&& recur.getEndDate().compareTo(newDate) < 0) {
+					if (recur.getEndDate() != null && recur.getEndDate().compareTo(newDate) < 0) {
 						_storage.removeTask(i);
 					} else {
-						while (recur.willRecur()
-								&& recur.getStartDate().compareTo(newDate) < 0) {
+						while (recur.willRecur() && recur.getStartDate().compareTo(newDate) < 0) {
 							recur.setStartDate(recur.getNextRecur());
 						}
 						if (recur.getStartDate().compareTo(newDate) < 0) {
