@@ -461,8 +461,9 @@ public class Controller implements Initializable {
 			return;
 		}
 		logger.fine("Sent to logic" + command);
+		
 		switch (logic.getCommandType()) {
-			case EDIT_SHOW_TASK :
+			case EDIT_DESCRIPTION :
 				List<Integer> indexesFound = logic.getIndexesFound();
 				editDescriptionById(indexesFound.get(0));
 				break;
@@ -478,6 +479,7 @@ public class Controller implements Initializable {
 			default :
 				showAllTasks();
 		}
+		
 		setUserPrompt(logic.getFeedback());
 		logic.saveTasksToFile();
 	}

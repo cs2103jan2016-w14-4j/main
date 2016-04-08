@@ -38,14 +38,12 @@ public class Logic {
 	private static final String MESSAGE_NO_ARGUMENTS = "No arguments";
 	private static final String MESSAGE_UNDO = "Undid last command: %1$s";
 
-	private static final int ERROR_INDEX = -1;
-
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
 		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, COMPLETE_MARKING, UNDO, HELP,
 
 		// for internal use
-		EDIT_SHOW_TASK, ADD, ERROR, NULL
+		EDIT_DESCRIPTION, ADD, ERROR, NULL
 	};
 
 	private String _argument;
@@ -598,7 +596,7 @@ public class Logic {
 	}
 
 	private void copyTaskToInputForEditting(int taskIndex) {
-		_newCommandType = CommandType.EDIT_SHOW_TASK;
+		_newCommandType = CommandType.EDIT_DESCRIPTION;
 		_indexesFound = new ArrayList<Integer>();
 		_indexesFound.add(taskIndex);
 	}
