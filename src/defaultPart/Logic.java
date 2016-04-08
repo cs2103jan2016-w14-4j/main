@@ -380,8 +380,7 @@ public class Logic {
 
 		TaskDate date;
 
-		if (args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next")
-				&& !isTodayCase(args.get(lastIndex)) && !isTomorrowCase(args.get(lastIndex))) {
+		if (isNextCase(args, lastIndex)) {
 			date = getNextDate(args);
 			args.remove(lastIndex--);
 		} else {
@@ -396,6 +395,11 @@ public class Logic {
 		task.setStartDate(date);
 		args.remove(lastIndex);
 		return true;
+	}
+
+	private boolean isNextCase(List<String> args, int lastIndex) {
+		return args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next")
+				&& !isTodayCase(args.get(lastIndex)) && !isTomorrowCase(args.get(lastIndex));
 	}
 
 	private boolean isTime(String timeString) {
