@@ -36,17 +36,12 @@ public class TaskModel {
 		taskDescription = new SimpleStringProperty(task.getDescription());
 		isComplete = new SimpleBooleanProperty(task.isCompleted());
 
-		String dateTimeString = "";
-		Calendar date = task.getStartDate();
-		if (date != null) {
-			dateTimeString = date.toString() + " ";
-		}
-		dateTime = new SimpleStringProperty(dateTimeString);
-		isEvent = new SimpleBooleanProperty(date != null);
-
-		if (task.willRecur()) {
+		isEvent = new SimpleBooleanProperty(task.isStartDateSet());
+		dateTime = new SimpleStringProperty(task.getDateTimeString());
+		
+		if (task.isRecurSet()) {
 			isRecur = new SimpleBooleanProperty(true);
-			recur = new SimpleStringProperty("todo");
+			recur = new SimpleStringProperty(task.getRecurString());
 		} else {
 			isRecur = new SimpleBooleanProperty(false);
 			recur = new SimpleStringProperty("");

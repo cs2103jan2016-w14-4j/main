@@ -9,18 +9,18 @@ public class Task {
 	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mma");
 
 	private String _description;
-	private boolean _isCompleted;
+	private boolean _isCompleted = false;
 
-	private TaskDate _startDateAndTime;
-	private TaskDate _endDateAndTime;
+	private TaskDate _startDateAndTime = new TaskDate();
+	private TaskDate _endDateAndTime = new TaskDate();
 	
-	private boolean _isStartDateSet;
-	private boolean _isEndDateSet;
-	private boolean _isStartTimeSet;
-	private boolean _isEndTimeSet;
+	private boolean _isStartDateSet = false;
+	private boolean _isEndDateSet = false;
+	private boolean _isStartTimeSet = false;
+	private boolean _isEndTimeSet = false;
 	
 	private int _recurField;
-	private int _recurFrequency;
+	private int _recurFrequency = 0;
 
 	public String getDescription() {
 		return _description;
@@ -40,22 +40,22 @@ public class Task {
 	
 	public String getFormattedStartDate() {
 		assert _isStartDateSet;
-		return dateFormat.format(_startDateAndTime);
+		return dateFormat.format(_startDateAndTime.getTime());
 	}
 	
 	public String getFormattedEndDate() {
 		assert _isEndDateSet;
-		return dateFormat.format(_endDateAndTime);
+		return dateFormat.format(_endDateAndTime.getTime());
 	}	
 		
 	public String getFormattedStartTime() {
 		assert _isStartTimeSet;
-		return timeFormat.format(_startDateAndTime);
+		return timeFormat.format(_startDateAndTime.getTime());
 	}
 	
 	public String getFormattedEndTime() {
 		assert _isEndTimeSet;
-		return timeFormat.format(_endDateAndTime);
+		return timeFormat.format(_endDateAndTime.getTime());
 	}
 	
 	public void setStartDateFromFormattedString(String dateString) throws ParseException {
@@ -97,7 +97,7 @@ public class Task {
 		_isStartDateSet = true;
 	}
 	
-	public void setDateOnly(TaskDate destination, TaskDate source) {
+	private void setDateOnly(TaskDate destination, TaskDate source) {
 		destination.set(Calendar.YEAR, source.get(Calendar.YEAR));
 		destination.set(Calendar.DAY_OF_YEAR, source.get(Calendar.DAY_OF_YEAR));
 	}
@@ -129,10 +129,12 @@ public class Task {
 	
 	public void setStartTime(TaskDate date) {
 		setTimeOnly(_startDateAndTime, date);
+		_isStartTimeSet = true;
 	}
 	
 	public void setEndTime(TaskDate date) {
 		setTimeOnly(_endDateAndTime, date);
+		_isEndTimeSet = true;
 	}
 	
 	public void setTimeOnly(TaskDate destination, TaskDate source) {
@@ -190,29 +192,57 @@ public class Task {
 		return true;
 	}
 
-//	@Override
-//	public String toString() {
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-//		String formattedDate = "";
-//		if (_startDateAndTime != null) {
-//			formattedDate = " | " + dateFormat.format(_startDateAndTime.getTime());
-//		}
-//		String timeString = "";
-//		if (_startTime != null) {
-//			SimpleDateFormat timeFormat = new SimpleDateFormat("h.mma");
-//			timeString = " | " + timeFormat.format(_startTime.getTime());
-//			if (_endTime != null) {
-//				timeString += "-" + timeFormat.format(_endTime.getTime());
-//			}
-//		}
-//		String recurString = "";
-//		if (_recur != null) {
-//			recurString = " | recur=" + _recur;
-//		}
-//		return _description + formattedDate + timeString + recurString;
-//	}
+	@Override
+	public String toString() {
+		return _description + " " + getDateTimeString() + getRecurString();
+	}
+
+	public String getDateTimeString() {
+		String dateTimeString = "";
+		if (isStartDateSet()) {
+			dateTimeString += getFormattedStartDate() + " ";
+			
+			if (isStartTimeSet()) {
+				dateTimeString += getFormattedStartTime() + " ";
+			}
 	
+			if (isEndDateSet()) {
+				dateTimeString += getFormattedEndDate() + " ";
+			}
+			
+			if (isEndTimeSet()) {
+				dateTimeString += getFormattedEndTime() + " ";
+			}
+		}
+		return dateTimeString;
+	}
 	
+	public String getRecurString() {
+		String recurString = "";
+		if (isRecurSet()) {
+			recurString += _recurFrequency;
+			//use hashmap maybe?
+    		switch (_recurField) {
+    			case TaskDate.DAY_OF_YEAR :
+    				recurString += "d";
+    				break;
+    
+    			case TaskDate.WEEK_OF_YEAR :
+    				recurString += "w";
+    				break;
+    
+    			case TaskDate.MONTH :
+    				recurString += "m";
+    				break;
+    
+    			case TaskDate.YEAR :
+    				recurString += "y";
+    				break;
+    		}
+    		assert recurString != "";
+		}
+		return recurString;
+	}
 	
 	public boolean willRecur() {
 		return (this.getNextRecur() != null);

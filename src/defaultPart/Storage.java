@@ -34,8 +34,8 @@ public class Storage {
 	private static final String TAG_TASK_START_TIME = "StartTime";
 	private static final String TAG_TASK_END_DATE = "EndDate";
 	private static final String TAG_TASK_END_TIME = "EndTime";
-	private static final String TAG_TASK_RECUR_FIELD = "RecurField";
 	private static final String TAG_TASK_RECUR_FREQUENCY = "RecurFrequency";
+	private static final String TAG_TASK_RECUR_FIELD = "RecurField";
 
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
@@ -441,28 +441,32 @@ public class Storage {
 		String startDateString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
 		if (startDateString != null) {
 			newTask.setStartDateFromFormattedString(startDateString);
-		}
+			
+			String startTimeString = extractStringFromNode(taskElement, TAG_TASK_START_TIME);
+			if (startTimeString != null) {
+				newTask.setStartTimeFromFormattedString(startTimeString);
+			}
 
-		String startTimeString = extractStringFromNode(taskElement, TAG_TASK_START_TIME);
-		if (startTimeString != null) {
-			newTask.setStartDateFromFormattedString(startTimeString);
-		}
+			String endDateString = extractStringFromNode(taskElement, TAG_TASK_END_DATE);
+			if (endDateString != null) {
+				newTask.setEndDateFromFormattedString(endDateString);
+			}
 
-		String endDateString = extractStringFromNode(taskElement, TAG_TASK_END_DATE);
-		if (endDateString != null) {
-			newTask.setStartDateFromFormattedString(endDateString);
-		}
-
-		String endTimeString = extractStringFromNode(taskElement, TAG_TASK_END_TIME);
-		if (endTimeString != null) {
-			newTask.setStartDateFromFormattedString(endTimeString);
-		}
-
-		String recurFrequencyString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
-		String recurFieldString = extractStringFromNode(taskElement, TAG_TASK_START_DATE);
-		if (recurFrequencyString != null && recurFieldString != null) {
-			newTask.setRecurFrequency(Integer.parseInt(recurFrequencyString));
-			newTask.setRecurField(Integer.parseInt(recurFieldString));
+			String endTimeString = extractStringFromNode(taskElement, TAG_TASK_END_TIME);
+			if (endTimeString != null) {
+				newTask.setEndTimeFromFormattedString(endTimeString);
+			}
+			
+			String recurFrequencyString = extractStringFromNode(taskElement, TAG_TASK_RECUR_FREQUENCY);
+			String recurFieldString = extractStringFromNode(taskElement, TAG_TASK_RECUR_FIELD);
+			if (recurFrequencyString != null && recurFieldString != null) {
+				try {
+	    			newTask.setRecurFrequency(Integer.parseInt(recurFrequencyString));
+	    			newTask.setRecurField(Integer.parseInt(recurFieldString));
+				} catch (NumberFormatException nfe) {
+					throw new ParseException(nfe.getMessage(), 0);
+				}
+			}
 		}
 
 		return newTask;

@@ -216,8 +216,6 @@ public class Logic {
 			logger.log(Level.FINE, "Setting date to today");
 			newTask.setStartDate(new TaskDate());
 		}
-		boolean warn = false;
-		TaskDate endDate = null;
 		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
 		if (newTask.isStartDateSet() && !floating) {
 			if (newTask.isRecurSet()) {
@@ -241,7 +239,7 @@ public class Logic {
 		_storage.addToTaskList(newTask);
 
 		if (newTask.isStartDateAfterEndDate()) {
-			_feedback = "End date " + endDate + " <= start date!";
+			_feedback = "End date " + newTask.getFormattedEndDate() + " <= start date!";
 		} else {
 			_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
 		}
@@ -365,8 +363,6 @@ public class Logic {
 		task.setStartTime(getTimeFromString(startAndEndTime[0]));
 		if (startAndEndTime.length == 2) {
 			task.setEndTime(getTimeFromString(startAndEndTime[1]));
-		} else {
-			task.setEndTime(null);
 		}
 	}
 
@@ -389,7 +385,6 @@ public class Logic {
 			return false;
 		}
 		logger.log(Level.FINER, "Setting task date using \"{0}\"", args.get(lastIndex));
-		date.getTimeInMillis();
 		task.setStartDate(date);
 		args.remove(lastIndex);
 		return true;
