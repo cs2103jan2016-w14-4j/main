@@ -442,10 +442,10 @@ public class Controller implements Initializable {
 	private void addToTaskModels(int i) {
 		Task task = taskList.get(i);
 		TaskModel newModel = new TaskModel(task, i + 1, this);
-		if (task.getStartDate() == null) {
-			floatingTaskList.add(newModel);
-		} else {
+		if (task.isStartDateSet()) {
 			eventList.add(newModel);
+		} else {
+			floatingTaskList.add(newModel);
 		}
 		taskModels.add(newModel);
 	}
