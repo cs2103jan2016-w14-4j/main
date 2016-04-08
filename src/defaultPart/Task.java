@@ -3,6 +3,7 @@ package defaultPart;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class Task {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
@@ -11,8 +12,8 @@ public class Task {
 	private String _description;
 	private boolean _isCompleted = false;
 
-	private TaskDate _startDateAndTime = new TaskDate();
-	private TaskDate _endDateAndTime = new TaskDate();
+	private Calendar _startDateAndTime = new GregorianCalendar();
+	private Calendar _endDateAndTime = new GregorianCalendar();
 	
 	private boolean _isStartDateSet = false;
 	private boolean _isEndDateSet = false;
@@ -66,7 +67,7 @@ public class Task {
 		setEndDate(getDateFromFormattedString(dateString));
 	}	
 	
-	public TaskDate getDateFromFormattedString(String dateString) throws ParseException {
+	public Calendar getDateFromFormattedString(String dateString) throws ParseException {
 		return getDateOrTimeFromFormattedString(dateString, dateFormat);
 	}
 	
@@ -78,26 +79,26 @@ public class Task {
 		setEndTime(getTimeFromFormattedString(timeString));
 	}		
 	
-	public TaskDate getTimeFromFormattedString(String timeString) throws ParseException {
+	public Calendar getTimeFromFormattedString(String timeString) throws ParseException {
 		return getDateOrTimeFromFormattedString(timeString, timeFormat);
 	}
 
-	private TaskDate getDateOrTimeFromFormattedString(String timeString, SimpleDateFormat format) throws ParseException {
-		TaskDate date = new TaskDate();
+	private Calendar getDateOrTimeFromFormattedString(String timeString, SimpleDateFormat format) throws ParseException {
+		Calendar date = new GregorianCalendar();
 		date.setTime(format.parse(timeString));
 		return date;
 	}
 	
-	public TaskDate getStartDate() {
+	public Calendar getStartDate() {
 		return _startDateAndTime;
 	}
 
-	public void setStartDate(TaskDate date) {
+	public void setStartDate(Calendar date) {
 		setDateOnly(_startDateAndTime, date);
 		_isStartDateSet = true;
 	}
 	
-	private void setDateOnly(TaskDate destination, TaskDate source) {
+	private void setDateOnly(Calendar destination, Calendar source) {
 		destination.set(Calendar.YEAR, source.get(Calendar.YEAR));
 		destination.set(Calendar.DAY_OF_YEAR, source.get(Calendar.DAY_OF_YEAR));
 	}
@@ -118,26 +119,26 @@ public class Task {
 		return _isEndDateSet;
 	}
 
-	public void setEndDate(TaskDate date) {
+	public void setEndDate(Calendar date) {
 		setDateOnly(_endDateAndTime, date);
 		_isEndDateSet = true; 
 	}
 	
-	public TaskDate getEndDate() {
+	public Calendar getEndDate() {
 		return _endDateAndTime;
 	}
 	
-	public void setStartTime(TaskDate date) {
+	public void setStartTime(Calendar date) {
 		setTimeOnly(_startDateAndTime, date);
 		_isStartTimeSet = true;
 	}
 	
-	public void setEndTime(TaskDate date) {
+	public void setEndTime(Calendar date) {
 		setTimeOnly(_endDateAndTime, date);
 		_isEndTimeSet = true;
 	}
 	
-	public void setTimeOnly(TaskDate destination, TaskDate source) {
+	public void setTimeOnly(Calendar destination, Calendar source) {
 		destination.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
 		destination.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
 	}
@@ -223,19 +224,19 @@ public class Task {
 			recurString += _recurFrequency;
 			//use hashmap maybe?
     		switch (_recurField) {
-    			case TaskDate.DAY_OF_YEAR :
+    			case Calendar.DAY_OF_YEAR :
     				recurString += "d";
     				break;
     
-    			case TaskDate.WEEK_OF_YEAR :
+    			case Calendar.WEEK_OF_YEAR :
     				recurString += "w";
     				break;
     
-    			case TaskDate.MONTH :
+    			case Calendar.MONTH :
     				recurString += "m";
     				break;
     
-    			case TaskDate.YEAR :
+    			case Calendar.YEAR :
     				recurString += "y";
     				break;
     		}
@@ -248,12 +249,12 @@ public class Task {
 		return (this.getNextRecur() != null);
 	}
 
-	public TaskDate getNextRecur() {
+	public Calendar getNextRecur() {
 		if (!isStartDateSet() || !isRecurSet()) {
 			return null;
 		}
 
-		TaskDate nextDate = (TaskDate) getStartDate().clone();
+		Calendar nextDate = (Calendar) getStartDate().clone();
 
 		incrementNextDate(nextDate);
 
@@ -263,17 +264,17 @@ public class Task {
 		return nextDate;
 	}
 
-	private void incrementNextDate(TaskDate nextDate) {
+	private void incrementNextDate(Calendar nextDate) {
 		nextDate.add(_recurField, _recurFrequency);
 	}
 
-	private boolean nextDateAfterEndDate(TaskDate nextDate) {
+	private boolean nextDateAfterEndDate(Calendar nextDate) {
 		return _endDateAndTime != null && nextDate.compareTo(_endDateAndTime) > 0;
 	}
 
-	private TaskDate getNextRecurAfterToday() {
-		TaskDate nextDate = (TaskDate) getStartDate().clone();
-		TaskDate today = initializeToday();
+	private Calendar getNextRecurAfterToday() {
+		Calendar nextDate = (Calendar) getStartDate().clone();
+		Calendar today = initializeToday();
 
 		/*
 		 * if want to always recur at least 1ce, add: if(!nextDateBeforeToday(nextDate,today)){
@@ -289,18 +290,18 @@ public class Task {
 		return nextDate;
 	}
 
-	private boolean nextDateBeforeToday(TaskDate nextDate, TaskDate today) {
+	private boolean nextDateBeforeToday(Calendar nextDate, Calendar today) {
 		return nextDate.compareTo(today) < 0;
 	}
 
-	private TaskDate initializeToday() {
+	private Calendar initializeToday() {
 		// initialize "today" to 00:00am of tomorrow
-		TaskDate today = new TaskDate();
-		today.set(TaskDate.DATE, today.get(TaskDate.DATE) + 1);
-		today.set(TaskDate.HOUR_OF_DAY, 0);
-		today.set(TaskDate.MINUTE, 0);
-		today.set(TaskDate.SECOND, 0);
-		today.set(TaskDate.MILLISECOND, 0);
+		Calendar today = new GregorianCalendar();
+		today.set(Calendar.DATE, today.get(Calendar.DATE) + 1);
+		today.set(Calendar.HOUR_OF_DAY, 0);
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
+		today.set(Calendar.MILLISECOND, 0);
 		today.getTimeInMillis();
 		return today;
 	}

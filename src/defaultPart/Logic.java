@@ -6,7 +6,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -214,7 +217,7 @@ public class Logic {
 		// very ugly codes, to be refactored
 		if ((newTask.isRecurSet() || newTask.isStartTimeSet()) && !newTask.isStartDateSet()) {
 			logger.log(Level.FINE, "Setting date to today");
-			newTask.setStartDate(new TaskDate());
+			newTask.setStartDate(new GregorianCalendar());
 		}
 		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
 		if (newTask.isStartDateSet() && !floating) {
@@ -314,25 +317,25 @@ public class Logic {
 	private void setTaskRecurField(Task task, String frequencyAndUnit) {
 		switch (frequencyAndUnit.charAt(frequencyAndUnit.length() - 1)) {
 			case 'd' :
-				task.setRecurField(TaskDate.DAY_OF_YEAR);
+				task.setRecurField(Calendar.DAY_OF_YEAR);
 				break;
 
 			case 'w' :
-				task.setRecurField(TaskDate.WEEK_OF_YEAR);
+				task.setRecurField(Calendar.WEEK_OF_YEAR);
 				break;
 
 			case 'm' :
-				task.setRecurField(TaskDate.MONTH);
+				task.setRecurField(Calendar.MONTH);
 				break;
 
 			case 'y' :
-				task.setRecurField(TaskDate.YEAR);
+				task.setRecurField(Calendar.YEAR);
 				break;
 		}
 	}
 
-	private TaskDate getRecurEndDate(Task task, String numOfTimesString) {
-		TaskDate endDate = new TaskDate();
+	private Calendar getRecurEndDate(Task task, String numOfTimesString) {
+		Calendar endDate = new GregorianCalendar();
 		endDate.setTime(task.getStartDate().getTime());
 		int numOfTimes = Integer.parseInt(numOfTimesString);
 		endDate.add(task.getRecurField(), numOfTimes * task.getRecurFrequency());
@@ -346,7 +349,7 @@ public class Logic {
 		}
 		String lastString = args.get(args.size() - 1);
 		String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
-		TaskDate date = getWrappedDateFromString(secondLastString);
+		Calendar date = getWrappedDateFromString(secondLastString);
 		boolean isDigit = lastString.matches("\\d");
 		if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
 			setTaskTime(task, lastString);
@@ -372,7 +375,7 @@ public class Logic {
 		}
 		int lastIndex = args.size() - 1;
 
-		TaskDate date;
+		Calendar date;
 
 		if (isNextCase(args, lastIndex)) {
 			date = getNextDate(args);
@@ -400,45 +403,45 @@ public class Logic {
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
 	}
 
-	private void wrapDateToTodayOrLater(TaskDate date, int numOfDateFieldsSet) {
+	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
 		if (date == null) {
 			return;
 		}
-		TaskDate currentDate = new TaskDate();
+		Calendar currentDate = new GregorianCalendar();
 
 		if (currentDate.compareTo(date) > 0) {
 			switch (numOfDateFieldsSet) {
 				case 1 :
-					date.add(TaskDate.MONTH, 1);
+					date.add(Calendar.MONTH, 1);
 					break;
 
 				case 2 :
-					date.add(TaskDate.YEAR, 1);
+					date.add(Calendar.YEAR, 1);
 					break;
 			}
 		}
 	}
 
-	public TaskDate getWrappedDateFromString(String dateString) {
+	public Calendar getWrappedDateFromString(String dateString) {
 		String[] dayAndMonthAndYear = dateString.split("/", 3);
-		TaskDate newDate = getDateFromString(dayAndMonthAndYear);
+		Calendar newDate = getDateFromString(dayAndMonthAndYear);
 
 		wrapDateToTodayOrLater(newDate, dayAndMonthAndYear.length);
 		return newDate;
 	}
 
-	private TaskDate getDateFromString(String[] dayAndMonthAndYear) {
-		TaskDate currentDate = new TaskDate();
-		TaskDate newDate = (TaskDate) currentDate.clone();
+	private Calendar getDateFromString(String[] dayAndMonthAndYear) {
+		Calendar currentDate = new GregorianCalendar();
+		Calendar newDate = (Calendar) currentDate.clone();
 
 		switch (dayAndMonthAndYear.length) {
 			case 3 :
 				if (!dayAndMonthAndYear[2].matches("\\d{1,4}")) {
 					return null;
 				}
-				int currentYear = newDate.get(TaskDate.YEAR);
+				int currentYear = newDate.get(Calendar.YEAR);
 				int factor = (int) Math.pow(10, dayAndMonthAndYear[2].length());
-				newDate.set(TaskDate.YEAR,
+				newDate.set(Calendar.YEAR,
 						currentYear / factor * factor + Integer.parseInt(dayAndMonthAndYear[2]));
 				// fallthrough
 
@@ -446,7 +449,7 @@ public class Logic {
 				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
 					return null;
 				}
-				newDate.set(TaskDate.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
+				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
 				// fallthrough
 
 			case 1 :
@@ -457,7 +460,7 @@ public class Logic {
 						return null;
 					}
 				}
-				newDate.set(TaskDate.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
+				newDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonthAndYear[0]));
 				break;
 		}
 
@@ -488,7 +491,7 @@ public class Logic {
 				copyTaskToInputForEditting(taskIndex);
 			} else {
 				if (!task.isStartDateSet()) {
-					TaskDate today = new TaskDate();
+					Calendar today = new GregorianCalendar();
 					task.setStartDate(today);
 				}
 			}
@@ -503,23 +506,23 @@ public class Logic {
 		returnEditFeedback(taskIndex);
 	}
 
-	private TaskDate getNextDate(List<String> args) {
+	private Calendar getNextDate(List<String> args) {
 		String increment = args.get(args.size() - 1).toLowerCase();
-		TaskDate newDate = new TaskDate();
+		Calendar newDate = new GregorianCalendar();
 
 		if (increment.equals("day")) {
-			newDate.add(TaskDate.DATE, 1);
+			newDate.add(Calendar.DATE, 1);
 		} else if (increment.equals("week")) {
-			newDate.add(TaskDate.DATE, 7);
+			newDate.add(Calendar.DATE, 7);
 		} else if (increment.equals("month")) {
-			newDate.add(TaskDate.MONTH, 1);
+			newDate.add(Calendar.MONTH, 1);
 		} else if (increment.equals("year")) {
-			newDate.add(TaskDate.YEAR, 1);
+			newDate.add(Calendar.YEAR, 1);
 		} else {
-			int currentDay = newDate.get(TaskDate.DAY_OF_WEEK);
+			int currentDay = newDate.get(Calendar.DAY_OF_WEEK);
 			boolean isDayExists = setDayIfExists(increment, newDate);
-			if (isDayExists && newDate.get(TaskDate.DAY_OF_WEEK) >= currentDay) {
-				newDate.add(TaskDate.DATE, 7);
+			if (isDayExists && newDate.get(Calendar.DAY_OF_WEEK) >= currentDay) {
+				newDate.add(Calendar.DATE, 7);
 			}
 		}
 
@@ -528,7 +531,7 @@ public class Logic {
 		// need include case for invalid 2nd input, i.e., next hi
 	}
 
-	private boolean setDayIfExists(String increment, TaskDate newDate) {
+	private boolean setDayIfExists(String increment, Calendar newDate) {
 		increment = increment.toLowerCase();
 		if (isSundayCase(increment)) {
 			wrapDateToNextDayOfWeek(newDate, 1);
@@ -547,7 +550,7 @@ public class Logic {
 		} else if (isTodayCase(increment)) {
 			return true;
 		} else if (isTomorrowCase(increment)) {
-			newDate.add(TaskDate.DATE, 1);
+			newDate.add(Calendar.DATE, 1);
 		} else {
 			return false;
 		}
@@ -591,12 +594,12 @@ public class Logic {
 		return increment.equals("sun") || increment.equals("sunday");
 	}
 
-	private void wrapDateToNextDayOfWeek(TaskDate newDate, int dayToWrapTo) {
-		if (newDate.get(TaskDate.DAY_OF_WEEK) == dayToWrapTo) {
-			newDate.add(TaskDate.DATE, 7);
+	private void wrapDateToNextDayOfWeek(Calendar newDate, int dayToWrapTo) {
+		if (newDate.get(Calendar.DAY_OF_WEEK) == dayToWrapTo) {
+			newDate.add(Calendar.DATE, 7);
 		} else {
-			while (newDate.get(TaskDate.DAY_OF_WEEK) != dayToWrapTo) {
-				newDate.add(TaskDate.DATE, 1);
+			while (newDate.get(Calendar.DAY_OF_WEEK) != dayToWrapTo) {
+				newDate.add(Calendar.DATE, 1);
 			}
 		}
 	}
@@ -617,7 +620,7 @@ public class Logic {
 	}
 
 	// todo: 7-11 default to am, 12-6 default to pm, if am/pm not specified
-	private TaskDate getTimeFromString(String timeString) {
+	private Calendar getTimeFromString(String timeString) {
 		String minuteFormat = "";
 		if (timeString.contains(":")) {
 			minuteFormat = ":mm";
@@ -631,7 +634,7 @@ public class Logic {
 			hourMarker = "hh";
 		}
 		SimpleDateFormat timeFormat = new SimpleDateFormat(hourMarker + minuteFormat + amOrPmMarker);
-		TaskDate time = new TaskDate();
+		Calendar time = new GregorianCalendar();
 		try {
 			time.setTime(timeFormat.parse(timeString));
 		} catch (ParseException e) {
@@ -640,9 +643,9 @@ public class Logic {
 		return time;
 	}
 
-	private TaskTime getTaskStartTime(String timeString) {
-		TaskTime time = new TaskTime();
-		time.set(TaskTime.MINUTE, 0);
+	private Calendar getTaskStartTime(String timeString) {
+		Calendar time = new GregorianCalendar();
+		time.set(Calendar.MINUTE, 0);
 		String timeDelimiterRegex = ":|\\.";
 		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
 		assert (hoursAndMinutes.length > 0);
@@ -657,7 +660,7 @@ public class Logic {
 				} else {
 					minutes = Integer.parseInt(minutesToChange);
 				}
-				time.set(TaskTime.MINUTE, minutes);
+				time.set(Calendar.MINUTE, minutes);
 				// fallthrough
 			case 1 :
 				String hoursToChange = hoursAndMinutes[0];
@@ -669,7 +672,7 @@ public class Logic {
 				} else {
 					hours = Integer.parseInt(hoursToChange);
 				}
-				time.set(TaskTime.HOUR, hours);
+				time.set(Calendar.HOUR, hours);
 				break;
 		}
 		return time;
@@ -730,7 +733,7 @@ public class Logic {
 			String dateString = _argument.substring(match.end()).trim();
 			String[] dayAndMonthAndYear = dateString.split("/", 3);
 			System.out.println(Arrays.toString(dayAndMonthAndYear));
-			TaskDate newDate = getDateFromString(dayAndMonthAndYear);
+			Calendar newDate = getDateFromString(dayAndMonthAndYear);
 			if (newDate == null) {
 				_newCommandType = CommandType.ERROR;
 				_feedback = "Failed to parse date: " + dateString;
@@ -821,11 +824,11 @@ public class Logic {
 		return true;
 	}
 
-	private int deleteTasksBeforeEqualsToDate(TaskDate newDate, List<Task> taskList, int count) {
+	private int deleteTasksBeforeEqualsToDate(Calendar newDate, List<Task> taskList, int count) {
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
 														 // works
 			Task task = taskList.get(i);
-			TaskDate date = task.getStartDate();
+			Calendar date = task.getStartDate();
 
 			if (date != null && date.compareTo(newDate) < 0) {
 				if (task.isRecurSet()) {

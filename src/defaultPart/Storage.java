@@ -16,6 +16,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -483,7 +485,7 @@ public class Storage {
 	 * @throws ParseException
 	 *             Error in formatting the date
 	 */
-	private TaskDate extractTimeFromNode(Element taskElement, String tag) throws ParseException {
+	private Calendar extractTimeFromNode(Element taskElement, String tag) throws ParseException {
 
 		// Assert than taskElement & tag are not null
 		assert (taskElement != null);
@@ -493,13 +495,13 @@ public class Storage {
 		if (calendarString == "") {
 			return null;
 		}
-		TaskDate calendar = new TaskDate();
+		Calendar calendar = new GregorianCalendar();
 		// calendar.parse(calendarString);
 		return calendar;
 	}
 
 	/**
-	 * Extract a TaskDate from node with specified tag and returns as Calendar object
+	 * Extract a Calendar from node with specified tag and returns as Calendar object
 	 * 
 	 * @param taskElement
 	 *            Element object containing the task details
@@ -509,7 +511,7 @@ public class Storage {
 	 * @throws ParseException
 	 *             Error in formatting the date
 	 */
-	private TaskDate extractDateFromNode(Element taskElement, String tag) throws ParseException {
+	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
 
 		// Assert than taskElement & tag are not null
 		assert (taskElement != null);
@@ -519,7 +521,7 @@ public class Storage {
 		if (calendarString == "") {
 			return null;
 		}
-		TaskDate calendar = new TaskDate();
+		Calendar calendar = new GregorianCalendar();
 		// calendar.(calendarString);
 		return calendar;
 	}
