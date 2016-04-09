@@ -57,23 +57,13 @@ public class Logic {
 	private List<List<String>> _keywordsPermutations;
 
 	public Logic() {
-		setupLogger();
+//		setupLogger();
 		try {
 			_storage = new Storage();
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Overloaded Constructor for integration testing to prevent interference with actual storage file
-	 * 
-	 * @throws SAXException
-	 */
-	public Logic(File testFile) throws SAXException {
-		setupLogger();
-		_storage = new Storage(testFile);
 	}
 
 	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
@@ -306,34 +296,38 @@ public class Logic {
 			task.setEndTime(getTimeFromString(startAndEndTime[1]));
 		}
 	}
-
+	
 	private boolean setTaskDateIfExists(Task task, List<String> args) {
-		if (args.size() == 0) {
-			return false;
-		}
-		int lastIndex = args.size() - 1;
+		int index = args.size() - 1;
+		String dateString = args.get(index);
 
-		Calendar date;
-
-		if (isNextCase(args, lastIndex)) {
-			date = getNextDate(args);
-			args.remove(lastIndex--);
-		} else {
-			date = getWrappedDateFromString(args.get(lastIndex));
+		String[] startAndEndDate = dateString.split("-", 2);
+		assert startAndEndDate.length > 0;
+		Calendar startDate = getTaskDate(startAndEndDate[0]);
+		if (startDate != null) {
+			logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
+			task.setStartDate(startDate);
+			
+			if (startAndEndDate.length == 2) {
+				Calendar endDate = getTaskDate(startAndEndDate[1]);
+				if (endDate != null) {
+					logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
+					task.setEndDate(endDate);
+				}
+			}
+			args.remove(index);
+			return true;
 		}
-
-		if (date == null) {
-			return false;
-		}
-		logger.log(Level.FINER, "Setting task date using \"{0}\"", args.get(lastIndex));
-		task.setStartDate(date);
-		args.remove(lastIndex);
-		return true;
+		return false;
 	}
 
-	private boolean isNextCase(List<String> args, int lastIndex) {
-		return args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next")
-				&& !isTodayCase(args.get(lastIndex)) && !isTomorrowCase(args.get(lastIndex));
+	private Calendar getTaskDate(String dateString) {
+		return (isNextCase(dateString)) ? getNextDate(dateString) : getWrappedDateFromString(dateString);
+	}
+
+	private boolean isNextCase(String date) {
+		return date.toLowerCase().equals("next")
+				&& !isTodayCase(date) && !isTomorrowCase(date);
 	}
 
 	private boolean isTime(String timeString) {
@@ -447,8 +441,8 @@ public class Logic {
 		commandInfo.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET));
 	}
 
-	private Calendar getNextDate(List<String> args) {
-		String increment = args.get(args.size() - 1).toLowerCase();
+	private Calendar getNextDate(String dateString) {
+		String increment = dateString.toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
 		if (increment.equals("day")) {
