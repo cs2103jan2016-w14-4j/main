@@ -51,13 +51,11 @@ public class Logic {
 
 	private Storage _storage;
 
-	private String _numOfTimesString;
-
 	/* for CommandType.FIND */
 	private List<List<String>> _keywordsPermutations;
 
 	public Logic() {
-//		setupLogger();
+		setupLogger();
 		try {
 			_storage = new Storage();
 		} catch (SAXException e) {
@@ -195,23 +193,10 @@ public class Logic {
 			logger.log(Level.FINE, "Setting date to today");
 			newTask.setStartDate(new GregorianCalendar());
 		}
-		boolean floating = arguments.charAt(arguments.length() - 1) == '.';
-		if (newTask.isStartDateSet() && !floating) {
-			if (newTask.isRecurSet()) {
-				if (_numOfTimesString != null) {
-					newTask.setEndDate(getRecurEndDate(newTask, _numOfTimesString));
-					_numOfTimesString = null;
-				}
-			}
-			newTask.setDescription(String.join(" ", args));
-		} else {
-			logger.log(Level.FINE, "Task has no date");
-			if (floating) {
-				newTask.setDescription(arguments.substring(0, arguments.length() - 1));
-			} else {
-				newTask.setDescription(arguments);
-			}
-		}
+
+		trimFullStop(args);
+
+		newTask.setDescription(String.join(" ", args));
 
 		_storage.addToTaskList(newTask);
 
@@ -219,6 +204,15 @@ public class Logic {
 			commandInfo.setFeedback("End date " + newTask.getFormattedEndDate() + " <= start date!");
 		} else {
 			commandInfo.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
+		}
+	}
+
+	private void trimFullStop(List<String> args) {
+		int lastIndex = args.size() - 1;
+		String lastString = args.get(lastIndex);
+		int lastStringIndex = lastString.length() - 1;
+		if (lastString.charAt(lastStringIndex) == '.') {
+			args.set(lastIndex, lastString.substring(0, lastStringIndex));
 		}
 	}
 
@@ -296,7 +290,7 @@ public class Logic {
 			task.setEndTime(getTimeFromString(startAndEndTime[1]));
 		}
 	}
-	
+
 	private boolean setTaskDateIfExists(Task task, List<String> args) {
 		int index = args.size() - 1;
 		String dateString = args.get(index);
@@ -307,7 +301,7 @@ public class Logic {
 		if (startDate != null) {
 			logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
 			task.setStartDate(startDate);
-			
+
 			if (startAndEndDate.length == 2) {
 				Calendar endDate = getTaskDate(startAndEndDate[1]);
 				if (endDate != null) {
@@ -326,8 +320,7 @@ public class Logic {
 	}
 
 	private boolean isNextCase(String date) {
-		return date.toLowerCase().equals("next")
-				&& !isTodayCase(date) && !isTomorrowCase(date);
+		return date.toLowerCase().equals("next") && !isTodayCase(date) && !isTomorrowCase(date);
 	}
 
 	private boolean isTime(String timeString) {
@@ -429,11 +422,6 @@ public class Logic {
 					task.setStartDate(today);
 				}
 			}
-		}
-
-		if (_numOfTimesString != null) {
-			task.setEndDate(getRecurEndDate(task, _numOfTimesString));
-			_numOfTimesString = null;
 		}
 
 		putEdittedTaskInStorage(taskIndex, task);
