@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,29 +16,27 @@ import java.util.List;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import defaultPart.CommandInfo;
 import defaultPart.Logic;
-import defaultPart.Recur;
-import defaultPart.Recur.TimeUnit;
 import defaultPart.Storage;
 import defaultPart.Task;
-import defaultPart.TaskDate;
-import defaultPart.TaskTime;
 
-/* @@author Shaun Lee */
+//@@author Shaun Lee
 public class SystemTest {
 
 	/* Location to load/save the expected test results */
 	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
-	private static final String TEST_FILE_NAME = "test\\SystemTest_actual.xml";
+	private static final String TEST_FILE_NAME = "tasklist.xml";
 
 	/**
 	 * Settings for XML file comparison using XMLUnit
 	 */
-	@Before
-	public void runBeforeEveryTest() {
+	@BeforeClass
+	public static void runBeforeStart() {
 
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
@@ -46,27 +45,12 @@ public class SystemTest {
 	}
 
 	/**
-	 * Helper function to create the a recur item based on presence of parameters
-	 * 
-	 * @throws ParseException
+	 * Delete the tasklist before every test case
 	 */
-	private Recur createRecur(String timeUnit, int frequency, String startOfRecur, String endOfRecur)
-			throws ParseException {
-
-		Recur newRecur = new Recur();
-
-		newRecur.setTimeUnit(TimeUnit.valueOf(timeUnit));
-		newRecur.setFrequency(frequency);
-		TaskDate startDate = new TaskDate();
-		startDate.setDateFromString(startOfRecur);
-		newRecur.setStartDate(startDate);
-		if (endOfRecur != null) {
-			TaskDate endDate = new TaskDate();
-			endDate.setDateFromString(endOfRecur);
-			newRecur.setEndDate(endDate);
-		}
-		return newRecur;
-
+	@Before
+	public void runBeforeEveryTest() {
+		File file = new File("tasklist.xml");
+		file.delete();
 	}
 
 	/**
@@ -78,33 +62,32 @@ public class SystemTest {
 	 * @throws ParseException
 	 */
 	private void storageCreateExpectedTask(Storage storage, File expectedFile, String description,
-			String date, String startTime, String endTime, Boolean completed, Recur recur)
-					throws SAXException, ParseException {
+			String startDate, String startTime, String endTime, Boolean completed, String endDate,
+			int recurField, int frequency) throws SAXException, ParseException {
 
 		Task newTask = new Task();
 		newTask.setDescription(description);
 
-		if (date != null) {
-			TaskDate calDate = new TaskDate();
-			calDate.setDateFromString(date);
-			newTask.setStartDate(calDate);
+		if (startDate != null) {
+			newTask.setStartDateFromFormattedString(startDate);
 		}
 		if (startTime != null) {
-			TaskTime calStartTime = new TaskTime();
-			calStartTime.parse(startTime);
-			newTask.setStartTime(calStartTime);
+			newTask.setStartTimeFromFormattedString(startTime);
+		}
+		if (endDate != null) {
+			newTask.setEndDateFromFormattedString(endDate);
 		}
 		if (endTime != null) {
-			TaskTime calEndTime = new TaskTime();
-			calEndTime.parse(endTime);
-			newTask.setEndTime(calEndTime);
+			newTask.setEndTimeFromFormattedString(endTime);
 		}
 		if (completed) {
 			newTask.toggleCompleted();
 		}
-		if (recur != null) {
-			newTask.setRecur(recur);
+		if (recurField != 0) {
+			newTask.setRecurField(recurField);
+			newTask.setRecurFrequency(frequency);
 		}
+
 		storage.addToTaskList(newTask);
 		storage.saveTasksToFile();
 	}
@@ -114,12 +97,14 @@ public class SystemTest {
 	 * 
 	 * @param cmd
 	 *            command to be parsed and executed
+	 * @return
 	 * @throws SAXException
 	 */
-	private void logicExecuteCommand(Logic logic, String cmd) throws SAXException {
+	private CommandInfo logicExecuteCommand(Logic logic, String cmd) throws SAXException {
 
-		logic.executeCommand(cmd);
+		CommandInfo returnInfo = logic.executeCommand(cmd);
 		logic.saveTasksToFile();
+		return returnInfo;
 	}
 
 	@Test
@@ -127,13 +112,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "CS2103T Reading");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "CS2103T Reading", null, null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "CS2103T Reading", null, null, null, false, null, 0,
+				0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -147,14 +133,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words CFG1010 8/4");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "500 words CFG1010", "8/4/2016", null, null, false,
-				null);
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -168,7 +154,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca mon");
 		logicExecuteCommand(logic, "500 words Chewbacca monday");
 		logicExecuteCommand(logic, "500 words Papaya Mon");
@@ -187,13 +173,13 @@ public class SystemTest {
 			}
 		}
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -207,7 +193,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca tue");
 		logicExecuteCommand(logic, "500 words Pohtaytoh tues");
 		logicExecuteCommand(logic, "500 words Chewbacca tuesday");
@@ -228,17 +214,17 @@ public class SystemTest {
 			}
 		}
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Crayfish",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -252,7 +238,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca wed");
 		logicExecuteCommand(logic, "500 words Pohtaytoh WED");
 		logicExecuteCommand(logic, "500 words Chewbacca wednesday");
@@ -273,17 +259,17 @@ public class SystemTest {
 			}
 		}
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Crayfish",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -297,7 +283,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca thur");
 		logicExecuteCommand(logic, "500 words Pohtaytoh thurs");
 		logicExecuteCommand(logic, "500 words Chewbacca thursday");
@@ -319,19 +305,19 @@ public class SystemTest {
 			}
 		}
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alalabamba",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words JulianPotato",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -345,7 +331,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca fri");
 		logicExecuteCommand(logic, "500 words Pohtaytoh friday");
 		logicExecuteCommand(logic, "500 words Chewbacca Fri");
@@ -367,19 +353,19 @@ public class SystemTest {
 			}
 		}
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alalabamba",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words JulianPotato",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -393,7 +379,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca sat");
 		logicExecuteCommand(logic, "500 words Pohtaytoh Sat");
 		logicExecuteCommand(logic, "500 words Chewbacca Saturday");
@@ -413,15 +399,15 @@ public class SystemTest {
 			}
 		}
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alalabamba",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -435,7 +421,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca sun");
 		logicExecuteCommand(logic, "500 words Pohtaytoh Sun");
 		logicExecuteCommand(logic, "500 words Chewbacca Sunday");
@@ -455,15 +441,15 @@ public class SystemTest {
 			}
 		}
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Pohtaytoh",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alalabamba",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Papaya",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -477,7 +463,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca next week");
 		logicExecuteCommand(logic, "500 words Chewbacca NEXT WEEK");
 		logicExecuteCommand(logic, "500 words Coconut Next Week");
@@ -489,11 +475,11 @@ public class SystemTest {
 		GregorianCalendar expectedDate = new GregorianCalendar();
 		expectedDate.add(Calendar.DATE, 7);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Coconut",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -507,7 +493,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca Today");
 		logicExecuteCommand(logic, "500 words Chewbacca today");
 		logicExecuteCommand(logic, "Read Next today");
@@ -518,11 +504,11 @@ public class SystemTest {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		GregorianCalendar expectedDate = new GregorianCalendar();
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "Read Next",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -536,7 +522,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "500 words Alpaca tomorrow");
 		logicExecuteCommand(logic, "500 words Chewbacca Tomorrow");
 		logicExecuteCommand(logic, "500 words Dabao tmrw");
@@ -550,15 +536,15 @@ public class SystemTest {
 		GregorianCalendar expectedDate = new GregorianCalendar();
 		expectedDate.add(Calendar.DATE, 1);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Alpaca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Chewbacca",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words Dabao",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "500 words LiangCha",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "Read Next",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null);
+				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -571,14 +557,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan Jap Trip 30/1/2016 11am");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan Jap Trip", "30/1/2016", "11:00AM", null, false,
-				null);
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -591,14 +577,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy some potatoes 30/1/2016 11am-12pm");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "30/1/2016", "11:00AM",
-				"12:00PM", false, null);
+				"12:00PM", false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -611,14 +597,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Go out with girlfriend 1/9 3d 15");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Go out with girlfriend", "01/9/2016", null, null,
-				false, createRecur("DAY", 3, "01/9/216", "16/10/2016"));
+				false, null, Calendar.DAY_OF_YEAR, 3);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -632,14 +618,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Go out with girlfriend 1/4 3d 15");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Go out with girlfriend", "01/4/2017", null, null,
-				false, createRecur("DAY", 3, "01/4/2017", "16/5/2017"));
+				false, null, Calendar.DAY_OF_YEAR, 3);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -652,14 +638,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Go out with jully 2/7 1w 2");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Go out with jully", "02/7/2016", null, null, false,
-				createRecur("WEEK", 1, "02/7/216", "16/7/2016"));
+				null, Calendar.WEEK_OF_YEAR, 1);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -673,14 +659,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "HIMYM 1/1/2027 12:00 1d 50");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "HIMYM", "1/1/2027", "12:00PM", null, false,
-				createRecur("DAY", 1, "1/1/2027", "20/2/2027"));
+		storageCreateExpectedTask(storage, expectedFile, "HIMYM", "1/1/2027", "12:00PM", null, false, null,
+				Calendar.DAY_OF_YEAR, 1);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -693,14 +679,14 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 10");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
-				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "11/5/2016"));
+				"12:00PM", false, null, Calendar.DAY_OF_YEAR, 10);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -713,14 +699,15 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "CS2103T Reading");
 		logicExecuteCommand(logic, "e 1 Potato Reading");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Potato Reading", null, null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Potato Reading", null, null, null, false, null, 0,
+				0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -733,7 +720,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Tomato Reading 11/4/2016");
 		logicExecuteCommand(logic, "e 1 20/4/2016");
 
@@ -741,7 +728,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Tomato Reading", "20/4/2016", null, null, false,
-				null);
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -754,7 +741,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Tomato Reading 11/4/2016 2pm");
 		logicExecuteCommand(logic, "e 1 3pm");
 
@@ -762,7 +749,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Tomato Reading", "11/4/2016", "3:00PM", null, false,
-				null);
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -775,7 +762,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Cabbage Reading 11/4/2016 2pm-4pm");
 		logicExecuteCommand(logic, "e 1 3pm");
 
@@ -783,7 +770,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Cabbage Reading", "11/4/2016", "3:00PM", null,
-				false, null);
+				false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -796,7 +783,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Cucumber Reading 11/4/2016 2pm-4pm");
 		logicExecuteCommand(logic, "e 1 2pm-5pm");
 
@@ -804,7 +791,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Cucumber Reading", "11/4/2016", "2:00PM", "5:00PM",
-				false, null);
+				false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -817,7 +804,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1");
 		logicExecuteCommand(logic, "e 1 1w 1");
 
@@ -825,7 +812,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
-				"12:00PM", false, createRecur("WEEK", 1, "1/5/2016", "8/5/2016"));
+				"12:00PM", false, null, Calendar.WEEK_OF_YEAR, 1);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -838,7 +825,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1");
 		logicExecuteCommand(logic, "e 1 3d 1");
 
@@ -846,7 +833,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
-				"12:00PM", false, createRecur("DAY", 3, "1/5/2016", "4/5/2016"));
+				"12:00PM", false, "4/5/2016", Calendar.DAY_OF_YEAR, 3);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -859,7 +846,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1");
 		logicExecuteCommand(logic, "e 1 1d 5");
 
@@ -867,7 +854,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
-				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "6/5/2016"));
+				"12:00PM", false, null, Calendar.DAY_OF_YEAR, 1);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -880,7 +867,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1/1/2016");
 		logicExecuteCommand(logic, "e 1 1d 10/1/2016");
 
@@ -888,7 +875,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
-				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "10/1/2016"));
+				"12:00PM", false, null, Calendar.DAY_OF_YEAR, 1);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -901,15 +888,15 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
-		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1/1/2016");
+		Logic logic = new Logic();
+		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1/1/2017");
 		logicExecuteCommand(logic, "e 2 Buy Tomatoes Instead");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
-				"12:00PM", false, createRecur("DAY", 1, "1/5/2016", "1/1/2016"));
+				"12:00PM", false, "1/1/2017", Calendar.DAY_OF_YEAR, 1);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -922,12 +909,12 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2016");
-		logicExecuteCommand(logic, "f Trip");
-		List<Integer> actualIndexList = logic.getIndexesFound();
+		CommandInfo returnIndexs = logicExecuteCommand(logic, "f Trip");
+		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
 		// Setting up expected Task List for comparison
 		List<Integer> expectedList = new ArrayList<Integer>();
@@ -943,12 +930,12 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2016");
-		logicExecuteCommand(logic, "f TRIP");
-		List<Integer> actualIndexList = logic.getIndexesFound();
+		CommandInfo returnIndexs = logicExecuteCommand(logic, "f TRIP");
+		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
 		// Setting up expected Task List for comparison
 		List<Integer> expectedList = new ArrayList<Integer>();
@@ -964,12 +951,12 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
-		logicExecuteCommand(logic, "f trip plan");
-		List<Integer> actualIndexList = logic.getIndexesFound();
+		CommandInfo returnIndexs = logicExecuteCommand(logic, "f trip plan");
+		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
 		// Setting up expected Task List for comparison
 		List<Integer> expectedList = new ArrayList<Integer>();
@@ -986,7 +973,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
@@ -995,9 +982,10 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
-				null);
-		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null,
+				0, 0);
+		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1010,7 +998,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
@@ -1020,9 +1008,9 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
-				null);
+				null, 0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
-				null);
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1035,7 +1023,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
@@ -1044,9 +1032,10 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
-				null);
+		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
+				null, 0, 0);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null,
+				0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1059,7 +1048,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
@@ -1069,10 +1058,11 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
-				null);
-		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+				null, 0, 0);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null,
+				0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
-				null);
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1085,7 +1075,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy Potatoes");
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Eat Potatoes");
@@ -1099,10 +1089,11 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2016", null, null, false,
-				null);
-		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null);
+				null, 0, 0);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2016", null, null, false, null,
+				0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2016", null, null, false,
-				null);
+				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1115,7 +1106,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Buy Potatoes");
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/6/2016");
@@ -1125,10 +1116,11 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/6/2016", null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/6/2016", null, null, false, null,
+				0, 0);
 		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/7/2016", null, null, false,
-				null);
-		storageCreateExpectedTask(storage, expectedFile, "Buy Potatoes", null, null, null, false, null);
+				null, 0, 0);
+		storageCreateExpectedTask(storage, expectedFile, "Buy Potatoes", null, null, null, false, null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1141,7 +1133,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 1");
 		logicExecuteCommand(logic, "d 1");
 
@@ -1149,7 +1141,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "4/5/2016", null, null, false,
-				createRecur("DAY", 3, "4/5/2016", "4/5/2016"));
+				null, Calendar.DAY_OF_YEAR, 3);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1163,7 +1155,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 2");
 		logicExecuteCommand(logic, "d 1");
 		logicExecuteCommand(logic, "d 1");
@@ -1172,7 +1164,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "7/5/2016", null, null, false,
-				createRecur("DAY", 3, "7/5/2016", "7/5/2016"));
+				null, Calendar.DAY_OF_YEAR, 3);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1186,7 +1178,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017 3d 1");
 		logicExecuteCommand(logic, "d < 2/5/2017");
 
@@ -1194,7 +1186,7 @@ public class SystemTest {
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "4/5/2017", null, null, false,
-				createRecur("DAY", 3, "4/5/2017", "4/5/2017"));
+				null, Calendar.DAY_OF_YEAR, 3);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1207,7 +1199,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 1");
 		logicExecuteCommand(logic, "Potato potato");
 		logicExecuteCommand(logic, "d 1");
@@ -1216,7 +1208,8 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
+				0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1229,7 +1222,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 4/5/2016");
 		logicExecuteCommand(logic, "Potato potato");
 		logicExecuteCommand(logic, "d 1");
@@ -1238,7 +1231,8 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
+				0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1252,7 +1246,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(testFile);
+		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016 3d 3/5/2016");
 		logicExecuteCommand(logic, "Potato potato");
 		logicExecuteCommand(logic, "d 1");
@@ -1260,7 +1254,8 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
-		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
+				0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1285,5 +1280,6 @@ public class SystemTest {
 	//
 	// logicExecuteCommand(logic, "s /");
 	// }
+	//
 
 }

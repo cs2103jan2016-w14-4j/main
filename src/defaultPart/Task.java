@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Task {
+public class Task implements Cloneable {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mma");
 
@@ -192,6 +192,20 @@ public class Task {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Task clone() {
+		try {
+			Task task = (Task) super.clone();
+			task._startDateAndTime = (Calendar) this._startDateAndTime.clone();
+			task._endDateAndTime = (Calendar) this._endDateAndTime.clone();
+			return task;
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

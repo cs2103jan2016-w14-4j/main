@@ -16,18 +16,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Predicate;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-/* @@author Shaun Lee */
+//@@author Shaun Lee
 public class Storage {
 
 	/* For accessing the different Tags for the XML */
@@ -61,6 +60,7 @@ public class Storage {
 		setupLogger();
 		_settings = new Settings();
 		_file = new File(_settings.getSavePathAndName());
+		_commandInfoList.push(new CommandInfo(new LinkedList<Task>()));
 	}
 
 	/**
@@ -72,6 +72,22 @@ public class Storage {
 		setupLogger();
 		_file = storageFile;
 		// _settings = new Settings();
+	}
+
+	public List<Task> getTaskList() {
+		return _commandInfoList.peek().getTaskList();
+	}
+
+	public int deleteTasksWithPredicate(Predicate<Task> pred) {
+		int count = 0;
+		List<Task> taskList = _commandInfoList.peek().getTaskList();
+		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
+			if (pred.test(taskList.get(i))) {
+				taskList.remove(i);
+				count++;
+			}
+		}
+		return count;
 	}
 
 	public void setSavePath(String filePath) throws SAXException, ParseException {
@@ -117,12 +133,15 @@ public class Storage {
 	}
 
 	public CommandInfo createNewCommandInfo() {
-		List<Task> taskList = new LinkedList<Task>();
-		if (_commandInfoList.size() > 0) {
-			taskList = new LinkedList<Task>(_commandInfoList.peek().getTaskList());
-		}
-		CommandInfo commandInfo = new CommandInfo(taskList);
 
+		List<Task> taskList = new LinkedList<Task>();
+		if (!_commandInfoList.isEmpty()) {
+			for (Task prevTask : _commandInfoList.peek().getTaskList()) {
+				taskList.add(prevTask.clone());
+			}
+		}
+
+		CommandInfo commandInfo = new CommandInfo(taskList);
 		_commandInfoList.push(commandInfo);
 		return commandInfo;
 	}
@@ -178,7 +197,7 @@ public class Storage {
 			return null;
 		}
 	}
-	
+
 	public CommandInfo redoLastUndo(CommandInfo commandInfo) {
 		// pops the REDO commandInfo from list
 		_commandInfoList.pop();
@@ -202,6 +221,9 @@ public class Storage {
 
 		// Assert that the new task is not null
 		assert (newTask != null);
+		if (_commandInfoList.isEmpty()) {
+			createNewCommandInfo();
+		}
 		List<Task> taskList = _commandInfoList.peek().getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
 			if (!newTask.isDateTimeAfterTask(taskList.get(i))) {
@@ -250,8 +272,6 @@ public class Storage {
 	 */
 	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
 		// First check if the file exists and is not a directory but an actual file
-		CommandInfo commandInfo = createNewCommandInfo();
-		List<Task> taskList = commandInfo.getTaskList();
 		if (_file.isFile() && _file.canRead()) {
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(_file);
@@ -263,12 +283,12 @@ public class Storage {
 						Element taskElement = (Element) taskNode;
 						Task newTask = null;
 						newTask = importTask(taskElement);
-						taskList.add(newTask);
+						addToTaskList(newTask);
 					}
 				}
 			}
 		}
-		return taskList;
+		return _commandInfoList.peek().getTaskList();
 	}
 
 	/**
@@ -486,58 +506,6 @@ public class Storage {
 		}
 
 		return newTask;
-	}
-
-	/**
-	 * Extract a TaskTime from node with specified tag and returns as Calendar object
-	 * 
-	 * @param taskElement
-	 *            Element object containing the task details
-	 * @param tag
-	 *            Tag to specify which date, e.g. "start", "end'
-	 * @return Calendar class object converted from the date
-	 * @throws ParseException
-	 *             Error in formatting the date
-	 */
-	private Calendar extractTimeFromNode(Element taskElement, String tag) throws ParseException {
-
-		// Assert than taskElement & tag are not null
-		assert (taskElement != null);
-		assert (tag != null || tag != "");
-
-		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
-		if (calendarString == "") {
-			return null;
-		}
-		Calendar calendar = new GregorianCalendar();
-		// calendar.parse(calendarString);
-		return calendar;
-	}
-
-	/**
-	 * Extract a Calendar from node with specified tag and returns as Calendar object
-	 * 
-	 * @param taskElement
-	 *            Element object containing the task details
-	 * @param tag
-	 *            Tag to specify which date, e.g. "start", "end'
-	 * @return Calendar class object converted from the date
-	 * @throws ParseException
-	 *             Error in formatting the date
-	 */
-	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
-
-		// Assert than taskElement & tag are not null
-		assert (taskElement != null);
-		assert (tag != null || tag != "");
-
-		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
-		if (calendarString == "") {
-			return null;
-		}
-		Calendar calendar = new GregorianCalendar();
-		// calendar.(calendarString);
-		return calendar;
 	}
 
 	/**

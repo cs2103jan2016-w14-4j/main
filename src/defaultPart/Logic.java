@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -52,8 +51,6 @@ public class Logic {
 
 	private Storage _storage;
 
-	private String _numOfTimesString;
-
 	/* for CommandType.FIND */
 	private List<List<String>> _keywordsPermutations;
 
@@ -65,16 +62,6 @@ public class Logic {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Overloaded Constructor for integration testing to prevent interference with actual storage file
-	 * 
-	 * @throws SAXException
-	 */
-	public Logic(File testFile) throws SAXException {
-		setupLogger();
-		_storage = new Storage(testFile);
 	}
 
 	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
@@ -150,10 +137,6 @@ public class Logic {
 		return commandInfo;
 	}
 
-	private boolean isWhiteSpaces(String str) {
-		return str.matches("\\s*");
-	}
-
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
 	private void setCommandTypeAndArguments(CommandInfo commandInfo, String input) {
 		String[] commandTypeAndArguments = splitCommand(input);
@@ -191,14 +174,6 @@ public class Logic {
 		return commandType.name().substring(0, 1).toLowerCase();
 	}
 
-	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
-	private void removeIndexesFromList(List<String> list, int[] indexes) {
-		Arrays.sort(indexes);
-		for (int i = indexes.length - 1; i >= 0; i--) {
-			list.remove(indexes[i]);
-		}
-	}
-
 	private void addTask(CommandInfo commandInfo) {
 		Task newTask = new Task();
 		String arguments = commandInfo.getArguments();
@@ -218,23 +193,10 @@ public class Logic {
 			logger.log(Level.FINE, "Setting date to today");
 			newTask.setStartDate(new GregorianCalendar());
 		}
-		boolean floating = arguments.charAt(arguments.length() - 1) == '.';
-		if (newTask.isStartDateSet() && !floating) {
-			if (newTask.isRecurSet()) {
-				if (_numOfTimesString != null) {
-					newTask.setEndDate(getRecurEndDate(newTask, _numOfTimesString));
-					_numOfTimesString = null;
-				}
-			}
-			newTask.setDescription(String.join(" ", args));
-		} else {
-			logger.log(Level.FINE, "Task has no date");
-			if (floating) {
-				newTask.setDescription(arguments.substring(0, arguments.length() - 1));
-			} else {
-				newTask.setDescription(arguments);
-			}
-		}
+
+		trimFullStop(args);
+
+		newTask.setDescription(String.join(" ", args));
 
 		_storage.addToTaskList(newTask);
 
@@ -245,70 +207,33 @@ public class Logic {
 		}
 	}
 
+	private void trimFullStop(List<String> args) {
+		int lastIndex = args.size() - 1;
+		String lastString = args.get(lastIndex);
+		int lastStringIndex = lastString.length() - 1;
+		if (lastString.charAt(lastStringIndex) == '.') {
+			args.set(lastIndex, lastString.substring(0, lastStringIndex));
+		}
+	}
+
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
 	private boolean setRecurIfExists(Task task, List<String> args) {
-		if (args.size() >= 2) {
-
-			return setRecurWithEndDate(task, args);
-
-		} else if (args.size() == 1) {
-
-			return setRecurWithNoEndDate(task, args);
-
+		if (args.size() == 1) {
+			int frequencyAndUnitIndex = args.size() - 1;
+			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+			if (frequencyAndUnit.matches("\\d*[dwmy]")) {
+				setTaskRecurField(task, frequencyAndUnit);
+				char frequency = frequencyAndUnit.charAt(0);
+				if (Character.isDigit(frequency)) {
+					task.setRecurFrequency(Character.getNumericValue(frequency));
+				}
+				args.remove(frequencyAndUnit);
+				return true;
+			} else {
+				return false;
+			}
 		}
 		return false;
-	}
-
-	private boolean setRecurWithNoEndDate(Task task, List<String> args) {
-		int frequencyAndUnitIndex = args.size() - 1;
-		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-		if (frequencyAndUnit.matches("\\d*[dwmy]")) {
-			setTaskRecurField(task, frequencyAndUnit);
-			char frequency = frequencyAndUnit.charAt(0);
-			if (Character.isDigit(frequency)) {
-				task.setRecurFrequency(Character.getNumericValue(frequency));
-			}
-			args.remove(frequencyAndUnit);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean setRecurWithEndDate(Task task, List<String> args) {
-		int frequencyAndUnitIndex = args.size() - 2;
-		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-
-		int endConditionIndex = args.size() - 1;
-		String endCondition = args.get(endConditionIndex);
-		boolean endConditionSpecified = !endCondition.matches("\\d*[dwmy]");
-
-		if ((frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*"))
-				|| !endConditionSpecified) {
-			if (!endConditionSpecified) {
-				frequencyAndUnit = args.get(endConditionIndex);
-			}
-			setTaskRecurField(task, frequencyAndUnit);
-			char frequency = frequencyAndUnit.charAt(0);
-			if (Character.isDigit(frequency)) {
-				task.setRecurFrequency(Character.getNumericValue(frequency));
-			}
-			if (endConditionSpecified) {
-				if (endCondition.matches("\\d+")) {
-					_numOfTimesString = endCondition;
-				} else {
-					task.setEndDate(getWrappedDateFromString(endCondition));
-				}
-			}
-			if (!endConditionSpecified) {
-				args.remove(endConditionIndex);
-			} else {
-				removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
-			}
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	private void setTaskRecurField(Task task, String frequencyAndUnit) {
@@ -367,6 +292,7 @@ public class Logic {
 	}
 
 	private boolean setTaskDateIfExists(Task task, List<String> args) {
+<<<<<<< HEAD
 		if (args.size() == 0) {
 			return false;
 		}
@@ -378,20 +304,43 @@ public class Logic {
 			date = getNextDate(args);
 		} else {
 			date = getWrappedDateFromString(args.get(lastIndex));
-		}
+=======
+		int index = args.size() - 1;
+		String dateString = args.get(index);
 
-		if (date == null) {
-			return false;
+		String[] startAndEndDate = dateString.split("-", 2);
+		assert startAndEndDate.length > 0;
+		Calendar startDate = getTaskDate(startAndEndDate[0]);
+		if (startDate != null) {
+			logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
+			task.setStartDate(startDate);
+
+			if (startAndEndDate.length == 2) {
+				Calendar endDate = getTaskDate(startAndEndDate[1]);
+				if (endDate != null) {
+					logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
+					task.setEndDate(endDate);
+				}
+			}
+			args.remove(index);
+			return true;
+>>>>>>> origin/master
 		}
-		logger.log(Level.FINER, "Setting task date using \"{0}\"", args.get(lastIndex));
-		task.setStartDate(date);
-		args.remove(lastIndex);
-		return true;
+		return false;
 	}
 
+	private Calendar getTaskDate(String dateString) {
+		return (isNextCase(dateString)) ? getNextDate(dateString) : getWrappedDateFromString(dateString);
+	}
+
+<<<<<<< HEAD
 	private boolean isNextCase(List<String> args, int lastIndex) {
 		return args.get(lastIndex).substring(0, 1).equals("n") && !isTodayCase(args.get(lastIndex))
 				&& !isTomorrowCase(args.get(lastIndex));
+=======
+	private boolean isNextCase(String date) {
+		return date.toLowerCase().equals("next") && !isTodayCase(date) && !isTomorrowCase(date);
+>>>>>>> origin/master
 	}
 
 	private boolean isTime(String timeString) {
@@ -495,18 +444,18 @@ public class Logic {
 			}
 		}
 
-		if (_numOfTimesString != null) {
-			task.setEndDate(getRecurEndDate(task, _numOfTimesString));
-			_numOfTimesString = null;
-		}
-
 		putEdittedTaskInStorage(taskIndex, task);
 
 		commandInfo.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET));
 	}
 
+<<<<<<< HEAD
 	private Calendar getNextDate(List<String> args) {
 		String increment = args.get(args.size() - 1).substring(1).toLowerCase();
+=======
+	private Calendar getNextDate(String dateString) {
+		String increment = dateString.toLowerCase();
+>>>>>>> origin/master
 		Calendar newDate = new GregorianCalendar();
 
 		if (increment.equals("day")) {
@@ -634,41 +583,6 @@ public class Logic {
 		return time;
 	}
 
-	private Calendar getTaskStartTime(String timeString) {
-		Calendar time = new GregorianCalendar();
-		time.set(Calendar.MINUTE, 0);
-		String timeDelimiterRegex = ":|\\.";
-		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
-		assert (hoursAndMinutes.length > 0);
-		switch (hoursAndMinutes.length) {
-			case 2 :
-				String minutesToChange = hoursAndMinutes[1];
-				int minutes = 0;
-				if (minutesToChange.contains("pm")) {
-					minutes = Integer.parseInt(minutesToChange.split("pm")[0]) + 12 * 60;
-				} else if (minutesToChange.contains("am")) {
-					minutes = Integer.parseInt(minutesToChange.split("am")[0]);
-				} else {
-					minutes = Integer.parseInt(minutesToChange);
-				}
-				time.set(Calendar.MINUTE, minutes);
-				// fallthrough
-			case 1 :
-				String hoursToChange = hoursAndMinutes[0];
-				int hours = 0;
-				if (hoursToChange.contains("pm")) {
-					hours = Integer.parseInt(hoursToChange.split("pm")[0]) + 12;
-				} else if (hoursToChange.contains("am")) {
-					hours = Integer.parseInt(hoursToChange.split("am")[0]);
-				} else {
-					hours = Integer.parseInt(hoursToChange);
-				}
-				time.set(Calendar.HOUR, hours);
-				break;
-		}
-		return time;
-	}
-
 	/**
 	 * Toggles a task's isComplete between true and false
 	 */
@@ -688,10 +602,10 @@ public class Logic {
 	}
 
 	private void deleteTask(CommandInfo commandInfo) throws IOException, InputIndexOutOfBoundsException {
-		String arguments = commandInfo.getArguments();
-		if (deleteMultiple(commandInfo, arguments)) {
+		if (deleteMultiple(commandInfo)) {
 			return;
 		}
+		String arguments = commandInfo.getArguments();
 		int taskIndex = getTaskIndex(arguments);
 		Task task = _storage.getTask(taskIndex);
 
@@ -707,112 +621,39 @@ public class Logic {
 		}
 	}
 
-	private boolean deleteMultiple(CommandInfo commandInfo, String arguments) {
+	private boolean deleteMultiple(CommandInfo commandInfo) {
+		return deleteMultipleWithoutDeadline(commandInfo) || deleteMultipleCompletedTasks(commandInfo)
+				|| deleteFromDate(commandInfo) || deleteMultipleIndexes(commandInfo);
+	}
+
+	private boolean deleteFromDate(CommandInfo commandInfo) {
+		String arguments = commandInfo.getArguments();
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(arguments);
 
-		String[] indexToDelete = arguments.split(",");
-		int count = 0;
-		if (arguments.equals("-")) {
-			count = deleteMultipleWithoutDeadline(commandInfo.getTaskList());
-		} else if (arguments.equals("c")) {
-			count = deleteMultipleCompletedTasks(commandInfo.getTaskList());
-		} else if (isEqualityType(match)) {
+		if (match.find() && match.start() == 0) {
 			String dateString = arguments.substring(match.end()).trim();
 			String[] dayAndMonthAndYear = dateString.split("/", 3);
-			System.out.println(Arrays.toString(dayAndMonthAndYear));
 			Calendar newDate = getDateFromString(dayAndMonthAndYear);
 			if (newDate == null) {
 				commandInfo.setCommandType(CommandType.ERROR);
 				commandInfo.setFeedback("Failed to parse date: " + dateString);
 				return true;
 			}
-			List<Task> taskList = commandInfo.getTaskList();
+			List<Task> taskList = _storage.getTaskList();
+			int count = 0;
 			switch (match.group()) {
 				case "<" :
-					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
+					deleteTasksBeforeEqualsToDate(newDate, taskList, count);
 					break;
 
 				case "<=" :
-					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
+					deleteTasksBeforeEqualsToDate(newDate, taskList, count);
 					break;
 			}
 			return true;
-		} else if (indexToDelete.length > 1 || arguments.split("-").length > 1) {
-			// first check if all numbers are valid
-			for (String index : indexToDelete) {
-				String[] multIndexToDelete = index.split("-");
-				if (multIndexToDelete.length > 2) {
-					return false;
-				}
-
-				if (index.contains("-") && index.split("-").length != 2) {
-					return false;
-				}
-				for (String multIndex : multIndexToDelete) {
-					if (isInteger(multIndex) && _storage.isTaskIndexValid(Integer.parseInt(multIndex) - 1)) {
-						continue;
-					} else {
-						return false;
-					}
-				}
-			}
-
-			List<Integer> indexToDeleteList = new ArrayList<Integer>();
-
-			for (String index : indexToDelete) {
-				if (index.contains("-")) {
-					String[] multIndexToDelete = index.split("-");
-					int start = Integer.parseInt(multIndexToDelete[0]);
-					int end = Integer.parseInt(multIndexToDelete[1]);
-					for (int i = start; i <= end; i++) {
-						indexToDeleteList.add(i);
-					}
-				} else {
-					indexToDeleteList.add(Integer.parseInt(index));
-				}
-			}
-
-			Collections.sort(indexToDeleteList);
-
-			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
-				_storage.removeTask(indexToDeleteList.get(i) - 1);
-			}
-
-			return true;
 		}
-
-		if (count > 0) {
-			commandInfo.setFeedback("Removed " + count + " tasks");
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public static boolean isInteger(String str) {
-		// By Jonas K. on StackOverflow
-		if (str == null) {
-			return false;
-		}
-		int length = str.length();
-		if (length == 0) {
-			return false;
-		}
-		int i = 0;
-		if (str.charAt(0) == '-') {
-			if (length == 1) {
-				return false;
-			}
-			i = 1;
-		}
-		for (; i < length; i++) {
-			char c = str.charAt(i);
-			if (c < '0' || c > '9') {
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
 
 	private int deleteTasksBeforeEqualsToDate(Calendar newDate, List<Task> taskList, int count) {
@@ -845,33 +686,76 @@ public class Logic {
 		return count;
 	}
 
-	private boolean isEqualityType(Matcher match) {
-		return match.find() && match.start() == 0;
+	private boolean deleteMultipleCompletedTasks(CommandInfo commandInfo) {
+		if (commandInfo.getArguments().equals("c")) {
+			logger.log(Level.FINE, "Deleting all completed tasks");
+			int count = _storage.deleteTasksWithPredicate(task -> task.isCompleted());
+			commandInfo.setFeedback(String.format("Deleted %1$s completed tasks", count));
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	private int deleteMultipleCompletedTasks(List<Task> taskList) {
-		logger.log(Level.FINE, "Deleting all completed tasks");
-		int count = 0;
-		for (int i = taskList.size() - 1; i >= 0; i--) {
-			if (taskList.get(i).isCompleted()) {
-				_storage.removeTask(i);
-				count++;
-			}
+	private boolean deleteMultipleWithoutDeadline(CommandInfo commandInfo) {
+		if (commandInfo.getArguments().equals(".")) {
+			logger.log(Level.FINE, "Deleting all tasks without date");
+			int count = _storage.deleteTasksWithPredicate(task -> !task.isStartDateSet());
+			commandInfo.setFeedback(String.format("Deleted %1$s tasks without date", count));
+			return true;
+		} else {
+			return false;
 		}
-
-		return count;
 	}
 
-	private int deleteMultipleWithoutDeadline(List<Task> taskList) {
-		logger.log(Level.FINE, "Deleting all tasks without deadline");
-		int count = 0;
-		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
-			if (taskList.get(i).getStartDate() == null) {
-				_storage.removeTask(i);
-				count++;
+	private boolean deleteMultipleIndexes(CommandInfo commandInfo) {
+		String arguments = commandInfo.getArguments();
+		String[] indexToDelete = arguments.split(",");
+
+		if (indexToDelete.length > 1 || arguments.split("-").length > 1) {
+			// first check if all numbers are valid
+			for (String index : indexToDelete) {
+				String[] multIndexToDelete = index.split("-");
+				if (multIndexToDelete.length > 2) {
+					return false;
+				}
+
+				if (index.contains("-") && index.split("-").length != 2) {
+					return false;
+				}
+				for (String multIndex : multIndexToDelete) {
+					if (multIndex.matches("\\d+")
+							&& _storage.isTaskIndexValid(Integer.parseInt(multIndex) - 1)) {
+						continue;
+					} else {
+						return false;
+					}
+				}
 			}
+
+			List<Integer> indexToDeleteList = new ArrayList<Integer>();
+
+			for (String index : indexToDelete) {
+				if (index.contains("-")) {
+					String[] multIndexToDelete = index.split("-");
+					int start = Integer.parseInt(multIndexToDelete[0]);
+					int end = Integer.parseInt(multIndexToDelete[1]);
+					for (int i = start; i <= end; i++) {
+						indexToDeleteList.add(i);
+					}
+				} else {
+					indexToDeleteList.add(Integer.parseInt(index));
+				}
+			}
+
+			Collections.sort(indexToDeleteList);
+
+			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
+				_storage.removeTask(indexToDeleteList.get(i) - 1);
+			}
+			return true;
 		}
-		return count;
+		return false;
 	}
 
 	/**
@@ -886,7 +770,7 @@ public class Logic {
 		List<Integer> indexesFound = new ArrayList<Integer>();
 		_keywordsPermutations = new LinkedList<List<String>>();
 		List<String> keywords = splitKeywordsIntoLowercaseWords(arguments);
-		List<Task> taskList = commandInfo.getTaskList();
+		List<Task> taskList = _storage.getTaskList();
 
 		if (arguments.length() == 1) {
 
