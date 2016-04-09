@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import defaultPart.Settings;
 
+/* @@author Shaun Lee */
 public class settingsTest {
 
 	/* File names */

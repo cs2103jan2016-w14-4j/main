@@ -22,6 +22,7 @@ import defaultPart.Task;
 import defaultPart.TaskDate;
 import defaultPart.TaskTime;
 
+/* @@author Shaun Lee */
 public class StorageTest {
 
 	/* Location to load/save the expected test results */
@@ -38,20 +39,10 @@ public class StorageTest {
 	 */
 	public static Task instantiateTestTask(int type) {
 
-		TaskDate calDate = new TaskDate();
-		TaskTime calStart = new TaskTime();
-		TaskTime calEnd = new TaskTime();
-		TaskDate calRecEnd = new TaskDate();
-		try {
-			calDate.setDateFromString("20/6/2016");
-			calStart.parse("10:00AM");
-			calEnd.parse("12:00PM");
-			calRecEnd.setDateFromString("20/8/2016");
-
-		} catch (ParseException e) {
-
-			e.printStackTrace();
-		}
+		String startDate = "20/6/2016";
+		String startTime = "10:00AM";
+		String endDate = "20/8/2016";
+		String endTime = "12:00PM";
 
 		Task newTask = new Task();
 		switch (type) {
@@ -60,25 +51,28 @@ public class StorageTest {
 				break;
 			case 2 :
 				newTask.setDescription("Deadline Test case");
-				newTask.setStartDate(calDate);
-				newTask.setEndTime(calEnd);
+				newTask.setStartDateFromFormattedString(startDate);
+				newTask.setStartTimeFromFormattedString(endTime);
 				break;
 			case 3 :
 				newTask.setDescription("Event Test case");
-				newTask.setStartDate(calDate);
-				newTask.setStartTime(calStart);
-				newTask.setEndTime(calEnd);
+				newTask.setStartDateFromFormattedString(startDate);
+				newTask.setStartTimeFromFormattedString(startTime);
+				newTask.setEndDateFromFormattedString(startDate);
+				newTask.setEndTimeFromFormattedString(endTime);
+				
 				break;
 			case 4 :
 				newTask.setDescription("Event Recur Test case");
-				newTask.setStartDate(calDate);
-				newTask.setStartTime(calStart);
-				newTask.setEndTime(calEnd);
-				Recur newRecur = new Recur();
+				newTask.setDescription("Event Test case");
+				newTask.setStartDateFromFormattedString(startDate);
+				newTask.setStartTimeFromFormattedString(startTime);
+				newTask.setEndDateFromFormattedString(endDate);
+				newTask.setEndTimeFromFormattedString(endTime);
 				newRecur.setTimeUnit(Recur.TimeUnit.DAY);
 				newRecur.setFrequency(3);
-				newRecur.setStartDate(calDate);
-				newRecur.setEndDate(calRecEnd);
+				newRecur.setStartDate(startDate);
+				newRecur.setEndDate(endDate);
 				newTask.setRecur(newRecur);
 				break;
 

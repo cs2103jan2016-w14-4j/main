@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+/* @@author Shaun Lee */
 public class Storage {
 
 	/* For accessing the different Tags for the XML */

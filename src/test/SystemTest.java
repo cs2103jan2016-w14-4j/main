@@ -26,6 +26,7 @@ import defaultPart.Task;
 import defaultPart.TaskDate;
 import defaultPart.TaskTime;
 
+/* @@author Shaun Lee */
 public class SystemTest {
 
 	/* Location to load/save the expected test results */
