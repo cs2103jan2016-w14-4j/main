@@ -247,68 +247,22 @@ public class Logic {
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
 	private boolean setRecurIfExists(Task task, List<String> args) {
-		if (args.size() >= 2) {
-
-			return setRecurWithEndDate(task, args);
-
-		} else if (args.size() == 1) {
-
-			return setRecurWithNoEndDate(task, args);
-
+		if (args.size() == 1) {
+			int frequencyAndUnitIndex = args.size() - 1;
+			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+			if (frequencyAndUnit.matches("\\d*[dwmy]")) {
+				setTaskRecurField(task, frequencyAndUnit);
+				char frequency = frequencyAndUnit.charAt(0);
+				if (Character.isDigit(frequency)) {
+					task.setRecurFrequency(Character.getNumericValue(frequency));
+				}
+				args.remove(frequencyAndUnit);
+				return true;
+			} else {
+				return false;
+			}
 		}
 		return false;
-	}
-
-	private boolean setRecurWithNoEndDate(Task task, List<String> args) {
-		int frequencyAndUnitIndex = args.size() - 1;
-		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-		if (frequencyAndUnit.matches("\\d*[dwmy]")) {
-			setTaskRecurField(task, frequencyAndUnit);
-			char frequency = frequencyAndUnit.charAt(0);
-			if (Character.isDigit(frequency)) {
-				task.setRecurFrequency(Character.getNumericValue(frequency));
-			}
-			args.remove(frequencyAndUnit);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean setRecurWithEndDate(Task task, List<String> args) {
-		int frequencyAndUnitIndex = args.size() - 2;
-		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-
-		int endConditionIndex = args.size() - 1;
-		String endCondition = args.get(endConditionIndex);
-		boolean endConditionSpecified = !endCondition.matches("\\d*[dwmy]");
-
-		if ((frequencyAndUnit.matches("\\d*[dwmy]") && endCondition.matches("\\d+/?\\d*/?\\d*"))
-				|| !endConditionSpecified) {
-			if (!endConditionSpecified) {
-				frequencyAndUnit = args.get(endConditionIndex);
-			}
-			setTaskRecurField(task, frequencyAndUnit);
-			char frequency = frequencyAndUnit.charAt(0);
-			if (Character.isDigit(frequency)) {
-				task.setRecurFrequency(Character.getNumericValue(frequency));
-			}
-			if (endConditionSpecified) {
-				if (endCondition.matches("\\d+")) {
-					_numOfTimesString = endCondition;
-				} else {
-					task.setEndDate(getWrappedDateFromString(endCondition));
-				}
-			}
-			if (!endConditionSpecified) {
-				args.remove(endConditionIndex);
-			} else {
-				removeIndexesFromList(args, new int[] { endConditionIndex, frequencyAndUnitIndex });
-			}
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	private void setTaskRecurField(Task task, String frequencyAndUnit) {
@@ -629,41 +583,6 @@ public class Logic {
 			time.setTime(timeFormat.parse(timeString));
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
-		return time;
-	}
-
-	private Calendar getTaskStartTime(String timeString) {
-		Calendar time = new GregorianCalendar();
-		time.set(Calendar.MINUTE, 0);
-		String timeDelimiterRegex = ":|\\.";
-		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
-		assert (hoursAndMinutes.length > 0);
-		switch (hoursAndMinutes.length) {
-			case 2 :
-				String minutesToChange = hoursAndMinutes[1];
-				int minutes = 0;
-				if (minutesToChange.contains("pm")) {
-					minutes = Integer.parseInt(minutesToChange.split("pm")[0]) + 12 * 60;
-				} else if (minutesToChange.contains("am")) {
-					minutes = Integer.parseInt(minutesToChange.split("am")[0]);
-				} else {
-					minutes = Integer.parseInt(minutesToChange);
-				}
-				time.set(Calendar.MINUTE, minutes);
-				// fallthrough
-			case 1 :
-				String hoursToChange = hoursAndMinutes[0];
-				int hours = 0;
-				if (hoursToChange.contains("pm")) {
-					hours = Integer.parseInt(hoursToChange.split("pm")[0]) + 12;
-				} else if (hoursToChange.contains("am")) {
-					hours = Integer.parseInt(hoursToChange.split("am")[0]);
-				} else {
-					hours = Integer.parseInt(hoursToChange);
-				}
-				time.set(Calendar.HOUR, hours);
-				break;
 		}
 		return time;
 	}

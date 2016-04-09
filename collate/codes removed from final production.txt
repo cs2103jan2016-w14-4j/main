@@ -1,0 +1,35 @@
+//@@author Julian	
+	private Calendar getTaskStartTime(String timeString) {
+		Calendar time = new GregorianCalendar();
+		time.set(Calendar.MINUTE, 0);
+		String timeDelimiterRegex = ":|\\.";
+		String[] hoursAndMinutes = timeString.split(timeDelimiterRegex, 2);
+		assert (hoursAndMinutes.length > 0);
+		switch (hoursAndMinutes.length) {
+			case 2 :
+				String minutesToChange = hoursAndMinutes[1];
+				int minutes = 0;
+				if (minutesToChange.contains("pm")) {
+					minutes = Integer.parseInt(minutesToChange.split("pm")[0]) + 12 * 60;
+				} else if (minutesToChange.contains("am")) {
+					minutes = Integer.parseInt(minutesToChange.split("am")[0]);
+				} else {
+					minutes = Integer.parseInt(minutesToChange);
+				}
+				time.set(Calendar.MINUTE, minutes);
+				// fallthrough
+			case 1 :
+				String hoursToChange = hoursAndMinutes[0];
+				int hours = 0;
+				if (hoursToChange.contains("pm")) {
+					hours = Integer.parseInt(hoursToChange.split("pm")[0]) + 12;
+				} else if (hoursToChange.contains("am")) {
+					hours = Integer.parseInt(hoursToChange.split("am")[0]);
+				} else {
+					hours = Integer.parseInt(hoursToChange);
+				}
+				time.set(Calendar.HOUR, hours);
+				break;
+		}
+		return time;
+	}
