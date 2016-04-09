@@ -112,3 +112,73 @@
 	 return newRecur;
 	
 	 }
+
+/**
+ -	 * Extract out recur class from task and creates the proper XML structure for saving
+ -	 * 
+ -	 * @param doc
+ -	 *            Document which contains the current XML structure
+ -	 * @param taskItem
+ -	 *            Task to extract out the recur class from
+ -	 * @param parentElement
+ -	 *            Parent element to append the recur XML structure to
+ -	 */
+ -	private void extractRecurrFromTask(Document doc, Task taskItem, Element parentElement) {
+ -		Recur recur = taskItem.getRecur();
+ -		if (recur == null) {
+ -			return;
+ -		}
+ -
+ -		// Assert that the parameters are not null
+ -		assert (doc != null);
+ -		assert (taskItem != null);
+ -		assert (parentElement != null);
+ -
+ -		Element recurrElement = doc.createElement(TAG_TASK_RECUR);
+ -		Element recurTimeUnitElement = doc.createElement(TAG_TASK_TIMEUNIT);
+ -		Element recurFrequencyElement = doc.createElement(TAG_TASK_FREQUENCY);
+ -		Element recurStartOfRecurrElement = doc.createElement(TAG_TASK_START_OF_RECURR);
+ -		Element recurEndOfRecurrElement = doc.createElement(TAG_TASK_END_OF_RECURR);
+ -		recurTimeUnitElement.appendChild(doc.createTextNode(recur.getTimeUnit().toString()));
+ -		recurFrequencyElement.appendChild(doc.createTextNode(Integer.toString(recur.getFrequency())));
+ -		recurStartOfRecurrElement.appendChild(doc.createTextNode(recur.getStartDate().toString()));
+ -		TaskDate endDate = recur.getEndDate();
+ -		recurEndOfRecurrElement.appendChild(doc.createTextNode(endDate == null ? "" : endDate.toString()));
+ -		recurrElement.appendChild(recurTimeUnitElement);
+ -		recurrElement.appendChild(recurFrequencyElement);
+ -		recurrElement.appendChild(recurStartOfRecurrElement);
+ -		recurrElement.appendChild(recurEndOfRecurrElement);
+ -		parentElement.appendChild(recurrElement);
+ -	}
+ -
+ -	/**
+
+/**
+ -	 * Extract out a recur class from the recur XML structure of a task, called when importing tasks
+ -	 * 
+ -	 * @param taskElement
+ -	 *            Element object containing the task/recur details
+ -	 * @return Recur object in taskElement object, null if task does not recur
+ -	 * @throws ParseException
+ -	 *             Error in formatting the date
+ -	 */
+ -	private Recur extractRecurFromXML(Element taskElement) throws ParseException {
+ -
+ -		// Assert than taskElement is not null
+ -		assert (taskElement != null);
+ -
+ -		if (taskElement.getElementsByTagName(TAG_TASK_RECUR).getLength() == 0) {
+ -			return null;
+ -		}
+ -
+ -		String timeUnit = extractStringFromNode(taskElement, TAG_TASK_TIMEUNIT);
+ -		int frequency = Integer.parseInt(extractStringFromNode(taskElement, TAG_TASK_FREQUENCY));
+ -		TaskDate startOfRecurr = extractDateFromNode(taskElement, TAG_TASK_START_OF_RECURR);
+ -		TaskDate endOfRecurr = extractDateFromNode(taskElement, TAG_TASK_END_OF_RECURR);
+ -		Recur taskRecurr = new Recur();
+ -		taskRecurr.setTimeUnit(TimeUnit.valueOf(timeUnit));
+ -		taskRecurr.setFrequency(frequency);
+ -		taskRecurr.setStartDate(startOfRecurr);
+ -		taskRecurr.setEndDate(endOfRecurr);
+ -		return taskRecurr;
+ -	}
