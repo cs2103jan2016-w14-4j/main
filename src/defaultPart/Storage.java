@@ -61,7 +61,8 @@ public class Storage {
 		setupLogger();
 		_settings = new Settings();
 		_file = new File(_settings.getSavePathAndName());
-	}
+		_commandInfoList.push(new CommandInfo(new LinkedList<Task>()));
+		}
 
 	/**
 	 * Overloaded Constructor for integration testing to prevent interference with actual storage file
@@ -118,14 +119,15 @@ public class Storage {
 
 	public CommandInfo createNewCommandInfo() {
 		List<Task> taskList = new LinkedList<Task>();
-		if (_commandInfoList.size() > 0) {
-			taskList = new LinkedList<Task>(_commandInfoList.peek().getTaskList());
+		for (Task prevTask: _commandInfoList.peek().getTaskList()) {
+			taskList.add(prevTask.clone());
 		}
 		CommandInfo commandInfo = new CommandInfo(taskList);
-
 		_commandInfoList.push(commandInfo);
 		return commandInfo;
 	}
+	
+
 
 	/**
 	 * Returns the task at specified index
@@ -250,8 +252,6 @@ public class Storage {
 	 */
 	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
 		// First check if the file exists and is not a directory but an actual file
-		CommandInfo commandInfo = createNewCommandInfo();
-		List<Task> taskList = commandInfo.getTaskList();
 		if (_file.isFile() && _file.canRead()) {
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(_file);
@@ -263,12 +263,12 @@ public class Storage {
 						Element taskElement = (Element) taskNode;
 						Task newTask = null;
 						newTask = importTask(taskElement);
-						taskList.add(newTask);
+						addToTaskList(newTask);
 					}
 				}
 			}
 		}
-		return taskList;
+		return _commandInfoList.peek().getTaskList();
 	}
 
 	/**
