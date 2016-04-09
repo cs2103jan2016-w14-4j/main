@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -125,7 +124,7 @@ public class Logic {
 				case UNDO :
 					undoLastCommand(commandInfo);
 					break;
-				
+
 				case REDO :
 					redoLastUndo(commandInfo);
 					break;
@@ -148,10 +147,6 @@ public class Logic {
 					.setFeedback(String.format(MESSAGE_INVALID_INDEX, e.getIndex() + LIST_NUMBERING_OFFSET));
 		}
 		return commandInfo;
-	}
-
-	private boolean isWhiteSpaces(String str) {
-		return str.matches("\\s*");
 	}
 
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
@@ -189,14 +184,6 @@ public class Logic {
 
 	private String getFirstLetterOfCommandType(CommandType commandType) {
 		return commandType.name().substring(0, 1).toLowerCase();
-	}
-
-	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
-	private void removeIndexesFromList(List<String> list, int[] indexes) {
-		Arrays.sort(indexes);
-		for (int i = indexes.length - 1; i >= 0; i--) {
-			list.remove(indexes[i]);
-		}
 	}
 
 	private void addTask(CommandInfo commandInfo) {
@@ -928,7 +915,7 @@ public class Logic {
 							prevCommandInfo.getArguments()));
 		}
 	}
-	
+
 	private void redoLastUndo(CommandInfo commandInfo) {
 		CommandInfo redoCommandInfo = _storage.redoLastUndo(commandInfo);
 
@@ -938,7 +925,7 @@ public class Logic {
 			commandInfo.setFeedback(
 					String.format(MESSAGE_REDO, getFirstLetterOfCommandType(redoCommandInfo.getCommandType()),
 							redoCommandInfo.getArguments()));
-		}		
+		}
 	}
 
 	private void setStoragePath(CommandInfo commandInfo) {

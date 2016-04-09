@@ -62,7 +62,7 @@ public class Storage {
 		_settings = new Settings();
 		_file = new File(_settings.getSavePathAndName());
 		_commandInfoList.push(new CommandInfo(new LinkedList<Task>()));
-		}
+	}
 
 	/**
 	 * Overloaded Constructor for integration testing to prevent interference with actual storage file
@@ -119,15 +119,13 @@ public class Storage {
 
 	public CommandInfo createNewCommandInfo() {
 		List<Task> taskList = new LinkedList<Task>();
-		for (Task prevTask: _commandInfoList.peek().getTaskList()) {
+		for (Task prevTask : _commandInfoList.peek().getTaskList()) {
 			taskList.add(prevTask.clone());
 		}
 		CommandInfo commandInfo = new CommandInfo(taskList);
 		_commandInfoList.push(commandInfo);
 		return commandInfo;
 	}
-	
-
 
 	/**
 	 * Returns the task at specified index
@@ -180,7 +178,7 @@ public class Storage {
 			return null;
 		}
 	}
-	
+
 	public CommandInfo redoLastUndo(CommandInfo commandInfo) {
 		// pops the REDO commandInfo from list
 		_commandInfoList.pop();

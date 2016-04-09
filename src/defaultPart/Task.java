@@ -193,7 +193,7 @@ public class Task implements Cloneable {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public Task clone() {
 		try {
