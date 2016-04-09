@@ -9,6 +9,9 @@ public class CommandInfo {
 
 	private CommandType _commandType;
 
+	/* Stores the userInput to be displayed for UNDO */
+	private String _arguments;
+
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
 
@@ -17,12 +20,24 @@ public class CommandInfo {
 
 	/* taskList to display */
 	private List<Task> _taskList;
-	
-	/* used for EDIT_SHOW_TASK */
+
+	/* used for EDIT_DESCRIPTION */
 	private int _taskToEdit;
-	
-	public CommandInfo(CommandType commandType) {
+
+	public CommandInfo(List<Task> taskList) {
+		_taskList = taskList;
+	}
+
+	public void setCommandType(CommandType commandType) {
 		_commandType = commandType;
+	}
+
+	public void setArguments(String arguments) {
+		_arguments = arguments;
+	}
+
+	public String getArguments() {
+		return _arguments;
 	}
 
 	public CommandType getCommandType() {

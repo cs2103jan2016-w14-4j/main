@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -43,11 +44,8 @@ public class Storage {
 	/* For Logging */
 	private static final Logger logger = Logger.getLogger(Storage.class.getName());
 
-	/* Stores current list of tasks in the program */
-	private List<Task> _currentTaskList = new LinkedList<Task>();
-
-	/* Used for CommandType.UNDO */
-	private List<Task> _prevTaskList = new LinkedList<Task>();
+	private Stack<CommandInfo> _commandInfoList = new Stack<CommandInfo>();
+	private Stack<CommandInfo> _commandInfoRedoList = new Stack<CommandInfo>();
 
 	/* Location of the task list file */
 	private File _file;
@@ -91,7 +89,7 @@ public class Storage {
 		_settings.setSavePath(filePath);
 		_settings.saveConfigToFile();
 		_file = new File(_settings.getSavePathAndName());
-		if (!loadTasksFromFile()) {
+		if (loadTasksFromFile().size() == 0) {
 			saveTasksToFile();
 		}
 	}
@@ -118,14 +116,15 @@ public class Storage {
 		}
 	}
 
-	/**
-	 * Get a copy of the task list
-	 * 
-	 * @return The current Task list
-	 */
-	public List<Task> getTaskList() {
-		/* Returns a clone to prevent undesired modification */
-		return new LinkedList<Task>(_currentTaskList);
+	public CommandInfo createNewCommandInfo() {
+		List<Task> taskList = new LinkedList<Task>();
+		if (_commandInfoList.size() > 0) {
+			taskList = new LinkedList<Task>(_commandInfoList.peek().getTaskList());
+		}
+		CommandInfo commandInfo = new CommandInfo(taskList);
+
+		_commandInfoList.add(commandInfo);
+		return commandInfo;
 	}
 
 	/**
@@ -140,7 +139,7 @@ public class Storage {
 			logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
 			throw new InputIndexOutOfBoundsException(index);
 		}
-		return _currentTaskList.get(index);
+		return _commandInfoList.peek().getTaskList().get(index);
 	}
 
 	/**
@@ -151,7 +150,7 @@ public class Storage {
 	 * @return True if task index is valid
 	 */
 	public boolean isTaskIndexValid(int taskIndex) {
-		return (taskIndex >= 0 && taskIndex < _currentTaskList.size());
+		return (taskIndex >= 0 && taskIndex < _commandInfoList.peek().getTaskList().size());
 	}
 
 	/**
@@ -161,22 +160,23 @@ public class Storage {
 	 *            Index of task to remove
 	 */
 	public void removeTask(int taskIndex) {
-		_currentTaskList.remove(taskIndex);
+		_commandInfoList.peek().getTaskList().remove(taskIndex);
 	}
 
 	/**
 	 * Replace current task list with previous task list, for the "undo" function
 	 */
-	public void setPreviousListAsCurrent() {
-		_currentTaskList = _prevTaskList;
-	}
-
-	/**
-	 * "Save-state" for future undo operations.
-	 */
-	public void setCurrentListAsPrevious() {
-		// todo: change to list for multiple undo
-		_prevTaskList = new LinkedList<Task>(_currentTaskList);
+	public CommandInfo setPreviousListAsCurrent(CommandInfo commandInfo) {
+		// pops the UNDO commandInfo from list
+		_commandInfoList.pop();
+		if (_commandInfoList.size() > 1) {
+			CommandInfo prevCommandInfo = _commandInfoList.pop();
+			_commandInfoRedoList.add(prevCommandInfo);
+			commandInfo.setTaskList(_commandInfoList.peek().getTaskList());
+			return prevCommandInfo;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -189,14 +189,14 @@ public class Storage {
 
 		// Assert that the new task is not null
 		assert (newTask != null);
-
-		for (int i = 0; i < _currentTaskList.size(); i++) {
-			if (!newTask.isDateTimeAfterTask(_currentTaskList.get(i))) {
-				_currentTaskList.add(i, newTask);
+		List<Task> taskList = _commandInfoList.peek().getTaskList();
+		for (int i = 0; i < taskList.size(); i++) {
+			if (!newTask.isDateTimeAfterTask(taskList.get(i))) {
+				taskList.add(i, newTask);
 				return;
 			}
 		}
-		_currentTaskList.add(newTask);
+		taskList.add(newTask);
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class Storage {
 		Element rootElement = doc.createElement("wuriTasks");
 		doc.appendChild(rootElement);
 
-		for (Task taskItem : _currentTaskList) {
+		for (Task taskItem : _commandInfoList.peek().getTaskList()) {
 			if (taskItem != null) {
 				createTasksXML(doc, taskItem, rootElement);
 			}
@@ -235,12 +235,13 @@ public class Storage {
 	 * @throws SAXException
 	 *             Error in XML file structure
 	 */
-	public boolean loadTasksFromFile() throws SAXException, ParseException {
+	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
 		// First check if the file exists and is not a directory but an actual file
+		CommandInfo commandInfo = createNewCommandInfo();
+		List<Task> taskList = commandInfo.getTaskList();
 		if (_file.isFile() && _file.canRead()) {
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(_file);
-			_currentTaskList.clear();
 			// Iterates through the list of tasks extracted
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				{
@@ -249,13 +250,12 @@ public class Storage {
 						Element taskElement = (Element) taskNode;
 						Task newTask = null;
 						newTask = importTask(taskElement);
-						_currentTaskList.add(newTask);
+						taskList.add(newTask);
 					}
 				}
 			}
-			return true;
 		}
-		return false;
+		return taskList;
 	}
 
 	/**

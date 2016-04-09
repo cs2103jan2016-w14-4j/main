@@ -39,30 +39,19 @@ public class Logic {
 	private static final String MESSAGE_INVALID_INDEX = "Invalid index %1$s";
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s";
 	private static final String MESSAGE_NO_ARGUMENTS = "No arguments";
-	private static final String MESSAGE_UNDO = "Undid last command: %1$s";
+	private static final String MESSAGE_UNDO = "Undid last command: %1$s %2$s";
 
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
 		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, COMPLETE_MARKING, UNDO, HELP,
 
 		// for internal use
-		EDIT_DESCRIPTION, ADD, ERROR, NULL
+		BLANK, EDIT_DESCRIPTION, ADD, ERROR
 	};
 
-	private String _argument;
-	private CommandType _oldCommandType;
-	private CommandType _newCommandType;
 	private Storage _storage;
 
-	/* Feedback to be shown to user after a user operation */
-	private String _feedback;
-
 	private String _numOfTimesString;
-
-	/* Used for CommandType.FIND */
-	// todo: clear it before inserting, or get rid of it by putting found task in currentTaskList?
-	// and restore from prev task list if _oldCommandType == FIND
-	private List<Integer> _indexesFound;
 
 	/* for CommandType.FIND */
 	private List<List<String>> _keywordsPermutations;
@@ -87,8 +76,8 @@ public class Logic {
 		_storage = new Storage(testFile);
 	}
 
-	public void loadTasksFromFile() throws SAXException, ParseException {
-		_storage.loadTasksFromFile();
+	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
+		return _storage.loadTasksFromFile();
 	}
 
 	private void setupLogger() {
@@ -106,40 +95,38 @@ public class Logic {
 		}
 	}
 
-	public boolean executeCommand(String input) {
-		if (isWhiteSpaces(input)) {
-			return false;
-		}
-		setCommandTypeAndArguments(input);
-		logger.log(Level.FINE, "Executing {0}", _newCommandType);
+	public CommandInfo executeCommand(String input) {
+		CommandInfo commandInfo = _storage.createNewCommandInfo();
+		setCommandTypeAndArguments(commandInfo, input);
+		logger.log(Level.FINE, "Executing {0}", commandInfo.getCommandType());
 		try {
-			switch (_newCommandType) {
+			switch (commandInfo.getCommandType()) {
 				case ADD :
-					addTask();
+					addTask(commandInfo);
 					break;
 
 				case EDIT :
-					editTask();
+					editTask(commandInfo);
 					break;
 
 				case COMPLETE_MARKING :
-					toggleTaskComplete();
+					toggleTaskComplete(commandInfo);
 					break;
 
 				case DELETE :
-					deleteTask();
+					deleteTask(commandInfo);
 					break;
 
 				case FIND :
-					findTask();
+					findTask(commandInfo);
 					break;
 
 				case UNDO :
-					undoLastCommand();
+					undoLastCommand(commandInfo);
 					break;
 
 				case SET_STORAGE_PATH :
-					setStoragePath();
+					setStoragePath(commandInfo);
 					break;
 
 				case QUIT :
@@ -148,13 +135,14 @@ public class Logic {
 
 			}
 		} catch (IOException e) {
-			_newCommandType = CommandType.ERROR;
-			_feedback = e.getMessage();
+			commandInfo.setCommandType(CommandType.ERROR);
+			commandInfo.setFeedback(e.getMessage());
 		} catch (InputIndexOutOfBoundsException e) {
-			_newCommandType = CommandType.ERROR;
-			_feedback = String.format(MESSAGE_INVALID_INDEX, e.getIndex() + LIST_NUMBERING_OFFSET);
+			commandInfo.setCommandType(CommandType.ERROR);
+			commandInfo
+					.setFeedback(String.format(MESSAGE_INVALID_INDEX, e.getIndex() + LIST_NUMBERING_OFFSET));
 		}
-		return true;
+		return commandInfo;
 	}
 
 	private boolean isWhiteSpaces(String str) {
@@ -162,18 +150,15 @@ public class Logic {
 	}
 
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
-	private void setCommandTypeAndArguments(String input) {
+	private void setCommandTypeAndArguments(CommandInfo commandInfo, String input) {
 		String[] commandTypeAndArguments = splitCommand(input);
 		logger.log(Level.FINE, "Split command length: {0}", commandTypeAndArguments.length);
-		String commandTypeStr = (commandTypeAndArguments.length > 0) ? commandTypeAndArguments[0] : "";
-		setCommandType(commandTypeStr);
+		commandInfo.setCommandType(parseCommandType(commandTypeAndArguments));
 
-		if (_newCommandType == CommandType.ADD) {
-			_argument = input;
+		if (commandInfo.getCommandType() == CommandType.ADD) {
+			commandInfo.setArguments(input);
 		} else if (commandTypeAndArguments.length >= 2) {
-			_argument = commandTypeAndArguments[1];
-		} else {
-			_argument = null;
+			commandInfo.setArguments(commandTypeAndArguments[1]);
 		}
 	}
 
@@ -181,16 +166,24 @@ public class Logic {
 		return input.trim().split(" ", 2);
 	}
 
-	private void setCommandType(String commandTypeStr) {
-		_oldCommandType = _newCommandType;
-		commandTypeStr = commandTypeStr.toUpperCase();
+	private CommandType parseCommandType(String[] commandTypeAndArguments) {
+		if (commandTypeAndArguments.length == 0) {
+			return CommandType.BLANK;
+		}
+
+		String commandTypeStr = commandTypeAndArguments[0].toUpperCase();
+
 		for (CommandType commandType : CommandType.values()) {
-			if (commandType.name().substring(0, 1).equals(commandTypeStr)) {
-				_newCommandType = commandType;
-				return;
+			if (getFirstLetterOfCommandType(commandType).equals(commandTypeStr)) {
+				return commandType;
 			}
 		}
-		_newCommandType = CommandType.ADD;
+
+		return CommandType.ADD;
+	}
+
+	private String getFirstLetterOfCommandType(CommandType commandType) {
+		return commandType.name().substring(0, 1);
 	}
 
 	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
@@ -201,9 +194,10 @@ public class Logic {
 		}
 	}
 
-	private void addTask() {
+	private void addTask(CommandInfo commandInfo) {
 		Task newTask = new Task();
-		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
+		String arguments = commandInfo.getArguments();
+		List<String> args = new ArrayList<String>(Arrays.asList(arguments.split(" ")));
 		if (args.size() >= 2) {
 			setRecurIfExists(newTask, args);
 		}
@@ -219,7 +213,7 @@ public class Logic {
 			logger.log(Level.FINE, "Setting date to today");
 			newTask.setStartDate(new GregorianCalendar());
 		}
-		boolean floating = _argument.charAt(_argument.length() - 1) == '.';
+		boolean floating = arguments.charAt(arguments.length() - 1) == '.';
 		if (newTask.isStartDateSet() && !floating) {
 			if (newTask.isRecurSet()) {
 				if (_numOfTimesString != null) {
@@ -231,20 +225,18 @@ public class Logic {
 		} else {
 			logger.log(Level.FINE, "Task has no date");
 			if (floating) {
-				newTask.setDescription(_argument.substring(0, _argument.length() - 1));
+				newTask.setDescription(arguments.substring(0, arguments.length() - 1));
 			} else {
-				newTask.setDescription(_argument);
+				newTask.setDescription(arguments);
 			}
 		}
-
-		_storage.setCurrentListAsPrevious();
 
 		_storage.addToTaskList(newTask);
 
 		if (newTask.isStartDateAfterEndDate()) {
-			_feedback = "End date " + newTask.getFormattedEndDate() + " <= start date!";
+			commandInfo.setFeedback("End date " + newTask.getFormattedEndDate() + " <= start date!");
 		} else {
-			_feedback = String.format(MESSAGE_TASK_ADDED, newTask.toString());
+			commandInfo.setFeedback(String.format(MESSAGE_TASK_ADDED, newTask.toString()));
 		}
 	}
 
@@ -469,13 +461,14 @@ public class Logic {
 		return newDate;
 	}
 
-	private void editTask() throws InputIndexOutOfBoundsException, IOException {
-		if (_argument == null) {
-			_feedback = MESSAGE_NO_ARGUMENTS;
+	private void editTask(CommandInfo commandInfo) throws InputIndexOutOfBoundsException, IOException {
+		String arguments = commandInfo.getArguments();
+		if (arguments == null) {
+			commandInfo.setFeedback(MESSAGE_NO_ARGUMENTS);
 			return;
 		}
-		List<String> args = new ArrayList<String>(Arrays.asList(_argument.split(" ")));
-		int taskIndex = getTaskIndex();
+		List<String> args = new ArrayList<String>(Arrays.asList(arguments.split(" ")));
+		int taskIndex = getTaskIndex(arguments);
 		args.remove(0);
 		Task task = _storage.getTask(taskIndex);
 		assert (task != null);
@@ -488,7 +481,8 @@ public class Logic {
 			task.setDescription(String.join(" ", args));
 		} else {
 			if (!isTaskTimeEdited & !isTaskDateEdited & !isRecurEdited) {
-				copyTaskToInputForEditting(taskIndex);
+				commandInfo.setCommandType(CommandType.EDIT_DESCRIPTION);
+				commandInfo.setTaskToEdit(taskIndex);
 			} else {
 				if (!task.isStartDateSet()) {
 					Calendar today = new GregorianCalendar();
@@ -503,7 +497,8 @@ public class Logic {
 		}
 
 		putEdittedTaskInStorage(taskIndex, task);
-		returnEditFeedback(taskIndex);
+
+		commandInfo.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET));
 	}
 
 	private Calendar getNextDate(List<String> args) {
@@ -604,19 +599,9 @@ public class Logic {
 		}
 	}
 
-	private void returnEditFeedback(int taskIndex) {
-		_feedback = String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET);
-	}
-
 	private void putEdittedTaskInStorage(int taskIndex, Task task) {
 		_storage.removeTask(taskIndex);
 		_storage.addToTaskList(task); // re-add so that it's sorted by date/time
-	}
-
-	private void copyTaskToInputForEditting(int taskIndex) {
-		_newCommandType = CommandType.EDIT_DESCRIPTION;
-		_indexesFound = new ArrayList<Integer>();
-		_indexesFound.add(taskIndex);
 	}
 
 	// todo: 7-11 default to am, 12-6 default to pm, if am/pm not specified
@@ -681,66 +666,62 @@ public class Logic {
 	/**
 	 * Toggles a task's isComplete between true and false
 	 */
-	private void toggleTaskComplete() throws IOException, InputIndexOutOfBoundsException {
-		if (_argument == null) {
-			_feedback = MESSAGE_NO_ARGUMENTS;
+	private void toggleTaskComplete(CommandInfo commandInfo)
+			throws IOException, InputIndexOutOfBoundsException {
+		String arguments = commandInfo.getArguments();
+		if (arguments == null) {
+			commandInfo.setFeedback(MESSAGE_NO_ARGUMENTS);
 			return;
 		}
-		int taskIndex = getTaskIndex();
+		int taskIndex = getTaskIndex(arguments);
 		Task task = _storage.getTask(taskIndex);
-
-		_storage.setCurrentListAsPrevious();
 
 		task.toggleCompleted();
-		_feedback = String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET,
-				task.isCompleted() ? "" : "in");
+		commandInfo.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET,
+				task.isCompleted() ? "" : "in"));
 	}
 
-	private void deleteTask() throws IOException, InputIndexOutOfBoundsException {
-		_storage.setCurrentListAsPrevious();
-		if (deleteMultiple()) {
+	private void deleteTask(CommandInfo commandInfo) throws IOException, InputIndexOutOfBoundsException {
+		String arguments = commandInfo.getArguments();
+		if (deleteMultiple(commandInfo, arguments)) {
 			return;
 		}
-		int taskIndex = getTaskIndex();
+		int taskIndex = getTaskIndex(arguments);
 		Task task = _storage.getTask(taskIndex);
 
-		if (!task.willRecur() || _argument.substring(_argument.length() - 1).equals("r")) {
-			_storage.setCurrentListAsPrevious();
+		if (!task.willRecur() || arguments.substring(arguments.length() - 1).equals("r")) {
 			_storage.removeTask(taskIndex);
-			_feedback = String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET);
+			commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET));
 		} else {
 			task.setStartDate(task.getNextRecur());
 			_storage.removeTask(taskIndex);
 			_storage.addToTaskList(task);
-
-			_feedback = String.format(
-					"Task " + (taskIndex + LIST_NUMBERING_OFFSET) + " rescheduled to " + task.getStartDate());
+			commandInfo.setFeedback(String.format("Task " + (taskIndex + LIST_NUMBERING_OFFSET)
+					+ " rescheduled to " + task.getStartDate()));
 		}
 	}
 
-	private boolean deleteMultiple() {
-
+	private boolean deleteMultiple(CommandInfo commandInfo, String arguments) {
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
-		Matcher match = equalitySigns.matcher(_argument);
+		Matcher match = equalitySigns.matcher(arguments);
 
-		String[] indexToDelete = _argument.split(",");
-
-		if (_argument.equals("-")) {
-			return deleteMultipleWithoutDeadline();
-		} else if (_argument.equals("c")) {
-			return deleteMultipleCompletedTasks();
+		String[] indexToDelete = arguments.split(",");
+		int count = 0;
+		if (arguments.equals("-")) {
+			count = deleteMultipleWithoutDeadline(commandInfo.getTaskList());
+		} else if (arguments.equals("c")) {
+			count = deleteMultipleCompletedTasks(commandInfo.getTaskList());
 		} else if (isEqualityType(match)) {
-			String dateString = _argument.substring(match.end()).trim();
+			String dateString = arguments.substring(match.end()).trim();
 			String[] dayAndMonthAndYear = dateString.split("/", 3);
 			System.out.println(Arrays.toString(dayAndMonthAndYear));
 			Calendar newDate = getDateFromString(dayAndMonthAndYear);
 			if (newDate == null) {
-				_newCommandType = CommandType.ERROR;
-				_feedback = "Failed to parse date: " + dateString;
+				commandInfo.setCommandType(CommandType.ERROR);
+				commandInfo.setFeedback("Failed to parse date: " + dateString);
 				return true;
 			}
-			List<Task> taskList = _storage.getTaskList();
-			int count = 0;
+			List<Task> taskList = commandInfo.getTaskList();
 			switch (match.group()) {
 				case "<" :
 					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
@@ -750,10 +731,8 @@ public class Logic {
 					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
 					break;
 			}
-
-			_feedback = "Removed " + count + " tasks before " + newDate;
 			return true;
-		} else if (indexToDelete.length > 1 || _argument.split("-").length > 1) {
+		} else if (indexToDelete.length > 1 || arguments.split("-").length > 1) {
 			// first check if all numbers are valid
 			for (String index : indexToDelete) {
 				String[] multIndexToDelete = index.split("-");
@@ -796,7 +775,13 @@ public class Logic {
 
 			return true;
 		}
-		return false;
+
+		if (count > 0) {
+			commandInfo.setFeedback("Removed " + count + " tasks");
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public static boolean isInteger(String str) {
@@ -858,9 +843,8 @@ public class Logic {
 		return match.find() && match.start() == 0;
 	}
 
-	private boolean deleteMultipleCompletedTasks() {
+	private int deleteMultipleCompletedTasks(List<Task> taskList) {
 		logger.log(Level.FINE, "Deleting all completed tasks");
-		List<Task> taskList = _storage.getTaskList();
 		int count = 0;
 		for (int i = taskList.size() - 1; i >= 0; i--) {
 			if (taskList.get(i).isCompleted()) {
@@ -868,13 +852,12 @@ public class Logic {
 				count++;
 			}
 		}
-		_feedback = "Removed" + count + " completed tasks";
-		return true;
+
+		return count;
 	}
 
-	private boolean deleteMultipleWithoutDeadline() {
+	private int deleteMultipleWithoutDeadline(List<Task> taskList) {
 		logger.log(Level.FINE, "Deleting all tasks without deadline");
-		List<Task> taskList = _storage.getTaskList();
 		int count = 0;
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			if (taskList.get(i).getStartDate() == null) {
@@ -882,27 +865,26 @@ public class Logic {
 				count++;
 			}
 		}
-		_feedback = "Removed " + count + " tasks without deadline";
-		return true;
+		return count;
 	}
 
 	/**
 	 * Find a task with a description which matches the keywords
 	 */
-	private void findTask() {
-		if (_argument == null) {
-			_newCommandType = CommandType.ADD; // temp, make new for this
-			_feedback = "Search result cleared";
+	private void findTask(CommandInfo commandInfo) {
+		String arguments = commandInfo.getArguments();
+		if (arguments == null) {
+			commandInfo.setFeedback("Search result cleared");
 			return;
 		}
-		_indexesFound = new ArrayList<Integer>();
+		List<Integer> indexesFound = new ArrayList<Integer>();
 		_keywordsPermutations = new LinkedList<List<String>>();
-		List<String> keywords = splitKeywordsIntoLowercaseWords();
-		List<Task> taskList = _storage.getTaskList();
+		List<String> keywords = splitKeywordsIntoLowercaseWords(arguments);
+		List<Task> taskList = commandInfo.getTaskList();
 
-		if (_argument.length() == 1) {
+		if (arguments.length() == 1) {
 
-			findAllWordsStartingWithArg(taskList);
+			findAllWordsStartingWithArg(taskList, indexesFound, arguments);
 
 		} else {
 
@@ -910,20 +892,20 @@ public class Logic {
 
 			for (int i = 0; i < taskList.size(); i++) {
 
-				determineIfTaskMatchesKeyword(taskList, i);
+				determineIfTaskMatchesKeyword(taskList, indexesFound, i);
 			}
 		}
+		commandInfo.setIndexesFound(indexesFound);
 		// Feedback directed back to UI depending on whether it is successful or not
-		_feedback = (_indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
-				: String.format(MESSAGE_TASK_FOUND, _indexesFound.size());
-
+		commandInfo.setFeedback((indexesFound.size() == 0) ? String.format(MESSAGE_SEARCH_NO_RESULT, keywords)
+				: String.format(MESSAGE_TASK_FOUND, indexesFound.size()));
 	}
 
-	private LinkedList<String> splitKeywordsIntoLowercaseWords() {
-		return new LinkedList<String>(Arrays.asList(_argument.toLowerCase().split(" ")));
+	private LinkedList<String> splitKeywordsIntoLowercaseWords(String arguments) {
+		return new LinkedList<String>(Arrays.asList(arguments.toLowerCase().split(" ")));
 	}
 
-	private void determineIfTaskMatchesKeyword(List<Task> taskList, int i) {
+	private void determineIfTaskMatchesKeyword(List<Task> taskList, List<Integer> indexesFound, int i) {
 		for (List<String> permutation : _keywordsPermutations) {
 
 			List<String> taskDescWords = splitTaskDescIntoLowercaseWords(taskList, i);
@@ -931,8 +913,8 @@ public class Logic {
 
 			isWordsInTask = determineIfTaskMatchesPermutation(permutation, taskDescWords, isWordsInTask);
 
-			if (isWordsInTask && !_indexesFound.contains(i)) {
-				_indexesFound.add(i);
+			if (isWordsInTask && !indexesFound.contains(i)) {
+				indexesFound.add(i);
 			}
 		}
 	}
@@ -988,21 +970,22 @@ public class Logic {
 				Arrays.asList(taskList.get(i).getDescription().toLowerCase().split(" ")));
 	}
 
-	private void findAllWordsStartingWithArg(List<Task> taskList) {
+	private void findAllWordsStartingWithArg(List<Task> taskList, List<Integer> indexesFound,
+			String arguments) {
 		for (int i = 0; i < taskList.size(); i++) {
 			String taskDesc = taskList.get(i).getDescription();
-			if (taskDesc.startsWith(_argument.toLowerCase())) {
-				_indexesFound.add(i);
+			if (taskDesc.startsWith(arguments.toLowerCase())) {
+				indexesFound.add(i);
 			}
 		}
 	}
 
-	private int getTaskIndex() throws IOException {
-		if (_argument == null) {
+	private int getTaskIndex(String arguments) throws IOException {
+		if (arguments == null) {
 			throw new IOException(MESSAGE_NO_ARGUMENTS);
 		}
-		assert _argument.length() > 0;
-		String taskIndex = _argument.split(" ", 2)[0];
+		assert arguments.length() > 0;
+		String taskIndex = arguments.split(" ", 2)[0];
 		logger.log(Level.FINE, "Task index string is \"{0}\"", taskIndex);
 		if (!taskIndex.matches("\\d+")) {
 			throw new IOException(String.format(MESSAGE_INVALID_INDEX, taskIndex));
@@ -1010,15 +993,22 @@ public class Logic {
 		return Integer.parseInt(taskIndex) - LIST_NUMBERING_OFFSET;
 	}
 
-	private void undoLastCommand() {
-		_storage.setPreviousListAsCurrent();
-		_feedback = String.format(MESSAGE_UNDO, _oldCommandType);
+	private void undoLastCommand(CommandInfo commandInfo) {
+		CommandInfo prevCommandInfo = _storage.setPreviousListAsCurrent(commandInfo);
+
+		if (prevCommandInfo == null) {
+			commandInfo.setFeedback("No more UNDO possible");
+		} else {
+			commandInfo.setFeedback(
+					String.format(MESSAGE_UNDO, getFirstLetterOfCommandType(prevCommandInfo.getCommandType()),
+							prevCommandInfo.getArguments()));
+		}
 	}
 
-	private void setStoragePath() {
+	private void setStoragePath(CommandInfo commandInfo) {
 		try {
-			_storage.setSavePath(_argument);
-			_feedback = String.format(MESSAGE_STORAGE_PATH_SET, _storage.getSavePath());
+			_storage.setSavePath(commandInfo.getArguments());
+			commandInfo.setFeedback(String.format(MESSAGE_STORAGE_PATH_SET, _storage.getSavePath()));
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1032,24 +1022,7 @@ public class Logic {
 		_storage.deleteTaskListFile();
 	}
 
-	/* Getters for UI */
-	public CommandType getCommandType() {
-		return _newCommandType;
-	}
-
-	public String getFeedback() {
-		return _feedback;
-	}
-
-	public List<Integer> getIndexesFound() {
-		return _indexesFound;
-	}
-
 	public void saveTasksToFile() {
 		_storage.saveTasksToFile();
-	}
-
-	public List<Task> getTaskList() {
-		return _storage.getTaskList();
 	}
 }

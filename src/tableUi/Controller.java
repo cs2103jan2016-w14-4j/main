@@ -1,5 +1,6 @@
 package tableUi;
 
+import defaultPart.CommandInfo;
 import defaultPart.Logic;
 import defaultPart.Task;
 import javafx.collections.FXCollections;
@@ -61,8 +62,6 @@ public class Controller implements Initializable {
 	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
 	public static final String INVALID_EDIT_DATE_PROMPT = "edit date action could not be done on id %d";
 	public static final String INVALID_EDIT_DESCRIPTION_PROMPT = "edit date action could not be done on id %d";
-
-	private List<Task> taskList;
 
 	private ObservableList<TaskModel> floatingTaskList;
 	private ObservableList<TaskModel> eventList;
@@ -236,8 +235,7 @@ public class Controller implements Initializable {
 
 		logic = new Logic();
 		try {
-			logic.loadTasksFromFile();
-			showAllTasks();
+			showAllTasks(logic.loadTasksFromFile());
 		} catch (SAXException e) {
 			setUserPrompt("ERROR: " + e.getMessage());
 		} catch (ParseException e) {
@@ -314,7 +312,7 @@ public class Controller implements Initializable {
 		userPrompt.setText(prompt);
 	}
 
-	public void editDescriptionById(int id) {
+	public void editDescriptionById(List<Task> taskList, int id) {
 		if (taskList.get(id).isStartDateSet()) {
 			editEventDescriptionById(id);
 		} else {
@@ -383,8 +381,8 @@ public class Controller implements Initializable {
 	 * @return
 	 */
 	private TaskModel getTaskModelFromId(int id) {
-		for(TaskModel model:taskModels){
-			if(model.getTaskId() == id + 1)
+		for (TaskModel model : taskModels) {
+			if (model.getTaskId() == id + 1)
 				return model;
 		}
 		return null;
@@ -393,20 +391,19 @@ public class Controller implements Initializable {
 	/**
 	 * Let the tableView show all the tasks
 	 */
-	public void showAllTasks() {
+	public void showAllTasks(List<Task> taskList) {
 		clearInterface();
-		retrieveTaskFromStorage();
+		retrieveTaskFromStorage(taskList);
 		inputBox.requestFocus();
 	}
 
 	/**
 	 * refresh the tasks shown on UI based on the current storage (by default all tasks are shown)
 	 */
-	private void retrieveTaskFromStorage() {
+	private void retrieveTaskFromStorage(List<Task> taskList) {
 		clearInterface();
-		taskList = logic.getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
-			addToTaskModels(i);
+			addToTaskModels(taskList.get(i), i);
 		}
 		tablePosition = 0;
 		scrollTo(tablePosition);
@@ -439,8 +436,7 @@ public class Controller implements Initializable {
 		floatingTaskTable.scrollTo(tablePosition);
 	}
 
-	private void addToTaskModels(int i) {
-		Task task = taskList.get(i);
+	private void addToTaskModels(Task task, int i) {
 		TaskModel newModel = new TaskModel(task, i + 1, this);
 		if (task.isStartDateSet()) {
 			eventList.add(newModel);
@@ -453,23 +449,23 @@ public class Controller implements Initializable {
 	/**
 	 * Send a command to the Logic and update the tasks and prompt shown in the UI
 	 * 
-	 * @param command
+	 * @param userInput
 	 *            The command that is going to be send to the parser
 	 */
-	public void sendToLogicAndUpdatePrompt(String command) {
-		if (!logic.executeCommand(command)) {
-			return;
-		}
-		logger.fine("Sent to logic" + command);
+	public void sendToLogicAndUpdatePrompt(String userInput) {
+		logger.fine("Sending to logic" + userInput);
+		CommandInfo commandInfo = logic.executeCommand(userInput);
 
-		switch (logic.getCommandType()) {
+		switch (commandInfo.getCommandType()) {
+			case BLANK :
+				return;
+
 			case EDIT_DESCRIPTION :
-				List<Integer> indexesFound = logic.getIndexesFound();
-				editDescriptionById(indexesFound.get(0));
+				editDescriptionById(commandInfo.getTaskList(), commandInfo.getTaskToEdit());
 				break;
 
 			case FIND :
-				displayFoundTask();
+				displayFoundTask(commandInfo.getTaskList(), commandInfo.getIndexesFound());
 				break;
 
 			case HELP :
@@ -477,18 +473,17 @@ public class Controller implements Initializable {
 				break;
 
 			default :
-				showAllTasks();
+				showAllTasks(commandInfo.getTaskList());
 		}
 
-		setUserPrompt(logic.getFeedback());
+		setUserPrompt(commandInfo.getFeedback());
 		logic.saveTasksToFile();
 	}
 
-	private void displayFoundTask() {
+	private void displayFoundTask(List<Task> taskList, List<Integer> indexesFound) {
 		clearInterface();
-		List<Integer> indexesFound = logic.getIndexesFound();
 		for (int index : indexesFound) {
-			addToTaskModels(index);
+			addToTaskModels(taskList.get(index), index);
 		}
 		inputBox.requestFocus();
 	}
@@ -513,9 +508,9 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public void highlightTaskWithId(int id) {
+	public void highlightTaskWithId(Task task, int id) {
 		int row = getRowFromModel(getTaskModelFromId(id));
-		if (taskList.get(id).getStartDate() != null) {
+		if (task.isStartDateSet()) {
 			eventsTable.getSelectionModel().select(row);
 			scrollTo(row);
 		} else {
