@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Predicate;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -77,6 +78,18 @@ public class Storage {
 
 	public List<Task> getTaskList() {
 		return _commandInfoList.peek().getTaskList();
+	}
+
+	public int deleteTasksWithPredicate(Predicate<Task> pred) {
+		int count = 0;
+		List<Task> taskList = _commandInfoList.peek().getTaskList();
+		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
+			if (pred.test(taskList.get(i))) {
+				taskList.remove(i);
+				count++;
+			}
+		}
+		return count;
 	}
 
 	public void setSavePath(String filePath) throws SAXException, ParseException {

@@ -575,10 +575,10 @@ public class Logic {
 	}
 
 	private void deleteTask(CommandInfo commandInfo) throws IOException, InputIndexOutOfBoundsException {
-		String arguments = commandInfo.getArguments();
-		if (deleteMultiple(commandInfo, arguments)) {
+		if (deleteMultiple(commandInfo)) {
 			return;
 		}
+		String arguments = commandInfo.getArguments();
 		int taskIndex = getTaskIndex(arguments);
 		Task task = _storage.getTask(taskIndex);
 
@@ -594,20 +594,19 @@ public class Logic {
 		}
 	}
 
-	private boolean deleteMultiple(CommandInfo commandInfo, String arguments) {
+	private boolean deleteMultiple(CommandInfo commandInfo) {
+		return deleteMultipleWithoutDeadline(commandInfo) || deleteMultipleCompletedTasks(commandInfo)
+				|| deleteFromDate(commandInfo) || deleteMultipleIndexes(commandInfo);
+	}
+
+	private boolean deleteFromDate(CommandInfo commandInfo) {
+		String arguments = commandInfo.getArguments();
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(arguments);
 
-		String[] indexToDelete = arguments.split(",");
-		int count = 0;
-		if (arguments.equals("-")) {
-			count = deleteMultipleWithoutDeadline(_storage.getTaskList());
-		} else if (arguments.equals("c")) {
-			count = deleteMultipleCompletedTasks(_storage.getTaskList());
-		} else if (isEqualityType(match)) {
+		if (match.find() && match.start() == 0) {
 			String dateString = arguments.substring(match.end()).trim();
 			String[] dayAndMonthAndYear = dateString.split("/", 3);
-			System.out.println(Arrays.toString(dayAndMonthAndYear));
 			Calendar newDate = getDateFromString(dayAndMonthAndYear);
 			if (newDate == null) {
 				commandInfo.setCommandType(CommandType.ERROR);
@@ -615,91 +614,19 @@ public class Logic {
 				return true;
 			}
 			List<Task> taskList = _storage.getTaskList();
+			int count = 0;
 			switch (match.group()) {
 				case "<" :
-					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
+					deleteTasksBeforeEqualsToDate(newDate, taskList, count);
 					break;
 
 				case "<=" :
-					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
+					deleteTasksBeforeEqualsToDate(newDate, taskList, count);
 					break;
 			}
 			return true;
-		} else if (indexToDelete.length > 1 || arguments.split("-").length > 1) {
-			// first check if all numbers are valid
-			for (String index : indexToDelete) {
-				String[] multIndexToDelete = index.split("-");
-				if (multIndexToDelete.length > 2) {
-					return false;
-				}
-
-				if (index.contains("-") && index.split("-").length != 2) {
-					return false;
-				}
-				for (String multIndex : multIndexToDelete) {
-					if (isInteger(multIndex) && _storage.isTaskIndexValid(Integer.parseInt(multIndex) - 1)) {
-						continue;
-					} else {
-						return false;
-					}
-				}
-			}
-
-			List<Integer> indexToDeleteList = new ArrayList<Integer>();
-
-			for (String index : indexToDelete) {
-				if (index.contains("-")) {
-					String[] multIndexToDelete = index.split("-");
-					int start = Integer.parseInt(multIndexToDelete[0]);
-					int end = Integer.parseInt(multIndexToDelete[1]);
-					for (int i = start; i <= end; i++) {
-						indexToDeleteList.add(i);
-					}
-				} else {
-					indexToDeleteList.add(Integer.parseInt(index));
-				}
-			}
-
-			Collections.sort(indexToDeleteList);
-
-			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
-				_storage.removeTask(indexToDeleteList.get(i) - 1);
-			}
-
-			return true;
 		}
-
-		if (count > 0) {
-			commandInfo.setFeedback("Removed " + count + " tasks");
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public static boolean isInteger(String str) {
-		// By Jonas K. on StackOverflow
-		if (str == null) {
-			return false;
-		}
-		int length = str.length();
-		if (length == 0) {
-			return false;
-		}
-		int i = 0;
-		if (str.charAt(0) == '-') {
-			if (length == 1) {
-				return false;
-			}
-			i = 1;
-		}
-		for (; i < length; i++) {
-			char c = str.charAt(i);
-			if (c < '0' || c > '9') {
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
 
 	private int deleteTasksBeforeEqualsToDate(Calendar newDate, List<Task> taskList, int count) {
@@ -732,33 +659,76 @@ public class Logic {
 		return count;
 	}
 
-	private boolean isEqualityType(Matcher match) {
-		return match.find() && match.start() == 0;
+	private boolean deleteMultipleCompletedTasks(CommandInfo commandInfo) {
+		if (commandInfo.getArguments().equals("c")) {
+			logger.log(Level.FINE, "Deleting all completed tasks");
+			int count = _storage.deleteTasksWithPredicate(task -> task.isCompleted());
+			commandInfo.setFeedback(String.format("Deleted %1$s completed tasks", count));
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	private int deleteMultipleCompletedTasks(List<Task> taskList) {
-		logger.log(Level.FINE, "Deleting all completed tasks");
-		int count = 0;
-		for (int i = taskList.size() - 1; i >= 0; i--) {
-			if (taskList.get(i).isCompleted()) {
-				_storage.removeTask(i);
-				count++;
-			}
+	private boolean deleteMultipleWithoutDeadline(CommandInfo commandInfo) {
+		if (commandInfo.getArguments().equals(".")) {
+			logger.log(Level.FINE, "Deleting all tasks without date");
+			int count = _storage.deleteTasksWithPredicate(task -> !task.isStartDateSet());
+			commandInfo.setFeedback(String.format("Deleted %1$s tasks without date", count));
+			return true;
+		} else {
+			return false;
 		}
-
-		return count;
 	}
 
-	private int deleteMultipleWithoutDeadline(List<Task> taskList) {
-		logger.log(Level.FINE, "Deleting all tasks without deadline");
-		int count = 0;
-		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
-			if (taskList.get(i).getStartDate() == null) {
-				_storage.removeTask(i);
-				count++;
+	private boolean deleteMultipleIndexes(CommandInfo commandInfo) {
+		String arguments = commandInfo.getArguments();
+		String[] indexToDelete = arguments.split(",");
+
+		if (indexToDelete.length > 1 || arguments.split("-").length > 1) {
+			// first check if all numbers are valid
+			for (String index : indexToDelete) {
+				String[] multIndexToDelete = index.split("-");
+				if (multIndexToDelete.length > 2) {
+					return false;
+				}
+
+				if (index.contains("-") && index.split("-").length != 2) {
+					return false;
+				}
+				for (String multIndex : multIndexToDelete) {
+					if (multIndex.matches("\\d+")
+							&& _storage.isTaskIndexValid(Integer.parseInt(multIndex) - 1)) {
+						continue;
+					} else {
+						return false;
+					}
+				}
 			}
+
+			List<Integer> indexToDeleteList = new ArrayList<Integer>();
+
+			for (String index : indexToDelete) {
+				if (index.contains("-")) {
+					String[] multIndexToDelete = index.split("-");
+					int start = Integer.parseInt(multIndexToDelete[0]);
+					int end = Integer.parseInt(multIndexToDelete[1]);
+					for (int i = start; i <= end; i++) {
+						indexToDeleteList.add(i);
+					}
+				} else {
+					indexToDeleteList.add(Integer.parseInt(index));
+				}
+			}
+
+			Collections.sort(indexToDeleteList);
+
+			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
+				_storage.removeTask(indexToDeleteList.get(i) - 1);
+			}
+			return true;
 		}
-		return count;
+		return false;
 	}
 
 	/**
