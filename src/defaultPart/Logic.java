@@ -292,19 +292,6 @@ public class Logic {
 	}
 
 	private boolean setTaskDateIfExists(Task task, List<String> args) {
-<<<<<<< HEAD
-		if (args.size() == 0) {
-			return false;
-		}
-		int lastIndex = args.size() - 1;
-
-		Calendar date;
-
-		if (isNextCase(args, lastIndex)) {
-			date = getNextDate(args);
-		} else {
-			date = getWrappedDateFromString(args.get(lastIndex));
-=======
 		int index = args.size() - 1;
 		String dateString = args.get(index);
 
@@ -324,7 +311,6 @@ public class Logic {
 			}
 			args.remove(index);
 			return true;
->>>>>>> origin/master
 		}
 		return false;
 	}
@@ -333,14 +319,9 @@ public class Logic {
 		return (isNextCase(dateString)) ? getNextDate(dateString) : getWrappedDateFromString(dateString);
 	}
 
-<<<<<<< HEAD
-	private boolean isNextCase(List<String> args, int lastIndex) {
-		return args.get(lastIndex).substring(0, 1).equals("n") && !isTodayCase(args.get(lastIndex))
-				&& !isTomorrowCase(args.get(lastIndex));
-=======
-	private boolean isNextCase(String date) {
-		return date.toLowerCase().equals("next") && !isTodayCase(date) && !isTomorrowCase(date);
->>>>>>> origin/master
+	private boolean isNextCase(String dateString) {
+		return dateString.substring(0, 1).equals("n") && !isTodayCase(dateString)
+				&& !isTomorrowCase(dateString);
 	}
 
 	private boolean isTime(String timeString) {
@@ -449,13 +430,8 @@ public class Logic {
 		commandInfo.setFeedback(String.format(MESSAGE_TASK_EDITED, taskIndex + LIST_NUMBERING_OFFSET));
 	}
 
-<<<<<<< HEAD
-	private Calendar getNextDate(List<String> args) {
-		String increment = args.get(args.size() - 1).substring(1).toLowerCase();
-=======
 	private Calendar getNextDate(String dateString) {
-		String increment = dateString.toLowerCase();
->>>>>>> origin/master
+		String increment = dateString.substring(1).toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
 		if (increment.equals("day")) {
