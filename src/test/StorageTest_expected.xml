@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>Buy some Potatoes</Description>
-      <Date/>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
-      <Description>Cook Potatoes</Description>
-      <Date>20/06/16</Date>
-      <StartTime/>
-      <EndTime>12:00PM</EndTime>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
-      <Description>Event Test case</Description>
-      <Date>20/06/16</Date>
-      <StartTime>10:00AM</StartTime>
-      <EndTime>12:00PM</EndTime>
-      <Completed>no</Completed>
+      <Description>Deadline Test case</Description>
+      <Completed>true</Completed>
    </Task>
    <Task>
       <Description>Floating Test case</Description>
-      <Date/>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
+      <Completed>true</Completed>
    </Task>
    <Task>
-      <Description>Deadline Test case</Description>
-      <Date>20/06/16</Date>
-      <StartTime/>
-      <EndTime>12:00PM</EndTime>
-      <Completed>no</Completed>
+      <Description>Event Test case</Description>
+      <Completed>true</Completed>
+   </Task>
+   <Task>
+      <Description>Cook Potatoes</Description>
+      <Completed>true</Completed>
+   </Task>
+   <Task>
+      <Description>Buy some Potatoes</Description>
+      <Completed>true</Completed>
    </Task>
 </wuriTasks>

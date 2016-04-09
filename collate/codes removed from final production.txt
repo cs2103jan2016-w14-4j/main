@@ -33,3 +33,82 @@
 		}
 		return time;
 	}
+
+//@@author Shaun Lee
+//Codes were removed due to the change in the structure of our Task Class
+	/**
+	 * Extract a TaskTime from node with specified tag and returns as Calendar object
+	 * 
+	 * @param taskElement
+	 *            Element object containing the task details
+	 * @param tag
+	 *            Tag to specify which date, e.g. "start", "end'
+	 * @return Calendar class object converted from the date
+	 * @throws ParseException
+	 *             Error in formatting the date
+	 */
+	private Calendar extractTimeFromNode(Element taskElement, String tag) throws ParseException {
+
+		// Assert than taskElement & tag are not null
+		assert (taskElement != null);
+		assert (tag != null || tag != "");
+
+		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
+		if (calendarString == "") {
+			return null;
+		}
+		Calendar calendar = new GregorianCalendar();
+		// calendar.parse(calendarString);
+		return calendar;
+	}
+
+	/**
+	 * Extract a Calendar from node with specified tag and returns as Calendar object
+	 * 
+	 * @param taskElement
+	 *            Element object containing the task details
+	 * @param tag
+	 *            Tag to specify which date, e.g. "start", "end'
+	 * @return Calendar class object converted from the date
+	 * @throws ParseException
+	 *             Error in formatting the date
+	 */
+	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
+
+		// Assert than taskElement & tag are not null
+		assert (taskElement != null);
+		assert (tag != null || tag != "");
+
+		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
+		if (calendarString == "") {
+			return null;
+		}
+		Calendar calendar = new GregorianCalendar();
+		// calendar.(calendarString);
+		return calendar;
+	}
+
+//No longer needed due to the merging of recur object into Task class 
+	 /**
+	 * Helper function to create the a recur item based on presence of parameters
+	 *
+	 * @throws ParseException
+	 */
+	 private Recur createRecur(String timeUnit, int frequency, String startOfRecur, String endOfRecur)
+	 throws ParseException {
+	
+	 Recur newRecur = new Recur();
+	
+	 newRecur.setTimeUnit(TimeUnit.valueOf(timeUnit));
+	 newRecur.setFrequency(frequency);
+	 TaskDate startDate = new TaskDate();
+	 startDate.setDateFromString(startOfRecur);
+	 newRecur.setStartDate(startDate);
+	 if (endOfRecur != null) {
+	 TaskDate endDate = new TaskDate();
+	 endDate.setDateFromString(endOfRecur);
+	 newRecur.setEndDate(endDate);
+	 }
+	 return newRecur;
+	
+	 }

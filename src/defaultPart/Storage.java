@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-/* @@author Shaun Lee */
+//@@author Shaun Lee
 public class Storage {
 
 	/* For accessing the different Tags for the XML */
@@ -75,6 +75,10 @@ public class Storage {
 		// _settings = new Settings();
 	}
 
+	public List<Task> getTaskList() {
+		return _commandInfoList.peek().getTaskList();
+	}
+
 	public void setSavePath(String filePath) throws SAXException, ParseException {
 
 		// Deletes the previous taskList
@@ -118,10 +122,14 @@ public class Storage {
 	}
 
 	public CommandInfo createNewCommandInfo() {
+
 		List<Task> taskList = new LinkedList<Task>();
-		for (Task prevTask : _commandInfoList.peek().getTaskList()) {
-			taskList.add(prevTask.clone());
+		if (!_commandInfoList.isEmpty()) {
+			for (Task prevTask : _commandInfoList.peek().getTaskList()) {
+				taskList.add(prevTask.clone());
+			}
 		}
+
 		CommandInfo commandInfo = new CommandInfo(taskList);
 		_commandInfoList.push(commandInfo);
 		return commandInfo;
@@ -202,6 +210,9 @@ public class Storage {
 
 		// Assert that the new task is not null
 		assert (newTask != null);
+		if (_commandInfoList.isEmpty()) {
+			createNewCommandInfo();
+		}
 		List<Task> taskList = _commandInfoList.peek().getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
 			if (!newTask.isDateTimeAfterTask(taskList.get(i))) {
@@ -484,58 +495,6 @@ public class Storage {
 		}
 
 		return newTask;
-	}
-
-	/**
-	 * Extract a TaskTime from node with specified tag and returns as Calendar object
-	 * 
-	 * @param taskElement
-	 *            Element object containing the task details
-	 * @param tag
-	 *            Tag to specify which date, e.g. "start", "end'
-	 * @return Calendar class object converted from the date
-	 * @throws ParseException
-	 *             Error in formatting the date
-	 */
-	private Calendar extractTimeFromNode(Element taskElement, String tag) throws ParseException {
-
-		// Assert than taskElement & tag are not null
-		assert (taskElement != null);
-		assert (tag != null || tag != "");
-
-		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
-		if (calendarString == "") {
-			return null;
-		}
-		Calendar calendar = new GregorianCalendar();
-		// calendar.parse(calendarString);
-		return calendar;
-	}
-
-	/**
-	 * Extract a Calendar from node with specified tag and returns as Calendar object
-	 * 
-	 * @param taskElement
-	 *            Element object containing the task details
-	 * @param tag
-	 *            Tag to specify which date, e.g. "start", "end'
-	 * @return Calendar class object converted from the date
-	 * @throws ParseException
-	 *             Error in formatting the date
-	 */
-	private Calendar extractDateFromNode(Element taskElement, String tag) throws ParseException {
-
-		// Assert than taskElement & tag are not null
-		assert (taskElement != null);
-		assert (tag != null || tag != "");
-
-		String calendarString = taskElement.getElementsByTagName(tag).item(0).getTextContent();
-		if (calendarString == "") {
-			return null;
-		}
-		Calendar calendar = new GregorianCalendar();
-		// calendar.(calendarString);
-		return calendar;
 	}
 
 	/**

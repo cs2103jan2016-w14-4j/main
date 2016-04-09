@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-/* @@author Shaun Lee */
+//@@author Shaun Lee
 public class Settings {
 
 	/* For Logging */
