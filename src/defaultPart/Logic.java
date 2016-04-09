@@ -613,9 +613,9 @@ public class Logic {
 		String[] indexToDelete = arguments.split(",");
 		int count = 0;
 		if (arguments.equals("-")) {
-			count = deleteMultipleWithoutDeadline(commandInfo.getTaskList());
+			count = deleteMultipleWithoutDeadline(_storage.getTaskList());
 		} else if (arguments.equals("c")) {
-			count = deleteMultipleCompletedTasks(commandInfo.getTaskList());
+			count = deleteMultipleCompletedTasks(_storage.getTaskList());
 		} else if (isEqualityType(match)) {
 			String dateString = arguments.substring(match.end()).trim();
 			String[] dayAndMonthAndYear = dateString.split("/", 3);
@@ -626,7 +626,7 @@ public class Logic {
 				commandInfo.setFeedback("Failed to parse date: " + dateString);
 				return true;
 			}
-			List<Task> taskList = commandInfo.getTaskList();
+			List<Task> taskList = _storage.getTaskList();
 			switch (match.group()) {
 				case "<" :
 					count = deleteTasksBeforeEqualsToDate(newDate, taskList, count);
@@ -785,7 +785,7 @@ public class Logic {
 		List<Integer> indexesFound = new ArrayList<Integer>();
 		_keywordsPermutations = new LinkedList<List<String>>();
 		List<String> keywords = splitKeywordsIntoLowercaseWords(arguments);
-		List<Task> taskList = commandInfo.getTaskList();
+		List<Task> taskList = _storage.getTaskList();
 
 		if (arguments.length() == 1) {
 
