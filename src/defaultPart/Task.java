@@ -197,7 +197,10 @@ public class Task implements Cloneable {
 	@Override
 	public Task clone() {
 		try {
-			return (Task) super.clone();
+			Task task = (Task) super.clone();
+			task._startDateAndTime = (Calendar) this._startDateAndTime.clone();
+			task._endDateAndTime = (Calendar) this._endDateAndTime.clone();
+			return task;
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
