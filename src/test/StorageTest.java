@@ -19,7 +19,7 @@ import defaultPart.InputIndexOutOfBoundsException;
 import defaultPart.Storage;
 import defaultPart.Task;
 
-/* @@author Shaun Lee */
+//@@author Shaun Lee
 public class StorageTest {
 
 	/* Location to load/save the expected test results */

@@ -18,11 +18,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import defaultPart.CommandInfo;
 import defaultPart.Logic;
 import defaultPart.Storage;
 import defaultPart.Task;
 
-/* @@author Shaun Lee */
+//@@author Shaun Lee
 public class SystemTest {
 
 	/* Location to load/save the expected test results */
@@ -85,12 +86,14 @@ public class SystemTest {
 	 * 
 	 * @param cmd
 	 *            command to be parsed and executed
+	 * @return
 	 * @throws SAXException
 	 */
-	private void logicExecuteCommand(Logic logic, String cmd) throws SAXException {
+	private CommandInfo logicExecuteCommand(Logic logic, String cmd) throws SAXException {
 
-		logic.executeCommand(cmd);
+		CommandInfo returnInfo = logic.executeCommand(cmd);
 		logic.saveTasksToFile();
+		return returnInfo;
 	}
 
 	@Test
@@ -899,8 +902,8 @@ public class SystemTest {
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2016");
-		logicExecuteCommand(logic, "f Trip");
-		List<Integer> actualIndexList = logic.getIndexesFound();
+		CommandInfo returnIndexs = logicExecuteCommand(logic, "f Trip");
+		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
 		// Setting up expected Task List for comparison
 		List<Integer> expectedList = new ArrayList<Integer>();
@@ -920,8 +923,8 @@ public class SystemTest {
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2016");
-		logicExecuteCommand(logic, "f TRIP");
-		List<Integer> actualIndexList = logic.getIndexesFound();
+		CommandInfo returnIndexs = logicExecuteCommand(logic, "f TRIP");
+		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
 		// Setting up expected Task List for comparison
 		List<Integer> expectedList = new ArrayList<Integer>();
@@ -941,8 +944,8 @@ public class SystemTest {
 		logicExecuteCommand(logic, "Plan some trips 1/5/2016");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2016");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2016");
-		logicExecuteCommand(logic, "f trip plan");
-		List<Integer> actualIndexList = logic.getIndexesFound();
+		CommandInfo returnIndexs = logicExecuteCommand(logic, "f trip plan");
+		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
 		// Setting up expected Task List for comparison
 		List<Integer> expectedList = new ArrayList<Integer>();
@@ -1268,28 +1271,4 @@ public class SystemTest {
 	// }
 	//
 
-	/* No longer needed due to the merging of recur object into Task class */
-	// /**
-	// * Helper function to create the a recur item based on presence of parameters
-	// *
-	// * @throws ParseException
-	// */
-	// private Recur createRecur(String timeUnit, int frequency, String startOfRecur, String endOfRecur)
-	// throws ParseException {
-	//
-	// Recur newRecur = new Recur();
-	//
-	// newRecur.setTimeUnit(TimeUnit.valueOf(timeUnit));
-	// newRecur.setFrequency(frequency);
-	// TaskDate startDate = new TaskDate();
-	// startDate.setDateFromString(startOfRecur);
-	// newRecur.setStartDate(startDate);
-	// if (endOfRecur != null) {
-	// TaskDate endDate = new TaskDate();
-	// endDate.setDateFromString(endOfRecur);
-	// newRecur.setEndDate(endDate);
-	// }
-	// return newRecur;
-	//
-	// }
 }
