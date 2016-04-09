@@ -29,10 +29,10 @@
                   <TableView fx:id="eventsTable" editable="true" maxHeight="1.7976931348623157E308">
                     <columns>
                       <TableColumn fx:id="eventsId" editable="false" prefWidth="30.0" text="id" />
-                      <TableColumn fx:id="eventsCheckbox" prefWidth="21.0" text="C" />
-                        <TableColumn fx:id="eventsDescription" prefWidth="250.0" sortable="false" text="Description" />
-                        <TableColumn fx:id="eventsDate" prefWidth="103.0" text="Date/Time" />
-                        <TableColumn fx:id="eventsRecur" prefWidth="87.0" text="Recur" />
+                      <TableColumn fx:id="eventsCheckbox" minWidth="0.0" prefWidth="0.0" text="C" />
+                        <TableColumn fx:id="eventsDescription" prefWidth="286.0" sortable="false" text="Description" />
+                        <TableColumn fx:id="eventsDate" prefWidth="106.0" text="Date/Time" />
+                        <TableColumn fx:id="eventsRecur" prefWidth="88.0" text="Recur" />
                     </columns>
                   </TableView>
                </children>
@@ -57,8 +57,8 @@
                   <TableView fx:id="floatingTaskTable" editable="true" maxHeight="1.7976931348623157E308">
                     <columns>
                       <TableColumn fx:id="floatingTaskId" editable="false" prefWidth="30.0" text="id" />
-                      <TableColumn fx:id="floatingTaskCheckbox" prefWidth="21.0" text="C" />
-                        <TableColumn fx:id="floatingTaskDescription" minWidth="0.0" prefWidth="250.0" sortable="false" text="Description" />
+                      <TableColumn fx:id="floatingTaskCheckbox" minWidth="0.0" prefWidth="0.0" text="C" />
+                        <TableColumn fx:id="floatingTaskDescription" minWidth="0.0" prefWidth="290.0" sortable="false" text="Description" />
                     </columns>
                   </TableView>
                </children>

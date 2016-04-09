@@ -57,7 +57,7 @@ public class Controller implements Initializable {
 
 	public static final String EDIT_COMMAND = "e %d %s";
 	public static final String DELETE_COMMAND = "d %d";
-	public static final String TOGGLE_COMMAND = "t %d";
+	public static final String TOGGLE_COMMAND = "c %d";
 	public static final String INVALID_DATE_PROMPT = "\"%s\" is not a valid date format, use dd/MM/yy";
 	public static final String INVALID_EDIT_DATE_PROMPT = "edit date action could not be done on id %d";
 	public static final String INVALID_EDIT_DESCRIPTION_PROMPT = "edit date action could not be done on id %d";
@@ -109,8 +109,6 @@ public class Controller implements Initializable {
 					setText(null);
 					setGraphic(null);
 				} else {
-					if (item)
-						setText("something");
 					this.getTableRow().getStyleClass().remove("completedTaskRow");
 					this.getTableRow().getStyleClass().remove("incompleteTaskRow");
 					this.getTableRow().getStyleClass().add(item ? "completedTaskRow" : "incompleteTaskRow");
@@ -146,14 +144,14 @@ public class Controller implements Initializable {
 			}
 		});
 
-		StringConverter<String> simpleStringConverter = new StringConverter() {
+		StringConverter<String> simpleStringConverter = new StringConverter<String>() {
 			@Override
-			public String toString(Object object) {
+			public String toString(String object) {
 				return object.toString();
 			}
 
 			@Override
-			public Object fromString(String string) {
+			public String fromString(String string) {
 				return string;
 			}
 		};
@@ -241,7 +239,6 @@ public class Controller implements Initializable {
 			logic.loadTasksFromFile();
 			showAllTasks();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			setUserPrompt("ERROR: " + e.getMessage());
 		} catch (ParseException e) {
 			setUserPrompt("Parse of tasklist failed: " + e.getMessage() + ". Overriding tasklist...");
@@ -288,7 +285,7 @@ public class Controller implements Initializable {
 
 		final double eventsTableWidth = paneWidth * dividerPosition - 5; // 5 for padding
 		final double idWidth = 30;
-		final double checkBoxWidth = 20;
+		final double checkBoxWidth = 0;
 		final double recurWidth = Math.min(eventsTableWidth * 0.2, 100);
 		final double dateWidth = Math.min(eventsTableWidth * 0.2, 200);
 		final double descWidth = eventsTableWidth - idWidth - checkBoxWidth - recurWidth - dateWidth;
@@ -318,7 +315,7 @@ public class Controller implements Initializable {
 	}
 
 	public void editDescriptionById(int id) {
-		if (taskList.get(id).getStartDate() != null) {
+		if (taskList.get(id).isStartDateSet()) {
 			editEventDescriptionById(id);
 		} else {
 			editFloatingTaskDescriptionById(id);
@@ -386,7 +383,11 @@ public class Controller implements Initializable {
 	 * @return
 	 */
 	private TaskModel getTaskModelFromId(int id) {
-		return taskModels.get(id);
+		for(TaskModel model:taskModels){
+			if(model.getTaskId() == id + 1)
+				return model;
+		}
+		return null;
 	}
 
 	/**

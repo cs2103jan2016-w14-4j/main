@@ -8,7 +8,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class TableUiMain extends Application {
-	private static Controller controller;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -21,14 +20,10 @@ public class TableUiMain extends Application {
 		primaryStage.setMinWidth(700);
 		// primaryStage.setMaxHeight(480);
 		primaryStage.setMinHeight(480);
-		controller = loader.getController();
+		Controller controller = loader.getController();
 		controller.stage = primaryStage;
 		Font.loadFont(getClass().getResource("fonts/Futura_LT_Book.ttf").toExternalForm(), 15.0);
 		primaryStage.show();
-	}
-
-	public static Controller getController() {
-		return controller;
 	}
 
 	public static void main(String[] args) {
