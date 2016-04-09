@@ -75,6 +75,10 @@ public class Storage {
 		// _settings = new Settings();
 	}
 
+	public List<Task> getTaskList() {
+		return _commandInfoList.peek().getTaskList();
+	}
+
 	public void setSavePath(String filePath) throws SAXException, ParseException {
 
 		// Deletes the previous taskList
