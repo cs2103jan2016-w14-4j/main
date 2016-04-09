@@ -40,10 +40,11 @@ public class Logic {
 	private static final String MESSAGE_INVALID_ARGUMENTS = "Invalid arguments %1$s";
 	private static final String MESSAGE_NO_ARGUMENTS = "No arguments";
 	private static final String MESSAGE_UNDO = "Undid last command: %1$s %2$s";
+	private static final String MESSAGE_REDO = "Redid last command: %1$s %2$s";
 
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
-		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, COMPLETE_MARKING, UNDO, HELP,
+		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, COMPLETE_MARKING, UNDO, REDO, HELP,
 
 		// for internal use
 		BLANK, EDIT_DESCRIPTION, ADD, ERROR
@@ -124,6 +125,10 @@ public class Logic {
 				case UNDO :
 					undoLastCommand(commandInfo);
 					break;
+				
+				case REDO :
+					redoLastUndo(commandInfo);
+					break;
 
 				case SET_STORAGE_PATH :
 					setStoragePath(commandInfo);
@@ -171,7 +176,7 @@ public class Logic {
 			return CommandType.BLANK;
 		}
 
-		String commandTypeStr = commandTypeAndArguments[0].toUpperCase();
+		String commandTypeStr = commandTypeAndArguments[0].toLowerCase();
 
 		for (CommandType commandType : CommandType.values()) {
 			if (getFirstLetterOfCommandType(commandType).equals(commandTypeStr)) {
@@ -183,7 +188,7 @@ public class Logic {
 	}
 
 	private String getFirstLetterOfCommandType(CommandType commandType) {
-		return commandType.name().substring(0, 1);
+		return commandType.name().substring(0, 1).toLowerCase();
 	}
 
 	/* Remove indexes from list in desc order to prevent removing of wrong indexes */
@@ -994,7 +999,7 @@ public class Logic {
 	}
 
 	private void undoLastCommand(CommandInfo commandInfo) {
-		CommandInfo prevCommandInfo = _storage.setPreviousListAsCurrent(commandInfo);
+		CommandInfo prevCommandInfo = _storage.undoLastCommand(commandInfo);
 
 		if (prevCommandInfo == null) {
 			commandInfo.setFeedback("No more UNDO possible");
@@ -1003,6 +1008,18 @@ public class Logic {
 					String.format(MESSAGE_UNDO, getFirstLetterOfCommandType(prevCommandInfo.getCommandType()),
 							prevCommandInfo.getArguments()));
 		}
+	}
+	
+	private void redoLastUndo(CommandInfo commandInfo) {
+		CommandInfo redoCommandInfo = _storage.redoLastUndo(commandInfo);
+
+		if (redoCommandInfo == null) {
+			commandInfo.setFeedback("No more REDO possible");
+		} else {
+			commandInfo.setFeedback(
+					String.format(MESSAGE_REDO, getFirstLetterOfCommandType(redoCommandInfo.getCommandType()),
+							redoCommandInfo.getArguments()));
+		}		
 	}
 
 	private void setStoragePath(CommandInfo commandInfo) {

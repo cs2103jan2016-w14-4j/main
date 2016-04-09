@@ -123,7 +123,7 @@ public class Storage {
 		}
 		CommandInfo commandInfo = new CommandInfo(taskList);
 
-		_commandInfoList.add(commandInfo);
+		_commandInfoList.push(commandInfo);
 		return commandInfo;
 	}
 
@@ -166,14 +166,27 @@ public class Storage {
 	/**
 	 * Replace current task list with previous task list, for the "undo" function
 	 */
-	public CommandInfo setPreviousListAsCurrent(CommandInfo commandInfo) {
+	public CommandInfo undoLastCommand(CommandInfo commandInfo) {
 		// pops the UNDO commandInfo from list
 		_commandInfoList.pop();
 		if (_commandInfoList.size() > 1) {
 			CommandInfo prevCommandInfo = _commandInfoList.pop();
-			_commandInfoRedoList.add(prevCommandInfo);
+			_commandInfoRedoList.push(prevCommandInfo);
 			commandInfo.setTaskList(_commandInfoList.peek().getTaskList());
 			return prevCommandInfo;
+		} else {
+			return null;
+		}
+	}
+	
+	public CommandInfo redoLastUndo(CommandInfo commandInfo) {
+		// pops the REDO commandInfo from list
+		_commandInfoList.pop();
+		if (_commandInfoRedoList.size() > 0) {
+			CommandInfo redoCommandInfo = _commandInfoRedoList.pop();
+			_commandInfoList.push(redoCommandInfo);
+			commandInfo.setTaskList(_commandInfoList.peek().getTaskList());
+			return redoCommandInfo;
 		} else {
 			return null;
 		}
