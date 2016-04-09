@@ -16,11 +16,8 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import defaultPart.InputIndexOutOfBoundsException;
-import defaultPart.Recur;
 import defaultPart.Storage;
 import defaultPart.Task;
-import defaultPart.TaskDate;
-import defaultPart.TaskTime;
 
 /* @@author Shaun Lee */
 public class StorageTest {
@@ -45,37 +42,38 @@ public class StorageTest {
 		String endTime = "12:00PM";
 
 		Task newTask = new Task();
-		switch (type) {
-			case 1 :
-				newTask.setDescription("Floating Test case");
-				break;
-			case 2 :
-				newTask.setDescription("Deadline Test case");
-				newTask.setStartDateFromFormattedString(startDate);
-				newTask.setStartTimeFromFormattedString(endTime);
-				break;
-			case 3 :
-				newTask.setDescription("Event Test case");
-				newTask.setStartDateFromFormattedString(startDate);
-				newTask.setStartTimeFromFormattedString(startTime);
-				newTask.setEndDateFromFormattedString(startDate);
-				newTask.setEndTimeFromFormattedString(endTime);
-				
-				break;
-			case 4 :
-				newTask.setDescription("Event Recur Test case");
-				newTask.setDescription("Event Test case");
-				newTask.setStartDateFromFormattedString(startDate);
-				newTask.setStartTimeFromFormattedString(startTime);
-				newTask.setEndDateFromFormattedString(endDate);
-				newTask.setEndTimeFromFormattedString(endTime);
-				newRecur.setTimeUnit(Recur.TimeUnit.DAY);
-				newRecur.setFrequency(3);
-				newRecur.setStartDate(startDate);
-				newRecur.setEndDate(endDate);
-				newTask.setRecur(newRecur);
-				break;
+		try {
+			switch (type) {
+				case 1 :
+					newTask.setDescription("Floating Test case");
+					break;
+				case 2 :
+					newTask.setDescription("Deadline Test case");
+					newTask.setStartDateFromFormattedString(startDate);
+					newTask.setStartTimeFromFormattedString(endTime);
+					break;
+				case 3 :
+					newTask.setDescription("Event Test case");
+					newTask.setStartDateFromFormattedString(startDate);
+					newTask.setStartTimeFromFormattedString(startTime);
+					newTask.setEndDateFromFormattedString(startDate);
+					newTask.setEndTimeFromFormattedString(endTime);
 
+					break;
+				case 4 :
+					newTask.setDescription("Event Recur Test case");
+					newTask.setDescription("Event Test case");
+					newTask.setStartDateFromFormattedString(startDate);
+					newTask.setStartTimeFromFormattedString(startTime);
+					newTask.setEndDateFromFormattedString(endDate);
+					newTask.setEndTimeFromFormattedString(endTime);
+					newTask.setRecurField(Calendar.DAY_OF_YEAR);
+					newTask.setRecurFrequency(3);
+					break;
+
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
 		return newTask;
 	}
@@ -122,11 +120,10 @@ public class StorageTest {
 		} else if (!date1.equals(date2)) {
 			return false;
 		}
-		Recur recur1 = expectedTask.getRecur();
-		Recur recur2 = actualTask.getRecur();
-		if (recur1 == null) {
-			return recur2 == null;
-		} else if (!recur1.equals(recur2)) {
+
+		if (!expectedTask.isRecurSet()) {
+			return !actualTask.isRecurSet();
+		} else if (expectedTask.getRecurString().equals(actualTask.getRecurString())) {
 			return false;
 		}
 		return true;
