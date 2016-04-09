@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>Deadline Test case</Description>
-      <Completed>true</Completed>
-   </Task>
-   <Task>
-      <Description>Floating Test case</Description>
-      <Completed>true</Completed>
-   </Task>
-   <Task>
-      <Description>Event Test case</Description>
+      <Description>Buy some Potatoes</Description>
       <Completed>true</Completed>
    </Task>
    <Task>
@@ -17,7 +9,15 @@
       <Completed>true</Completed>
    </Task>
    <Task>
-      <Description>Buy some Potatoes</Description>
+      <Description>Event Test case</Description>
+      <Completed>true</Completed>
+   </Task>
+   <Task>
+      <Description>Floating Test case</Description>
+      <Completed>true</Completed>
+   </Task>
+   <Task>
+      <Description>Deadline Test case</Description>
       <Completed>true</Completed>
    </Task>
 </wuriTasks>

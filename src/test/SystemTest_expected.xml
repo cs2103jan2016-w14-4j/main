@@ -4,7 +4,7 @@
       <Description>HIMYM</Description>
       <StartDate>01/01/27</StartDate>
       <StartTime>12:00PM</StartTime>
-      <RecurFrequency>50</RecurFrequency>
+      <RecurFrequency>1</RecurFrequency>
       <RecurField>6</RecurField>
    </Task>
 </wuriTasks>
