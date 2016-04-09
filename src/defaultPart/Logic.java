@@ -125,7 +125,7 @@ public class Logic {
 				case UNDO :
 					undoLastCommand(commandInfo);
 					break;
-				
+
 				case REDO :
 					redoLastUndo(commandInfo);
 					break;
@@ -376,7 +376,6 @@ public class Logic {
 
 		if (isNextCase(args, lastIndex)) {
 			date = getNextDate(args);
-			args.remove(lastIndex--);
 		} else {
 			date = getWrappedDateFromString(args.get(lastIndex));
 		}
@@ -391,8 +390,8 @@ public class Logic {
 	}
 
 	private boolean isNextCase(List<String> args, int lastIndex) {
-		return args.size() >= 2 && args.get(lastIndex - 1).toLowerCase().equals("next")
-				&& !isTodayCase(args.get(lastIndex)) && !isTomorrowCase(args.get(lastIndex));
+		return args.get(lastIndex).substring(0, 1).equals("n") && !isTodayCase(args.get(lastIndex))
+				&& !isTomorrowCase(args.get(lastIndex));
 	}
 
 	private boolean isTime(String timeString) {
@@ -507,7 +506,7 @@ public class Logic {
 	}
 
 	private Calendar getNextDate(List<String> args) {
-		String increment = args.get(args.size() - 1).toLowerCase();
+		String increment = args.get(args.size() - 1).substring(1).toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
 		if (increment.equals("day")) {
@@ -523,6 +522,8 @@ public class Logic {
 			boolean isDayExists = setDayIfExists(increment, newDate);
 			if (isDayExists && newDate.get(Calendar.DAY_OF_WEEK) >= currentDay) {
 				newDate.add(Calendar.DATE, 7);
+			} else if (!isDayExists) {
+				return null;
 			}
 		}
 
@@ -1009,7 +1010,7 @@ public class Logic {
 							prevCommandInfo.getArguments()));
 		}
 	}
-	
+
 	private void redoLastUndo(CommandInfo commandInfo) {
 		CommandInfo redoCommandInfo = _storage.redoLastUndo(commandInfo);
 
@@ -1019,7 +1020,7 @@ public class Logic {
 			commandInfo.setFeedback(
 					String.format(MESSAGE_REDO, getFirstLetterOfCommandType(redoCommandInfo.getCommandType()),
 							redoCommandInfo.getArguments()));
-		}		
+		}
 	}
 
 	private void setStoragePath(CommandInfo commandInfo) {
