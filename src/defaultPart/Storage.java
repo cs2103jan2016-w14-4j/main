@@ -122,10 +122,14 @@ public class Storage {
 	}
 
 	public CommandInfo createNewCommandInfo() {
+
 		List<Task> taskList = new LinkedList<Task>();
-		for (Task prevTask : _commandInfoList.peek().getTaskList()) {
-			taskList.add(prevTask.clone());
+		if (!_commandInfoList.isEmpty()) {
+			for (Task prevTask : _commandInfoList.peek().getTaskList()) {
+				taskList.add(prevTask.clone());
+			}
 		}
+
 		CommandInfo commandInfo = new CommandInfo(taskList);
 		_commandInfoList.push(commandInfo);
 		return commandInfo;
@@ -206,6 +210,9 @@ public class Storage {
 
 		// Assert that the new task is not null
 		assert (newTask != null);
+		if (_commandInfoList.isEmpty()) {
+			createNewCommandInfo();
+		}
 		List<Task> taskList = _commandInfoList.peek().getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
 			if (!newTask.isDateTimeAfterTask(taskList.get(i))) {

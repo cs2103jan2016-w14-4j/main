@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>HIMYM</Description>
-      <StartDate>01/01/27</StartDate>
-      <StartTime>12:00PM</StartTime>
-      <EndDate>20/02/27</EndDate>
-      <RecurFrequency>1</RecurFrequency>
-      <RecurField>6</RecurField>
+      <Description>HIMYM 1/1/2027 12:00 1d</Description>
+      <StartDate>09/04/16</StartDate>
+      <StartTime>02:00AM</StartTime>
    </Task>
 </wuriTasks>
