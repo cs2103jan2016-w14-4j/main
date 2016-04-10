@@ -569,7 +569,17 @@ public class Logic {
 		int taskIndex = getTaskIndex(arguments);
 		Task task = _storage.getTask(taskIndex);
 
-		task.toggleCompleted();
+		if (task.willRecur()) {
+			Task newTask = task.clone();
+			newTask.toggleCompleted();
+			_storage.addToTaskList(newTask);
+
+			task.setStartDate(task.getNextRecur());
+			_storage.removeTask(taskIndex);
+			_storage.addToTaskList(task);
+		} else {
+			task.toggleCompleted();
+		}
 		commandInfo.setFeedback(String.format(MESSAGE_TASK_COMPLETED, taskIndex + LIST_NUMBERING_OFFSET,
 				task.isCompleted() ? "" : "in"));
 	}
