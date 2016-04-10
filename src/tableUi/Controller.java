@@ -38,6 +38,7 @@ import org.xml.sax.SAXException;
  * @author Hou Ruomu A0131421B
  */
 public class Controller implements Initializable {
+	private static final int FEEDBACK_LENGTH_LIMIT = 100;
 	@FXML
 	public VBox root;
 	public SplitPane pane;
@@ -297,14 +298,14 @@ public class Controller implements Initializable {
 	 * Set the user prompt to the value String in the parameter
 	 * 
 	 * @param prompt
-	 *            The prompt String, length should be less than 100
+	 *            The prompt String, length should be less than FEEDBACK_LENGTH_LIMIT
 	 */
 	public void setUserPrompt(String prompt) {
 		if (prompt == null) {
 			return;
 		}
 		// the length of feedback should not be longer than 100 characters
-		assert (prompt.length() <= 100);
+		assert (prompt.length() <= FEEDBACK_LENGTH_LIMIT);
 		logger.fine("Sent back to user: " + prompt);
 		userPrompt.setText(prompt);
 	}

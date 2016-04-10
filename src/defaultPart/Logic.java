@@ -601,7 +601,7 @@ public class Logic {
 			_storage.deleteTask(taskIndex);
 			_storage.addToTaskList(task);
 			commandInfo.setFeedback(String.format("Task " + (taskIndex + LIST_NUMBERING_OFFSET)
-					+ " rescheduled to " + task.getStartDate()));
+					+ " rescheduled to " + task.getFormattedStartDate()));
 		}
 	}
 
