@@ -1,14 +1,15 @@
 package tableUi;
 
 import defaultPart.Task;
+
 import javafx.beans.property.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+//@@author Hou Ruomu
 
 /**
- * Created by houruomu on 2016/3/12.
+ * This is a wrapper for the Task class for display
+ * @author houruomu
+ *
  */
 public class TaskModel {
 	private final SimpleIntegerProperty taskId;
@@ -49,7 +50,7 @@ public class TaskModel {
 
 		isComplete.addListener((p, o, n) -> {
 			if (o != n)
-				controller.sendToLogicAndUpdatePrompt(String.format(controller.TOGGLE_COMMAND, taskId.get()));
+				controller.sendToLogicAndUpdatePrompt(String.format(Controller.TOGGLE_COMMAND, taskId.get()));
 		});
 	}
 

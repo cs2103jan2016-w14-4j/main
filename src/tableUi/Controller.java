@@ -30,6 +30,7 @@ import java.util.logging.SimpleFormatter;
 
 import org.xml.sax.SAXException;
 
+//@@author Hou Ruomu
 
 /**
  * Class for the main controller of the UI
