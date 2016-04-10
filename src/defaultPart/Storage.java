@@ -16,6 +16,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -82,8 +83,9 @@ public class Storage {
 		int count = 0;
 		List<Task> taskList = _commandInfoList.peek().getTaskList();
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
-			if (pred.test(taskList.get(i))) {
-				taskList.remove(i);
+			Task task = taskList.get(i);
+			if (pred.test(task)) {
+				removeTask(i);		
 				count++;
 			}
 		}
@@ -180,6 +182,16 @@ public class Storage {
 	 */
 	public void removeTask(int taskIndex) {
 		_commandInfoList.peek().getTaskList().remove(taskIndex);
+	}
+	
+	public void removeOrRescheduleTask(int taskIndex, Calendar date) {
+		Task task = _commandInfoList.peek().getTaskList().get(taskIndex);
+			
+		if (task.isRecurSet()) {
+			task.setStartDateAfterRecur(date);
+		} else {
+			removeTask(taskIndex);
+		}
 	}
 
 	/**

@@ -30,6 +30,8 @@ import java.util.logging.SimpleFormatter;
 
 import org.xml.sax.SAXException;
 
+//@@author Hou Ruomu
+
 /**
  * Class for the main controller of the UI
  * 
@@ -254,11 +256,6 @@ public class Controller implements Initializable {
 		return stage;
 	}
 
-	public void debug() {
-		toggleRightPane();
-		resizeColumns();
-	}
-
 	public void toggleRightPane() {
 		if (rightPane.isVisible()) {
 			rightPane.setVisible(false);
@@ -269,7 +266,7 @@ public class Controller implements Initializable {
 			pane.setDividerPosition(0, 0.619);
 			toggleButton.setText(">");
 		}
-
+		resizeColumns();
 	}
 
 	public void resizeColumns() {
@@ -352,7 +349,7 @@ public class Controller implements Initializable {
 	 * 
 	 * @param id
 	 */
-	public void editEventDescriptionById(int id) {
+	private void editEventDescriptionById(int id) {
 		try {
 			eventsTable.edit(getRowFromModel(getTaskModelFromId(id)), eventsDescription);
 		} catch (Exception e) {
@@ -366,7 +363,7 @@ public class Controller implements Initializable {
 	 * 
 	 * @param id
 	 */
-	public void editFloatingTaskDescriptionById(int id) {
+	private void editFloatingTaskDescriptionById(int id) {
 		try {
 			floatingTaskTable.edit(getRowFromModel(getTaskModelFromId(id)), floatingTaskDescription);
 		} catch (Exception e) {

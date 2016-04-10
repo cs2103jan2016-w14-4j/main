@@ -7,6 +7,12 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+//@@author Hou Ruomu
+/**
+ * Main class for the application
+ * @author houruomu
+ *
+ */
 public class TableUiMain extends Application {
 
 	@Override
