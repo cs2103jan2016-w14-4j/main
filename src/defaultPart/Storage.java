@@ -41,8 +41,7 @@ public class Storage {
 	private static final String TAG_TASK_RECUR_FREQUENCY = "RecurFrequency";
 	private static final String TAG_TASK_RECUR_FIELD = "RecurField";
 
-	/* For Logging */
-	private static final Logger logger = Logger.getLogger(Storage.class.getName());
+	private Logger _logger;
 
 	private Stack<CommandInfo> _commandInfoList = new Stack<CommandInfo>();
 	private Stack<CommandInfo> _commandInfoRedoList = new Stack<CommandInfo>();
@@ -57,9 +56,9 @@ public class Storage {
 	 * 
 	 * @throws SAXException
 	 */
-	public Storage() throws SAXException {
-		setupLogger();
-		_settings = new Settings();
+	public Storage(Logger logger) throws SAXException {
+		_logger = logger;
+		_settings = new Settings(logger);
 		_file = new File(_settings.getSavePathAndName());
 		_commandInfoList.push(new CommandInfo(new LinkedList<Task>()));
 	}
@@ -85,7 +84,7 @@ public class Storage {
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			Task task = taskList.get(i);
 			if (pred.test(task)) {
-				removeTask(i);		
+				deleteTask(i);		
 				count++;
 			}
 		}
@@ -100,7 +99,7 @@ public class Storage {
 		try {
 			Files.delete(oldFile.toPath());
 		} catch (IOException e) {
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		}
 
@@ -123,13 +122,13 @@ public class Storage {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
 			handler.setFormatter(new SimpleFormatter());
-			logger.addHandler(handler);
+			_logger.addHandler(handler);
 
 		} catch (SecurityException e) {
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		}
 	}
@@ -157,7 +156,7 @@ public class Storage {
 	 */
 	public Task getTask(int index) throws InputIndexOutOfBoundsException {
 		if (!isTaskIndexValid(index)) {
-			logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
+			_logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
 			throw new InputIndexOutOfBoundsException(index);
 		}
 		return _commandInfoList.peek().getTaskList().get(index);
@@ -180,17 +179,17 @@ public class Storage {
 	 * @param taskIndex
 	 *            Index of task to remove
 	 */
-	public void removeTask(int taskIndex) {
+	public void deleteTask(int taskIndex) {
 		_commandInfoList.peek().getTaskList().remove(taskIndex);
 	}
 	
-	public void removeOrRescheduleTask(int taskIndex, Calendar date) {
+	public void deleteOrRescheduleTask(int taskIndex, Calendar date) {
 		Task task = _commandInfoList.peek().getTaskList().get(taskIndex);
 			
 		if (task.isRecurSet()) {
 			task.setStartDateAfterRecur(date);
 		} else {
-			removeTask(taskIndex);
+			deleteTask(taskIndex);
 		}
 	}
 
@@ -325,7 +324,7 @@ public class Storage {
 		} catch (TransformerConfigurationException e) {
 			// Error in Transformer Configuration
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 		}
 
 		// Properties of the XML format to save the file in
@@ -340,7 +339,7 @@ public class Storage {
 		} catch (TransformerException e) {
 			// Error in transformation process
 			e.printStackTrace();
-			logger.log(Level.SEVERE, e.toString(), e);
+			_logger.log(Level.SEVERE, e.toString(), e);
 		}
 	}
 
@@ -360,7 +359,7 @@ public class Storage {
 
 			// Will not occur unless builder object is configured wrongly
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 		}
 
 		return doc;
@@ -452,12 +451,12 @@ public class Storage {
 		} catch (ParserConfigurationException e) {
 			// Error in parser configuration
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 
 		} catch (IOException e) {
 			// Error accessing file
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 		}
 
 		return nList;

@@ -235,7 +235,7 @@ public class Controller implements Initializable {
 			}
 		}).start();
 
-		logic = new Logic();
+		logic = new Logic(logger);
 		try {
 			showAllTasks(logic.loadTasksFromFile());
 		} catch (SAXException e) {
@@ -496,7 +496,9 @@ public class Controller implements Initializable {
 			Handler handler = new FileHandler("logs/log.txt");
 			handler.setFormatter(new SimpleFormatter());
 			logger.addHandler(handler);
+			logger.setLevel(Level.ALL);
 		} catch (SecurityException e) {
+			//todo: cant log if log setup failed!
 			logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		} catch (IOException e) {

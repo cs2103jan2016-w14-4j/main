@@ -28,10 +28,6 @@ import org.xml.sax.SAXException;
 
 //@@author Shaun Lee
 public class Settings {
-
-	/* For Logging */
-	private static final Logger logger = Logger.getLogger(Storage.class.getName());
-
 	/* File names & default paths */
 	private static final String TASK_FILE_NAME = "tasklist.xml";
 	private static final String TASK_FILE_DEFAULT_PATH = "";
@@ -43,6 +39,9 @@ public class Settings {
 	private static final String TAG_SAVE_PATH = "SavePath";
 	private static final String TAG_TIME_DEFAULT = "TimeDefault";
 
+	/* For Logging */
+	private Logger _logger;
+	
 	private String _savePath = "";
 	private String _timeDefault = "PM";
 
@@ -52,8 +51,8 @@ public class Settings {
 	 * 
 	 * @throws SAXException
 	 */
-	public Settings() throws SAXException {
-		setupLogger();
+	public Settings(Logger logger) throws SAXException {
+		_logger = logger;
 		File configFile = new File(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME);
 		initializeSettings(configFile);
 	}
@@ -77,13 +76,13 @@ public class Settings {
 		try {
 			Handler handler = new FileHandler("logs/log.txt");
 			handler.setFormatter(new SimpleFormatter());
-			logger.addHandler(handler);
+			_logger.addHandler(handler);
 
 		} catch (SecurityException e) {
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		}
 	}
@@ -140,13 +139,13 @@ public class Settings {
 	 *            file path to check if valid
 	 * @return validity of file path (true or false)
 	 */
-	public static boolean isValidPath(String filePath) {
+	public boolean isValidPath(String filePath) {
 
 		try {
 			Paths.get(filePath);
 		} catch (InvalidPathException | NullPointerException e) {
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 			return false;
 		}
 		return true;
@@ -229,7 +228,7 @@ public class Settings {
 			doc = builder.parse(configFile);
 		} catch (ParserConfigurationException | IOException e) {
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 		}
 
 		doc.getDocumentElement().normalize();
@@ -262,7 +261,7 @@ public class Settings {
 
 			// Will not occur unless builder object is configured wrongly
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 		}
 
 		return doc;
@@ -290,7 +289,7 @@ public class Settings {
 		} catch (TransformerConfigurationException e) {
 			// Error in Transformer Configuration
 			e.printStackTrace();
-			logger.log(Level.FINE, e.toString(), e);
+			_logger.log(Level.FINE, e.toString(), e);
 		}
 
 		// Properties of the XML format to save the file in
@@ -305,7 +304,7 @@ public class Settings {
 		} catch (TransformerException e) {
 			// Error in transformation process
 			e.printStackTrace();
-			logger.log(Level.SEVERE, e.toString(), e);
+			_logger.log(Level.SEVERE, e.toString(), e);
 		}
 	}
 

@@ -204,7 +204,7 @@ public class StorageTest {
 		storage.addToTaskList(newTaskFloating);
 		storage.addToTaskList(newTaskDeadline);
 		storage.addToTaskList(newTaskEvent);
-		storage.removeTask(0);
+		storage.deleteTask(0);
 
 		// This is to test the expected behavior of this function
 		assert (taskListEquals(expectedTaskList, storage.getTaskList()));

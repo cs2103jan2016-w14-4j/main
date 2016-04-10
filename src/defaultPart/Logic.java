@@ -23,8 +23,6 @@ import org.xml.sax.SAXException;
 
 public class Logic {
 
-	private static final Logger logger = Logger.getLogger(Logic.class.getName());
-
 	private static final int LIST_NUMBERING_OFFSET = 1;
 
 	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
@@ -41,6 +39,8 @@ public class Logic {
 	private static final String MESSAGE_UNDO = "Undid last command: %1$s %2$s";
 	private static final String MESSAGE_REDO = "Redid last command: %1$s %2$s";
 
+	private Logger _logger;
+
 	public enum CommandType {
 		// User command is first letter -- make sure no duplicate
 		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, COMPLETE_MARKING, UNDO, REDO, HELP,
@@ -54,10 +54,10 @@ public class Logic {
 	/* for CommandType.FIND */
 	private List<List<String>> _keywordsPermutations;
 
-	public Logic() {
-		setupLogger();
+	public Logic(Logger logger) {
+		_logger = logger;
 		try {
-			_storage = new Storage();
+			_storage = new Storage(logger);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,25 +68,10 @@ public class Logic {
 		return _storage.loadTasksFromFile();
 	}
 
-	private void setupLogger() {
-		try {
-			Handler handler = new FileHandler("logs/log.txt");
-			handler.setFormatter(new SimpleFormatter());
-			logger.addHandler(handler);
-
-		} catch (SecurityException e) {
-			logger.log(Level.FINE, e.toString(), e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.log(Level.FINE, e.toString(), e);
-			e.printStackTrace();
-		}
-	}
-
 	public CommandInfo executeCommand(String input) {
 		CommandInfo commandInfo = _storage.createNewCommandInfo();
 		setCommandTypeAndArguments(commandInfo, input);
-		logger.log(Level.FINE, "Executing {0}", commandInfo.getCommandType());
+		_logger.log(Level.FINE, "Executing {0}", commandInfo.getCommandType());
 		try {
 			switch (commandInfo.getCommandType()) {
 				case ADD :
@@ -140,7 +125,7 @@ public class Logic {
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
 	private void setCommandTypeAndArguments(CommandInfo commandInfo, String input) {
 		String[] commandTypeAndArguments = splitCommand(input);
-		logger.log(Level.FINE, "Split command length: {0}", commandTypeAndArguments.length);
+		_logger.log(Level.FINE, "Split command length: {0}", commandTypeAndArguments.length);
 		commandInfo.setCommandType(parseCommandType(commandTypeAndArguments));
 
 		if (commandInfo.getCommandType() == CommandType.ADD) {
@@ -190,7 +175,7 @@ public class Logic {
 
 		// very ugly codes, to be refactored
 		if ((newTask.isRecurSet() || newTask.isStartTimeSet()) && !newTask.isStartDateSet()) {
-			logger.log(Level.FINE, "Setting date to today");
+			_logger.log(Level.FINE, "Setting date to today");
 			newTask.setStartDate(new GregorianCalendar());
 		}
 
@@ -280,7 +265,7 @@ public class Logic {
 	}
 
 	private void setTaskTime(Task task, String timeString) {
-		logger.log(Level.FINER, "Setting task time using \"{0}\"", timeString);
+		_logger.log(Level.FINER, "Setting task time using \"{0}\"", timeString);
 		String[] startAndEndTime = timeString.split("-", 2);
 		assert startAndEndTime.length > 0;
 		task.setStartTime(getTimeFromString(startAndEndTime[0]));
@@ -298,13 +283,13 @@ public class Logic {
 			assert startAndEndDate.length > 0;
 			Calendar startDate = getTaskDate(startAndEndDate[0]);
 			if (startDate != null) {
-				logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
+				_logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
 				task.setStartDate(startDate);
 
 				if (startAndEndDate.length == 2) {
 					Calendar endDate = getTaskDate(startAndEndDate[1]);
 					if (endDate != null) {
-						logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
+						_logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
 						task.setEndDate(endDate);
 					}
 				}
@@ -538,7 +523,7 @@ public class Logic {
 	}
 
 	private void putEdittedTaskInStorage(int taskIndex, Task task) {
-		_storage.removeTask(taskIndex);
+		_storage.deleteTask(taskIndex);
 		_storage.addToTaskList(task); // re-add so that it's sorted by date/time
 	}
 
@@ -585,7 +570,7 @@ public class Logic {
 			_storage.addToTaskList(newTask);
 
 			task.setStartDate(task.getNextRecur());
-			_storage.removeTask(taskIndex);
+			_storage.deleteTask(taskIndex);
 			_storage.addToTaskList(task);
 		} else {
 			task.toggleCompleted();
@@ -603,11 +588,11 @@ public class Logic {
 		Task task = _storage.getTask(taskIndex);
 
 		if (!task.willRecur() || arguments.substring(arguments.length() - 1).equals("r")) {
-			_storage.removeTask(taskIndex);
+			_storage.deleteTask(taskIndex);
 			commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET));
 		} else {
 			task.setStartDate(task.getNextRecur());
-			_storage.removeTask(taskIndex);
+			_storage.deleteTask(taskIndex);
 			_storage.addToTaskList(task);
 			commandInfo.setFeedback(String.format("Task " + (taskIndex + LIST_NUMBERING_OFFSET)
 					+ " rescheduled to " + task.getStartDate()));
@@ -658,20 +643,20 @@ public class Logic {
 			if (date != null && date.compareTo(newDate) < 0) {
 				if (task.isRecurSet()) {
 					if (task.isEndDateSet() && task.getEndDate().compareTo(newDate) <= 0) {
-						_storage.removeTask(i);
+						_storage.deleteTask(i);
 					} else {
 						while (task.willRecur() && task.getStartDate().compareTo(newDate) <= 0) {
 							task.setStartDate(task.getNextRecur());
 						}
 						if (task.getStartDate().compareTo(newDate) <= 0) {
-							_storage.removeTask(i);
+							_storage.deleteTask(i);
 						} else {
-							_storage.removeTask(i);
+							_storage.deleteTask(i);
 							_storage.addToTaskList(task);
 						}
 					}
 				} else {
-					_storage.removeTask(i);
+					_storage.deleteTask(i);
 				}
 				count++;
 			}
@@ -681,7 +666,7 @@ public class Logic {
 
 	private boolean deleteMultipleCompletedTasks(CommandInfo commandInfo) {
 		if (commandInfo.getArguments().equals("c")) {
-			logger.log(Level.FINE, "Deleting all completed tasks");
+			_logger.log(Level.FINE, "Deleting all completed tasks");
 			int count = _storage.deleteTasksWithPredicate(task -> task.isCompleted());
 			commandInfo.setFeedback(String.format("Deleted %1$s completed tasks", count));
 			return true;
@@ -692,7 +677,7 @@ public class Logic {
 
 	private boolean deleteMultipleWithoutDeadline(CommandInfo commandInfo) {
 		if (commandInfo.getArguments().equals(".")) {
-			logger.log(Level.FINE, "Deleting all tasks without date");
+			_logger.log(Level.FINE, "Deleting all tasks without date");
 			int count = _storage.deleteTasksWithPredicate(task -> !task.isStartDateSet());
 			commandInfo.setFeedback(String.format("Deleted %1$s tasks without date", count));
 			return true;
@@ -744,7 +729,7 @@ public class Logic {
 			Collections.sort(indexToDeleteList);
 
 			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
-				_storage.removeTask(indexToDeleteList.get(i) - 1);
+				_storage.deleteTask(indexToDeleteList.get(i) - 1);
 			}
 			return true;
 		}
@@ -869,7 +854,7 @@ public class Logic {
 		}
 		assert arguments.length() > 0;
 		String taskIndex = arguments.split(" ", 2)[0];
-		logger.log(Level.FINE, "Task index string is \"{0}\"", taskIndex);
+		_logger.log(Level.FINE, "Task index string is \"{0}\"", taskIndex);
 		if (!taskIndex.matches("\\d+")) {
 			throw new IOException(String.format(MESSAGE_INVALID_INDEX, taskIndex));
 		}
