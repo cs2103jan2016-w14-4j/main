@@ -218,19 +218,20 @@ public class Logic {
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
 	private boolean setRecurIfExists(Task task, List<String> args) {
-		int frequencyAndUnitIndex = args.size() - 1;
-		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-		if (frequencyAndUnit.matches("\\d*[dwmy]")) {
-			setTaskRecurField(task, frequencyAndUnit);
-			char frequency = frequencyAndUnit.charAt(0);
-			if (Character.isDigit(frequency)) {
-				task.setRecurFrequency(Character.getNumericValue(frequency));
-			}
-			args.remove(frequencyAndUnit);
-			return true;
-		} else {
-			return false;
+		if (args.size() > 0) {
+    		int frequencyAndUnitIndex = args.size() - 1;
+    		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+    		if (frequencyAndUnit.matches("\\d*[dwmy]")) {
+    			setTaskRecurField(task, frequencyAndUnit);
+    			char frequency = frequencyAndUnit.charAt(0);
+    			if (Character.isDigit(frequency)) {
+    				task.setRecurFrequency(Character.getNumericValue(frequency));
+    			}
+    			args.remove(frequencyAndUnit);
+    			return true;
+    		}
 		}
+		return false;
 	}
 
 	private void setTaskRecurField(Task task, String frequencyAndUnit) {
@@ -289,25 +290,27 @@ public class Logic {
 	}
 
 	private boolean setTaskDateIfExists(Task task, List<String> args) {
-		int index = args.size() - 1;
-		String dateString = args.get(index);
-
-		String[] startAndEndDate = dateString.split("-", 2);
-		assert startAndEndDate.length > 0;
-		Calendar startDate = getTaskDate(startAndEndDate[0]);
-		if (startDate != null) {
-			logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
-			task.setStartDate(startDate);
-
-			if (startAndEndDate.length == 2) {
-				Calendar endDate = getTaskDate(startAndEndDate[1]);
-				if (endDate != null) {
-					logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
-					task.setEndDate(endDate);
-				}
-			}
-			args.remove(index);
-			return true;
+		if (args.size() > 0) {
+    		int index = args.size() - 1;
+    		String dateString = args.get(index);
+    
+    		String[] startAndEndDate = dateString.split("-", 2);
+    		assert startAndEndDate.length > 0;
+    		Calendar startDate = getTaskDate(startAndEndDate[0]);
+    		if (startDate != null) {
+    			logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
+    			task.setStartDate(startDate);
+    
+    			if (startAndEndDate.length == 2) {
+    				Calendar endDate = getTaskDate(startAndEndDate[1]);
+    				if (endDate != null) {
+    					logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
+    					task.setEndDate(endDate);
+    				}
+    			}
+    			args.remove(index);
+    			return true;
+    		}
 		}
 		return false;
 	}
