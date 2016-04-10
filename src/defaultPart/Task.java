@@ -293,7 +293,7 @@ public class Task implements Cloneable {
 
 		incrementNextDate(nextDate);
 
-		if (nextDateAfterEndDate(nextDate)) {
+		if (isEndDateSet() && nextDateAfterEndDate(nextDate)) {
 			return null;
 		}
 		return nextDate;
