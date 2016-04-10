@@ -442,13 +442,13 @@ public class Logic {
 		String increment = dateString.substring(1).toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
-		if (increment.equals("day")) {
+		if (increment.equals("day") || increment.equals("d")) {
 			newDate.add(Calendar.DATE, 1 * multiplier);
-		} else if (increment.equals("week")) {
+		} else if (increment.equals("week") || increment.equals("w")) {
 			newDate.add(Calendar.DATE, 7 * multiplier);
-		} else if (increment.equals("month")) {
+		} else if (increment.equals("month") || increment.equals("m")) {
 			newDate.add(Calendar.MONTH, 1 * multiplier);
-		} else if (increment.equals("year")) {
+		} else if (increment.equals("year") || increment.equals("y")) {
 			newDate.add(Calendar.YEAR, 1 * multiplier);
 		} else {
 			boolean isDayExists = setDayIfExists(increment, newDate);
