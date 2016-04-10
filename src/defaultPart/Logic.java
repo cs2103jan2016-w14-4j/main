@@ -218,22 +218,19 @@ public class Logic {
 
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
 	private boolean setRecurIfExists(Task task, List<String> args) {
-		if (args.size() == 1) {
-			int frequencyAndUnitIndex = args.size() - 1;
-			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-			if (frequencyAndUnit.matches("\\d*[dwmy]")) {
-				setTaskRecurField(task, frequencyAndUnit);
-				char frequency = frequencyAndUnit.charAt(0);
-				if (Character.isDigit(frequency)) {
-					task.setRecurFrequency(Character.getNumericValue(frequency));
-				}
-				args.remove(frequencyAndUnit);
-				return true;
-			} else {
-				return false;
+		int frequencyAndUnitIndex = args.size() - 1;
+		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+		if (frequencyAndUnit.matches("\\d*[dwmy]")) {
+			setTaskRecurField(task, frequencyAndUnit);
+			char frequency = frequencyAndUnit.charAt(0);
+			if (Character.isDigit(frequency)) {
+				task.setRecurFrequency(Character.getNumericValue(frequency));
 			}
+			args.remove(frequencyAndUnit);
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	private void setTaskRecurField(Task task, String frequencyAndUnit) {
