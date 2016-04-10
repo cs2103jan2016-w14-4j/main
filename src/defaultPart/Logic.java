@@ -316,7 +316,8 @@ public class Logic {
 	}
 
 	private Calendar getTaskDate(String dateString) {
-		return (isNextCase(dateString)) ? getNextDate(dateString) : getWrappedDateFromString(dateString);
+		return (getWrappedDateFromString(dateString) == null) ? getNextDate(dateString)
+				: getWrappedDateFromString(dateString);
 	}
 
 	private boolean isNextCase(String dateString) {
