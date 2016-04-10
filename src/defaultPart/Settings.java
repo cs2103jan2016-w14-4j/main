@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +38,7 @@ public class Settings {
 
 	/* For Logging */
 	private Logger _logger;
-	
+
 	private String _savePath = "";
 	private String _timeDefault = "PM";
 
@@ -52,7 +49,7 @@ public class Settings {
 	 * @throws SAXException
 	 */
 	public Settings(Logger logger) throws SAXException {
-		_logger = logger;
+
 		File configFile = new File(SETTINGS_FILE_PATH + SETTINGS_FILE_NAME);
 		initializeSettings(configFile);
 	}
@@ -65,26 +62,8 @@ public class Settings {
 	 * @throws SAXException
 	 */
 	public Settings(File configFile) throws SAXException {
-		setupLogger();
+
 		initializeSettings(configFile);
-	}
-
-	/**
-	 * Setup logger for logging
-	 */
-	private void setupLogger() {
-		try {
-			Handler handler = new FileHandler("logs/log.txt");
-			handler.setFormatter(new SimpleFormatter());
-			_logger.addHandler(handler);
-
-		} catch (SecurityException e) {
-			_logger.log(Level.FINE, e.toString(), e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			_logger.log(Level.FINE, e.toString(), e);
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -139,13 +118,12 @@ public class Settings {
 	 *            file path to check if valid
 	 * @return validity of file path (true or false)
 	 */
-	public boolean isValidPath(String filePath) {
+	public static boolean isValidPath(String filePath) {
 
 		try {
 			Paths.get(filePath);
 		} catch (InvalidPathException | NullPointerException e) {
 			e.printStackTrace();
-			_logger.log(Level.FINE, e.toString(), e);
 			return false;
 		}
 		return true;

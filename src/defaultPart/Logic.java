@@ -359,14 +359,16 @@ public class Logic {
 				// fallthrough
 
 			case 2 :
-				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")) {
+				if (!dayAndMonthAndYear[1].matches("\\d{1,2}")
+						|| Integer.parseInt(dayAndMonthAndYear[1]) == 0) {
 					return null;
 				}
 				newDate.set(Calendar.MONTH, Integer.parseInt(dayAndMonthAndYear[1]) - 1);
 				// fallthrough
 
 			case 1 :
-				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")) {
+				if (!dayAndMonthAndYear[0].matches("\\d{1,2}")
+						|| Integer.parseInt(dayAndMonthAndYear[0]) == 0) {
 					if (setDayIfExists(dayAndMonthAndYear[0], newDate)) {
 						break;
 					} else {
@@ -571,10 +573,13 @@ public class Logic {
 		Task task = _storage.getTask(taskIndex);
 
 		if (task.willRecur()) {
-			Task newTask = task.clone();
+			Task newTask = new Task();
+			newTask.setStartDate(task.getStartDate());
+			newTask.setStartTime(task.getStartDate());
+			newTask.setEndTime(task.getEndDate());
 			newTask.toggleCompleted();
 			_storage.addToTaskList(newTask);
-
+			
 			task.setStartDate(task.getNextRecur());
 			_storage.deleteTask(taskIndex);
 			_storage.addToTaskList(task);
