@@ -1,50 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>Floating Test case</Description>
-      <Date/>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
+      <Description>Deadline Test case</Description>
+      <Completed>true</Completed>
    </Task>
    <Task>
-      <Description>Deadline Test case</Description>
-      <Date>20/6/2016</Date>
-      <StartTime/>
-      <EndTime>12:00PM</EndTime>
-      <Completed>no</Completed>
+      <Description>Floating Test case</Description>
+      <Completed>true</Completed>
    </Task>
    <Task>
       <Description>Event Test case</Description>
-      <Date>20-6-2016</Date>
-      <StartTime>10:00AM</StartTime>
-      <EndTime>12:00PM</EndTime>
-      <Completed>no</Completed>
+      <Completed>true</Completed>
    </Task>
    <Task>
-      <Description>Floating Test case</Description>
-      <Date/>
-      <StartTime/>
-      <EndTime/>
-      <Completed>no</Completed>
+      <Description>Cook Potatoes</Description>
+      <Completed>true</Completed>
    </Task>
    <Task>
-      <Description>Deadline Test case</Description>
-      <Date>20/6/2016</Date>
-      <StartTime/>
-      <EndTime>12:00PM</EndTime>
-      <Completed>no</Completed>
-   </Task>
-   <Task>
-      <Description>Event Recur Test case</Description>
-      <Date>20-6-2016</Date>
-      <StartTime>12=0:00PM</StartTime>
-      <EndTime>12:00PM</EndTime>
-      <Completed>no</Completed>
-      <recur>
-         <timeUnit>DAY</timeUnit>
-         <frequency>3</frequency>
-         <endOfRecurr>20/8/2016</endOfRecurr>
-      </recur>
+      <Description>Buy some Potatoes</Description>
+      <Completed>true</Completed>
    </Task>
 </wuriTasks>

@@ -21,11 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Predicate;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 //@@author Shaun Lee
 public class Storage {
@@ -68,8 +65,8 @@ public class Storage {
 	 * 
 	 * @throws SAXException
 	 */
-	public Storage(File storageFile) throws SAXException {
-		setupLogger();
+	public Storage(File storageFile, Logger logger) throws SAXException {
+		_logger = logger;
 		_file = storageFile;
 		// _settings = new Settings();
 	}
@@ -84,7 +81,7 @@ public class Storage {
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			Task task = taskList.get(i);
 			if (pred.test(task)) {
-				deleteTask(i);		
+				deleteTask(i);
 				count++;
 			}
 		}
@@ -113,24 +110,6 @@ public class Storage {
 
 	public String getSavePath() {
 		return _settings.getSavePathAndName();
-	}
-
-	/**
-	 * Setup logger for logging
-	 */
-	private void setupLogger() {
-		try {
-			Handler handler = new FileHandler("logs/log.txt");
-			handler.setFormatter(new SimpleFormatter());
-			_logger.addHandler(handler);
-
-		} catch (SecurityException e) {
-			_logger.log(Level.FINE, e.toString(), e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			_logger.log(Level.FINE, e.toString(), e);
-			e.printStackTrace();
-		}
 	}
 
 	public CommandInfo createNewCommandInfo() {
@@ -182,10 +161,10 @@ public class Storage {
 	public void deleteTask(int taskIndex) {
 		_commandInfoList.peek().getTaskList().remove(taskIndex);
 	}
-	
+
 	public void deleteOrRescheduleTask(int taskIndex, Calendar date) {
 		Task task = _commandInfoList.peek().getTaskList().get(taskIndex);
-			
+
 		if (task.isRecurSet()) {
 			task.setStartDateAfterRecur(date);
 		} else {
