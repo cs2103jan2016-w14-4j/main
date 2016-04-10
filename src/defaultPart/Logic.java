@@ -131,7 +131,7 @@ public class Logic {
 		if (commandInfo.getCommandType() == CommandType.ADD) {
 			commandInfo.setArguments(input);
 		} else if (commandTypeAndArguments.length >= 2) {
-			commandInfo.setArguments(commandTypeAndArguments[1]);
+			commandInfo.setArguments(commandTypeAndArguments[1].toLowerCase());
 		}
 	}
 
@@ -239,12 +239,17 @@ public class Logic {
 		}
 	}
 
-	private Calendar getRecurEndDate(Task task, String numOfTimesString) {
-		Calendar endDate = new GregorianCalendar();
-		endDate.setTime(task.getStartDate().getTime());
-		int numOfTimes = Integer.parseInt(numOfTimesString);
-		endDate.add(task.getRecurField(), numOfTimes * task.getRecurFrequency());
-		return endDate;
+	private void setRecurEndDate(Task task, String numOfTimesString) {
+		if (numOfTimesString.matches("\\d+(t|x)")) {
+			_logger.log(Level.FINE, "Setting recur times: {0}", numOfTimesString);
+			numOfTimesString = numOfTimesString.substring(0, numOfTimesString.length() - 1);
+			System.out.println(numOfTimesString);
+    		Calendar endDate = new GregorianCalendar();
+    		endDate.setTime(task.getStartDate().getTime());
+    		int numOfTimes = Integer.parseInt(numOfTimesString);
+    		endDate.add(task.getRecurField(), numOfTimes * task.getRecurFrequency());
+    		task.setEndDate(endDate);
+		}
 	}
 
 	private boolean setTaskTimeIfExists(Task task, List<String> args) {
@@ -291,6 +296,10 @@ public class Logic {
 					if (endDate != null) {
 						_logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
 						task.setEndDate(endDate);
+					} else {
+						if (task.isRecurSet()) {
+							setRecurEndDate(task, startAndEndDate[1]);
+						}
 					}
 				}
 				args.remove(index);
