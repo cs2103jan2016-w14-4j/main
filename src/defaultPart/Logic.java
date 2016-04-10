@@ -219,17 +219,17 @@ public class Logic {
 	/* If last 2 args are recur pattern, remove them from args and sets recur in newTask */
 	private boolean setRecurIfExists(Task task, List<String> args) {
 		if (args.size() > 0) {
-    		int frequencyAndUnitIndex = args.size() - 1;
-    		String frequencyAndUnit = args.get(frequencyAndUnitIndex);
-    		if (frequencyAndUnit.matches("\\d*[dwmy]")) {
-    			setTaskRecurField(task, frequencyAndUnit);
-    			char frequency = frequencyAndUnit.charAt(0);
-    			if (Character.isDigit(frequency)) {
-    				task.setRecurFrequency(Character.getNumericValue(frequency));
-    			}
-    			args.remove(frequencyAndUnit);
-    			return true;
-    		}
+			int frequencyAndUnitIndex = args.size() - 1;
+			String frequencyAndUnit = args.get(frequencyAndUnitIndex);
+			if (frequencyAndUnit.matches("\\d*[dwmy]")) {
+				setTaskRecurField(task, frequencyAndUnit);
+				char frequency = frequencyAndUnit.charAt(0);
+				if (Character.isDigit(frequency)) {
+					task.setRecurFrequency(Character.getNumericValue(frequency));
+				}
+				args.remove(frequencyAndUnit);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -291,26 +291,26 @@ public class Logic {
 
 	private boolean setTaskDateIfExists(Task task, List<String> args) {
 		if (args.size() > 0) {
-    		int index = args.size() - 1;
-    		String dateString = args.get(index);
-    
-    		String[] startAndEndDate = dateString.split("-", 2);
-    		assert startAndEndDate.length > 0;
-    		Calendar startDate = getTaskDate(startAndEndDate[0]);
-    		if (startDate != null) {
-    			logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
-    			task.setStartDate(startDate);
-    
-    			if (startAndEndDate.length == 2) {
-    				Calendar endDate = getTaskDate(startAndEndDate[1]);
-    				if (endDate != null) {
-    					logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
-    					task.setEndDate(endDate);
-    				}
-    			}
-    			args.remove(index);
-    			return true;
-    		}
+			int index = args.size() - 1;
+			String dateString = args.get(index);
+
+			String[] startAndEndDate = dateString.split("-", 2);
+			assert startAndEndDate.length > 0;
+			Calendar startDate = getTaskDate(startAndEndDate[0]);
+			if (startDate != null) {
+				logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
+				task.setStartDate(startDate);
+
+				if (startAndEndDate.length == 2) {
+					Calendar endDate = getTaskDate(startAndEndDate[1]);
+					if (endDate != null) {
+						logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
+						task.setEndDate(endDate);
+					}
+				}
+				args.remove(index);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -320,8 +320,9 @@ public class Logic {
 	}
 
 	private boolean isNextCase(String dateString) {
-		return dateString.substring(0, 1).equals("n") && !isTodayCase(dateString)
-				&& !isTomorrowCase(dateString);
+		String integerRegex = "\\d+";
+		return (dateString.substring(0, 1).equals("n") || dateString.substring(0, 1).matches(integerRegex))
+				&& !isTodayCase(dateString) && !isTomorrowCase(dateString);
 	}
 
 	private boolean isTime(String timeString) {
@@ -431,22 +432,28 @@ public class Logic {
 	}
 
 	private Calendar getNextDate(String dateString) {
+		String multiplierString = dateString.substring(0, 1).toLowerCase();
+		int multiplier;
+		if (multiplierString.equals("n")) {
+			multiplier = 1;
+		} else {
+			multiplier = Integer.parseInt(multiplierString);
+		}
 		String increment = dateString.substring(1).toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
 		if (increment.equals("day")) {
-			newDate.add(Calendar.DATE, 1);
+			newDate.add(Calendar.DATE, 1 * multiplier);
 		} else if (increment.equals("week")) {
-			newDate.add(Calendar.DATE, 7);
+			newDate.add(Calendar.DATE, 7 * multiplier);
 		} else if (increment.equals("month")) {
-			newDate.add(Calendar.MONTH, 1);
+			newDate.add(Calendar.MONTH, 1 * multiplier);
 		} else if (increment.equals("year")) {
-			newDate.add(Calendar.YEAR, 1);
+			newDate.add(Calendar.YEAR, 1 * multiplier);
 		} else {
-			int currentDay = newDate.get(Calendar.DAY_OF_WEEK);
 			boolean isDayExists = setDayIfExists(increment, newDate);
-			if (isDayExists && newDate.get(Calendar.DAY_OF_WEEK) >= currentDay) {
-				newDate.add(Calendar.DATE, 7);
+			if (isDayExists) {
+				newDate.add(Calendar.DATE, 7 * multiplier);
 			} else if (!isDayExists) {
 				return null;
 			}
