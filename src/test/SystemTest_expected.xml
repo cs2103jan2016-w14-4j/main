@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>Fly to Japan</Description>
-      <StartDate>01/06/17</StartDate>
-   </Task>
-   <Task>
-      <Description>Trip Japan Plan</Description>
-      <StartDate>01/07/17</StartDate>
-   </Task>
-   <Task>
-      <Description>Buy Potatoes</Description>
+      <Description>HIMYM</Description>
+      <StartDate>01/01/27</StartDate>
+      <StartTime>12:00PM</StartTime>
+      <RecurFrequency>1</RecurFrequency>
+      <RecurField>6</RecurField>
    </Task>
 </wuriTasks>

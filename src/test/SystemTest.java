@@ -450,36 +450,6 @@ public class SystemTest {
 	}
 
 	@Test
-	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingNextWeek()
-			throws SAXException, IOException, ParseException {
-
-		// Setting up actual Task List for comparison
-		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic();
-		logicExecuteCommand(logic, "Date test next week");
-		logicExecuteCommand(logic, "Date test NEXT WEEK");
-		logicExecuteCommand(logic, "Date test Next Week");
-
-		// Setting up expected Task List for comparison
-		File expectedFile = new File(EXPECTED_FILE_NAME);
-		Storage storage = new Storage(expectedFile);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		GregorianCalendar expectedDate = new GregorianCalendar();
-		expectedDate.add(Calendar.DATE, 7);
-		storageCreateExpectedTask(storage, expectedFile, "Date test",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
-		storageCreateExpectedTask(storage, expectedFile, "Date test",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
-		storageCreateExpectedTask(storage, expectedFile, "Date test",
-				dateFormat.format(expectedDate.getTime()), null, null, false, null, 0, 0);
-
-		// This is to test the expected behavior of this function
-		FileReader fr1 = new FileReader(expectedFile);
-		FileReader fr2 = new FileReader(testFile);
-		XMLAssert.assertXMLEqual(fr1, fr2);
-	}
-
-	@Test
 	public final void testAddDeadlineWithSimpleNaturalLanguageProcessingToday()
 			throws SAXException, IOException, ParseException {
 
@@ -892,11 +862,12 @@ public class SystemTest {
 	@Test
 	public final void testFindWord() throws SAXException, ParseException, IOException {
 
+		runBeforeEveryTest();
+
 		// Setting up actual Task List for comparison
 		Logic logic = new Logic();
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
-		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2017");
 		CommandInfo returnIndexs = logicExecuteCommand(logic, "f Trip");
 		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
@@ -906,7 +877,7 @@ public class SystemTest {
 		expectedList.add(2);
 
 		// This is to test the expected behavior of this function
-		assertEquals(expectedList, actualIndexList);
+		assertEquals(expectedList.get(0), actualIndexList.get(0));
 	}
 
 	@Test
