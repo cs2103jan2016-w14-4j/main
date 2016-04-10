@@ -433,29 +433,34 @@ public class Logic {
 	}
 
 	private Calendar getNextDate(String dateString) {
+		if(dateString.length()==0){
+			return null;
+		}
 		String multiplierString = dateString.substring(0, 1).toLowerCase();
 		int multiplier;
 		if (multiplierString.equals("n")) {
 			multiplier = 1;
-		} else {
+		} else if(multiplierString.matches("\\d")){
 			multiplier = Integer.parseInt(multiplierString);
+		}else{
+			return null;
 		}
 		String increment = dateString.substring(1).toLowerCase();
 		Calendar newDate = new GregorianCalendar();
 
-		if (increment.equals("day") || increment.equals("d")) {
+		if (increment.equals("day")) {
 			newDate.add(Calendar.DATE, 1 * multiplier);
-		} else if (increment.equals("week") || increment.equals("w")) {
+		} else if (increment.equals("week")) {
 			newDate.add(Calendar.DATE, 7 * multiplier);
-		} else if (increment.equals("month") || increment.equals("m")) {
+		} else if (increment.equals("month")) {
 			newDate.add(Calendar.MONTH, 1 * multiplier);
-		} else if (increment.equals("year") || increment.equals("y")) {
+		} else if (increment.equals("year")) {
 			newDate.add(Calendar.YEAR, 1 * multiplier);
 		} else {
 			boolean isDayExists = setDayIfExists(increment, newDate);
 			if (isDayExists) {
 				newDate.add(Calendar.DATE, 7 * multiplier);
-			} else if (!isDayExists) {
+			} else {
 				return null;
 			}
 		}
@@ -615,7 +620,7 @@ public class Logic {
 		}
 	}
 
-	private boolean deleteMultiple(CommandInfo commandInfo) {
+	private boolean deleteMultiple(CommandInfo commandInfo) throws InputIndexOutOfBoundsException {
 		return deleteMultipleWithoutDeadline(commandInfo) || deleteMultipleCompletedTasks(commandInfo)
 				|| deleteFromDate(commandInfo) || deleteMultipleIndexes(commandInfo);
 	}
@@ -702,7 +707,7 @@ public class Logic {
 		}
 	}
 
-	private boolean deleteMultipleIndexes(CommandInfo commandInfo) {
+	private boolean deleteMultipleIndexes(CommandInfo commandInfo) throws InputIndexOutOfBoundsException {
 		String arguments = commandInfo.getArguments();
 		String[] indexToDelete = arguments.split(",");
 
@@ -745,7 +750,15 @@ public class Logic {
 			Collections.sort(indexToDeleteList);
 
 			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
-				_storage.removeTask(indexToDeleteList.get(i) - 1);
+				Task task;
+				task = _storage.getTask(indexToDeleteList.get(i) - 1);
+				if (task.willRecur()) {
+					task.setStartDate(task.getNextRecur());
+					_storage.removeTask(indexToDeleteList.get(i) - 1);
+					_storage.addToTaskList(task);
+				} else {
+					_storage.removeTask(indexToDeleteList.get(i) - 1);
+				}
 			}
 			return true;
 		}
