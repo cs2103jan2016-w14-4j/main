@@ -84,7 +84,7 @@ public class Storage {
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			Task task = taskList.get(i);
 			if (pred.test(task)) {
-				deleteTask(i);		
+				deleteTask(i);
 				count++;
 			}
 		}
@@ -182,10 +182,10 @@ public class Storage {
 	public void deleteTask(int taskIndex) {
 		_commandInfoList.peek().getTaskList().remove(taskIndex);
 	}
-	
+
 	public void deleteOrRescheduleTask(int taskIndex, Calendar date) {
 		Task task = _commandInfoList.peek().getTaskList().get(taskIndex);
-			
+
 		if (task.isRecurSet()) {
 			task.setStartDateAfterRecur(date);
 		} else {

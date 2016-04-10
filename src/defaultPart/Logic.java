@@ -418,16 +418,16 @@ public class Logic {
 	}
 
 	private Calendar getNextDate(String dateString) {
-		if(dateString.length()==0){
+		if (dateString.length() == 0) {
 			return null;
 		}
 		String multiplierString = dateString.substring(0, 1).toLowerCase();
 		int multiplier;
 		if (multiplierString.equals("n")) {
 			multiplier = 1;
-		} else if(multiplierString.matches("\\d")){
+		} else if (multiplierString.matches("\\d")) {
 			multiplier = Integer.parseInt(multiplierString);
-		}else{
+		} else {
 			return null;
 		}
 		String increment = dateString.substring(1).toLowerCase();
@@ -586,31 +586,23 @@ public class Logic {
 	}
 
 	private void deleteTask(CommandInfo commandInfo) throws IOException, InputIndexOutOfBoundsException {
-		if (deleteMultiple(commandInfo)) {
-			return;
-		}
 		String arguments = commandInfo.getArguments();
-		int taskIndex = getTaskIndex(arguments);
-		Task task = _storage.getTask(taskIndex);
+		boolean hasRecurFlag = arguments.length() >= 2
+				&& arguments.substring(arguments.length() - 2).equals(" r");
+		if (hasRecurFlag) {
+			_logger.log(Level.FINE, "Found r flag");
+			commandInfo.setArguments(arguments.substring(0, arguments.length() - 2));
+		}
+		_logger.log(Level.FINE, "Argument without r flag: {0}", commandInfo.getArguments());
 
-		if (!task.willRecur() || arguments.substring(arguments.length() - 1).equals("r")) {
-			_storage.deleteTask(taskIndex);
-			commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, taskIndex + LIST_NUMBERING_OFFSET));
-		} else {
-			task.setStartDate(task.getNextRecur());
-			_storage.deleteTask(taskIndex);
-			_storage.addToTaskList(task);
-			commandInfo.setFeedback(String.format("Task " + (taskIndex + LIST_NUMBERING_OFFSET)
-					+ " rescheduled to " + task.getFormattedStartDate()));
+		if (!(deleteAllTasksWithoutDate(commandInfo) || deleteAllCompletedTasks(commandInfo)
+				|| deleteFromDate(commandInfo, hasRecurFlag) || deleteIndexes(commandInfo, hasRecurFlag))) {
+			commandInfo.setCommandType(CommandType.ERROR);
+			commandInfo.setFeedback("Unknown args");
 		}
 	}
 
-	private boolean deleteMultiple(CommandInfo commandInfo) throws InputIndexOutOfBoundsException {
-		return deleteMultipleWithoutDeadline(commandInfo) || deleteMultipleCompletedTasks(commandInfo)
-				|| deleteFromDate(commandInfo) || deleteMultipleIndexes(commandInfo);
-	}
-
-	private boolean deleteFromDate(CommandInfo commandInfo) {
+	private boolean deleteFromDate(CommandInfo commandInfo, boolean hasRecurFlag) {
 		String arguments = commandInfo.getArguments();
 		Pattern equalitySigns = Pattern.compile("(>|<)=?");
 		Matcher match = equalitySigns.matcher(arguments);
@@ -670,7 +662,7 @@ public class Logic {
 		return count;
 	}
 
-	private boolean deleteMultipleCompletedTasks(CommandInfo commandInfo) {
+	private boolean deleteAllCompletedTasks(CommandInfo commandInfo) {
 		if (commandInfo.getArguments().equals("c")) {
 			_logger.log(Level.FINE, "Deleting all completed tasks");
 			int count = _storage.deleteTasksWithPredicate(task -> task.isCompleted());
@@ -681,7 +673,7 @@ public class Logic {
 		}
 	}
 
-	private boolean deleteMultipleWithoutDeadline(CommandInfo commandInfo) {
+	private boolean deleteAllTasksWithoutDate(CommandInfo commandInfo) {
 		if (commandInfo.getArguments().equals(".")) {
 			_logger.log(Level.FINE, "Deleting all tasks without date");
 			int count = _storage.deleteTasksWithPredicate(task -> !task.isStartDateSet());
@@ -692,11 +684,12 @@ public class Logic {
 		}
 	}
 
-	private boolean deleteMultipleIndexes(CommandInfo commandInfo) throws InputIndexOutOfBoundsException {
+	private boolean deleteIndexes(CommandInfo commandInfo, boolean hasRecurFlag)
+			throws InputIndexOutOfBoundsException {
 		String arguments = commandInfo.getArguments();
-		String[] indexToDelete = arguments.split(",");
+		String[] indexToDelete = arguments.split(",| ");
 
-		if (indexToDelete.length > 1 || arguments.split("-").length > 1) {
+		if (indexToDelete.length > 0 || arguments.split("-").length > 1) {
 			// first check if all numbers are valid
 			for (String index : indexToDelete) {
 				String[] multIndexToDelete = index.split("-");
@@ -745,6 +738,7 @@ public class Logic {
 					_storage.deleteTask(indexToDeleteList.get(i) - 1);
 				}
 			}
+			commandInfo.setFeedback("Deleted task indexes");
 			return true;
 		}
 		return false;

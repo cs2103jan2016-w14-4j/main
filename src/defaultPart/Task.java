@@ -263,7 +263,7 @@ public class Task implements Cloneable {
 	public boolean willRecur() {
 		return (this.getNextRecur() != null);
 	}
-	
+
 	public void setStartDateAfterRecur(Calendar date) {
 		assert isRecurSet();
 		do {
@@ -272,7 +272,7 @@ public class Task implements Cloneable {
 			setStartDate(nextDate);
 		} while (compareDate(date) <= 0);
 	}
-	
+
 	private int compareDate(Calendar date) {
 		assert isStartDateSet() && date != null;
 		int year1 = _startDateAndTime.get(Calendar.YEAR);
@@ -280,8 +280,8 @@ public class Task implements Cloneable {
 		if (year1 != year2) {
 			return year1 - year2;
 		}
-		
-		return _startDateAndTime.get(Calendar.DAY_OF_YEAR) - date.get(Calendar.DAY_OF_YEAR);	
+
+		return _startDateAndTime.get(Calendar.DAY_OF_YEAR) - date.get(Calendar.DAY_OF_YEAR);
 	}
 
 	public Calendar getNextRecur() {
