@@ -154,6 +154,7 @@ public class Settings {
 
 	/**
 	 * Initialize settings, load from settings if file exists, or else create new settings file with default
+	 * settings
 	 * 
 	 * @param configFile
 	 *            Configuration file to load/save settings from/to
