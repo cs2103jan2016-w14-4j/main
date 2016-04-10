@@ -652,7 +652,7 @@ public class Logic {
 			Task task = taskList.get(i);
 			Calendar date = task.getStartDate();
 
-			if (date != null && date.compareTo(newDate) < 0) {
+			if (task.isStartDateSet() && date.compareTo(newDate) <= 0) {
 				if (task.isRecurSet()) {
 					if (task.isEndDateSet() && task.getEndDate().compareTo(newDate) <= 0) {
 						_storage.deleteTask(i);
