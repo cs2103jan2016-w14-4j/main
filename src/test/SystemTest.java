@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -44,14 +43,6 @@ public class SystemTest {
 		XMLUnit.setIgnoreComments(true);
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
 		XMLUnit.setNormalizeWhitespace(true);
-	}
-
-	@After
-	public void runAfterEveryTest() {
-
-		File file = new File(TEST_FILE_NAME);
-		file.delete();
-
 	}
 
 	/**
@@ -737,68 +728,68 @@ public class SystemTest {
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
-	 @Test
-	 public final void testEditStartTime() throws SAXException, IOException, ParseException {
-	
-	 // Setting up actual Task List for comparison
-	 File testFile = new File(TEST_FILE_NAME);
-	 Logic logic = new Logic();
-	 logicExecuteCommand(logic, "Tomato Reading 11/4/2016 2pm");
-	 logicExecuteCommand(logic, "e 1 3pm");
-	
-	 // Setting up expected Task List for comparison
-	 File expectedFile = new File(EXPECTED_FILE_NAME);
-	 Storage storage = new Storage(expectedFile);
-	 storageCreateExpectedTask(storage, expectedFile, "Tomato Reading", "11/4/2016", "3:00PM", null, false,
-	 null, 0, 0);
-	
-	 // This is to test the expected behavior of this function
-	 FileReader fr1 = new FileReader(expectedFile);
-	 FileReader fr2 = new FileReader(testFile);
-	 XMLAssert.assertXMLEqual(fr1, fr2);
-	 }
+	@Test
+	public final void testEditStartTime() throws SAXException, IOException, ParseException {
 
-	 @Test
-	 public final void testEditStartTimeFromEvent() throws SAXException, IOException, ParseException {
-	
-	 // Setting up actual Task List for comparison
-	 File testFile = new File(TEST_FILE_NAME);
-	 Logic logic = new Logic();
-	 logicExecuteCommand(logic, "Cabbage Reading 11/4/2016 2pm-4pm");
-	 logicExecuteCommand(logic, "e 1 3pm");
-	
-	 // Setting up expected Task List for comparison
-	 File expectedFile = new File(EXPECTED_FILE_NAME);
-	 Storage storage = new Storage(expectedFile);
-	 storageCreateExpectedTask(storage, expectedFile, "Cabbage Reading", "11/4/2016", "3:00PM", null,
-	 false, null, 0, 0);
-	
-	 // This is to test the expected behavior of this function
-	 FileReader fr1 = new FileReader(expectedFile);
-	 FileReader fr2 = new FileReader(testFile);
-	 XMLAssert.assertXMLEqual(fr1, fr2);
-	 }
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic();
+		logicExecuteCommand(logic, "Tomato Reading 11/4/2016 2pm");
+		logicExecuteCommand(logic, "e 1 3pm");
 
-	 @Test
-	 public final void testEditEndTime() throws SAXException, IOException, ParseException {
-	
-	 // Setting up actual Task List for comparison
-	 File testFile = new File(TEST_FILE_NAME);
-	 Logic logic = new Logic();
-	 logicExecuteCommand(logic, "Cucumber Reading 11/4/2016 2pm-4pm");
-	 logicExecuteCommand(logic, "e 1 2pm-5pm");
-	
-	 // Setting up expected Task List for comparison
-	 File expectedFile = new File(EXPECTED_FILE_NAME);
-	 Storage storage = new Storage(expectedFile);
-	 storageCreateExpectedTask(storage, expectedFile, "Cucumber Reading", "11/4/2016", "2:00PM", "5:00PM",
-	 false, null, 0, 0);
-	
-	 // This is to test the expected behavior of this function
-	 FileReader fr1 = new FileReader(expectedFile);
-	 FileReader fr2 = new FileReader(testFile);
-	 XMLAssert.assertXMLEqual(fr1, fr2);
-	 }
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Tomato Reading", "11/4/2016", "3:00PM", null, false,
+				null, 0, 0);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testEditStartTimeFromEvent() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic();
+		logicExecuteCommand(logic, "Cabbage Reading 11/4/2016 2pm-4pm");
+		logicExecuteCommand(logic, "e 1 3pm");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Cabbage Reading", "11/4/2016", "3:00PM", null,
+				false, null, 0, 0);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
+	public final void testEditEndTime() throws SAXException, IOException, ParseException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic();
+		logicExecuteCommand(logic, "Cucumber Reading 11/4/2016 2pm-4pm");
+		logicExecuteCommand(logic, "e 1 2pm-5pm");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile);
+		storageCreateExpectedTask(storage, expectedFile, "Cucumber Reading", "11/4/2016", "2:00PM", "5:00PM",
+				false, null, 0, 0);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
 
 	@Test
 	public final void testEditRecurTimeUnit() throws SAXException, IOException, ParseException {
@@ -827,14 +818,14 @@ public class SystemTest {
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic();
-		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d 1");
-		logicExecuteCommand(logic, "e 1 3d 1");
+		logicExecuteCommand(logic, "Buy some potatoes 1/5/2016 11am-12pm 1d");
+		logicExecuteCommand(logic, "e 1 3d");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile);
 		storageCreateExpectedTask(storage, expectedFile, "Buy some potatoes", "1/5/2016", "11:00AM",
-				"12:00PM", false, "4/5/2016", Calendar.DAY_OF_YEAR, 3);
+				"12:00PM", false, null, Calendar.DAY_OF_YEAR, 3);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
