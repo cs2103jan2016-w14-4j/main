@@ -132,7 +132,10 @@ public class Logic {
 		if (commandInfo.getCommandType() == CommandType.ADD) {
 			commandInfo.setArguments(input);
 		} else if (commandTypeAndArguments.length >= 2) {
-			commandInfo.setArguments(commandTypeAndArguments[1].toLowerCase());
+			if (commandInfo.getCommandType() != CommandType.EDIT) {
+				commandTypeAndArguments[1] = commandTypeAndArguments[1].toLowerCase();
+			}
+			commandInfo.setArguments(commandTypeAndArguments[1]);
 		}
 	}
 
