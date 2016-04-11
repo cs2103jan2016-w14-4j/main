@@ -132,6 +132,10 @@ public class LogicTest {
 		assertTrue(task.isEndTimeSet());
 		assertEquals(1, task.getStartDate().get(Calendar.HOUR_OF_DAY));
 		assertEquals(3, task.getEndDate().get(Calendar.HOUR_OF_DAY));
+		
+		// adding task with start time, end time, start day, end day, and recurrence
+		logic.executeCommand("Do work today-nyear 00:00-23:59 1d");
+		
 	}
 
 	@Test
