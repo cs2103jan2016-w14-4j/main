@@ -617,7 +617,7 @@ public class Logic {
 		_logger.log(Level.FINE, "Argument without r flag: {0}", commandInfo.getArguments());
 
 		if (!(deleteAllTasksWithoutDate(commandInfo) || deleteAllCompletedTasks(commandInfo)
-				|| deleteFromDate(commandInfo, hasRecurFlag) || deleteIndexes(commandInfo, hasRecurFlag))) {
+				|| deleteIndexes(commandInfo, hasRecurFlag) || deleteFromDate(commandInfo, hasRecurFlag))) {
 			commandInfo.setCommandType(CommandType.ERROR);
 			commandInfo.setFeedback("Unknown args");
 		}
@@ -625,57 +625,54 @@ public class Logic {
 
 	private boolean deleteFromDate(CommandInfo commandInfo, boolean hasRecurFlag) {
 		String arguments = commandInfo.getArguments();
-		Pattern equalitySigns = Pattern.compile("((>|<)=?)|(=?(>|<))|(<>)|(><)|(!=)|(=!)");
+		Pattern equalitySigns = Pattern.compile("((<>)|(><)|(!=)|(=!)|((>|<)?=?)|(=?(>|<)))?");
 		Matcher match = equalitySigns.matcher(arguments);
 
 		if (match.find() && match.start() == 0) {
 			String dateString = arguments.substring(match.end()).trim();
 			String[] dayAndMonthAndYear = dateString.split("/", 3);
-			Calendar newDate = getDateFromString(dayAndMonthAndYear);
-			if (newDate == null) {
-				commandInfo.setCommandType(CommandType.ERROR);
-				commandInfo.setFeedback("Failed to parse date: " + dateString);
+			Calendar date = getDateFromString(dayAndMonthAndYear);
+			if (date != null) {
+				int count = 0;
+				switch (match.group()) {
+					case "" :
+					case "=" :
+						count = _storage.deleteOrRescheduleTaskWithStartDate(
+								task -> task.compareStartAndEndDate(date) == 0, date);
+						break;
+
+					case "<" :
+						count = _storage.deleteOrRescheduleTaskWithStartDate(
+								task -> task.compareStartAndEndDate(date) < 0, date);
+						break;
+
+					case "<=" :
+					case "=<" :
+						count = _storage.deleteOrRescheduleTaskWithStartDate(
+								task -> task.compareStartAndEndDate(date) <= 0, date);
+						break;
+
+					case ">" :
+						count = _storage.deleteOrRescheduleTaskWithStartDate(
+								task -> task.compareStartAndEndDate(date) > 0, date);
+						break;
+
+					case ">=" :
+					case "=>" :
+						count = _storage.deleteOrRescheduleTaskWithStartDate(
+								task -> task.compareStartAndEndDate(date) >= 0, date);
+						break;
+
+					case "!=" :
+					case "<>" :
+					case "><" :
+						count = _storage.deleteOrRescheduleTaskWithStartDate(
+								task -> task.compareStartAndEndDate(date) != 0, date);
+						break;
+				}
+				commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, count));
 				return true;
 			}
-			List<Task> taskList = _storage.getTaskList();
-			int count = 0;
-			switch (match.group()) {
-				case "=" :
-					count = _storage.deleteOrRescheduleTaskWithStartDate(
-							task -> task.compareStartAndEndDate(newDate) == 0, newDate);
-					break;
-
-				case "<" :
-					count = _storage.deleteOrRescheduleTaskWithStartDate(
-							task -> task.compareStartAndEndDate(newDate) < 0, newDate);
-					break;
-
-				case "<=" :
-				case "=<" :
-					count = _storage.deleteOrRescheduleTaskWithStartDate(
-							task -> task.compareStartAndEndDate(newDate) <= 0, newDate);
-					break;
-
-				case ">" :
-					count = _storage.deleteOrRescheduleTaskWithStartDate(
-							task -> task.compareStartAndEndDate(newDate) > 0, newDate);
-					break;
-
-				case ">=" :
-				case "=>" :
-					count = _storage.deleteOrRescheduleTaskWithStartDate(
-							task -> task.compareStartAndEndDate(newDate) >= 0, newDate);
-					break;
-
-				case "!=" :
-				case "<>" :
-				case "><" :
-					count = _storage.deleteOrRescheduleTaskWithStartDate(
-							task -> task.compareStartAndEndDate(newDate) != 0, newDate);
-					break;
-			}
-			commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, count));
-			return true;
 		}
 		return false;
 	}
@@ -706,7 +703,6 @@ public class Logic {
 			throws InputIndexOutOfBoundsException {
 		String arguments = commandInfo.getArguments();
 		String[] indexToDelete = arguments.split(",| ");
-
 		if (indexToDelete.length > 0 || arguments.split("-").length > 1) {
 			// first check if all numbers are valid
 			for (String index : indexToDelete) {
@@ -741,7 +737,6 @@ public class Logic {
 					indexToDeleteList.add(Integer.parseInt(index) - LIST_NUMBERING_OFFSET);
 				}
 			}
-
 			if (_storage.deleteTasksIndexes(indexToDeleteList, hasRecurFlag)) {
 				commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, indexToDeleteList.size()));
 				return true;

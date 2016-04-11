@@ -208,7 +208,7 @@ public class Storage {
 	}
 	
 	public void deleteOrRescheduleTask(int taskIndex) {
-		deleteOrRescheduleTask(taskIndex, _commandInfoList.peek().getTaskList().get(taskIndex).getStartDate());
+		deleteOrRescheduleTask(taskIndex, (Calendar) _commandInfoList.peek().getTaskList().get(taskIndex).getStartDate().clone());
 	}
 
 	/**

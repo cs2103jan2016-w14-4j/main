@@ -270,19 +270,15 @@ public class Task implements Cloneable {
 			Calendar nextDate = getNextRecur();
 			assert nextDate != null;
 			setStartDate(nextDate);
-		} while (compareStartDate(date) <= 0);
+		} while (compareDate(_startDateAndTime, date) <= 0);
 	}
-	
+
 	public int compareStartAndEndDate(Calendar date) {
 		if (isEndDateSet()) {
 			return compareDate(_endDateAndTime, date);
 		} else {
 			return compareDate(_startDateAndTime, date);
 		}
-	}
-	
-	private int compareStartDate(Calendar date) {
-		return compareDate(_startDateAndTime, date);
 	}
 
 	private int compareDate(Calendar date1, Calendar date2) {
