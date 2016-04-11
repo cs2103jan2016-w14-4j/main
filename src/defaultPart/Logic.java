@@ -715,8 +715,7 @@ public class Logic {
 					return false;
 				}
 				for (String multIndex : multIndexToDelete) {
-					if (multIndex.matches("\\d+")
-							&& _storage.isTaskIndexValid(Integer.parseInt(multIndex) - 1)) {
+					if (multIndex.matches("\\d+")) {
 						continue;
 					} else {
 						return false;
@@ -739,21 +738,10 @@ public class Logic {
 				}
 			}
 
-			Collections.sort(indexToDeleteList);
-
-			for (int i = indexToDeleteList.size() - 1; i >= 0; i--) {
-				Task task;
-				task = _storage.getTask(indexToDeleteList.get(i) - 1);
-				if (task.willRecur()) {
-					task.setStartDate(task.getNextRecur());
-					_storage.deleteTask(indexToDeleteList.get(i) - 1);
-					_storage.addToTaskList(task);
-				} else {
-					_storage.deleteTask(indexToDeleteList.get(i) - 1);
-				}
+			if (_storage.deleteTasksIndexes(indexToDeleteList)) {
+    			commandInfo.setFeedback("Deleted task indexes");
+    			return true;
 			}
-			commandInfo.setFeedback("Deleted task indexes");
-			return true;
 		}
 		return false;
 	}

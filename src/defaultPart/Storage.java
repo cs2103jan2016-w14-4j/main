@@ -3,6 +3,8 @@ package defaultPart;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import java.util.Collections;
+
 import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -16,7 +18,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -73,6 +78,18 @@ public class Storage {
 
 	public List<Task> getTaskList() {
 		return _commandInfoList.peek().getTaskList();
+	}
+
+	public boolean deleteTasksIndexes(List<Integer> indexes) {
+		Collections.sort(indexes);
+		for (int i = indexes.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
+			if (isTaskIndexValid(indexes.get(i))) {
+				deleteOrRescheduleTask(i);
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public int deleteTasksWithPredicate(Predicate<Task> pred) {
@@ -165,11 +182,16 @@ public class Storage {
 	public void deleteOrRescheduleTask(int taskIndex, Calendar date) {
 		Task task = _commandInfoList.peek().getTaskList().get(taskIndex);
 
+		deleteTask(taskIndex);
+		
 		if (task.isRecurSet()) {
 			task.setStartDateAfterRecur(date);
-		} else {
-			deleteTask(taskIndex);
+			addToTaskList(task);
 		}
+	}
+	
+	public void deleteOrRescheduleTask(int taskIndex) {
+		deleteOrRescheduleTask(taskIndex, _commandInfoList.peek().getTaskList().get(taskIndex).getStartDate());
 	}
 
 	/**
