@@ -624,7 +624,7 @@ public class Logic {
 
 	private boolean deleteFromDate(CommandInfo commandInfo, boolean hasRecurFlag) {
 		String arguments = commandInfo.getArguments();
-		Pattern equalitySigns = Pattern.compile("(((>|<)?=?)|(=?(>|<)))?");
+		Pattern equalitySigns = Pattern.compile("((<=?)|(=?<))?");
 		Matcher match = equalitySigns.matcher(arguments);
 
 		if (match.find() && match.start() == 0) {
@@ -635,7 +635,6 @@ public class Logic {
 				int count = 0;
 				switch (match.group()) {
 					case "" :
-					case "=" :
 						count = _storage.deleteOrRescheduleTaskWithStartDate(
 								task -> task.compareStartAndEndDate(date) == 0, date);
 						break;
