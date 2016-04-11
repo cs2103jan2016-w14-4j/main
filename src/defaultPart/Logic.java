@@ -323,12 +323,6 @@ public class Logic {
 				: getWrappedDateFromString(dateString);
 	}
 
-	private boolean isNextCase(String dateString) {
-		String integerRegex = "\\d+";
-		return (dateString.substring(0, 1).equals("n") || dateString.substring(0, 1).matches(integerRegex))
-				&& !isTodayCase(dateString) && !isTomorrowCase(dateString);
-	}
-
 	private boolean isTime(String timeString) {
 		String timeRegex = "\\d{1,2}((:|\\.)\\d{2})?(am|pm)?";
 		return timeString.toLowerCase().matches(timeRegex + "(-" + timeRegex + ")?");
