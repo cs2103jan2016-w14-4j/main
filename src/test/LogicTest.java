@@ -175,7 +175,7 @@ public class LogicTest {
 
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
-		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
+		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
 		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
@@ -203,5 +203,34 @@ public class LogicTest {
 
 		taskList = logic.loadTasksFromFile();
 		assertEquals(1, taskList.size());
+	}
+
+	@Test
+	public void testFind() throws SAXException, ParseException {
+
+		// adding 2 tasks and checking tasklist size
+		Logic logic = new Logic(logger);
+		logic.executeCommand("bye");
+		logic.executeCommand("Byebye bye");
+		logic.executeCommand("Plan jap trips");
+		List<Task> taskList = logic.loadTasksFromFile();
+		assertEquals(3, taskList.size());
+
+		CommandInfo command = logic.executeCommand("f bye");
+
+		List<Integer> findList = command.getIndexesFound();
+		assert (findList.size() == 2);
+		assert (taskList.get(findList.get(0)).equals("Byebye bye"));
+		assert (taskList.get(findList.get(1)).equals("bye"));
+
+		command = logic.executeCommand("f byebye");
+		findList = command.getIndexesFound();
+		assert (findList.size() == 1);
+		assert (taskList.get(findList.get(0)).equals("Byebye bye"));
+
+		command = logic.executeCommand("trip plan");
+		findList = command.getIndexesFound();
+		assert (findList.size() == 1);
+		assert (taskList.get(findList.get(0)).equals("Plan jap trips"));
 	}
 }
