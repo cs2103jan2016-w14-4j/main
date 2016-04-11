@@ -64,6 +64,17 @@ public class Logic {
 			e.printStackTrace();
 		}
 	}
+	
+	// Overloaded constructor for testing
+	public Logic(File file, Logger logger) {
+		_logger = logger;
+		try {
+			_storage = new Storage(file, logger);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
 		return _storage.loadTasksFromFile();

@@ -33,7 +33,8 @@ public class SystemTest {
 
 	/* Location to load/save the expected test results */
 	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
-	private static final String TEST_FILE_NAME = "tasklist.xml";
+	private static final String TEST_FILE_NAME = "test\\SystemTest_actual.xml";
+	// private static final String TEST_FILE_NAME = "tasklist.xml";
 
 	/**
 	 * Delete the tasklist before every test case
@@ -108,7 +109,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "CS2103T Reading");
 
 		// Setting up expected Task List for comparison
@@ -129,7 +130,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "500 words CFG1010 8/4/2017");
 
 		// Setting up expected Task List for comparison
@@ -150,7 +151,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test mon");
 		logicExecuteCommand(logic, "Date test monday");
 		logicExecuteCommand(logic, "Date test Mon");
@@ -189,7 +190,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test tue");
 		logicExecuteCommand(logic, "Date test tues");
 		logicExecuteCommand(logic, "Date test tuesday");
@@ -234,7 +235,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test wed");
 		logicExecuteCommand(logic, "Date test WED");
 		logicExecuteCommand(logic, "Date test wednesday");
@@ -279,7 +280,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test thur");
 		logicExecuteCommand(logic, "Date test thurs");
 		logicExecuteCommand(logic, "Date test thursday");
@@ -327,7 +328,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test fri");
 		logicExecuteCommand(logic, "Date test friday");
 		logicExecuteCommand(logic, "Date test Fri");
@@ -375,7 +376,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test sat");
 		logicExecuteCommand(logic, "Date test Sat");
 		logicExecuteCommand(logic, "Date test Saturday");
@@ -417,7 +418,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test sun");
 		logicExecuteCommand(logic, "Date test Sun");
 		logicExecuteCommand(logic, "Date test Sunday");
@@ -459,7 +460,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test Today");
 		logicExecuteCommand(logic, "Date test today");
 
@@ -485,7 +486,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Date test tomorrow");
 		logicExecuteCommand(logic, "Date test Tomorrow");
 		logicExecuteCommand(logic, "Date test tmrw");
@@ -517,7 +518,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan Jap Trip 30/1/2017 11am");
 
 		// Setting up expected Task List for comparison
@@ -537,7 +538,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy some potatoes 30/1/2017 11am-12pm");
 
 		// Setting up expected Task List for comparison
@@ -557,7 +558,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Go out with girlfriend 1/9 3d");
 
 		// Setting up expected Task List for comparison
@@ -578,7 +579,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Go out with girlfriend 1/4 3d");
 
 		// Setting up expected Task List for comparison
@@ -598,7 +599,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Go out with jully 2/9-16/9 1w");
 
 		// Setting up expected Task List for comparison
@@ -619,7 +620,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "HIMYM 1/1/2027 12:00 1d");
 
 		File expectedFile = new File(EXPECTED_FILE_NAME);
@@ -638,7 +639,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2017-11/5/2017 11am-12pm 1d");
 
 		// Setting up expected Task List for comparison
@@ -658,7 +659,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "CS2103T Reading");
 		logicExecuteCommand(logic, "e 1 Potato Reading");
 
@@ -679,7 +680,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Tomato Reading 11/4/2017");
 		logicExecuteCommand(logic, "e 1 20/4/2017");
 
@@ -700,7 +701,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Tomato Reading 11/4/2017 2pm");
 		logicExecuteCommand(logic, "e 1 3pm");
 
@@ -721,7 +722,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Cabbage Reading 11/4/2017 2pm-4pm");
 		logicExecuteCommand(logic, "e 1 3pm");
 
@@ -742,7 +743,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Cucumber Reading 11/4/2017 2pm-4pm");
 		logicExecuteCommand(logic, "e 1 2pm-5pm");
 
@@ -763,7 +764,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2017 11am-12pm 1d");
 		logicExecuteCommand(logic, "e 1 1w");
 
@@ -784,7 +785,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2017 11am-12pm 1d");
 		logicExecuteCommand(logic, "e 1 3d");
 
@@ -805,7 +806,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2017-10/5/2017 11am-12pm 1d");
 		logicExecuteCommand(logic, "e 1 3d");
 
@@ -826,7 +827,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2017-1/1/2018 11am-12pm 1d");
 		logicExecuteCommand(logic, "e 1 1/5/2017-10/1/2018");
 
@@ -847,7 +848,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy some potatoes 1/5/2017-1/1/2017 11am-12pm 1d");
 		logicExecuteCommand(logic, "e 2 Buy Tomatoes Instead");
 
@@ -866,10 +867,9 @@ public class SystemTest {
 	@Test
 	public final void testFindWord() throws SAXException, ParseException, IOException {
 
-		runBeforeEveryTest();
-
 		// Setting up actual Task List for comparison
-		Logic logic = new Logic(logger);
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
 		CommandInfo returnIndexs = logicExecuteCommand(logic, "f Trip");
@@ -888,7 +888,8 @@ public class SystemTest {
 	public final void testFindCapitalizedWord() throws SAXException, ParseException, IOException {
 
 		// Setting up actual Task List for comparison
-		Logic logic = new Logic(logger);
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
 		logicExecuteCommand(logic, "Trips Japan Plan 1/5/2017");
@@ -908,7 +909,8 @@ public class SystemTest {
 	public final void testFindUnorderedWords() throws SAXException, ParseException, IOException {
 
 		// Setting up actual Task List for comparison
-		Logic logic = new Logic(logger);
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2017");
@@ -930,10 +932,9 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
-		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2017");
 		logicExecuteCommand(logic, "d 1");
 
 		// Setting up expected Task List for comparison
@@ -941,8 +942,6 @@ public class SystemTest {
 		Storage storage = new Storage(expectedFile, logger);
 		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2017", null, null, false, null,
 				0, 0);
-		storageCreateExpectedTask(storage, expectedFile, "Trip Japan Plan", "1/5/2017", null, null, false,
-				null, 0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -955,7 +954,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
 		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2017");
@@ -980,19 +979,16 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
-		logicExecuteCommand(logic, "Trip Japan Plan 1/5/2017");
-		logicExecuteCommand(logic, "d 3");
+		logicExecuteCommand(logic, "d 2");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile, logger);
 		storageCreateExpectedTask(storage, expectedFile, "Plan some trips", "1/5/2017", null, null, false,
 				null, 0, 0);
-		storageCreateExpectedTask(storage, expectedFile, "Fly to Japan", "1/5/2017", null, null, false, null,
-				0, 0);
 
 		// This is to test the expected behavior of this function
 		FileReader fr1 = new FileReader(expectedFile);
@@ -1005,7 +1001,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "d 2");
 
@@ -1026,7 +1022,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy Potatoes");
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Eat Potatoes");
@@ -1051,7 +1047,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Buy Potatoes");
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/6/2017");
@@ -1078,7 +1074,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017 3d");
 		logicExecuteCommand(logic, "d 1");
 
@@ -1100,7 +1096,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017 3d");
 		logicExecuteCommand(logic, "d 1");
 		logicExecuteCommand(logic, "d 1");
@@ -1123,7 +1119,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017 3d");
 		logicExecuteCommand(logic, "d < 2/5/2017");
 
@@ -1144,7 +1140,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017-4/5/2017 3d");
 		logicExecuteCommand(logic, "Potato potato");
 		logicExecuteCommand(logic, "d 1");
@@ -1167,7 +1163,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017-4/5/2017 3d");
 		logicExecuteCommand(logic, "Potato potato");
 		logicExecuteCommand(logic, "d 1");
@@ -1191,7 +1187,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017 3d 3/5/2017");
 		logicExecuteCommand(logic, "Potato potato");
 		logicExecuteCommand(logic, "d 1");
@@ -1213,7 +1209,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "One potatoes 1/5/2017");
 		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
 		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
@@ -1239,7 +1235,7 @@ public class SystemTest {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "One potatoes 1/5/2017");
 		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
 		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
@@ -1262,13 +1258,12 @@ public class SystemTest {
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
 
-
 	@Test
 	public final void testEqualToDate() throws SAXException, ParseException, IOException {
 
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
-		Logic logic = new Logic(logger);
+		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "One potatoes 1/5/2017");
 		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
 		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
@@ -1290,8 +1285,6 @@ public class SystemTest {
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
-
-
 
 	@Test
 	public final void testChangeDirectory() throws SAXException, ParseException, IOException {
