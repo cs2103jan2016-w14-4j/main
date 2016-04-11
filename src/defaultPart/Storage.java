@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 //@@author Shaun Lee
 public class Storage {
 
+	private static final int UNDO_AND_REDO_LIMIT = 10;
 	/* For accessing the different Tags for the XML */
 	private static final String TAG_HEADING = "Task";
 	private static final String TAG_TASK_DESCRIPTION = "Description";
@@ -45,8 +46,8 @@ public class Storage {
 
 	private Logger _logger;
 
-	private Stack<CommandInfo> _commandInfoList = new Stack<CommandInfo>();
-	private Stack<CommandInfo> _commandInfoRedoList = new Stack<CommandInfo>();
+	private LinkedList<CommandInfo> _commandInfoList = new LinkedList<CommandInfo>();
+	private LinkedList<CommandInfo> _commandInfoRedoList = new LinkedList<CommandInfo>();
 
 	/* Location of the task list file */
 	private File _file;
@@ -62,7 +63,7 @@ public class Storage {
 		_logger = logger;
 		_settings = new Settings(logger);
 		_file = new File(_settings.getSavePathAndName());
-		_commandInfoList.push(new CommandInfo(new LinkedList<Task>()));
+		_commandInfoList.add(new CommandInfo(new LinkedList<Task>()));
 	}
 
 	/**
@@ -77,7 +78,7 @@ public class Storage {
 	}
 
 	public List<Task> getTaskList() {
-		return _commandInfoList.peek().getTaskList();
+		return _commandInfoList.getLast().getTaskList();
 	}
 
 	public boolean deleteTasksIndexes(List<Integer> indexes, boolean deleteRecur) {
@@ -156,7 +157,7 @@ public class Storage {
 		}
 
 		CommandInfo commandInfo = new CommandInfo(taskList);
-		_commandInfoList.push(commandInfo);
+		_commandInfoList.add(commandInfo);
 		return commandInfo;
 	}
 
@@ -216,10 +217,13 @@ public class Storage {
 	 */
 	public CommandInfo undoLastCommand(CommandInfo commandInfo) {
 		// pops the UNDO commandInfo from list
-		_commandInfoList.pop();
+		_commandInfoList.removeLast();
 		if (_commandInfoList.size() > 1) {
-			CommandInfo prevCommandInfo = _commandInfoList.pop();
-			_commandInfoRedoList.push(prevCommandInfo);
+			CommandInfo prevCommandInfo = _commandInfoList.removeLast();
+			_commandInfoRedoList.add(prevCommandInfo);
+			if (_commandInfoRedoList.size() - 1 > UNDO_AND_REDO_LIMIT) {
+				_commandInfoRedoList.removeFirst();
+			}
 			commandInfo.setTaskList(_commandInfoList.peek().getTaskList());
 			return prevCommandInfo;
 		} else {
@@ -229,10 +233,13 @@ public class Storage {
 
 	public CommandInfo redoLastUndo(CommandInfo commandInfo) {
 		// pops the REDO commandInfo from list
-		_commandInfoList.pop();
+		_commandInfoList.removeLast();
 		if (_commandInfoRedoList.size() > 0) {
-			CommandInfo redoCommandInfo = _commandInfoRedoList.pop();
-			_commandInfoList.push(redoCommandInfo);
+			CommandInfo redoCommandInfo = _commandInfoRedoList.removeLast();
+			_commandInfoList.add(redoCommandInfo);
+			if (_commandInfoList.size() > UNDO_AND_REDO_LIMIT) {
+				_commandInfoList.removeFirst();
+			}
 			commandInfo.setTaskList(_commandInfoList.peek().getTaskList());
 			return redoCommandInfo;
 		} else {
