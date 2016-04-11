@@ -10,7 +10,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-//@@author Hou Ruomu A0131421B
+//@@author A0131421B
 
 /**
  * This class is for showing a help window. Singleton class.
