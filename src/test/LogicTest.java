@@ -198,28 +198,60 @@ public class LogicTest {
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
 
+		// checking description of task to change
+		Task task = taskList.get(0);
+		assertEquals("dev guide", task.getDescription());
+
 		// change the date of a task
 		logic.executeCommand("e 1 1/2");
 		taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
 
-		// checking date
-		CommandInfo command = logic.executeCommand("f meeting CS2103T at COM2");
+		// checking description
+		CommandInfo command = logic.executeCommand("f dev guide");
 		List<Integer> findList = command.getIndexesFound();
-		Task task = taskList.get(findList.get(0));
+		task = taskList.get(findList.get(0));
+		assertEquals("dev guide", task.getDescription());
+
+		// checking date
 		Calendar date = task.getStartDate();
 		assertEquals("1/2/2017", dateFormat.format(date.getTime()));
 
-		logic.executeCommand("e 1 1/1");
+		// checking description of task to change
 		task = taskList.get(0);
+		assertEquals("dev guide", task.getDescription());
+
+		// change date of task
+		logic.executeCommand("e 1 1/1");
+		taskList = logic.loadTasksFromFile();
+		assertEquals(2, taskList.size());
+
+		// checking description
+		command = logic.executeCommand("f dev guide");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("dev guide", task.getDescription());
+
+		// checking date
 		date = task.getStartDate();
 		assertEquals("1/1/2017", dateFormat.format(date.getTime()));
 
+		// checking description of task to change
+		task = taskList.get(1);
+		assertEquals("meeting CS2103T at COM2", task.getDescription());
+
 		// change the date of another task
 		logic.executeCommand("e 2 1/3");
-
 		taskList = logic.loadTasksFromFile();
-		task = taskList.get(1);
+		assertEquals(2, taskList.size());
+
+		// checking description
+		command = logic.executeCommand("f meeting CS2103T at COM2");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("meeting CS2103T at COM2", task.getDescription());
+
+		// checking date
 		date = task.getStartDate();
 		assertEquals("1/3/2017", dateFormat.format(date.getTime()));
 
