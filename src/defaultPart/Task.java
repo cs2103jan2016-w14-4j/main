@@ -202,7 +202,6 @@ public class Task implements Cloneable {
 			task._endDateAndTime = (Calendar) this._endDateAndTime.clone();
 			return task;
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -316,24 +315,6 @@ public class Task implements Cloneable {
 
 	private boolean nextDateAfterEndDate(Calendar nextDate) {
 		return _endDateAndTime != null && nextDate.compareTo(_endDateAndTime) > 0;
-	}
-
-	private Calendar getNextRecurAfterToday() {
-		Calendar nextDate = (Calendar) getStartDate().clone();
-		Calendar today = initializeToday();
-
-		/*
-		 * if want to always recur at least 1ce, add: if(!nextDateBeforeToday(nextDate,today)){
-		 * incrementNextDate(nextDate); }
-		 */
-		while (nextDateBeforeToday(nextDate, today)) {
-			incrementNextDate(nextDate);
-		}
-
-		if (nextDateAfterEndDate(nextDate)) {
-			return null;
-		}
-		return nextDate;
 	}
 
 	private boolean nextDateBeforeToday(Calendar nextDate, Calendar today) {
