@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -28,7 +29,7 @@ public class Logic {
 	private static final String MESSAGE_TASK_ADDED = "Added %1$s";
 	private static final String MESSAGE_TASK_EDITED = "Edited task %1$s";
 	private static final String MESSAGE_TASK_COMPLETED = "Marked task %1$s as %2$scomplete";
-	private static final String MESSAGE_TASK_DELETED = "Deleted task %1$s";
+	private static final String MESSAGE_TASK_DELETED = "Deleted %1$s tasks ";
 	private static final String MESSAGE_SEARCH_NO_RESULT = "Did not find any phrase with the keywords %1$s";
 	private static final String MESSAGE_TASK_FOUND = "Found %1$s tasks";
 	private static final String MESSAGE_STORAGE_PATH_SET = "Storage path set to: %1$s";
@@ -244,11 +245,11 @@ public class Logic {
 			_logger.log(Level.FINE, "Setting recur times: {0}", numOfTimesString);
 			numOfTimesString = numOfTimesString.substring(0, numOfTimesString.length() - 1);
 			System.out.println(numOfTimesString);
-    		Calendar endDate = new GregorianCalendar();
-    		endDate.setTime(task.getStartDate().getTime());
-    		int numOfTimes = Integer.parseInt(numOfTimesString);
-    		endDate.add(task.getRecurField(), numOfTimes * task.getRecurFrequency());
-    		task.setEndDate(endDate);
+			Calendar endDate = new GregorianCalendar();
+			endDate.setTime(task.getStartDate().getTime());
+			int numOfTimes = Integer.parseInt(numOfTimesString);
+			endDate.add(task.getRecurField(), numOfTimes * task.getRecurFrequency());
+			task.setEndDate(endDate);
 		}
 	}
 
@@ -588,7 +589,7 @@ public class Logic {
 			newTask.setEndTime(task.getEndDate());
 			newTask.toggleCompleted();
 			_storage.addToTaskList(newTask);
-			
+
 			task.setStartDate(task.getNextRecur());
 			_storage.deleteTask(taskIndex);
 			_storage.addToTaskList(task);
@@ -618,7 +619,7 @@ public class Logic {
 
 	private boolean deleteFromDate(CommandInfo commandInfo, boolean hasRecurFlag) {
 		String arguments = commandInfo.getArguments();
-		Pattern equalitySigns = Pattern.compile("(>|<)=?");
+		Pattern equalitySigns = Pattern.compile("((>|<)=?)|(=?(>|<))|(<>)|(><)|(!=)|(=!)");
 		Matcher match = equalitySigns.matcher(arguments);
 
 		if (match.find() && match.start() == 0) {
@@ -633,54 +634,51 @@ public class Logic {
 			List<Task> taskList = _storage.getTaskList();
 			int count = 0;
 			switch (match.group()) {
+				case "=" :
+					count = _storage.deleteOrRescheduleTaskWithStartDate(
+							task -> task.compareStartAndEndDate(newDate) == 0, newDate);
+					break;
+
 				case "<" :
-					deleteTasksBeforeEqualsToDate(newDate, taskList, count);
+					count = _storage.deleteOrRescheduleTaskWithStartDate(
+							task -> task.compareStartAndEndDate(newDate) < 0, newDate);
 					break;
 
 				case "<=" :
-					deleteTasksBeforeEqualsToDate(newDate, taskList, count);
+				case "=<" :
+					count = _storage.deleteOrRescheduleTaskWithStartDate(
+							task -> task.compareStartAndEndDate(newDate) <= 0, newDate);
+					break;
+
+				case ">" :
+					count = _storage.deleteOrRescheduleTaskWithStartDate(
+							task -> task.compareStartAndEndDate(newDate) > 0, newDate);
+					break;
+
+				case ">=" :
+				case "=>" :
+					count = _storage.deleteOrRescheduleTaskWithStartDate(
+							task -> task.compareStartAndEndDate(newDate) >= 0, newDate);
+					break;
+
+				case "!=" :
+				case "<>" :
+				case "><" :
+					count = _storage.deleteOrRescheduleTaskWithStartDate(
+							task -> task.compareStartAndEndDate(newDate) != 0, newDate);
 					break;
 			}
+			commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, count));
 			return true;
 		}
 		return false;
-	}
-
-	private int deleteTasksBeforeEqualsToDate(Calendar newDate, List<Task> taskList, int count) {
-		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal
-														 // works
-			Task task = taskList.get(i);
-			Calendar date = task.getStartDate();
-
-			if (task.isStartDateSet() && date.compareTo(newDate) <= 0) {
-				if (task.isRecurSet()) {
-					if (task.isEndDateSet() && task.getEndDate().compareTo(newDate) <= 0) {
-						_storage.deleteTask(i);
-					} else {
-						while (task.willRecur() && task.getStartDate().compareTo(newDate) <= 0) {
-							task.setStartDate(task.getNextRecur());
-						}
-						if (task.getStartDate().compareTo(newDate) <= 0) {
-							_storage.deleteTask(i);
-						} else {
-							_storage.deleteTask(i);
-							_storage.addToTaskList(task);
-						}
-					}
-				} else {
-					_storage.deleteTask(i);
-				}
-				count++;
-			}
-		}
-		return count;
 	}
 
 	private boolean deleteAllCompletedTasks(CommandInfo commandInfo) {
 		if (commandInfo.getArguments().equals("c")) {
 			_logger.log(Level.FINE, "Deleting all completed tasks");
 			int count = _storage.deleteTasksWithPredicate(task -> task.isCompleted());
-			commandInfo.setFeedback(String.format("Deleted %1$s completed tasks", count));
+			commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED + "marked as completed", count));
 			return true;
 		} else {
 			return false;
@@ -691,7 +689,7 @@ public class Logic {
 		if (commandInfo.getArguments().equals(".")) {
 			_logger.log(Level.FINE, "Deleting all tasks without date");
 			int count = _storage.deleteTasksWithPredicate(task -> !task.isStartDateSet());
-			commandInfo.setFeedback(String.format("Deleted %1$s tasks without date", count));
+			commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED + "without date", count));
 			return true;
 		} else {
 			return false;
@@ -738,9 +736,9 @@ public class Logic {
 				}
 			}
 
-			if (_storage.deleteTasksIndexes(indexToDeleteList)) {
-    			commandInfo.setFeedback("Deleted task indexes");
-    			return true;
+			if (_storage.deleteTasksIndexes(indexToDeleteList, hasRecurFlag)) {
+				commandInfo.setFeedback(String.format(MESSAGE_TASK_DELETED, indexToDeleteList.size()));
+				return true;
 			}
 		}
 		return false;

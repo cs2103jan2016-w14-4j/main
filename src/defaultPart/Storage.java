@@ -80,16 +80,33 @@ public class Storage {
 		return _commandInfoList.peek().getTaskList();
 	}
 
-	public boolean deleteTasksIndexes(List<Integer> indexes) {
+	public boolean deleteTasksIndexes(List<Integer> indexes, boolean deleteRecur) {
 		Collections.sort(indexes);
 		for (int i = indexes.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			if (isTaskIndexValid(indexes.get(i))) {
-				deleteOrRescheduleTask(i);
+				if (deleteRecur) {
+					deleteTask(i);
+				} else {
+					deleteOrRescheduleTask(i);
+				}
 			} else {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public int deleteOrRescheduleTaskWithStartDate(Predicate<Task> pred, Calendar date) {
+		int count = 0;
+		List<Task> taskList = _commandInfoList.peek().getTaskList();
+		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
+			Task task = taskList.get(i);
+			if (task.isStartDateSet() && pred.test(task)) {
+				deleteOrRescheduleTask(i, date);
+				count++;
+			}
+		}
+		return count;
 	}
 
 	public int deleteTasksWithPredicate(Predicate<Task> pred) {
@@ -98,7 +115,7 @@ public class Storage {
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			Task task = taskList.get(i);
 			if (pred.test(task)) {
-				deleteTask(i);
+				deleteOrRescheduleTask(i);
 				count++;
 			}
 		}
