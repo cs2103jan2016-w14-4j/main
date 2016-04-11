@@ -81,6 +81,7 @@ public class LogicTest {
 		taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
 
+		// checking description
 		command = logic.executeCommand("f dev guide");
 		findList = command.getIndexesFound();
 		task = taskList.get(findList.get(0));
@@ -132,6 +133,46 @@ public class LogicTest {
 		assertTrue(task.isEndTimeSet());
 		assertEquals(1, task.getStartDate().get(Calendar.HOUR_OF_DAY));
 		assertEquals(3, task.getEndDate().get(Calendar.HOUR_OF_DAY));
+
+		// adding task with start time, end time, start day, end day, and recurrence
+		logic.executeCommand("Do work today-nyear 00:00-23:59 1d");
+		taskList = logic.loadTasksFromFile();
+		assertEquals(6, taskList.size());
+
+		// checking task description
+		command = logic.executeCommand("f Do work");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("Do work", task.getDescription());
+
+		// checking start time
+		time = task.getStartDate();
+		assertTrue(task.isStartTimeSet());
+		dateFormat = new SimpleDateFormat("HH:mm");
+		assertEquals("00:00", dateFormat.format(time.getTime()));
+
+		// checking end time
+		time = task.getEndDate();
+		assertTrue(task.isEndDateSet());
+		assertEquals("23:59", dateFormat.format(time.getTime()));
+
+		// checking start date
+		date = task.getStartDate();
+		assertTrue(task.isStartDateSet());
+		dateFormat = new SimpleDateFormat("d/M/yyyy");
+		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
+
+		// checking end date
+		date = task.getEndDate();
+		assertTrue(task.isEndDateSet());
+		Calendar nextYear = new GregorianCalendar();
+		nextYear.add(Calendar.YEAR, 1);
+		assertEquals(dateFormat.format(nextYear.getTime()), dateFormat.format(date.getTime()));
+
+		// checking recurrence
+		assertTrue(task.isRecurSet());
+		assertEquals(1, task.getRecurFrequency());
+		assertEquals(task.getRecurField(), Calendar.DAY_OF_YEAR);
 	}
 
 	@Test
