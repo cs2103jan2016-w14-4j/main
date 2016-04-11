@@ -48,7 +48,10 @@ public class LogicTest {
 		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(1, taskList.size());
-		Task task = taskList.get(0);
+
+		CommandInfo command = logic.executeCommand("f meeting CS2103T at COM2");
+		List<Integer> findList = command.getIndexesFound();
+		Task task = taskList.get(findList.get(0));
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
 
 		// checking date
@@ -78,7 +81,10 @@ public class LogicTest {
 		logic.executeCommand("dev guide today");
 		taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
-		task = taskList.get(0);
+
+		command = logic.executeCommand("f dev guide");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
 		assertEquals("dev guide", task.getDescription());
 
 		// checking task date
@@ -98,13 +104,18 @@ public class LogicTest {
 		taskList = logic.loadTasksFromFile();
 		assertEquals(4, taskList.size());
 
-		CommandInfo command = logic.executeCommand("f go shopping");
-		List<Integer> findList = command.getIndexesFound();
-		assert (taskList.get(findList.get(0)).equals("go shopping"));
+		// checking task description
+		command = logic.executeCommand("f go shopping");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("go shopping", task.getDescription());
+
+		// checking task date
+		date = task.getStartDate();
+		assertTrue(task.isStartDateSet());
 		Calendar nextWeek = new GregorianCalendar();
 		nextWeek.add(Calendar.DATE, 7);
-		assertEquals(dateFormat.format(taskList.get(findList.get(0)).getStartDate().getTime()),
-				dateFormat.format(nextWeek.getTime()));
+		assertEquals(dateFormat.format(nextWeek.getTime()), dateFormat.format(date.getTime()));
 	}
 
 	@Test
@@ -187,7 +198,7 @@ public class LogicTest {
 
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
-		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
+		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm");
 		logic.executeCommand("dev guide today");
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
@@ -211,8 +222,12 @@ public class LogicTest {
 		assertEquals(0, taskList.size());
 
 		// adding 1 task
-		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
+		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
 
+		taskList = logic.loadTasksFromFile();
+		assertEquals(1, taskList.size());
+
+		logic.executeCommand("d 1");
 		taskList = logic.loadTasksFromFile();
 		assertEquals(1, taskList.size());
 	}
