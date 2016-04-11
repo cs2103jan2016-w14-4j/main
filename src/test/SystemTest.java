@@ -1273,7 +1273,7 @@ public class SystemTest {
 		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
 		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
 		logicExecuteCommand(logic, "Potato potato");
-		logicExecuteCommand(logic, "d = 1/6/2017");
+		logicExecuteCommand(logic, "d 1/6/2017");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
