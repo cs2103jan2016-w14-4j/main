@@ -33,6 +33,24 @@
 		}
 		return time;
 	}
+	
+	private Calendar getNextRecurAfterToday() {
+		Calendar nextDate = (Calendar) getStartDate().clone();
+		Calendar today = initializeToday();
+
+		/*
+		 * if want to always recur at least 1ce, add: if(!nextDateBeforeToday(nextDate,today)){
+		 * incrementNextDate(nextDate); }
+		 */
+		while (nextDateBeforeToday(nextDate, today)) {
+			incrementNextDate(nextDate);
+		}
+
+		if (nextDateAfterEndDate(nextDate)) {
+			return null;
+		}
+		return nextDate;
+	}	
 
 //@@author A0125497W
 //Codes were removed due to the change in the structure of our Task Class
@@ -366,3 +384,5 @@
 		FileReader fr2 = new FileReader(testFile);
 		XMLAssert.assertXMLEqual(fr1, fr2);
 	}
+	
+
