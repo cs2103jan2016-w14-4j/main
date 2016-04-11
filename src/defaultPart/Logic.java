@@ -258,8 +258,8 @@ public class Logic {
 		if (args.size() == 0) {
 			return false;
 		}
-		String lastString = args.get(args.size() - 1);
-		String secondLastString = (args.size() >= 3) ? args.get(args.size() - 2) : "";
+		String lastString = getLastString(args);
+		String secondLastString = getSecondLastString(args);
 		Calendar date = getWrappedDateFromString(secondLastString);
 		boolean isDigit = lastString.matches("\\d");
 		if ((isTime(lastString) && !isDigit) || (isDigit && date != null)) {
@@ -268,6 +268,14 @@ public class Logic {
 			return true;
 		}
 		return false;
+	}
+
+	private String getLastString(List<String> args) {
+		return args.get(args.size() - 1);
+	}
+
+	private String getSecondLastString(List<String> args) {
+		return (args.size() >= 3) ? args.get(args.size() - 2) : "";
 	}
 
 	private void setTaskTime(Task task, String timeString) {
@@ -313,12 +321,6 @@ public class Logic {
 	private Calendar getTaskDate(String dateString) {
 		return (getWrappedDateFromString(dateString) == null) ? getNextDate(dateString)
 				: getWrappedDateFromString(dateString);
-	}
-
-	private boolean isNextCase(String dateString) {
-		String integerRegex = "\\d+";
-		return (dateString.substring(0, 1).equals("n") || dateString.substring(0, 1).matches(integerRegex))
-				&& !isTodayCase(dateString) && !isTomorrowCase(dateString);
 	}
 
 	private boolean isTime(String timeString) {

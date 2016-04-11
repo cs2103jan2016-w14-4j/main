@@ -93,6 +93,18 @@ public class LogicTest {
 		task = taskList.get(1);
 		assertEquals("lalala", task.getDescription());
 
+		// adding task with 1week
+		logic.executeCommand("go shopping 1week");
+		taskList = logic.loadTasksFromFile();
+		assertEquals(4, taskList.size());
+
+		CommandInfo command = logic.executeCommand("f go shopping");
+		List<Integer> findList = command.getIndexesFound();
+		assert (taskList.get(findList.get(0)).equals("go shopping"));
+		Calendar nextWeek = new GregorianCalendar();
+		nextWeek.add(Calendar.DATE, 7);
+		assertEquals(dateFormat.format(taskList.get(findList.get(0)).getStartDate().getTime()),
+				dateFormat.format(nextWeek.getTime()));
 	}
 
 	@Test
