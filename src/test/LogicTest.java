@@ -324,7 +324,7 @@ public class LogicTest {
 
 		// deleting 1 task
 		command = logic.executeCommand("d 2");
-		
+
 		taskList = command.getTaskList();
 		assertEquals(1, taskList.size());
 
@@ -356,9 +356,9 @@ public class LogicTest {
 
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
-		logic.executeCommand("bye");
-		logic.executeCommand("Byebye bye");
-		logic.executeCommand("Plan jap trips");
+		CommandInfo command = logic.executeCommand("bye");
+		command = logic.executeCommand("Byebye bye");
+		command = logic.executeCommand("Plan jap trips");
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(3, taskList.size());
 
