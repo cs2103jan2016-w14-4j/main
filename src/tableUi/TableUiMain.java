@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-//@@author Hou Ruomu
+//@@author Hou Ruomu A0131421B
 /**
  * Main class for the application
  * @author houruomu
