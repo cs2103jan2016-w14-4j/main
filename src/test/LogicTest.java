@@ -96,8 +96,17 @@ public class LogicTest {
 		logic.executeCommand("lalala " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
 		taskList = logic.loadTasksFromFile();
 		assertEquals(3, taskList.size());
-		task = taskList.get(1);
+
+		// checking description
+		command = logic.executeCommand("f lalala");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
 		assertEquals("lalala", task.getDescription());
+
+		// checking task date
+		date = task.getStartDate();
+		assertTrue(task.isStartDateSet());
+		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 
 		// adding task with 1week
 		logic.executeCommand("go shopping 1week");
