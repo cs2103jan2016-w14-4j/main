@@ -730,10 +730,10 @@ public class Logic {
 					int start = Integer.parseInt(multIndexToDelete[0]);
 					int end = Integer.parseInt(multIndexToDelete[1]);
 					for (int i = start; i <= end; i++) {
-						indexToDeleteList.add(i);
+						indexToDeleteList.add(i - LIST_NUMBERING_OFFSET);
 					}
 				} else {
-					indexToDeleteList.add(Integer.parseInt(index));
+					indexToDeleteList.add(Integer.parseInt(index) - LIST_NUMBERING_OFFSET);
 				}
 			}
 
