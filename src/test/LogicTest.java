@@ -23,7 +23,6 @@ public class LogicTest {
 	private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
 	/* Location to load/save the expected test results */
-	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
 	private static final String TEST_FILE_NAME = "tasklist.xml";
 
 	/**
@@ -116,14 +115,19 @@ public class LogicTest {
 		Calendar nextWeek = new GregorianCalendar();
 		nextWeek.add(Calendar.DATE, 7);
 		assertEquals(dateFormat.format(nextWeek.getTime()), dateFormat.format(date.getTime()));
-	}
 
-	@Test
-	public void testAddEvent() throws SAXException, ParseException {
-		Logic logic = new Logic(logger);
+		// adding task with start time and end time
 		logic.executeCommand("Wake up at midnight to watch the stars 1am-3");
-		List<Task> taskList = logic.loadTasksFromFile();
-		Task task = taskList.get(0);
+		taskList = logic.loadTasksFromFile();
+		assertEquals(5, taskList.size());
+
+		// checking task description
+		command = logic.executeCommand("f Wake up at midnight to watch the stars");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("Wake up at midnight to watch the stars", task.getDescription());
+
+		// checking time
 		assertTrue(task.isStartTimeSet());
 		assertTrue(task.isEndTimeSet());
 		assertEquals(1, task.getStartDate().get(Calendar.HOUR_OF_DAY));
