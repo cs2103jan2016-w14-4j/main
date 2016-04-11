@@ -1209,6 +1209,116 @@ public class SystemTest {
 	}
 
 	@Test
+	public final void testDeleteLessThanEqualToDate()
+			throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(logger);
+		logicExecuteCommand(logic, "One potatoes 1/5/2017");
+		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
+		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
+		logicExecuteCommand(logic, "Potato potato");
+		logicExecuteCommand(logic, "d <= 1/6/2017");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile, logger);
+		storageCreateExpectedTask(storage, expectedFile, "Three potatoes", "1/7/2017", null, null, false, null, 0,
+				0);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
+				0);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+	@Test
+	public final void testDeleteEqualToLessThanDate()
+			throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(logger);
+		logicExecuteCommand(logic, "One potatoes 1/5/2017");
+		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
+		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
+		logicExecuteCommand(logic, "Potato potato");
+		logicExecuteCommand(logic, "d =< 1/6/2017");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile, logger);
+		storageCreateExpectedTask(storage, expectedFile, "Three potatoes", "1/7/2017", null, null, false, null, 0,
+				0);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
+				0);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+
+	@Test
+	public final void testDeleteMoreThanEqualToDate()
+			throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(logger);
+		logicExecuteCommand(logic, "One potatoes 1/5/2017");
+		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
+		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
+		logicExecuteCommand(logic, "Potato potato");
+		logicExecuteCommand(logic, "d => 1/6/2017");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile, logger);
+		storageCreateExpectedTask(storage, expectedFile, "Three potatoes", "1/5/2017", null, null, false, null, 0,
+				0);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
+				0);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+	
+
+	@Test
+	public final void testDeleteEqualToMoreThanDate()
+			throws SAXException, ParseException, IOException {
+
+		// Setting up actual Task List for comparison
+		File testFile = new File(TEST_FILE_NAME);
+		Logic logic = new Logic(logger);
+		logicExecuteCommand(logic, "One potatoes 1/5/2017");
+		logicExecuteCommand(logic, "Two potatoes 1/6/2017");
+		logicExecuteCommand(logic, "Three potatoes 1/7/2017");
+		logicExecuteCommand(logic, "Potato potato");
+		logicExecuteCommand(logic, "d => 1/6/2017");
+
+		// Setting up expected Task List for comparison
+		File expectedFile = new File(EXPECTED_FILE_NAME);
+		Storage storage = new Storage(expectedFile, logger);
+		storageCreateExpectedTask(storage, expectedFile, "Three potatoes", "1/5/2017", null, null, false, null, 0,
+				0);
+		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
+				0);
+
+		// This is to test the expected behavior of this function
+		FileReader fr1 = new FileReader(expectedFile);
+		FileReader fr2 = new FileReader(testFile);
+		XMLAssert.assertXMLEqual(fr1, fr2);
+	}
+
+	@Test
 	public final void testChangeDirectory() throws SAXException, ParseException, IOException {
 
 		// Setting up actual Task List for comparison
