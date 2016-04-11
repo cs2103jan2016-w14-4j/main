@@ -85,9 +85,9 @@ public class Storage {
 		for (int i = indexes.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			if (isTaskIndexValid(indexes.get(i))) {
 				if (deleteRecur) {
-					deleteTask(i);
+					deleteTask(indexes.get(i));
 				} else {
-					deleteOrRescheduleTask(i);
+					deleteOrRescheduleTask(indexes.get(i));
 				}
 			} else {
 				return false;
