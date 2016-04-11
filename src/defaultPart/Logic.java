@@ -47,7 +47,7 @@ public class Logic {
 		EDIT, DELETE, FIND, QUIT, SET_STORAGE_PATH, COMPLETE_MARKING, UNDO, REDO, HELP,
 
 		// for internal use
-		BLANK, EDIT_DESCRIPTION, ADD, ERROR
+		CLEAR_FIND_RESULTS, BLANK, EDIT_DESCRIPTION, ADD, ERROR
 	};
 
 	private Storage _storage;
@@ -751,6 +751,7 @@ public class Logic {
 	private void findTask(CommandInfo commandInfo) {
 		String arguments = commandInfo.getArguments();
 		if (arguments == null) {
+			commandInfo.setCommandType(CommandType.CLEAR_FIND_RESULTS);
 			commandInfo.setFeedback("Search result cleared");
 			return;
 		}
