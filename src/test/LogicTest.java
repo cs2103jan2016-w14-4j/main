@@ -317,38 +317,38 @@ public class LogicTest {
 
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
-		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm");
-		logic.executeCommand("dev guide today");
-		List<Task> taskList = logic.loadTasksFromFile();
+		CommandInfo command = logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm");
+		command = logic.executeCommand("dev guide today");
+		List<Task> taskList = command.getTaskList();
 		assertEquals(2, taskList.size());
 
 		// deleting 1 task
-		logic.executeCommand("d 2");
-
-		taskList = logic.loadTasksFromFile();
+		command = logic.executeCommand("d 2");
+		
+		taskList = command.getTaskList();
 		assertEquals(1, taskList.size());
 
 		// deleting "nonexistent" task
-		logic.executeCommand("d 2");
+		command = logic.executeCommand("d 2");
 
-		taskList = logic.loadTasksFromFile();
+		taskList = command.getTaskList();
 		assertEquals(1, taskList.size());
 
 		// deleting 2nd task
-		logic.executeCommand("d 1");
+		command = logic.executeCommand("d 1");
 
-		taskList = logic.loadTasksFromFile();
+		taskList = command.getTaskList();
 		assertEquals(0, taskList.size());
 
 		// adding 1 task
-		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
+		command = logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
 
-		taskList = logic.loadTasksFromFile();
+		taskList = command.getTaskList();
 		assertEquals(1, taskList.size());
 
-		logic.executeCommand("d 1");
-		taskList = logic.loadTasksFromFile();
-		assertEquals(1, taskList.size());
+		command = logic.executeCommand("d 1");
+		taskList = command.getTaskList();
+		assertEquals(0, taskList.size());
 	}
 
 	@Test
