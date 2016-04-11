@@ -200,9 +200,13 @@ public class LogicTest {
 
 		// change the date of a task
 		logic.executeCommand("e 1 1/2");
-
 		taskList = logic.loadTasksFromFile();
-		Task task = taskList.get(1);
+		assertEquals(2, taskList.size());
+
+		// checking date
+		CommandInfo command = logic.executeCommand("f meeting CS2103T at COM2");
+		List<Integer> findList = command.getIndexesFound();
+		Task task = taskList.get(findList.get(0));
 		Calendar date = task.getStartDate();
 		assertEquals("1/2/2017", dateFormat.format(date.getTime()));
 
