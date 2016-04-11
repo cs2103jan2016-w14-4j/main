@@ -55,7 +55,6 @@ public class Controller implements Initializable {
 	public TableColumn<TaskModel, Boolean> eventsCheckbox;
 	public TextField inputBox;
 	public Label userPrompt;
-	public Button toggleButton;
 
 	public Stage stage;
 
@@ -231,7 +230,6 @@ public class Controller implements Initializable {
 					resizeColumns();
 				});
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}).start();
@@ -261,11 +259,9 @@ public class Controller implements Initializable {
 		if (rightPane.isVisible()) {
 			rightPane.setVisible(false);
 			pane.setDividerPosition(0, 1);
-			toggleButton.setText("<");
 		} else {
 			rightPane.setVisible(true);
 			pane.setDividerPosition(0, 0.619);
-			toggleButton.setText(">");
 		}
 		resizeColumns();
 	}
