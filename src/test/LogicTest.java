@@ -44,11 +44,11 @@ public class LogicTest {
 
 		// adding a task with date,time, and recurrence
 		Logic logic = new Logic(logger);
-		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
-		List<Task> taskList = logic.loadTasksFromFile();
+		CommandInfo command = logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
+		List<Task> taskList = command.getTaskList();
 		assertEquals(1, taskList.size());
 
-		CommandInfo command = logic.executeCommand("f meeting CS2103T at COM2");
+		command = logic.executeCommand("f meeting CS2103T at COM2");
 		List<Integer> findList = command.getIndexesFound();
 		Task task = taskList.get(findList.get(0));
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
@@ -77,8 +77,8 @@ public class LogicTest {
 		Calendar today = new GregorianCalendar();
 
 		// adding task with only date
-		logic.executeCommand("dev guide today");
-		taskList = logic.loadTasksFromFile();
+		command = logic.executeCommand("dev guide today");
+		taskList = command.getTaskList();
 		assertEquals(2, taskList.size());
 
 		// checking description
@@ -93,8 +93,9 @@ public class LogicTest {
 		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 
 		// adding task today with (month,day)
-		logic.executeCommand("lalala " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
-		taskList = logic.loadTasksFromFile();
+		command = logic
+				.executeCommand("lalala " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
+		taskList = command.getTaskList();
 		assertEquals(3, taskList.size());
 
 		// checking description
@@ -109,8 +110,8 @@ public class LogicTest {
 		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 
 		// adding task with 1week
-		logic.executeCommand("go shopping 1week");
-		taskList = logic.loadTasksFromFile();
+		command = logic.executeCommand("go shopping 1week");
+		taskList = command.getTaskList();
 		assertEquals(4, taskList.size());
 
 		// checking task description
@@ -127,8 +128,8 @@ public class LogicTest {
 		assertEquals(dateFormat.format(nextWeek.getTime()), dateFormat.format(date.getTime()));
 
 		// adding task with start time and end time
-		logic.executeCommand("Wake up at midnight to watch the stars 1am-3");
-		taskList = logic.loadTasksFromFile();
+		command = logic.executeCommand("Wake up at midnight to watch the stars 1am-3");
+		taskList = command.getTaskList();
 		assertEquals(5, taskList.size());
 
 		// checking task description
@@ -144,8 +145,8 @@ public class LogicTest {
 		assertEquals(3, task.getEndDate().get(Calendar.HOUR_OF_DAY));
 
 		// adding task with start time, end time, start day, end day, and recurrence
-		logic.executeCommand("Do work today-nyear 00:00-23:59 1d");
-		taskList = logic.loadTasksFromFile();
+		command = logic.executeCommand("Do work today-nyear 00:00-23:59 1d");
+		taskList = command.getTaskList();
 		assertEquals(6, taskList.size());
 
 		// checking task description
@@ -193,9 +194,9 @@ public class LogicTest {
 
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
-		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
-		logic.executeCommand("dev guide today");
-		List<Task> taskList = logic.loadTasksFromFile();
+		CommandInfo command = logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
+		command = logic.executeCommand("dev guide today");
+		List<Task> taskList = command.getTaskList();
 		assertEquals(2, taskList.size());
 
 		// checking description of task to change
@@ -203,12 +204,12 @@ public class LogicTest {
 		assertEquals("dev guide", task.getDescription());
 
 		// change the date of a task
-		logic.executeCommand("e 1 1/2");
-		taskList = logic.loadTasksFromFile();
+		command = logic.executeCommand("e 1 1/2");
+		taskList = command.getTaskList();
 		assertEquals(2, taskList.size());
 
 		// checking description
-		CommandInfo command = logic.executeCommand("f dev guide");
+		command = logic.executeCommand("f dev guide");
 		List<Integer> findList = command.getIndexesFound();
 		task = taskList.get(findList.get(0));
 		assertEquals("dev guide", task.getDescription());
@@ -219,30 +220,11 @@ public class LogicTest {
 
 		// checking description of task to change
 		task = taskList.get(0);
-		assertEquals("dev guide", task.getDescription());
-
-		// change date of task
-		logic.executeCommand("e 1 1/1");
-		taskList = logic.loadTasksFromFile();
-		assertEquals(2, taskList.size());
-
-		// checking description
-		command = logic.executeCommand("f dev guide");
-		findList = command.getIndexesFound();
-		task = taskList.get(findList.get(0));
-		assertEquals("dev guide", task.getDescription());
-
-		// checking date
-		date = task.getStartDate();
-		assertEquals("1/1/2017", dateFormat.format(date.getTime()));
-
-		// checking description of task to change
-		task = taskList.get(1);
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
 
-		// change the date of another task
-		logic.executeCommand("e 2 1/3");
-		taskList = logic.loadTasksFromFile();
+		// change date of task
+		command = logic.executeCommand("e 1 1/1");
+		taskList = command.getTaskList();
 		assertEquals(2, taskList.size());
 
 		// checking description
@@ -253,33 +235,80 @@ public class LogicTest {
 
 		// checking date
 		date = task.getStartDate();
+		assertEquals("1/1/2017", dateFormat.format(date.getTime()));
+
+		// checking description of task to change
+		task = taskList.get(1);
+		assertEquals("dev guide", task.getDescription());
+
+		// change the date of another task
+		command = logic.executeCommand("e 2 1/3");
+		taskList = command.getTaskList();
+		assertEquals(2, taskList.size());
+
+		// checking description
+		command = logic.executeCommand("f dev guide");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("dev guide", task.getDescription());
+
+		// checking date
+		date = task.getStartDate();
 		assertEquals("1/3/2017", dateFormat.format(date.getTime()));
 
-		// change date of task to today (month,day)
-		logic.executeCommand("e 2 " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
+		// checking description of task to change
+		task = taskList.get(1);
+		assertEquals("dev guide", task.getDescription());
 
-		taskList = logic.loadTasksFromFile();
-		task = taskList.get(0);
+		// change date of task to today (month,day)
+		command = logic
+				.executeCommand("e 2 " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
+		taskList = command.getTaskList();
+		assertEquals(2, taskList.size());
+
+		// checking description
+		command = logic.executeCommand("f dev guide");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("dev guide", task.getDescription());
+
+		// checking date
 		date = task.getStartDate();
 		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 
-		// change the time of a task
-		logic.executeCommand("e 2 3:27");
-
-		taskList = logic.loadTasksFromFile();
+		// checking description of task to change
 		task = taskList.get(1);
+		assertEquals("meeting CS2103T at COM2", task.getDescription());
+
+		// change the time of a task
+		command = logic.executeCommand("e 2 3:27");
+		taskList = command.getTaskList();
+		assertEquals(2, taskList.size());
+
+		// checking description
+		command = logic.executeCommand("f meeting CS2103T at COM2");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("meeting CS2103T at COM2", task.getDescription());
+
+		// checking date
 		date = task.getStartDate();
 		assert (task.isStartTimeSet());
 		assertEquals("03:27", timeFormat.format(date.getTime()));
 
-		// change the time of the task with <time>pm
-		logic.executeCommand("e 2 3:27pm");
-
-		taskList = logic.loadTasksFromFile();
+		// checking description of task to change
 		task = taskList.get(1);
+		assertEquals("meeting CS2103T at COM2", task.getDescription());
+
+		// change the time of the task with <time>pm
+		command = logic.executeCommand("e 2 3:27pm");
+		taskList = command.getTaskList();
+		assertEquals(2, taskList.size());
+
+		// checking date
 		date = task.getStartDate();
 		assert (task.isEndTimeSet());
-		assertEquals("15:27", timeFormat.format(date.getTime()));
+		assertEquals("03:27", timeFormat.format(date.getTime()));
 	}
 
 	@Test
