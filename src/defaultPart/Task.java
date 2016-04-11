@@ -264,13 +264,16 @@ public class Task implements Cloneable {
 		return (this.getNextRecur() != null);
 	}
 
-	public void setStartDateAfterRecur(Calendar date) {
+	public boolean setStartDateAfterRecur(Calendar date) {
 		assert isRecurSet();
 		do {
 			Calendar nextDate = getNextRecur();
-			assert nextDate != null;
+			if (nextDate == null) {
+				return false;
+			}
 			setStartDate(nextDate);
 		} while (compareDate(_startDateAndTime, date) <= 0);
+		return true;
 	}
 
 	public int compareStartAndEndDate(Calendar date) {
