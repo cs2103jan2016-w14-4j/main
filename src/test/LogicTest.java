@@ -75,7 +75,7 @@ public class LogicTest {
 		Calendar today = new GregorianCalendar();
 
 		// adding task with only date
-		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
+		logic.executeCommand("dev guide today");
 		taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
 		task = taskList.get(0);
@@ -117,7 +117,7 @@ public class LogicTest {
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
 		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
-		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
+		logic.executeCommand("dev guide today");
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
 
@@ -176,7 +176,7 @@ public class LogicTest {
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
 		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
-		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
+		logic.executeCommand("dev guide today");
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
 
