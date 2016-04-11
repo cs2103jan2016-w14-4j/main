@@ -21,11 +21,11 @@ import tableUi.Controller;
 public class LogicTest {
 
 	private static final Logger logger = Logger.getLogger(Controller.class.getName());
-	
+
 	/* Location to load/save the expected test results */
 	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
 	private static final String TEST_FILE_NAME = "tasklist.xml";
-	
+
 	/**
 	 * Deletes tasklist before every test
 	 */
@@ -39,7 +39,7 @@ public class LogicTest {
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
 		XMLUnit.setNormalizeWhitespace(true);
 	}
-	
+
 	@Test
 	public void testAdd() throws SAXException, ParseException {
 
@@ -83,14 +83,14 @@ public class LogicTest {
 
 		// checking task date
 		date = task.getStartDate();
-		// assertTrue(date != null);
-		// assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
+		assertTrue(task.isStartDateSet());
+		assertEquals(dateFormat.format(today.getTime()), dateFormat.format(date.getTime()));
 
 		// adding task today with (month,day)
 		logic.executeCommand("lalala " + today.get(Calendar.DATE) + "/" + (today.get(Calendar.MONTH) + 1));
 		taskList = logic.loadTasksFromFile();
 		assertEquals(3, taskList.size());
-		task = taskList.get(0);
+		task = taskList.get(1);
 		assertEquals("lalala", task.getDescription());
 
 	}
@@ -116,7 +116,7 @@ public class LogicTest {
 
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
-		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
+		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
 		logic.executeCommand("dev guide " + today.get(Calendar.DATE));
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
@@ -125,7 +125,7 @@ public class LogicTest {
 		logic.executeCommand("e 1 1/2");
 
 		taskList = logic.loadTasksFromFile();
-		Task task = taskList.get(0);
+		Task task = taskList.get(1);
 		Calendar date = task.getStartDate();
 		assertEquals("1/2/2017", dateFormat.format(date.getTime()));
 
