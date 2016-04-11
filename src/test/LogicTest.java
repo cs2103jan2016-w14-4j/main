@@ -23,7 +23,6 @@ public class LogicTest {
 	private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
 	/* Location to load/save the expected test results */
-	private static final String EXPECTED_FILE_NAME = "test\\SystemTest_expected.xml";
 	private static final String TEST_FILE_NAME = "tasklist.xml";
 
 	/**
@@ -48,7 +47,10 @@ public class LogicTest {
 		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(1, taskList.size());
-		Task task = taskList.get(0);
+
+		CommandInfo command = logic.executeCommand("f meeting CS2103T at COM2");
+		List<Integer> findList = command.getIndexesFound();
+		Task task = taskList.get(findList.get(0));
 		assertEquals("meeting CS2103T at COM2", task.getDescription());
 
 		// checking date
@@ -78,7 +80,10 @@ public class LogicTest {
 		logic.executeCommand("dev guide today");
 		taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
-		task = taskList.get(0);
+
+		command = logic.executeCommand("f dev guide");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
 		assertEquals("dev guide", task.getDescription());
 
 		// checking task date
@@ -98,21 +103,31 @@ public class LogicTest {
 		taskList = logic.loadTasksFromFile();
 		assertEquals(4, taskList.size());
 
-		CommandInfo command = logic.executeCommand("f go shopping");
-		List<Integer> findList = command.getIndexesFound();
-		assert (taskList.get(findList.get(0)).equals("go shopping"));
+		// checking task description
+		command = logic.executeCommand("f go shopping");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("go shopping", task.getDescription());
+
+		// checking task date
+		date = task.getStartDate();
+		assertTrue(task.isStartDateSet());
 		Calendar nextWeek = new GregorianCalendar();
 		nextWeek.add(Calendar.DATE, 7);
-		assertEquals(dateFormat.format(taskList.get(findList.get(0)).getStartDate().getTime()),
-				dateFormat.format(nextWeek.getTime()));
-	}
+		assertEquals(dateFormat.format(nextWeek.getTime()), dateFormat.format(date.getTime()));
 
-	@Test
-	public void testAddEvent() throws SAXException, ParseException {
-		Logic logic = new Logic(logger);
+		// adding task with start time and end time
 		logic.executeCommand("Wake up at midnight to watch the stars 1am-3");
-		List<Task> taskList = logic.loadTasksFromFile();
-		Task task = taskList.get(0);
+		taskList = logic.loadTasksFromFile();
+		assertEquals(5, taskList.size());
+
+		// checking task description
+		command = logic.executeCommand("f Wake up at midnight to watch the stars");
+		findList = command.getIndexesFound();
+		task = taskList.get(findList.get(0));
+		assertEquals("Wake up at midnight to watch the stars", task.getDescription());
+
+		// checking time
 		assertTrue(task.isStartTimeSet());
 		assertTrue(task.isEndTimeSet());
 		assertEquals(1, task.getStartDate().get(Calendar.HOUR_OF_DAY));
@@ -187,7 +202,7 @@ public class LogicTest {
 
 		// adding 2 tasks and checking tasklist size
 		Logic logic = new Logic(logger);
-		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
+		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm");
 		logic.executeCommand("dev guide today");
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(2, taskList.size());
@@ -211,8 +226,12 @@ public class LogicTest {
 		assertEquals(0, taskList.size());
 
 		// adding 1 task
-		logic.executeCommand("meeting CS2103T at COM2 1/1 3:22pm 3d 13/8");
+		logic.executeCommand("meeting CS2103T at COM2 1/1-13/8 3:22pm 3d");
 
+		taskList = logic.loadTasksFromFile();
+		assertEquals(1, taskList.size());
+
+		logic.executeCommand("d 1");
 		taskList = logic.loadTasksFromFile();
 		assertEquals(1, taskList.size());
 	}
