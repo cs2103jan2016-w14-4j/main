@@ -242,17 +242,17 @@ public class Logic {
 		}
 	}
 
-	private void setRecurEndDate(Task task, String numOfTimesString) {
-		if (numOfTimesString.matches("\\d+(t|x)")) {
+	private Calendar getEndDateFromRecurTimes(Task task, String numOfTimesString, Calendar startDate) {
+		if (task.isRecurSet() && numOfTimesString.matches("\\d+(t|x)")) {
 			_logger.log(Level.FINE, "Setting recur times: {0}", numOfTimesString);
 			numOfTimesString = numOfTimesString.substring(0, numOfTimesString.length() - 1);
 			System.out.println(numOfTimesString);
-			Calendar endDate = new GregorianCalendar();
-			endDate.setTime(task.getStartDate().getTime());
+			Calendar endDate = (Calendar) startDate.clone();
 			int numOfTimes = Integer.parseInt(numOfTimesString);
 			endDate.add(task.getRecurField(), numOfTimes * task.getRecurFrequency());
-			task.setEndDate(endDate);
+			return endDate;
 		}
+		return null;
 	}
 
 	private boolean setTaskTimeIfExists(Task task, List<String> args) {
@@ -300,19 +300,19 @@ public class Logic {
 			Calendar startDate = getTaskDate(startAndEndDate[0]);
 			if (startDate != null) {
 				_logger.log(Level.FINER, "Setting start date using \"{0}\"", startAndEndDate[0]);
-				task.setStartDate(startDate);
 
 				if (startAndEndDate.length == 2) {
 					Calendar endDate = getTaskDate(startAndEndDate[1]);
-					if (endDate != null) {
-						_logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
-						task.setEndDate(endDate);
-					} else {
-						if (task.isRecurSet()) {
-							setRecurEndDate(task, startAndEndDate[1]);
-						}
+					if (endDate == null) {
+						endDate = getEndDateFromRecurTimes(task, startAndEndDate[1], startDate);
 					}
+					if (endDate == null) {
+						return false;
+					}
+					_logger.log(Level.FINER, "Setting end date using \"{0}\"", startAndEndDate[1]);
+					task.setEndDate(endDate);
 				}
+				task.setStartDate(startDate);
 				args.remove(index);
 				return true;
 			}
