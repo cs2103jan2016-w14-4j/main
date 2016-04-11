@@ -144,7 +144,7 @@ public class Logic {
 	}
 
 	private CommandType parseCommandType(String[] commandTypeAndArguments) {
-		if (commandTypeAndArguments.length == 0) {
+		if (commandTypeAndArguments.length == 0 || commandTypeAndArguments[0].equals("")) {
 			return CommandType.BLANK;
 		}
 
