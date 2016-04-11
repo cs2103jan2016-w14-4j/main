@@ -78,6 +78,7 @@ public class Storage {
 		return _commandInfoList.getLast().getTaskList();
 	}
 
+	//@@author A0125497W
 	public boolean deleteTasksIndexes(List<Integer> indexes, boolean deleteRecur) {
 		Collections.sort(indexes);
 		for (int i = indexes.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
