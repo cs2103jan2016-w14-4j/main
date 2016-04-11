@@ -395,7 +395,6 @@ public class Controller implements Initializable {
 	 * refresh the tasks shown on UI based on the current storage (by default all tasks are shown)
 	 */
 	private void retrieveTaskFromStorage(List<Task> taskList) {
-		clearInterface();
 		for (int i = 0; i < taskList.size(); i++) {
 			addToTaskModels(taskList.get(i), i);
 		}
@@ -455,11 +454,15 @@ public class Controller implements Initializable {
 				return;
 
 			case EDIT_DESCRIPTION :
-				editDescriptionById(commandInfo.getTaskList(), commandInfo.getTaskToEdit());
+				editDescriptionById(commandInfo.getTaskList(), commandInfo.getTargetTask());
 				break;
 
 			case FIND :
 				displayFoundTask(commandInfo.getTaskList(), commandInfo.getIndexesFound());
+				break;
+
+			case TOGGLE_TASK_WITHOUT_DATE :
+				toggleRightPane();
 				break;
 
 			case HELP :
@@ -470,6 +473,10 @@ public class Controller implements Initializable {
 				showAllTasks(commandInfo.getTaskList());
 		}
 
+		if (commandInfo.isTargetTaskSet()) {
+			int idToHighlight = commandInfo.getTargetTask();
+			highlightTaskWithId(idToHighlight, commandInfo.getTaskList().get(idToHighlight).isStartDateSet());
+		}
 		setUserPrompt(commandInfo.getFeedback());
 		logic.saveTasksToFile();
 	}
@@ -495,7 +502,7 @@ public class Controller implements Initializable {
 			logger.addHandler(handler);
 			logger.setLevel(Level.ALL);
 		} catch (SecurityException e) {
-			//todo: cant log if log setup failed!
+			// todo: cant log if log setup failed!
 			logger.log(Level.FINE, e.toString(), e);
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -504,14 +511,17 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public void highlightTaskWithId(Task task, int id) {
-		int row = getRowFromModel(getTaskModelFromId(id));
-		if (task.isStartDateSet()) {
-			eventsTable.getSelectionModel().select(row);
-			scrollTo(row);
-		} else {
-			floatingTaskTable.getSelectionModel().select(row);
-			scrollTo(row);
+	public void highlightTaskWithId(int id, boolean isStartDateSet) {
+		TaskModel taskModel = getTaskModelFromId(id);
+		if (taskModel != null) {
+			int row = getRowFromModel(taskModel);
+			if (isStartDateSet) {
+				eventsTable.getSelectionModel().select(row);
+				scrollTo(row);
+			} else {
+				floatingTaskTable.getSelectionModel().select(row);
+				scrollTo(row);
+			}
 		}
 
 	}

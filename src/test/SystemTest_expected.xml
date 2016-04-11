@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>Fly to Japan</Description>
-      <StartDate>01/06/17</StartDate>
+      <Description>One potatoes</Description>
+      <StartDate>01/05/17</StartDate>
    </Task>
    <Task>
-      <Description>Trip Japan Plan</Description>
+      <Description>Three potatoes</Description>
       <StartDate>01/07/17</StartDate>
    </Task>
    <Task>
-      <Description>Buy Potatoes</Description>
+      <Description>Potato potato</Description>
    </Task>
 </wuriTasks>

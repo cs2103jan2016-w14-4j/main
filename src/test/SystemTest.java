@@ -875,13 +875,8 @@ public class SystemTest {
 		CommandInfo returnIndexs = logicExecuteCommand(logic, "f Trip");
 		List<Integer> actualIndexList = returnIndexs.getIndexesFound();
 
-		// Setting up expected Task List for comparison
-		List<Integer> expectedList = new ArrayList<Integer>();
-		expectedList.add(0);
-		expectedList.add(2);
-
 		// This is to test the expected behavior of this function
-		assertEquals(expectedList.get(0), actualIndexList.get(0));
+		assertEquals(new Integer(1), actualIndexList.get(0));
 	}
 
 	@Test
@@ -933,8 +928,8 @@ public class SystemTest {
 		// Setting up actual Task List for comparison
 		File testFile = new File(TEST_FILE_NAME);
 		Logic logic = new Logic(testFile, logger);
-		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
+		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "d 1");
 
 		// Setting up expected Task List for comparison
@@ -982,7 +977,7 @@ public class SystemTest {
 		Logic logic = new Logic(testFile, logger);
 		logicExecuteCommand(logic, "Plan some trips 1/5/2017");
 		logicExecuteCommand(logic, "Fly to Japan 1/5/2017");
-		logicExecuteCommand(logic, "d 2");
+		logicExecuteCommand(logic, "d 1");
 
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);

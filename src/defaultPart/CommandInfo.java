@@ -4,25 +4,25 @@ import java.util.List;
 
 import defaultPart.Logic.CommandType;
 
+//@@author A0135766W
 /* This class contains all information needed for the UI to display after a user operation. */
 public class CommandInfo {
 
 	private CommandType _commandType;
-
-	/* Stores the userInput to be displayed for UNDO */
 	private String _arguments;
 
 	/* Feedback to be shown to user after a user operation */
 	private String _feedback;
 
-	/* Used for CommandType.FIND */
-	private List<Integer> _indexesFound;
-
 	/* taskList to display */
 	private List<Task> _taskList;
 
-	/* used for EDIT_DESCRIPTION */
-	private int _taskToEdit;
+	/* Used for CommandType.FIND */
+	private List<Integer> _indexesFound;
+
+	/* used for CommandType.ADD and CommandType.EDIT highlighting */
+	private int _targetTask;
+	private boolean _isTargetTaskSet;
 
 	public CommandInfo(List<Task> taskList) {
 		_taskList = taskList;
@@ -68,11 +68,16 @@ public class CommandInfo {
 		_taskList = taskList;
 	}
 
-	public int getTaskToEdit() {
-		return _taskToEdit;
+	public int getTargetTask() {
+		return _targetTask;
 	}
 
-	public void setTaskToEdit(int taskToEdit) {
-		_taskToEdit = taskToEdit;
+	public void setTargetTask(int targetTask) {
+		_targetTask = targetTask;
+		_isTargetTaskSet = true;
+	}
+
+	public boolean isTargetTaskSet() {
+		return _isTargetTaskSet;
 	}
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+//@@author A0135766W
 public class Task implements Cloneable {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mma");
@@ -39,6 +40,66 @@ public class Task implements Cloneable {
 		_isCompleted = !_isCompleted;
 	}
 
+	public boolean isStartDateSet() {
+		return _isStartDateSet;
+	}
+
+	public boolean isStartTimeSet() {
+		return _isStartTimeSet;
+	}
+
+	public boolean isEndDateSet() {
+		return _isEndDateSet;
+	}
+
+	public void unsetEndDate() {
+		_isEndDateSet = false;
+	}
+
+	public boolean isEndTimeSet() {
+		return _isEndTimeSet;
+	}
+
+	public Calendar getStartDate() {
+		assert _isStartDateSet;
+		return (Calendar) _startDateAndTime.clone();
+	}
+
+	public Calendar getEndDate() {
+		assert _isEndDateSet;
+		return (Calendar) _endDateAndTime.clone();
+	}
+
+	public void setStartDate(Calendar date) {
+		setDateOnly(_startDateAndTime, date);
+		_isStartDateSet = true;
+	}
+
+	public void setEndDate(Calendar date) {
+		setDateOnly(_endDateAndTime, date);
+		_isEndDateSet = true;
+	}
+
+	public void setStartTime(Calendar date) {
+		setTimeOnly(_startDateAndTime, date);
+		_isStartTimeSet = true;
+	}
+
+	public void setEndTime(Calendar date) {
+		setTimeOnly(_endDateAndTime, date);
+		_isEndTimeSet = true;
+	}
+
+	private void setDateOnly(Calendar destination, Calendar source) {
+		destination.set(Calendar.YEAR, source.get(Calendar.YEAR));
+		destination.set(Calendar.DAY_OF_YEAR, source.get(Calendar.DAY_OF_YEAR));
+	}
+
+	public void setTimeOnly(Calendar destination, Calendar source) {
+		destination.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
+		destination.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
+	}
+
 	public String getFormattedStartDate() {
 		assert _isStartDateSet;
 		return dateFormat.format(_startDateAndTime.getTime());
@@ -67,10 +128,6 @@ public class Task implements Cloneable {
 		setEndDate(getDateFromFormattedString(dateString));
 	}
 
-	public Calendar getDateFromFormattedString(String dateString) throws ParseException {
-		return getDateOrTimeFromFormattedString(dateString, dateFormat);
-	}
-
 	public void setStartTimeFromFormattedString(String timeString) throws ParseException {
 		setStartTime(getTimeFromFormattedString(timeString));
 	}
@@ -79,69 +136,19 @@ public class Task implements Cloneable {
 		setEndTime(getTimeFromFormattedString(timeString));
 	}
 
+	public Calendar getDateFromFormattedString(String dateString) throws ParseException {
+		return getDateOrTimeFromFormattedString(dateString, dateFormat);
+	}
+
 	public Calendar getTimeFromFormattedString(String timeString) throws ParseException {
 		return getDateOrTimeFromFormattedString(timeString, timeFormat);
 	}
 
-	private Calendar getDateOrTimeFromFormattedString(String timeString, SimpleDateFormat format)
-			throws ParseException {
-		Calendar date = new GregorianCalendar();
-		date.setTime(format.parse(timeString));
-		return date;
-	}
-
-	public Calendar getStartDate() {
-		return _startDateAndTime;
-	}
-
-	public void setStartDate(Calendar date) {
-		setDateOnly(_startDateAndTime, date);
-		_isStartDateSet = true;
-	}
-
-	private void setDateOnly(Calendar destination, Calendar source) {
-		destination.set(Calendar.YEAR, source.get(Calendar.YEAR));
-		destination.set(Calendar.DAY_OF_YEAR, source.get(Calendar.DAY_OF_YEAR));
-	}
-
-	public boolean isStartDateSet() {
-		return _isStartDateSet;
-	}
-
-	public boolean isStartTimeSet() {
-		return _isStartTimeSet;
-	}
-
-	public boolean isEndTimeSet() {
-		return _isEndTimeSet;
-	}
-
-	public boolean isEndDateSet() {
-		return _isEndDateSet;
-	}
-
-	public void setEndDate(Calendar date) {
-		setDateOnly(_endDateAndTime, date);
-		_isEndDateSet = true;
-	}
-
-	public Calendar getEndDate() {
-		return _endDateAndTime;
-	}
-
-	public void setStartTime(Calendar date) {
-		setTimeOnly(_startDateAndTime, date);
-		_isStartTimeSet = true;
-	}
-
-	public void setEndTime(Calendar date) {
-		setTimeOnly(_endDateAndTime, date);
-		_isEndTimeSet = true;
-	}
-
-	public void setTimeOnly(Calendar destination, Calendar source) {
-		destination.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
-		destination.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
+	private Calendar getDateOrTimeFromFormattedString(String calendarString,
+			SimpleDateFormat simpleDateFormat) throws ParseException {
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(simpleDateFormat.parse(calendarString));
+		return calendar;
 	}
 
 	public int getRecurField() {
@@ -164,11 +171,7 @@ public class Task implements Cloneable {
 		return _recurFrequency > 0;
 	}
 
-	public boolean isStartDateAfterEndDate() {
-		// todo
-		return false;
-	}
-
+	/* Use for ordering of the task list */
 	public boolean isDateTimeAfterTask(Task task) {
 		if (!task.isStartDateSet()) {
 			return false;
@@ -176,40 +179,49 @@ public class Task implements Cloneable {
 		if (!this.isStartDateSet()) {
 			return true;
 		}
-		if (this.getStartDate().compareTo(task.getStartDate()) < 0) {
-			return false;
+
+		int compareDateResult = compareDate(this.getStartDate(), task.getStartDate());
+		if (compareDateResult != 0) {
+			return compareDateResult > 0;
 		}
-		if (this.getStartDate().compareTo(task.getStartDate()) > 0) {
-			return true;
-		}
+
 		if (!this.isStartTimeSet()) {
 			return false;
 		}
 		if (!task.isStartTimeSet()) {
 			return true;
 		}
-		if (this._startDateAndTime.compareTo(task.getStartDate()) <= 0) {
-			return false;
-		}
-		return true;
+		return compareTime(this.getStartDate(), task.getStartDate()) > 0;
 	}
 
-	@Override
-	public Task clone() {
-		try {
-			Task task = (Task) super.clone();
-			task._startDateAndTime = (Calendar) this._startDateAndTime.clone();
-			task._endDateAndTime = (Calendar) this._endDateAndTime.clone();
-			return task;
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+	public int compareStartAndEndDate(Calendar date) {
+		if (isEndDateSet()) {
+			return compareDate(_endDateAndTime, date);
+		} else {
+			return compareDate(_startDateAndTime, date);
 		}
-		return null;
 	}
 
-	@Override
-	public String toString() {
-		return _description + " " + getDateTimeString() + getRecurString();
+	public static int compareDate(Calendar date1, Calendar date2) {
+		assert date1 != null && date2 != null;
+		int year1 = date1.get(Calendar.YEAR);
+		int year2 = date2.get(Calendar.YEAR);
+		if (year1 != year2) {
+			return year1 - year2;
+		}
+
+		return date1.get(Calendar.DAY_OF_YEAR) - date2.get(Calendar.DAY_OF_YEAR);
+	}
+
+	private int compareTime(Calendar time1, Calendar time2) {
+		assert time1 != null && time2 != null;
+		int hour1 = time1.get(Calendar.HOUR_OF_DAY);
+		int hour2 = time2.get(Calendar.HOUR_OF_DAY);
+		if (hour1 != hour2) {
+			return hour1 - hour2;
+		}
+
+		return time1.get(Calendar.MINUTE) - time2.get(Calendar.MINUTE);
 	}
 
 	public String getDateTimeString() {
@@ -236,7 +248,6 @@ public class Task implements Cloneable {
 		String recurString = "";
 		if (isRecurSet()) {
 			recurString += _recurFrequency;
-			// use hashmap maybe?
 			switch (_recurField) {
 				case Calendar.DAY_OF_YEAR :
 					recurString += "d";
@@ -259,10 +270,6 @@ public class Task implements Cloneable {
 		return recurString;
 	}
 
-	public boolean willRecur() {
-		return (this.getNextRecur() != null);
-	}
-
 	public boolean setStartDateAfterRecur(Calendar date) {
 		assert isRecurSet();
 		do {
@@ -275,25 +282,7 @@ public class Task implements Cloneable {
 		return true;
 	}
 
-	public int compareStartAndEndDate(Calendar date) {
-		if (isEndDateSet()) {
-			return compareDate(_endDateAndTime, date);
-		} else {
-			return compareDate(_startDateAndTime, date);
-		}
-	}
-
-	private int compareDate(Calendar date1, Calendar date2) {
-		assert date1 != null && date2 != null;
-		int year1 = date1.get(Calendar.YEAR);
-		int year2 = date2.get(Calendar.YEAR);
-		if (year1 != year2) {
-			return year1 - year2;
-		}
-
-		return date1.get(Calendar.DAY_OF_YEAR) - date2.get(Calendar.DAY_OF_YEAR);
-	}
-
+	// @@author A0135810N
 	public Calendar getNextRecur() {
 		if (!isStartDateSet() || !isRecurSet()) {
 			return null;
@@ -314,22 +303,28 @@ public class Task implements Cloneable {
 	}
 
 	private boolean nextDateAfterEndDate(Calendar nextDate) {
-		return _endDateAndTime != null && nextDate.compareTo(_endDateAndTime) > 0;
+		return compareDate(nextDate, this.getEndDate()) > 0;
 	}
 
-	private boolean nextDateBeforeToday(Calendar nextDate, Calendar today) {
-		return nextDate.compareTo(today) < 0;
+	public boolean willRecur() {
+		return (this.getNextRecur() != null);
 	}
 
-	private Calendar initializeToday() {
-		// initialize "today" to 00:00am of tomorrow
-		Calendar today = new GregorianCalendar();
-		today.set(Calendar.DATE, today.get(Calendar.DATE) + 1);
-		today.set(Calendar.HOUR_OF_DAY, 0);
-		today.set(Calendar.MINUTE, 0);
-		today.set(Calendar.SECOND, 0);
-		today.set(Calendar.MILLISECOND, 0);
-		today.getTimeInMillis();
-		return today;
+	@Override
+	public Task clone() {
+		try {
+			Task task = (Task) super.clone();
+			task._startDateAndTime = (Calendar) this._startDateAndTime.clone();
+			task._endDateAndTime = (Calendar) this._endDateAndTime.clone();
+			return task;
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return _description + " " + getDateTimeString() + getRecurString();
 	}
 }

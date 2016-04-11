@@ -8,6 +8,7 @@ import javafx.beans.property.*;
 
 /**
  * This is a wrapper for the Task class for display
+ * 
  * @author houruomu
  *
  */

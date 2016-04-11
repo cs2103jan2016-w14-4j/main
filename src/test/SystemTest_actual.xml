@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wuriTasks>
    <Task>
-      <Description>HIMYM 1/1/2027 12:00 1d</Description>
-      <StartDate>09/04/16</StartDate>
-      <StartTime>02:00AM</StartTime>
+      <Description>One potatoes</Description>
+      <StartDate>01/05/17</StartDate>
+   </Task>
+   <Task>
+      <Description>Three potatoes</Description>
+      <StartDate>01/07/17</StartDate>
+   </Task>
+   <Task>
+      <Description>Potato potato</Description>
    </Task>
 </wuriTasks>

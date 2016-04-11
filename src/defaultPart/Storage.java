@@ -4,6 +4,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import java.util.Collections;
+import java.util.GregorianCalendar;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
@@ -72,13 +73,56 @@ public class Storage {
 		_file = storageFile;
 		// _settings = new Settings();
 	}
-	
-	//@@author A0135766W
+
+	// @@author A0135766W
+	public CommandInfo createNewCommandInfo() {
+
+		List<Task> taskList = new LinkedList<Task>();
+		if (!_commandInfoList.isEmpty()) {
+			for (Task prevTask : _commandInfoList.getLast().getTaskList()) {
+				taskList.add(prevTask.clone());
+			}
+		}
+
+		CommandInfo commandInfo = new CommandInfo(taskList);
+		_commandInfoList.add(commandInfo);
+		return commandInfo;
+	}
+
 	public List<Task> getTaskList() {
 		return _commandInfoList.getLast().getTaskList();
 	}
 
-	//@@author A0125497W
+	public Task getTask(int index) throws InputIndexOutOfBoundsException {
+		if (!isTaskIndexValid(index)) {
+			_logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
+			throw new InputIndexOutOfBoundsException(index);
+		}
+		return _commandInfoList.getLast().getTaskList().get(index);
+	}
+
+	public boolean isTaskIndexValid(int taskIndex) {
+		return (taskIndex >= 0 && taskIndex < _commandInfoList.getLast().getTaskList().size());
+	}
+
+	public int addToTaskList(Task newTask) {
+
+		// Assert that the new task is not null
+		assert (newTask != null);
+		if (_commandInfoList.isEmpty()) {
+			createNewCommandInfo();
+		}
+		List<Task> taskList = _commandInfoList.getLast().getTaskList();
+		for (int i = 0; i < taskList.size(); i++) {
+			if (!newTask.isDateTimeAfterTask(taskList.get(i))) {
+				taskList.add(i, newTask);
+				return i;
+			}
+		}
+		taskList.add(newTask);
+		return taskList.size() - 1;
+	}
+
 	public boolean deleteTasksIndexes(List<Integer> indexes, boolean deleteRecur) {
 		Collections.sort(indexes);
 		for (int i = indexes.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
@@ -94,7 +138,7 @@ public class Storage {
 		}
 		return true;
 	}
-	
+
 	public int deleteOrRescheduleTaskWithStartDate(Predicate<Task> pred, Calendar date) {
 		int count = 0;
 		List<Task> taskList = _commandInfoList.getLast().getTaskList();
@@ -120,77 +164,7 @@ public class Storage {
 		}
 		return count;
 	}
-	
-	public void setSavePath(String filePath) throws SAXException, ParseException {
 
-		// Deletes the previous taskList
-		String oldPath = _settings.getSavePathAndName();
-		File oldFile = new File(oldPath);
-		try {
-			Files.delete(oldFile.toPath());
-		} catch (IOException e) {
-			_logger.log(Level.FINE, e.toString(), e);
-			e.printStackTrace();
-		}
-
-		_settings.setSavePath(filePath);
-		_settings.saveConfigToFile();
-		_file = new File(_settings.getSavePathAndName());
-		if (loadTasksFromFile().size() == 0) {
-			saveTasksToFile();
-		}
-	}
-
-	public String getSavePath() {
-		return _settings.getSavePathAndName();
-	}
-	
-	public CommandInfo createNewCommandInfo() {
-
-		List<Task> taskList = new LinkedList<Task>();
-		if (!_commandInfoList.isEmpty()) {
-			for (Task prevTask : _commandInfoList.getLast().getTaskList()) {
-				taskList.add(prevTask.clone());
-			}
-		}
-
-		CommandInfo commandInfo = new CommandInfo(taskList);
-		_commandInfoList.add(commandInfo);
-		return commandInfo;
-	}
-
-	/**
-	 * Returns the task at specified index
-	 * 
-	 * @param index
-	 *            Index of task to get
-	 * @return Task at specified index
-	 */
-	public Task getTask(int index) throws InputIndexOutOfBoundsException {
-		if (!isTaskIndexValid(index)) {
-			_logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
-			throw new InputIndexOutOfBoundsException(index);
-		}
-		return _commandInfoList.getLast().getTaskList().get(index);
-	}
-
-	/**
-	 * Checks if the task index is within the task list size *
-	 * 
-	 * @param taskIndex
-	 *            Index of task to check
-	 * @return True if task index is valid
-	 */
-	public boolean isTaskIndexValid(int taskIndex) {
-		return (taskIndex >= 0 && taskIndex < _commandInfoList.getLast().getTaskList().size());
-	}
-
-	/**
-	 * Remove task from task list at specified index
-	 * 
-	 * @param taskIndex
-	 *            Index of task to remove
-	 */
 	public void deleteTask(int taskIndex) {
 		_commandInfoList.getLast().getTaskList().remove(taskIndex);
 	}
@@ -199,21 +173,23 @@ public class Storage {
 		Task task = _commandInfoList.getLast().getTaskList().get(taskIndex);
 
 		deleteTask(taskIndex);
-		
+
 		if (task.isRecurSet()) {
 			if (task.setStartDateAfterRecur(date)) {
 				addToTaskList(task);
 			}
 		}
 	}
-	
+
 	public void deleteOrRescheduleTask(int taskIndex) {
-		deleteOrRescheduleTask(taskIndex, (Calendar) _commandInfoList.getLast().getTaskList().get(taskIndex).getStartDate().clone());
+		Calendar date = new GregorianCalendar();
+		Task task = _commandInfoList.getLast().getTaskList().get(taskIndex);
+		if (task.isStartDateSet()) {
+			date = task.getStartDate();
+		}
+		deleteOrRescheduleTask(taskIndex, date);
 	}
 
-	/**
-	 * Replace current task list with previous task list, for the "undo" function
-	 */
 	public CommandInfo undoLastCommand(CommandInfo commandInfo) {
 		// pops the UNDO commandInfo from list
 		_commandInfoList.removeLast();
@@ -246,36 +222,13 @@ public class Storage {
 		}
 	}
 
-	/**
-	 * Add a task into the current task list
-	 * 
-	 * @param newTask
-	 *            Task to be added to task list
-	 */
-	public void addToTaskList(Task newTask) {
-
-		// Assert that the new task is not null
-		assert (newTask != null);
-		if (_commandInfoList.isEmpty()) {
-			createNewCommandInfo();
-		}
-		List<Task> taskList = _commandInfoList.getLast().getTaskList();
-		for (int i = 0; i < taskList.size(); i++) {
-			if (!newTask.isDateTimeAfterTask(taskList.get(i))) {
-				taskList.add(i, newTask);
-				return;
-			}
-		}
-		taskList.add(newTask);
-	}
-
+	// @@author A0125497W
 	/**
 	 * Save the tasks in current task list into an XML file
 	 * 
 	 * @param _file
 	 *            File to be saved
 	 */
-	//@@author A0125497W
 	public void saveTasksToFile() {
 
 		// Assert that file are not null
@@ -312,7 +265,7 @@ public class Storage {
 			// Extracts out the list of task nodes
 			NodeList nList = extractListFromDocument(_file);
 			// Iterates through the list of tasks extracted
-			for (int temp = 0; temp < nList.getLength(); temp++) {
+			for (int temp = nList.getLength() - 1; temp >= 0; temp--) {
 				{
 					Node taskNode = nList.item(temp);
 					if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -569,5 +522,29 @@ public class Storage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setSavePath(String filePath) throws SAXException, ParseException {
+
+		// Deletes the previous taskList
+		String oldPath = _settings.getSavePathAndName();
+		File oldFile = new File(oldPath);
+		try {
+			Files.delete(oldFile.toPath());
+		} catch (IOException e) {
+			_logger.log(Level.FINE, e.toString(), e);
+			e.printStackTrace();
+		}
+
+		_settings.setSavePath(filePath);
+		_settings.saveConfigToFile();
+		_file = new File(_settings.getSavePathAndName());
+		if (loadTasksFromFile().size() == 0) {
+			saveTasksToFile();
+		}
+	}
+
+	public String getSavePath() {
+		return _settings.getSavePathAndName();
 	}
 }
