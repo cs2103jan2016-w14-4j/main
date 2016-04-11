@@ -72,7 +72,8 @@ public class Storage {
 		_file = storageFile;
 		// _settings = new Settings();
 	}
-
+	
+	//@@author A0135766W
 	public List<Task> getTaskList() {
 		return _commandInfoList.getLast().getTaskList();
 	}
@@ -118,7 +119,7 @@ public class Storage {
 		}
 		return count;
 	}
-
+	
 	public void setSavePath(String filePath) throws SAXException, ParseException {
 
 		// Deletes the previous taskList
@@ -142,7 +143,7 @@ public class Storage {
 	public String getSavePath() {
 		return _settings.getSavePathAndName();
 	}
-
+	
 	public CommandInfo createNewCommandInfo() {
 
 		List<Task> taskList = new LinkedList<Task>();
@@ -273,6 +274,7 @@ public class Storage {
 	 * @param _file
 	 *            File to be saved
 	 */
+	//@@author A0125497W
 	public void saveTasksToFile() {
 
 		// Assert that file are not null
@@ -564,7 +566,6 @@ public class Storage {
 		try {
 			Files.delete(Paths.get(_settings.getSavePathAndName()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
