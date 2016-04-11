@@ -1251,7 +1251,7 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile, logger);
-		storageCreateExpectedTask(storage, expectedFile, "Three potatoes", "1/7/2017", null, null, false, null, 0,
+		storageCreateExpectedTask(storage, expectedFile, "One potatoes", "1/7/2017", null, null, false, null, 0,
 				0);
 		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
 				0);
@@ -1279,7 +1279,7 @@ public class SystemTest {
 		// Setting up expected Task List for comparison
 		File expectedFile = new File(EXPECTED_FILE_NAME);
 		Storage storage = new Storage(expectedFile, logger);
-		storageCreateExpectedTask(storage, expectedFile, "Three potatoes", "1/5/2017", null, null, false, null, 0,
+		storageCreateExpectedTask(storage, expectedFile, "One potatoes", "1/5/2017", null, null, false, null, 0,
 				0);
 		storageCreateExpectedTask(storage, expectedFile, "Potato potato", null, null, null, false, null, 0,
 				0);
