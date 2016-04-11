@@ -177,7 +177,6 @@ public class Logic {
 			setTaskDateIfExists(newTask, args);
 		}
 
-		// very ugly codes, to be refactored
 		if ((newTask.isRecurSet() || newTask.isStartTimeSet()) && !newTask.isStartDateSet()) {
 			_logger.log(Level.FINE, "Setting date to today");
 			newTask.setStartDate(new GregorianCalendar());

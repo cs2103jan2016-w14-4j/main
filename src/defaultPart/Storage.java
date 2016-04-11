@@ -96,7 +96,7 @@ public class Storage {
 	
 	public int deleteOrRescheduleTaskWithStartDate(Predicate<Task> pred, Calendar date) {
 		int count = 0;
-		List<Task> taskList = _commandInfoList.peek().getTaskList();
+		List<Task> taskList = _commandInfoList.getLast().getTaskList();
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			Task task = taskList.get(i);
 			if (task.isStartDateSet() && pred.test(task)) {
@@ -109,7 +109,7 @@ public class Storage {
 
 	public int deleteTasksWithPredicate(Predicate<Task> pred) {
 		int count = 0;
-		List<Task> taskList = _commandInfoList.peek().getTaskList();
+		List<Task> taskList = _commandInfoList.getLast().getTaskList();
 		for (int i = taskList.size() - 1; i >= 0; i--) { // loop backwards so multiple removal works
 			Task task = taskList.get(i);
 			if (pred.test(task)) {
@@ -148,7 +148,7 @@ public class Storage {
 
 		List<Task> taskList = new LinkedList<Task>();
 		if (!_commandInfoList.isEmpty()) {
-			for (Task prevTask : _commandInfoList.peek().getTaskList()) {
+			for (Task prevTask : _commandInfoList.getLast().getTaskList()) {
 				taskList.add(prevTask.clone());
 			}
 		}
@@ -170,7 +170,7 @@ public class Storage {
 			_logger.log(Level.WARNING, "Task index \"{0}\" is invalid", index);
 			throw new InputIndexOutOfBoundsException(index);
 		}
-		return _commandInfoList.peek().getTaskList().get(index);
+		return _commandInfoList.getLast().getTaskList().get(index);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class Storage {
 	 * @return True if task index is valid
 	 */
 	public boolean isTaskIndexValid(int taskIndex) {
-		return (taskIndex >= 0 && taskIndex < _commandInfoList.peek().getTaskList().size());
+		return (taskIndex >= 0 && taskIndex < _commandInfoList.getLast().getTaskList().size());
 	}
 
 	/**
@@ -191,11 +191,11 @@ public class Storage {
 	 *            Index of task to remove
 	 */
 	public void deleteTask(int taskIndex) {
-		_commandInfoList.peek().getTaskList().remove(taskIndex);
+		_commandInfoList.getLast().getTaskList().remove(taskIndex);
 	}
 
 	public void deleteOrRescheduleTask(int taskIndex, Calendar date) {
-		Task task = _commandInfoList.peek().getTaskList().get(taskIndex);
+		Task task = _commandInfoList.getLast().getTaskList().get(taskIndex);
 
 		deleteTask(taskIndex);
 		
@@ -206,7 +206,7 @@ public class Storage {
 	}
 	
 	public void deleteOrRescheduleTask(int taskIndex) {
-		deleteOrRescheduleTask(taskIndex, (Calendar) _commandInfoList.peek().getTaskList().get(taskIndex).getStartDate().clone());
+		deleteOrRescheduleTask(taskIndex, (Calendar) _commandInfoList.getLast().getTaskList().get(taskIndex).getStartDate().clone());
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class Storage {
 			if (_commandInfoRedoList.size() - 1 > UNDO_AND_REDO_LIMIT) {
 				_commandInfoRedoList.removeFirst();
 			}
-			commandInfo.setTaskList(_commandInfoList.peek().getTaskList());
+			commandInfo.setTaskList(_commandInfoList.getLast().getTaskList());
 			return prevCommandInfo;
 		} else {
 			return null;
@@ -237,7 +237,7 @@ public class Storage {
 			if (_commandInfoList.size() > UNDO_AND_REDO_LIMIT) {
 				_commandInfoList.removeFirst();
 			}
-			commandInfo.setTaskList(_commandInfoList.peek().getTaskList());
+			commandInfo.setTaskList(_commandInfoList.getLast().getTaskList());
 			return redoCommandInfo;
 		} else {
 			return null;
@@ -257,7 +257,7 @@ public class Storage {
 		if (_commandInfoList.isEmpty()) {
 			createNewCommandInfo();
 		}
-		List<Task> taskList = _commandInfoList.peek().getTaskList();
+		List<Task> taskList = _commandInfoList.getLast().getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
 			if (!newTask.isDateTimeAfterTask(taskList.get(i))) {
 				taskList.add(i, newTask);
@@ -284,7 +284,7 @@ public class Storage {
 		Element rootElement = doc.createElement("wuriTasks");
 		doc.appendChild(rootElement);
 
-		for (Task taskItem : _commandInfoList.peek().getTaskList()) {
+		for (Task taskItem : _commandInfoList.getLast().getTaskList()) {
 			if (taskItem != null) {
 				createTasksXML(doc, taskItem, rootElement);
 			}
@@ -321,7 +321,7 @@ public class Storage {
 				}
 			}
 		}
-		return _commandInfoList.peek().getTaskList();
+		return _commandInfoList.getLast().getTaskList();
 	}
 
 	/**
