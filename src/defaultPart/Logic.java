@@ -584,6 +584,7 @@ public class Logic {
 
 		if (task.willRecur()) {
 			Task newTask = new Task();
+			newTask.setDescription(task.getDescription());
 			newTask.setStartDate(task.getStartDate());
 			newTask.setStartTime(task.getStartDate());
 			newTask.setEndTime(task.getEndDate());

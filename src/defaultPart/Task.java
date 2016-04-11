@@ -9,7 +9,7 @@ public class Task implements Cloneable {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mma");
 
-	private String _description;
+	private String _description = "";
 	private boolean _isCompleted = false;
 
 	private Calendar _startDateAndTime = new GregorianCalendar();
