@@ -21,12 +21,11 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//@@author Shaun Lee
+//@@author A0125497W
 public class Storage {
 
 	private static final int UNDO_AND_REDO_LIMIT = 10;
