@@ -199,8 +199,9 @@ public class Storage {
 		deleteTask(taskIndex);
 		
 		if (task.isRecurSet()) {
-			task.setStartDateAfterRecur(date);
-			addToTaskList(task);
+			if (task.setStartDateAfterRecur(date)) {
+				addToTaskList(task);
+			}
 		}
 	}
 	
