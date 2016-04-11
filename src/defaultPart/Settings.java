@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-//@@author Shaun Lee
+//@@author A0125497W
 public class Settings {
 	/* File names & default paths */
 	private static final String TASK_FILE_NAME = "tasklist.xml";

@@ -34,7 +34,7 @@
 		return time;
 	}
 
-//@@author Shaun Lee
+//@@author A0125497W
 //Codes were removed due to the change in the structure of our Task Class
 	/**
 	 * Extract a TaskTime from node with specified tag and returns as Calendar object
