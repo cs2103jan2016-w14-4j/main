@@ -362,7 +362,7 @@ public class LogicTest {
 		List<Task> taskList = logic.loadTasksFromFile();
 		assertEquals(3, taskList.size());
 
-		CommandInfo command = logic.executeCommand("f bye");
+		command = logic.executeCommand("f bye");
 
 		List<Integer> findList = command.getIndexesFound();
 		assert (findList.size() == 2);
