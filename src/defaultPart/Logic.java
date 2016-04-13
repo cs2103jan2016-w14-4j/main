@@ -87,6 +87,7 @@ public class Logic {
 		}
 	}
 
+	// @@author A0135766W
 	public List<Task> loadTasksFromFile() throws SAXException, ParseException {
 		return _storage.loadTasksFromFile();
 	}
@@ -145,6 +146,7 @@ public class Logic {
 		return commandInfo;
 	}
 
+	// @@author A0135810N
 	/* Instantiates _commandDetails with the CommandType and sets the _arguments */
 	private void setCommandTypeAndArguments(CommandInfo commandInfo, String input) {
 		String[] commandTypeAndArguments = splitCommand(input);
@@ -185,6 +187,7 @@ public class Logic {
 		return commandType.name().substring(0, 1).toLowerCase();
 	}
 
+	// @@author A0135766W
 	private void addTask(CommandInfo commandInfo) {
 		Task newTask = new Task();
 		List<String> args = new ArrayList<String>(Arrays.asList(commandInfo.getArguments().split(" ")));
@@ -399,6 +402,7 @@ public class Logic {
 		return newDate;
 	}
 
+	// @@author A0135810N
 	private void wrapDateToTodayOrLater(Calendar date, int numOfDateFieldsSet) {
 		if (date == null) {
 			return;
@@ -587,6 +591,7 @@ public class Logic {
 		return time;
 	}
 
+	// @@author A0135766W
 	private void toggleTaskComplete(CommandInfo commandInfo)
 			throws IOException, InputIndexOutOfBoundsException {
 		String arguments = commandInfo.getArguments();
@@ -608,6 +613,7 @@ public class Logic {
 						taskIndex + LIST_NUMBERING_OFFSET));
 	}
 
+	// @@author A0135810N
 	private int markRecurTaskAsComplete(int taskIndex, Task task) {
 		Task newTask = task.clone();
 		newTask.unsetEndDate();
@@ -619,6 +625,7 @@ public class Logic {
 		return _storage.addToTaskList(newTask);
 	}
 
+	// @@author A0135766W
 	private void deleteTask(CommandInfo commandInfo) throws IOException, InputIndexOutOfBoundsException {
 		String arguments = commandInfo.getArguments();
 		boolean hasRecurFlag = arguments.length() >= 2
@@ -671,6 +678,7 @@ public class Logic {
 		return false;
 	}
 
+	// @@author A0135810N
 	private boolean deleteAllCompletedTasks(CommandInfo commandInfo) {
 		if (commandInfo.getArguments().equals("c")) {
 			_logger.log(Level.FINE, "Deleting all completed tasks");
@@ -682,6 +690,7 @@ public class Logic {
 		}
 	}
 
+	// @@author A0135766W
 	private boolean deleteAllTasksWithoutDate(CommandInfo commandInfo) {
 		if (commandInfo.getArguments().equals(TASK_WITHOUT_DATE_SPECIFIER)) {
 			_logger.log(Level.FINE, "Deleting all tasks without date");
@@ -693,6 +702,7 @@ public class Logic {
 		}
 	}
 
+	// @@author A0135810N
 	private boolean deleteIndexes(CommandInfo commandInfo, boolean hasRecurFlag)
 			throws InputIndexOutOfBoundsException {
 		String arguments = commandInfo.getArguments();
@@ -866,6 +876,7 @@ public class Logic {
 		}
 	}
 
+	// @@author A0135766W
 	private int getTaskIndex(String arguments) throws IOException {
 		if (arguments == null) {
 			throw new IOException(MESSAGE_NO_ARGUMENTS);
